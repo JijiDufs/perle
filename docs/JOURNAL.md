@@ -4,6 +4,20 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (18) · Jules · Claude Code · branche `jules/calendrier`
+
+Rendez-vous quotidiens (cahier §15) : calendrier de connexion et série de jours.
+
+**Fait**
+- `src/core/daily.ts` (tests : `tests/daily.test.ts`) : `CALENDAR` (7 cases), `claimDaily`, `canClaimDaily`, série et joker (`streakIfClaimed`, `jokerAvailable`). `PlayerState.login`. Deux succès de fidélité (7 et 30 jours).
+- `src/features/progress/dailyCalendar.ts` : le calendrier (7 cases, la case du jour en or, la série avec sa flamme, l'état du joker).
+- Il s'ouvre tout seul une fois par jour, en premier dans la file des célébrations (`shell.showRewards()`, appelée aussi au lancement et au retour dans l'app) ; ligne « jours d'affilée » en haut de la fiche des quêtes ; la case à récupérer compte dans la pastille du bouton Quêtes.
+
+**Fragile**
+- Comme les quêtes : le jour suit l'heure du téléphone.
+
+---
+
 ## 2026-10-05 (17) · Jules · Claude Code · branche `jules/maison`
 
 La Maison, début du fil narratif, en 4e onglet (choix de Jules).

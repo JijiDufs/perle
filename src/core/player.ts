@@ -1,5 +1,6 @@
 import { DEFAULT_TUNING, type Tuning } from '../tuning';
 import { pearlById, type PearlId } from './catalog';
+import { INITIAL_LOGIN, type LoginState } from './daily';
 import { INITIAL_DRAW_STATE, type DrawState } from './draw';
 import type { ExpertiseRecord } from './expertise';
 import { rollSweetAngle } from './glint';
@@ -83,6 +84,8 @@ export interface PlayerState {
   quests: DailyQuests | null;
   /** Lettres de grand-mère lues (La Maison). */
   chaptersRead: string[];
+  /** Calendrier de connexion et série de jours. */
+  login: LoginState;
 }
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
@@ -105,6 +108,7 @@ export const INITIAL_PLAYER_STATE: PlayerState = {
   title: null,
   quests: null,
   chaptersRead: [],
+  login: INITIAL_LOGIN,
 };
 
 /**

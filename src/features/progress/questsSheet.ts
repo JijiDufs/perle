@@ -1,10 +1,12 @@
 // Quêtes du jour : avancement, bouton « Récupérer », bonus des trois (un écrin), renouvellement à minuit.
+import { canClaimDaily, CALENDAR } from '../../core/daily';
 import { claimQuest, currentQuests } from '../../core/progression';
 import { isClaimable, isComplete, msUntilNextDay, questText } from '../../core/quests';
 import { track } from '../../platform/analytics';
 import { chimeNotes } from '../../platform/audio';
 import { hapticBurst } from '../../platform/haptics';
 import type { AppContext } from '../context';
+import { openDailyCalendar } from './dailyCalendar';
 
 const formatHours = (ms: number) => {
   const minutes = Math.ceil(ms / 60_000);
@@ -32,6 +34,11 @@ export function openQuestsSheet(ctx: AppContext): void {
           <button type="button" class="dust-close" aria-label="Fermer">✕</button>
           <h2>Quêtes du jour</h2>
           <p class="muted">Nouvelles quêtes dans ${formatHours(msUntilNextDay(now))}.</p>
+          <button type="button" class="daily-row${canClaimDaily(ctx.player, now) ? ' ready' : ''}" data-action="calendar">
+            <span class="flame" aria-hidden="true"></span>
+            <span><b>${ctx.player.login.streak} jour${ctx.player.login.streak > 1 ? 's' : ''} d’affilée</b><small>Calendrier · jour ${(canClaimDaily(ctx.player, now) ? ctx.player.login.calendarIndex : (ctx.player.login.calendarIndex + CALENDAR.length - 1) % CALENDAR.length) + 1} sur ${CALENDAR.length}</small></span>
+            <span class="chapter-action">${canClaimDaily(ctx.player, now) ? 'Récupérer' : 'Voir'}</span>
+          </button>
           <ul class="quest-list">
             ${daily.quests
               .map((quest, index) => {
@@ -68,6 +75,10 @@ export function openQuestsSheet(ctx: AppContext): void {
     if (target === sheet || target.closest('.dust-close')) {
       sheet.remove();
       ctx.showRewards();
+      return;
+    }
+    if (target.closest('[data-action="calendar"]')) {
+      openDailyCalendar(ctx, render);
       return;
     }
     const claim = target.closest<HTMLElement>('[data-claim]');

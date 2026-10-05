@@ -63,4 +63,9 @@ function show(name: ScreenName): void {
 
 track('session_start', { oystersOpened: player.oystersOpened, standalone: matchMedia('(display-mode: standalone)').matches });
 show('oyster');
+// Calendrier du jour, succès et niveaux en attente, à l'ouverture et au retour dans l'app.
+shell.showRewards();
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') shell.showRewards();
+});
 registerOffline();

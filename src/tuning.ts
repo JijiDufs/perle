@@ -119,6 +119,8 @@ export interface Tuning {
   /** Récompense d'une lettre de grand-mère lue (La Maison). */
   chapterRewardDust: number;
   chapterRewardReputation: number;
+  /** Réputation de la case du calendrier de connexion (en plus de sa récompense). */
+  dailyRewardReputation: number;
 }
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
@@ -193,6 +195,7 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   questRewardReputation: 30,
   chapterRewardDust: 20,
   chapterRewardReputation: 20,
+  dailyRewardReputation: 15,
 };
 
 /** Description des paramètres exposés dans l'écran Réglages. */

@@ -17,7 +17,10 @@ import type { Settings } from '../../platform/storage';
 import type { Tuning } from '../../tuning';
 import { showLevelUp } from '../progress/levelUp';
 import { openProgressSheet } from '../progress/progressSheet';
+import { openDailyCalendar } from '../progress/dailyCalendar';
 import { openQuestsSheet } from '../progress/questsSheet';
+import { canClaimDaily } from '../../core/daily';
+import { dayKey } from '../../core/quests';
 import type { AppContext } from '../context';
 import { ICONS } from './icons';
 
@@ -116,6 +119,8 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
   const questsButton = q('.hud-quests');
   const banners: Banner[] = [];
   let showingBanners = false;
+  /** Le calendrier s'ouvre tout seul une fois par jour. */
+  let calendarShownDay: string | null = null;
   const levelRing = q('.level-ring');
   /** Niveaux gagnés pas encore célébrés : [depuis, jusqu'à]. */
   let pendingLevels: [number, number] | null = null;
@@ -193,7 +198,7 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
       });
     }
     last.questsDone = doneKeys;
-    const claimable = daily ? daily.quests.filter(isClaimable).length : 0;
+    const claimable = (daily ? daily.quests.filter(isClaimable).length : 0) + (canClaimDaily(player, now) ? 1 : 0);
     const questBadge = questsButton.querySelector<HTMLElement>('.badge')!;
     questBadge.hidden = claimable === 0;
     questBadge.textContent = String(claimable);
@@ -246,6 +251,16 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
   function showRewards(): void {
     const { player, tuning } = getState();
     if (celebrating || showingBanners || isInTutorial(player.oystersOpened)) return;
+    const now = Date.now();
+    if (canClaimDaily(player, now) && calendarShownDay !== dayKey(now)) {
+      calendarShownDay = dayKey(now);
+      celebrating = true;
+      openDailyCalendar(getCtx(), () => {
+        celebrating = false;
+        showRewards();
+      });
+      return;
+    }
     const banner = banners.shift();
     if (banner) {
       showingBanners = true;

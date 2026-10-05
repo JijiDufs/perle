@@ -40,6 +40,7 @@ Objectif : valider la **sensation** du geste. Le rendu reprend la direction visu
 - **Succès et titres (cahier §10)** : 24 succès bronze / argent / or (dont 2 secrets), avec poussière d'or et réputation ; certains donnent un titre à porter (affiché sous le rang). Bannière à l'obtention, au moment calme suivant ; volet « Succès » dans « Ma progression ».
 - **Quêtes du jour (cahier §15)** : 3 quêtes tirées chaque jour (mêmes pour tous, renouvelées à minuit), pas pendant le tutoriel ; 10 ✦ + 30 de réputation chacune, un écrin quand les trois sont récupérées. Bouton dans la barre du haut (doré quand une récompense attend), bannière « Quête terminée ». Les réglages du prototype s'ouvrent depuis « Ma progression ».
 - **La Maison (cahier §8), début du fil narratif** : 4e onglet, verrouillé pendant le tutoriel. La cabane de grand-mère Rose au bout du ponton, dessinée par code, qui change de nom avec le rang. 7 lettres débloquées par niveau (1 à 10) ; lire une lettre rapporte 20 ✦ + 20 de réputation et restaure un élément (porte, lanterne, enseigne, fenêtre et carnet, établi, vitrine avec ta plus belle pièce, boîte mystérieuse). Pastille sur l'onglet pour les lettres à lire, rappel dans la célébration de niveau. La 7e lettre amorce le mystère de la perle maudite ; la suite est annoncée au niveau 15.
+- **Rendez-vous quotidiens (cahier §15)** : calendrier de connexion sur 7 jours (huîtres, poussière d'or, un écrin le 7e), ouvert tout seul une fois par jour (au lancement, au retour dans l'app, ou à la fin du tutoriel) et depuis la fiche des quêtes. Série de jours consécutifs avec un joker par semaine (un jour manqué ne casse pas la série). Succès « Fidèle au ponton » (7 jours) et « La marée et moi » (30 jours).
 - Icône provisoire (huître ouverte + perle), installation sur l'écran d'accueil (aide affichée sur iPhone après le tutoriel), mode hors ligne.
 
 **Hors V1 — ne pas coder sans décision dans §6**
@@ -69,6 +70,7 @@ src/
     achievements.ts Succès, paliers, titres
     quests.ts       Quêtes du jour : tirage par jour, avancement
     progression.ts  Après chaque action : statistiques, quêtes, succès (appelé par le Core lui-même)
+    daily.ts        Calendrier de connexion sur 7 jours, série de jours et joker
     house.ts        La Maison : lettres de grand-mère, déblocage, restauration
     levels.ts       Niveaux, réputation, rangs de prestige, récompenses de niveau, déblocages
     dust.ts         Poussière d'or : fonte des doublons, achat d'une pièce manquante ou d'un écrin
@@ -132,6 +134,7 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 | Réputation pour passer du niveau n à n+1 | 60 + 15 × n^1,5 | vise le niveau 50 en 4 à 6 mois (cahier §9) |
 | Récompense de niveau | 3 huîtres, 15 ✦ ; 1 écrin tous les 3 niveaux et à chaque rang | proposition (§6) |
 | Succès bronze / argent / or | 10 / 30 / 80 ✦, + 40 de réputation | proposition (§6) |
+| Calendrier de connexion (jours 1 à 7) | 3 huîtres · 20 ✦ · 5 huîtres · 30 ✦ · 5 huîtres · 50 ✦ · 1 écrin + 30 ✦ ; + 15 de réputation par jour | cahier §15 (écrin le 7e) ; montants : proposition (§6) |
 | Lettre de la Maison lue | 20 ✦ + 20 de réputation | proposition (§6) |
 | Quêtes du jour | 3 par jour ; 10 ✦ + 30 de réputation chacune ; les trois = 1 écrin | cahier §15 (« trois quêtes du jour ») |
 
@@ -191,6 +194,7 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-05 | **Niveaux et réputation** avant l'atelier : la réputation vient des huîtres, écrins et expertises ; le niveau se déduit de la réputation, les récompenses sont données une seule fois (`rewardedLevel`). Les rangs et déblocages du cahier s'affichent, ceux qui n'existent pas encore marqués « à venir ». Les huîtres gagnées en montant de niveau peuvent dépasser le maximum. Les joueurs existants repartent du niveau 1. **Barème provisoire, à valider avec Mathys** | Retour de Jules : sentir l'évolution dès la bêta. Courbe : ≈ 200 de réputation par session, 4 sessions par jour, ≈ 100 000 pour le niveau 50, soit 4 à 6 mois (cahier §9). Montrer l'horizon (cahier §15) |
 | 2026-10-05 | **Succès et quêtes du jour.** Statistiques, quêtes et succès sont mis à jour dans le Core après chaque action (`progression.ts`). Quêtes tirées avec une graine = la date (heure locale du téléphone). Les célébrations (succès, quête terminée, niveau) attendent un moment calme, jamais pendant la révélation ni le tutoriel. Une ancienne sauvegarde reçoit ses succès déjà remplis au chargement, sans bannière. La roue des réglages quitte la barre du haut pour « Ma progression ». **Liste et barème provisoires, à valider avec Mathys** | Retour de Jules : sentir l'évolution ; raison de revenir chaque jour (cahier §15) ; ne pas gâcher la surprise de la carte |
 | 2026-10-05 | **La Maison en 4e onglet**, début du fil narratif : la grand-mère s'appelle **Rose** (clin d'œil à la première perle, rosée) et la Maison « Maison Rose, perles fines ». Lettres débloquées par niveau, chacune restaure un élément de la cabane. Les fonctions annoncées (atelier, recettes) sont marquées « prochaine version ». **Prénom, textes et rythme provisoires, à valider avec Mathys** | Choix de Jules : commencer le fil narratif tout de suite. Cahier §8 (carnet incomplet, boutique à l'abandon, mystère de la perle maudite) et §15 (horizon de la boutique abandonnée) |
+| 2026-10-05 | **Calendrier de connexion** : une case par jour où l'on vient (pas forcément consécutifs), on recommence après la 7e. **Série** : jours consécutifs ; un seul jour manqué est rattrapé par le joker s'il n'a pas servi dans les 7 derniers jours. Le jour suit l'heure du téléphone, comme les quêtes. **Montants provisoires, à valider avec Mathys** | Cahier §15 : « calendrier de connexion sur 7 jours, avec un écrin le 7e jour » et « série de jours consécutifs, avec un joker par semaine » |
 | 2026-10-05 | Pas de mise en ligne pour l'instant : tout est construit et testé en local | Choix de Jules |
 
 ## 7. Limites connues du prototype web
