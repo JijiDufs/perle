@@ -20,8 +20,12 @@ Niveaux, réputation et rangs (cahier §8-9), pour sentir l'évolution dans la b
 - Barème de réputation, courbe et récompenses.
 - Rien ne se débloque vraiment aux rangs pour l'instant (atelier, commandes… sont « à venir ») : il faudra brancher les vrais déblocages au fur et à mesure.
 
+**Corrigé en passant**
+- Carte agrandie de la collection affichée en haut de la page (sous la barre) quand on avait défilé : l'animation d'entrée d'écran restait appliquée (`animation-fill-mode: both` sur un `transform`), ce qui faisait de l'écran le repère des éléments `position: fixed`. Passée en `backwards`.
+
 **Fragile**
 - Les joueurs existants repartent du niveau 1 (pas de rattrapage de la réputation passée).
+- Ne pas laisser d'animation de `transform` appliquée sur un écran : les surcouches `position: fixed` à l'intérieur se décaleraient.
 
 ---
 

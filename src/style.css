@@ -180,8 +180,10 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 @keyframes toast { 0% { opacity: 0; transform: translate(-50%, 10px); } 10%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
 
 /* Transition entre écrans, dans le sens des onglets. */
-.screen-enter.from-right { animation: enter-right 0.28s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
-.screen-enter.from-left { animation: enter-left 0.28s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+/* « backwards » et pas « both » : une animation de transform qui reste appliquée ferait de l'écran le repère des
+   éléments position: fixed (carte agrandie, comptoir…), qui s'afficheraient en haut de la page défilée, sous la barre. */
+.screen-enter.from-right { animation: enter-right 0.28s cubic-bezier(0.2, 0.9, 0.3, 1) backwards; }
+.screen-enter.from-left { animation: enter-left 0.28s cubic-bezier(0.2, 0.9, 0.3, 1) backwards; }
 @keyframes enter-right { from { opacity: 0; transform: translateX(24px); } }
 @keyframes enter-left { from { opacity: 0; transform: translateX(-24px); } }
 
