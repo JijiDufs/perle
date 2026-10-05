@@ -36,6 +36,7 @@ Objectif : valider la **sensation** du geste. Le rendu reprend la direction visu
 - **Poussière d'or (cahier §7)** : un doublon (perle ou bijou de même rareté déjà possédé) se fond en poussière d'or selon sa rareté (— 1, ◆ 2, ◆◆ 5, ◆◆◆ 12, ★ 40, ★★ 120 ✦) ; on garde toujours au moins un exemplaire. Fonte d'une carte (deux touchers) ou en lot (garde le plus bel exemplaire et tous les bijoux à éclat parfait, variante ou certificat). La poussière achète précisément une pièce manquante (prix = fonte × 5, carte marquée « poussière d'or », lustre B, sans toucher aux garanties) ou un écrin Velours (60 ✦). Comptoir dans la Collection, achat d'écrin aussi sur l'écran Écrin vide.
 - Stock d'huîtres : 10 maximum, 1 qui revient toutes les 20 min (bêta) ; écran « La marée remonte… » avec compte à rebours quand il est vide.
 - **Navigation** : onglets en bas, à portée de pouce (Pêche, Écrins, Collection), avec icônes, pastilles (écrins à ouvrir, nouvelles cartes) et transition dans le sens des onglets ; l'onglet Écrins est verrouillé jusqu'au premier écrin, puis s'illumine. Barre de ressources en haut : huîtres (avec le minuteur de recharge) et poussière d'or, qui rebondissent quand elles augmentent ; réglages derrière la roue dentée. Cartes « Nouveau » dans la collection jusqu'à la visite suivante.
+- **Niveaux et réputation (cahier §8-9)** : chaque huître, écrin et certificat rapporte de la réputation (plus pour la rareté, le lustre S/A, les découvertes, l'éclat parfait). Anneau de niveau dans la barre du haut (« +N » à chaque gain). Montée de niveau : célébration plein écran avec récompenses (3 huîtres, au-delà du maximum possible ; 15 ✦ ; un écrin tous les 3 niveaux et à chaque rang) et prochain déblocage, montrée quand la carte est refermée (jamais pendant le tutoriel). Rangs du cahier (Pêcheur → Maison de haute joaillerie). Fiche « Ma progression » (toucher l'anneau) : niveau, statistiques, chemin des rangs, déblocages (ceux qui n'existent pas encore sont marqués « à venir »), barème de réputation.
 - Icône provisoire (huître ouverte + perle), installation sur l'écran d'accueil (aide affichée sur iPhone après le tutoriel), mode hors ligne.
 
 **Hors V1 — ne pas coder sans décision dans §6**
@@ -62,12 +63,13 @@ src/
     jewels.ts       Bijoux des écrins : raretés, probabilités, tirage + garantie
     glint.ts        Moteur de l'écrin : ouverture + angle d'éclat (éclat parfait)
     expertise.ts    Expertise à la loupe : inclusions, détection, note, certificat
+    levels.ts       Niveaux, réputation, rangs de prestige, récompenses de niveau, déblocages
     dust.ts         Poussière d'or : fonte des doublons, achat d'une pièce manquante ou d'un écrin
   input/            Sources du geste → produisent des OpeningSample
     thumb.ts        Pouce vers le haut (iPhone classique)
   art/              Dessin procédural (Canvas 2D) : coquille, nacre, perle, halo, bijoux, écrin, image story. Aucune règle de jeu
   platform/         Ce qui touche au navigateur : haptique, sons générés, sauvegarde, partage, mesure d'usage (analytics.ts)
-  features/         Écrans : nav/ (onglets du bas, barre de ressources, icônes), oyster/ (dont coach.ts, textes du tutoriel), ecrin/, expertise/ (mini-jeu), dust/ (comptoir de la poussière d'or), collection/, tuning/, share/ (bouton Partager)
+  features/         Écrans : nav/ (onglets du bas, barre de ressources, icônes), progress/ (montée de niveau, « Ma progression »), oyster/ (dont coach.ts, textes du tutoriel), ecrin/, expertise/ (mini-jeu), dust/ (comptoir de la poussière d'or), collection/, tuning/, share/ (bouton Partager)
   main.ts           Point d'entrée, navigation entre écrans
 tests/              Tests du Core et des entrées
 public/
@@ -118,6 +120,10 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 | Poussière d'or par doublon fondu (— ◆ ◆◆ ◆◆◆ ★ ★★) | 1 / 2 / 5 / 12 / 40 / 120 ✦ | proposition (§6) |
 | Prix d'une pièce manquante | fonte × 5 | proposition (§6) |
 | Prix d'un écrin en poussière d'or | 60 ✦ | proposition (§6) |
+| Réputation : huître / par niveau de rareté / lustre S, A / découverte | 10 / 5 / 10, 5 / 30 | proposition (§6) |
+| Réputation : écrin / éclat parfait / certificat | 25 / 15 / 20 | proposition (§6) |
+| Réputation pour passer du niveau n à n+1 | 60 + 15 × n^1,5 | vise le niveau 50 en 4 à 6 mois (cahier §9) |
+| Récompense de niveau | 3 huîtres, 15 ✦ ; 1 écrin tous les 3 niveaux et à chaque rang | proposition (§6) |
 
 ## 4. Conventions
 
@@ -172,6 +178,7 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-05 | **Ouverture à une main** (retour de test iPhone de Jules) : course du pouce raccourcie (révélation à 267 pt au lieu de 378) et, lâché au-delà de 115° (écrin : après la zone de l'angle d'éclat), le couvercle finit seul. Vitesses rapportées à la nouvelle course ; angle d'éclat resserré à 55–115° ; lustre mesuré dans la zone fragile seulement ; réglages sauvegardés sous une nouvelle clé (`perle.tuning.v2`) | On ne pouvait pas ouvrir d'une traite en tenant le téléphone d'une main ; passé la zone fragile il n'y a plus rien à jouer |
 | 2026-10-05 | **Poussière d'or** : une « pièce » = une case de l'encyclopédie (sorte de perle, ou rareté de bijou). On ne fond que des doublons (jamais le dernier exemplaire) ; on n'achète que des pièces jamais obtenues. Barème par rareté, prix = fonte × 5, carte achetée ordinaire (lustre B, pas d'éclat parfait) et marquée. **La poussière achète aussi des écrins (60 ✦)** : écart au cahier §7, demandé par Jules. **Barème provisoire, à valider avec Mathys** | Cahier §7 et §9 : « personne ne reste bloqué ». ≈ 6 ✦ par huître en moyenne si tout est en double : un écrin ≈ 10 huîtres de doublons (le gratuit reste plus rapide, 8 huîtres), une perle dorée manquante 200 ✦ ≈ 30 huîtres, une maudite 600 ✦. Fondre les bijoux d'un écrin rapporte ≈ 7 ✦ : on ne peut pas enchaîner les écrins en fondant |
 | 2026-10-05 | **Navigation** : onglets en bas plutôt qu'en haut ; ressources (huîtres, poussière) en haut, sur tous les écrans ; fonctions débloquées une à une (Écrins après le tutoriel). Le compteur d'huîtres sous la coquille est remplacé par celui du haut | Retour de Jules : on ne sentait pas l'évolution du jeu. Jeu à une main : le pouce atteint le bas, pas le haut. Cahier §15 : les fonctions arrivent une à une |
+| 2026-10-05 | **Niveaux et réputation** avant l'atelier : la réputation vient des huîtres, écrins et expertises ; le niveau se déduit de la réputation, les récompenses sont données une seule fois (`rewardedLevel`). Les rangs et déblocages du cahier s'affichent, ceux qui n'existent pas encore marqués « à venir ». Les huîtres gagnées en montant de niveau peuvent dépasser le maximum. Les joueurs existants repartent du niveau 1. **Barème provisoire, à valider avec Mathys** | Retour de Jules : sentir l'évolution dès la bêta. Courbe : ≈ 200 de réputation par session, 4 sessions par jour, ≈ 100 000 pour le niveau 50, soit 4 à 6 mois (cahier §9). Montrer l'horizon (cahier §15) |
 | 2026-10-05 | Pas de mise en ligne pour l'instant : tout est construit et testé en local | Choix de Jules |
 
 ## 7. Limites connues du prototype web

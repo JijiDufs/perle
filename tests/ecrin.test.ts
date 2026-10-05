@@ -7,6 +7,8 @@ import { TUTORIAL_PEARLS } from '../src/core/tutorial';
 import { DEFAULT_TUNING } from '../src/tuning';
 
 const t = DEFAULT_TUNING;
+/** Sans montée de niveau, pour compter seulement les écrins gagnés en ouvrant des huîtres. */
+const noLevels = { ...DEFAULT_TUNING, levelBaseXp: 1e9 };
 
 describe('bijoux', () => {
   it('les probabilités font 100 %', () => {
@@ -122,7 +124,7 @@ describe('écrins du joueur', () => {
   function openOysters(state: PlayerState, n: number): { state: PlayerState; earned: number } {
     let earned = 0;
     for (let i = 0; i < n; i++) {
-      const result = recordOpening({ ...state, currentOyster: { pearlId: 'white', sizeMm: 6 } }, { lustre: 'A', cracked: false }, i, t);
+      const result = recordOpening({ ...state, currentOyster: { pearlId: 'white', sizeMm: 6 } }, { lustre: 'A', cracked: false }, i, noLevels);
       state = result.state;
       if (result.ecrinEarned) earned++;
     }

@@ -4,6 +4,7 @@ import { INITIAL_DRAW_STATE, type DrawState } from './draw';
 import type { ExpertiseRecord } from './expertise';
 import { rollSweetAngle } from './glint';
 import { INITIAL_JEWEL_DRAW, roundValue, rollJewel, rollRareVariant, type Jewel, type JewelDrawState, type JewelVariantId } from './jewels';
+import { gainReputation, reputationFor } from './levels';
 import type { Lustre } from './lustre';
 import { createOyster, oysterWith, type Oyster } from './oyster';
 import type { Rng } from './rng';
@@ -66,6 +67,10 @@ export interface PlayerState {
   jewelCards: JewelCard[];
   /** Poussière d'or (cahier §7) : vient des doublons fondus, achète une pièce manquante ou un écrin. */
   dust: number;
+  /** Réputation totale (expérience, cahier §9) ; le niveau s'en déduit (core/levels.ts). */
+  reputation: number;
+  /** Dernier niveau dont la récompense a été donnée. */
+  rewardedLevel: number;
 }
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
@@ -81,6 +86,8 @@ export const INITIAL_PLAYER_STATE: PlayerState = {
   currentEcrin: null,
   jewelCards: [],
   dust: 0,
+  reputation: 0,
+  rewardedLevel: 1,
 };
 
 /**
@@ -138,7 +145,9 @@ export function recordOpening(
   const oyster = state.currentOyster;
   if (!oyster) throw new Error('Aucune huître en cours');
   const earned = earnEcrins({ ...state, currentOyster: null, oystersOpened: state.oystersOpened + 1 }, tuning);
-  const base = earned.state;
+  const discovery = oyster.pearlId !== 'empty' && !state.cards.some((c) => c.pearlId === oyster.pearlId);
+  const gained = reputationFor({ kind: 'oyster', pearlId: oyster.pearlId, lustre: result.lustre, cracked: result.cracked, discovery }, tuning);
+  const base = gainReputation(earned.state, gained, tuning);
   if (oyster.pearlId === 'empty') return { state: base, card: null, ecrinEarned: earned.earned };
 
   const card: PearlCard = {
@@ -169,8 +178,7 @@ export function recordEcrin(state: PlayerState, result: { perfect: boolean }, no
   const multiplier = variant ? tuning.glintRareVariantMultiplier : result.perfect ? tuning.glintPerfectMultiplier : 1;
   const value = roundValue(pending.jewel.value * multiplier);
   const card: JewelCard = { serial: state.nextSerial, jewel: pending.jewel, value, perfect: result.perfect, variant, foundAt: now };
-  return {
-    state: { ...state, currentEcrin: null, nextSerial: state.nextSerial + 1, jewelCards: [...state.jewelCards, card] },
-    card,
-  };
+  const discovery = !state.jewelCards.some((c) => c.jewel.rarityId === pending.jewel.rarityId);
+  const opened = { ...state, currentEcrin: null, nextSerial: state.nextSerial + 1, jewelCards: [...state.jewelCards, card] };
+  return { state: gainReputation(opened, reputationFor({ kind: 'ecrin', perfect: result.perfect, discovery }, tuning), tuning), card };
 }

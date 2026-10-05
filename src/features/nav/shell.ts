@@ -2,11 +2,14 @@
 // pastilles, onglets qui se débloquent au fil du jeu, transition entre écrans.
 // Les règles (déblocage, nouvelles cartes, stock) viennent du Core ; ce fichier ne fait qu'afficher.
 import { newCardsSince } from '../../core/collection';
+import { levelFromXp } from '../../core/levels';
 import type { PlayerState } from '../../core/player';
 import { nextRefillIn, refreshStock } from '../../core/stock';
 import { isEcrinUnlocked, isInTutorial } from '../../core/tutorial';
 import type { Settings } from '../../platform/storage';
 import type { Tuning } from '../../tuning';
+import { showLevelUp } from '../progress/levelUp';
+import { openProgressSheet } from '../progress/progressSheet';
 import { ICONS } from './icons';
 
 export type ScreenName = 'oyster' | 'ecrin' | 'collection' | 'tuning';
@@ -27,7 +30,11 @@ export interface Shell {
   /** Marque l'onglet actif et renvoie le sens de la transition (-1, 0, 1). */
   setActive(name: ScreenName): -1 | 0 | 1;
   toast(text: string): void;
+  /** Montre la célébration des niveaux gagnés, s'il y en a (hors tutoriel). */
+  showLevelUps(): void;
 }
+
+const RING = 2 * Math.PI * 15;
 
 const formatWait = (ms: number) => {
   const total = Math.ceil(ms / 1000);
@@ -38,7 +45,14 @@ const formatWait = (ms: number) => {
 export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => void, getState: () => ShellState): Shell {
   app.innerHTML = `
     <header class="hud">
-      <span class="chip">BÊTA</span>
+      <div class="hud-left">
+        <span class="chip">BÊTA</span>
+        <button type="button" class="level-ring" aria-label="Ma progression">
+          <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-track" cx="18" cy="18" r="15"/><circle class="ring-fill" cx="18" cy="18" r="15" stroke-dasharray="${RING}" stroke-dashoffset="${RING}"/></svg>
+          <b class="level-number">1</b>
+          <span class="rep-floater" aria-hidden="true"></span>
+        </button>
+      </div>
       <div class="hud-resources">
         <button type="button" class="resource resource-oyster" data-screen="oyster" aria-label="Huîtres disponibles">
           ${ICONS.oyster}<b class="resource-value"></b><small class="resource-sub"></small>
@@ -67,7 +81,11 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
   const dustRes = q('.resource-dust');
   const toastEl = q('.toast');
   let active: ScreenName = 'oyster';
-  let last: { oysters?: number; dust?: number; unlocked?: boolean } = {};
+  let last: { oysters?: number; dust?: number; unlocked?: boolean; reputation?: number; rewardedLevel?: number } = {};
+  const levelRing = q('.level-ring');
+  /** Niveaux gagnés pas encore célébrés : [depuis, jusqu'à]. */
+  let pendingLevels: [number, number] | null = null;
+  let celebrating = false;
   let toastTimer = 0;
 
   /** Petit rebond quand une valeur monte (gain visible). */
@@ -87,6 +105,8 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     oysterRes.querySelector('.resource-value')!.textContent = `${stock.count}/${tuning.oysterStockMax}`;
     oysterRes.querySelector('.resource-sub')!.textContent = wait === null ? '' : formatWait(wait);
     oysterRes.classList.toggle('empty', stock.count === 0);
+    // Au-delà du maximum (récompenses de niveau) : en doré.
+    oysterRes.classList.toggle('bonus', stock.count > tuning.oysterStockMax);
     if (!tutorial && last.oysters !== undefined && stock.count > last.oysters) bump(oysterRes);
     last.oysters = stock.count;
 
@@ -95,6 +115,25 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     dustRes.querySelector('.resource-value')!.textContent = String(player.dust);
     if (last.dust !== undefined && player.dust > last.dust) bump(dustRes);
     last.dust = player.dust;
+
+    // Niveau : anneau de progression, « +N » quand la réputation monte, célébration mise de côté.
+    const progress = levelFromXp(player.reputation, tuning);
+    levelRing.querySelector('.level-number')!.textContent = String(progress.level);
+    const ratio = progress.needed ? progress.into / progress.needed : 1;
+    levelRing.querySelector<SVGCircleElement>('.ring-fill')!.style.strokeDashoffset = String(RING * (1 - ratio));
+    if (last.reputation !== undefined && player.reputation > last.reputation) {
+      const floater = levelRing.querySelector<HTMLElement>('.rep-floater')!;
+      floater.textContent = `+${player.reputation - last.reputation}`;
+      floater.classList.remove('show');
+      void floater.offsetWidth;
+      floater.classList.add('show');
+      bump(levelRing);
+    }
+    last.reputation = player.reputation;
+    if (last.rewardedLevel !== undefined && player.rewardedLevel > last.rewardedLevel) {
+      pendingLevels = [pendingLevels?.[0] ?? last.rewardedLevel, player.rewardedLevel];
+    }
+    last.rewardedLevel = player.rewardedLevel;
 
     // Écrins : verrouillé jusqu'au premier écrin, puis pastille du nombre à ouvrir.
     const unlocked = isEcrinUnlocked(player);
@@ -129,6 +168,15 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     return direction;
   }
 
+  function showLevelUps(): void {
+    const { player, tuning } = getState();
+    if (!pendingLevels || celebrating || isInTutorial(player.oystersOpened)) return;
+    const [from, to] = pendingLevels;
+    pendingLevels = null;
+    celebrating = true;
+    showLevelUp(from, to, tuning, () => (celebrating = false));
+  }
+
   function toast(text: string): void {
     toastEl.textContent = text;
     toastEl.hidden = false;
@@ -139,6 +187,11 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     toastTimer = window.setTimeout(() => (toastEl.hidden = true), 2600);
   }
 
+  levelRing.addEventListener('click', () => {
+    const { player, tuning } = getState();
+    openProgressSheet(player, tuning);
+  });
+
   app.addEventListener('click', (event) => {
     const button = (event.target as HTMLElement).closest<HTMLElement>('.tabbar [data-screen], .hud [data-screen]');
     if (!button) return;
@@ -148,10 +201,11 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
       return;
     }
     if (name !== active) onNavigate(name);
+    showLevelUps();
   });
 
   // Le minuteur de recharge tourne en haut de l'écran.
   window.setInterval(() => update(getState()), 1000);
 
-  return { host, update, setActive, toast };
+  return { host, update, setActive, toast, showLevelUps };
 }

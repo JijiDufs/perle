@@ -36,6 +36,7 @@ const ctx: AppContext = {
   setTuning(value) { tuning = value; saveTuning(value); shell.update(shellState()); },
   setSettings(value) { settings = value; saveSettings(value); shell.update(shellState()); },
   goTo(screen) { show(screen); },
+  showLevelUps() { shell.showLevelUps(); },
 };
 
 const shellState = () => ({ player, tuning, settings });

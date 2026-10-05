@@ -214,6 +214,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     event.stopPropagation();
     track('card_dismissed', { pearlId: pearl.id });
     nextOyster();
+    ctx.showLevelUps();
   });
 
   function nextOyster(): void {

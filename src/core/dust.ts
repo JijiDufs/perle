@@ -1,8 +1,8 @@
 // Poussière d'or (cahier §7) : un doublon se fond en poussière d'or, qui achète précisément la pièce
 // manquante de son choix, ou un écrin (choix de Jules, AGENTS.md §6). Personne ne reste bloqué par le hasard.
 import { dustForTier, type Tuning } from '../tuning';
-import { PEARLS, pearlById, type PearlId } from './catalog';
-import { JEWEL_RARITIES, jewelOfRarity, jewelRarity, RARITY_SYMBOLS, type JewelRarityId } from './jewels';
+import { PEARLS, pearlById, pearlTier, type PearlId } from './catalog';
+import { JEWEL_RARITIES, jewelOfRarity, jewelRarity, type JewelRarityId } from './jewels';
 import { pearlValue, type JewelCard, type PearlCard, type PlayerState } from './player';
 import type { Rng } from './rng';
 
@@ -11,10 +11,7 @@ export type PieceKind = 'pearl' | 'jewel';
 /** Une « pièce » de la collection : une sorte de perle, ou une rareté de bijou (une case de l'encyclopédie). */
 export type Piece = { kind: 'pearl'; id: PearlId } | { kind: 'jewel'; id: JewelRarityId };
 
-/** Niveau de rareté d'une perle (0 = —, 5 = ★★), lu sur son symbole, comme pour les bijoux. */
-export function pearlTier(id: PearlId): number {
-  return Math.max(0, RARITY_SYMBOLS.indexOf(pearlById(id).rarity));
-}
+export { pearlTier };
 
 export function pieceTier(piece: Piece): number {
   return piece.kind === 'pearl' ? pearlTier(piece.id) : jewelRarity(piece.id).tier;

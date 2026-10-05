@@ -93,6 +93,8 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .resource-value { font-size: 0.9rem; }
 .resource-sub { color: var(--ink-soft); font-size: 0.72rem; }
 .resource-sub:empty { display: none; }
+.resource-oyster.bonus { border-color: rgba(232, 190, 90, 0.5); }
+.resource-oyster.bonus .resource-value { color: var(--gold); }
 .resource-oyster.empty svg, .resource-oyster.empty .resource-value { color: var(--danger); }
 .resource-dust { border-color: rgba(232, 190, 90, 0.4); }
 .resource-star, .resource-dust .resource-value { color: var(--gold); }
@@ -735,3 +737,97 @@ select { font: inherit; background: var(--panel); color: var(--ink); border: 1px
 .dust-buy-ecrin { margin-top: 12px; border: 1px solid rgba(232, 190, 90, 0.6); background: transparent; color: var(--gold); border-radius: 999px; padding: 10px 20px; font-weight: 600; }
 .dust-buy-ecrin:disabled { color: var(--ink-soft); border-color: transparent; font-weight: 400; font-size: 0.85rem; }
 .dust-buy-ecrin[hidden] { display: none; }
+
+/* ---------- Niveau et réputation ---------- */
+
+.hud-left { display: flex; align-items: center; gap: 6px; }
+.level-ring { position: relative; width: 38px; height: 38px; padding: 0; border: 0; border-radius: 50%; background: var(--panel); display: grid; place-items: center; }
+.level-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring-track { fill: none; stroke: var(--line); stroke-width: 3; }
+.ring-fill { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 0.8s cubic-bezier(0.3, 1, 0.4, 1) 0.2s; }
+.level-number { position: relative; font: 400 0.95rem/1 var(--serif); color: var(--ink); }
+.level-ring.bump { animation: bump 0.5s cubic-bezier(0.2, 1.6, 0.4, 1); }
+.rep-floater { position: absolute; left: 50%; top: 100%; transform: translateX(-50%); font-size: 0.75rem; font-weight: 700; color: var(--gold); white-space: nowrap; opacity: 0; pointer-events: none; }
+.rep-floater.show { animation: floater 1.6s ease-out both; }
+@keyframes floater { 0% { opacity: 0; transform: translate(-50%, 6px); } 15% { opacity: 1; transform: translate(-50%, 2px); } 70% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -4px); } }
+
+.levelup {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: radial-gradient(circle at 50% 40%, rgba(60, 45, 10, 0.97), rgba(3, 8, 10, 0.98) 70%);
+  animation: fade-in 0.3s both;
+  overflow: hidden;
+}
+.levelup.closing { animation: fade-out 0.22s both; }
+@keyframes fade-out { to { opacity: 0; } }
+.levelup-rays {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 900px;
+  height: 900px;
+  margin: -450px 0 0 -450px;
+  background: repeating-conic-gradient(rgba(232, 190, 90, 0.12) 0 8deg, transparent 8deg 22deg);
+  -webkit-mask: radial-gradient(circle, #000 0%, transparent 60%);
+  mask: radial-gradient(circle, #000 0%, transparent 60%);
+  animation: rays 24s linear infinite;
+}
+@keyframes rays { to { transform: rotate(360deg); } }
+.levelup-panel { position: relative; width: min(360px, 100%); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.levelup-kicker { margin: 0; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.78rem; font-weight: 700; animation: fade-in 0.4s 0.15s both; }
+.levelup-level {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0 6px;
+  background: radial-gradient(circle at 35% 30%, #fff3c8, #e8be5a 45%, #8a6418 100%);
+  color: #2a1d05;
+  box-shadow: 0 0 60px rgba(232, 190, 90, 0.55), inset 0 -8px 20px rgba(0, 0, 0, 0.25);
+  animation: level-pop 0.7s cubic-bezier(0.2, 1.6, 0.4, 1) 0.1s both;
+}
+.levelup-level span { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.levelup-level strong { font: 400 4rem/1 var(--serif); }
+@keyframes level-pop { from { transform: scale(0.3) rotate(-20deg); opacity: 0; } }
+.levelup-rank { margin: 0; font: 400 1.35rem/1.2 var(--serif); animation: fade-in 0.4s 0.4s both; }
+.levelup-rank b { color: var(--gold); font-weight: 400; }
+.levelup-opens { margin: 0; color: var(--ink-soft); font-size: 0.88rem; max-width: 30ch; animation: fade-in 0.4s 0.5s both; }
+.levelup-opens em, .levelup-next em { font-style: normal; opacity: 0.7; }
+.levelup-rewards { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 0; margin: 14px 0 6px; }
+.levelup-rewards li { padding: 8px 14px; border-radius: 999px; background: rgba(232, 241, 240, 0.08); border: 1px solid var(--line); font-size: 0.9rem; animation: reward-in 0.45s cubic-bezier(0.2, 1.5, 0.4, 1) both; }
+.levelup-rewards li:nth-child(1) { animation-delay: 0.6s; }
+.levelup-rewards li:nth-child(2) { animation-delay: 0.75s; }
+.levelup-rewards li:nth-child(3) { animation-delay: 0.9s; }
+.levelup-rewards li.gold { background: rgba(232, 190, 90, 0.18); border-color: rgba(232, 190, 90, 0.6); color: var(--gold); }
+@keyframes reward-in { from { opacity: 0; transform: translateY(10px) scale(0.8); } }
+.levelup-next { margin: 2px 0 0; color: var(--ink-soft); font-size: 0.82rem; animation: fade-in 0.4s 1s both; }
+.levelup-button { margin-top: 18px; border: 0; border-radius: 999px; padding: 13px 34px; font-weight: 700; background: var(--gold); color: #1b1408; box-shadow: 0 10px 30px rgba(232, 190, 90, 0.35); animation: fade-in 0.4s 1.1s both; }
+
+.progress-kicker { margin: 0; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.75rem; font-weight: 700; }
+.xp-bar { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; margin: 12px 0 6px; }
+.xp-bar i { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, #b88a2a, var(--gold), #fff0b8); }
+.xp-text { font-size: 0.85rem; }
+.progress-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.progress-stats div { padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); display: flex; flex-direction: column; }
+.progress-stats b { font: 400 1.25rem var(--serif); }
+.progress-stats span { color: var(--ink-soft); font-size: 0.78rem; }
+.rank-road, .milestones, .rep-list { list-style: none; padding: 0; margin: 0; }
+.rank-road li, .milestones li { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.rank-road small { display: block; color: var(--ink-soft); font-size: 0.78rem; }
+.rank-level { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 0.78rem; font-weight: 700; border: 1px solid var(--line); color: var(--ink-soft); }
+.rank-road li.done .rank-level, .milestones li.done .rank-level { background: rgba(232, 190, 90, 0.18); border-color: rgba(232, 190, 90, 0.6); color: var(--gold); }
+.rank-road li.current .rank-level { background: var(--gold); border-color: var(--gold); color: #1b1408; box-shadow: 0 0 14px rgba(232, 190, 90, 0.6); }
+.rank-road li.current b { color: var(--gold); }
+.rank-road li.locked, .milestones li:not(.done) { color: var(--ink-soft); }
+.milestones li span:nth-child(2) { flex: 1; }
+.milestones em { font-style: normal; font-size: 0.75rem; color: var(--ink-soft); }
+.milestones li.done em { color: var(--gold); }
+.rep-list li { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+.rep-list b { color: var(--gold); white-space: nowrap; }

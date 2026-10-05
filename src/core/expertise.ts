@@ -2,6 +2,7 @@
 // qui augmente la valeur du bijou. Une seule expertise par bijou.
 import type { Tuning } from '../tuning';
 import { jewelRarity, roundValue } from './jewels';
+import { gainReputation, reputationFor } from './levels';
 import type { JewelCard, PlayerState } from './player';
 import { seededRng } from './rng';
 
@@ -87,5 +88,6 @@ export function recordExpertise(state: PlayerState, serial: number, found: numbe
   if (!card || !canExpertise(card)) return state;
   const { grade, bonus } = gradeExpertise(found, total, tuning);
   const updated: JewelCard = { ...card, value: roundValue(card.value * (1 + bonus)), expertise: { grade, found, total, bonus, at: now } };
-  return { ...state, jewelCards: state.jewelCards.map((c) => (c.serial === serial ? updated : c)) };
+  const next = { ...state, jewelCards: state.jewelCards.map((c) => (c.serial === serial ? updated : c)) };
+  return gainReputation(next, reputationFor({ kind: 'expertise', certified: bonus > 0 }, tuning), tuning);
 }

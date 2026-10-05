@@ -4,6 +4,27 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (15) · Jules · Claude Code · branche `jules/niveaux`
+
+Niveaux, réputation et rangs (cahier §8-9), pour sentir l'évolution dans la bêta.
+
+**Fait**
+- `src/core/levels.ts` (pur, testé dans `tests/levels.test.ts`) : courbe de niveau, rangs et déblocages du cahier, récompenses, barème de réputation, `gainReputation`. `PlayerState.reputation` et `rewardedLevel`. `pearlTier` est passé dans `catalog.ts` (réexporté par `dust.ts`).
+- La réputation est donnée dans le Core : `recordOpening`, `recordEcrin`, `recordExpertise`. Les vues n'ont rien à calculer.
+- Barre du haut : anneau de niveau qui se remplit, « +N » doré à chaque gain ; huîtres au-delà du maximum en doré.
+- `src/features/progress/` : célébration de montée de niveau (rayons, médaille, récompenses, prochain déblocage et rang suivant) et fiche « Ma progression ». La célébration attend un moment calme (`ctx.showLevelUps()` quand une carte se ferme, en fin d'expertise, en changeant d'onglet) et jamais pendant le tutoriel : à la fin du tutoriel, on arrive niveau 3 avec 6 huîtres, 30 ✦ et un écrin en plus.
+- Réglages : 3 curseurs (réputation de base et croissance par niveau, écrin tous les N niveaux).
+- Tests existants : ceux qui comptent huîtres et écrins coupent les montées de niveau (`levelBaseXp: 1e9`).
+
+**À décider avec Mathys**
+- Barème de réputation, courbe et récompenses.
+- Rien ne se débloque vraiment aux rangs pour l'instant (atelier, commandes… sont « à venir ») : il faudra brancher les vrais déblocages au fur et à mesure.
+
+**Fragile**
+- Les joueurs existants repartent du niveau 1 (pas de rattrapage de la réputation passée).
+
+---
+
 ## 2026-10-05 (14) · Jules · Claude Code · branche `jules/navigation`
 
 Retour de Jules : l'UI/UX des onglets ne montrait pas d'évolution dans le jeu.

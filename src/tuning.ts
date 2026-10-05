@@ -85,6 +85,28 @@ export interface Tuning {
   dustBuyMultiplier: number;
   /** Prix d'un écrin Velours en poussière d'or. */
   dustEcrinPrice: number;
+  /** Réputation (expérience, cahier §9) : par huître ouverte, + par niveau de rareté de la perle. */
+  repOyster: number;
+  repPerTier: number;
+  /** Bonus de lustre S / A (perle non fêlée). */
+  repLustreS: number;
+  repLustreA: number;
+  /** Première perle d'une sorte, ou premier bijou d'une rareté. */
+  repDiscovery: number;
+  /** Par écrin ouvert, et bonus d'éclat parfait. */
+  repEcrin: number;
+  repPerfect: number;
+  /** Expertise avec certificat (Bon ou Excellent). */
+  repExpertise: number;
+  /** Réputation pour passer du niveau n au niveau n+1 : base + croissance × n^puissance. */
+  levelBaseXp: number;
+  levelGrowthXp: number;
+  levelGrowthPower: number;
+  maxLevel: number;
+  /** Récompenses de chaque niveau : huîtres (peuvent dépasser le maximum), poussière d'or ; un écrin tous les N niveaux. */
+  levelRewardOysters: number;
+  levelRewardDust: number;
+  levelEcrinEvery: number;
 }
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
@@ -135,6 +157,21 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   dustTier5: 120,
   dustBuyMultiplier: 5,
   dustEcrinPrice: 60,
+  repOyster: 10,
+  repPerTier: 5,
+  repLustreS: 10,
+  repLustreA: 5,
+  repDiscovery: 30,
+  repEcrin: 25,
+  repPerfect: 15,
+  repExpertise: 20,
+  levelBaseXp: 60,
+  levelGrowthXp: 15,
+  levelGrowthPower: 1.5,
+  maxLevel: 100,
+  levelRewardOysters: 3,
+  levelRewardDust: 15,
+  levelEcrinEvery: 3,
 };
 
 /** Description des paramètres exposés dans l'écran Réglages. */
@@ -174,6 +211,9 @@ export const TUNING_FIELDS: readonly TuningField[] = [
   { key: 'oystersPerEcrin', label: 'Huîtres pour gagner un écrin', unit: '', min: 1, max: 30, step: 1 },
   { key: 'dustEcrinPrice', label: 'Poussière d’or : prix d’un écrin', unit: '✦', min: 5, max: 300, step: 5 },
   { key: 'dustBuyMultiplier', label: 'Poussière d’or : prix d’une pièce', unit: '× fonte', min: 1, max: 20, step: 1 },
+  { key: 'levelBaseXp', label: 'Niveaux : réputation de base par niveau', unit: 'XP', min: 10, max: 500, step: 10 },
+  { key: 'levelGrowthXp', label: 'Niveaux : croissance par niveau', unit: 'XP', min: 0, max: 100, step: 1 },
+  { key: 'levelEcrinEvery', label: 'Niveaux : un écrin tous les', unit: 'niv.', min: 1, max: 10, step: 1 },
   { key: 'lustreMaxVariationB', label: 'Lustre B : irrégularité max', unit: '', min: 0.05, max: 2, step: 0.05 },
 ];
 

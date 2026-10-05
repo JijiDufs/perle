@@ -141,6 +141,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
   overlay.addEventListener('pointerup', () => {
     track('card_dismissed', { jewel: rarity.id });
     nextEcrin();
+    ctx.showLevelUps();
   });
 
   function handle(events: GlintEvent[], time: number): void {

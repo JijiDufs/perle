@@ -2,6 +2,8 @@
 // Probabilités : cahier. Couleurs, tailles, valeurs et textes : repris du prototype Duo
 // (docs/reference/prototype-duo.html), provisoires (AGENTS.md §6).
 
+import { RARITY_SYMBOLS } from './jewels';
+
 export type PearlId = 'empty' | 'white' | 'rose' | 'baroque' | 'black' | 'golden' | 'giant' | 'cursed';
 
 export interface PearlType {
@@ -48,4 +50,9 @@ export function pearlById(id: PearlId): PearlType {
   const pearl = PEARLS.find((p) => p.id === id);
   if (!pearl) throw new Error(`Perle inconnue : ${id}`);
   return pearl;
+}
+
+/** Niveau de rareté d'une perle (0 = —, 5 = ★★), lu sur son symbole, comme pour les bijoux. */
+export function pearlTier(id: PearlId): number {
+  return Math.max(0, RARITY_SYMBOLS.indexOf(pearlById(id).rarity));
 }

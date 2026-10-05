@@ -53,13 +53,14 @@ describe('joueur', () => {
 
   it('offre les huîtres du tutoriel, puis consomme le stock et s’arrête quand il est vide', () => {
     const rng = seededRng(2);
-    const t = { ...DEFAULT_TUNING, oysterStockMax: 3, oysterRechargeMinutes: 20 };
+    // Sans montée de niveau : ses récompenses ajouteraient des huîtres.
+    const t = { ...DEFAULT_TUNING, oysterStockMax: 3, oysterRechargeMinutes: 20, levelBaseXp: 1e9 };
     let state: PlayerState = { ...INITIAL_PLAYER_STATE, stock: { count: 3, lastRefillAt: 0 } };
     let opened = 0;
     for (let i = 0; i < 20; i++) {
       state = ensureOyster(state, rng, t, 0);
       if (!state.currentOyster) break;
-      state = recordOpening(state, { lustre: 'A', cracked: false }, 0).state;
+      state = recordOpening(state, { lustre: 'A', cracked: false }, 0, t).state;
       opened++;
     }
     expect(opened).toBe(TUTORIAL_PEARLS.length + 3);

@@ -14,4 +14,6 @@ export interface AppContext {
   setSettings(settings: Settings): void;
   /** Change d'écran. */
   goTo(screen: 'oyster' | 'ecrin' | 'collection' | 'tuning'): void;
+  /** Moment calme (carte refermée) : montre les montées de niveau en attente. */
+  showLevelUps(): void;
 }
