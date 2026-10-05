@@ -2,7 +2,10 @@
 // du haut et se relève dans le sens du pouce. Chercher l'angle d'éclat, puis tenir : éclat parfait.
 // Aucune règle de jeu ici (AGENTS.md, invariant 7) : tout vient de GlintEngine et de player.ts.
 import { smoothstep } from '../../art/color';
-import { renderEcrinArt, roundRectPath, VELVETS, type EcrinArt } from '../../art/ecrin';
+import { drawTapered, renderEcrinArt, taperPath, VELVETS, type EcrinArt } from '../../art/ecrin';
+
+/** Perspective du coffret : le fond est plus étroit que l'avant (part de la largeur). */
+const TAPER = 0.07;
 import { drawJewel, drawSparkles, drawStar } from '../../art/jewel';
 import { drawGlow } from '../../art/pearl';
 import { buyEcrin } from '../../core/dust';
@@ -309,8 +312,9 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     const theta = (angle * Math.PI) / 180;
     handle(engine.tick(now), now);
 
-    // Base et bijou.
-    c.drawImage(art!.base, bx, hy, bw, bh);
+    // Base, sa tranche avant (profondeur du coffret), et bijou.
+    c.drawImage(art!.baseFront, bx, hy + bh, bw, art!.baseFrontHeight);
+    drawTapered(c, art!.base, bx, hy, bw, bh, TAPER);
     const jx = bx + bw / 2;
     const jy = hy + bh * 0.54;
     if (shownJewel) drawJewel(c, jx, jy, (bw / 560) * 1.15, shownJewel);
@@ -319,7 +323,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     const dim = 1 - smoothstep(4, 140, angle);
     if (dim > 0.001) {
       c.save();
-      roundRectPath(c, bx, hy, bw, bh, Math.min(bw, bh) * 0.08);
+      taperPath(c, bx, hy, bw, bh, TAPER, Math.min(bw, bh) * 0.08);
       c.fillStyle = `rgba(0,0,0,${dim * 0.94})`;
       c.fill();
       c.restore();
@@ -352,9 +356,11 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     // Couvercle : extérieur tant qu'il est rabattu, satin intérieur une fois relevé.
     const lift = Math.cos(theta);
     if (lift > 0.002) {
-      c.drawImage(art!.lidOutside, bx, hy, bw, bh * lift);
+      // Le couvercle se redresse : il perd sa perspective à mesure qu'il se lève.
+      drawTapered(c, art!.lidOutside, bx, hy, bw, bh * lift, TAPER * lift);
       c.fillStyle = `rgba(0,0,0,${Math.sin(theta) * 0.35})`;
-      c.fillRect(bx, hy, bw, bh * lift);
+      taperPath(c, bx, hy, bw, bh * lift, TAPER * lift, Math.min(bw, bh) * 0.08 * lift);
+      c.fill();
       // Un éclat filtre sous le couvercle des pièces ★ et plus.
       if (rarity.tier >= 4 && engine.phase === 'closed') {
         const p = ((t * 0.5) % 1.6) - 0.3;
@@ -364,8 +370,11 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
         g.addColorStop(at(p), 'rgba(255,240,180,.55)');
         g.addColorStop(at(p + 0.1), 'rgba(255,240,180,0)');
         c.fillStyle = g;
-        c.fillRect(bx, hy, bw, bh * lift);
+        taperPath(c, bx, hy, bw, bh * lift, TAPER * lift, Math.min(bw, bh) * 0.08 * lift);
+        c.fill();
       }
+      // La tranche du couvercle (et son fermoir) suit le bord avant qui se soulève.
+      c.drawImage(art!.lidFront, bx, hy + bh * lift, bw, art!.lidFrontHeight * lift);
       const leak = smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle));
       drawGlow(c, jx, hy + bh * lift, bw * 0.6, rarity.glow ?? '#fff1d6', leak * 0.6);
     } else if (lift < -0.002) {
