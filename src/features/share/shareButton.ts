@@ -1,7 +1,7 @@
 import { serialLabel } from '../../art/cardStyle';
 import { renderJewelStoryImage, renderStoryImage } from '../../art/storyImage';
 import { pearlById } from '../../core/catalog';
-import { jewelRarity } from '../../core/jewels';
+import { jewelRarity, withVariant } from '../../core/jewels';
 import type { JewelCard, PearlCard } from '../../core/player';
 import { track, type TrackedEvent } from '../../platform/analytics';
 import { prepareShare, shareFile } from '../../platform/share';
@@ -35,11 +35,12 @@ export function pearlShareButton(card: PearlCard): HTMLButtonElement {
 
 export function jewelShareButton(card: JewelCard): HTMLButtonElement {
   const rarity = jewelRarity(card.jewel.rarityId);
-  const perfect = card.perfect ? ', éclat parfait' : '';
+  const name = withVariant(card.jewel, card.variant).name;
+  const perfect = card.variant ? ', variante rare' : card.perfect ? ', éclat parfait' : '';
   return shareButton(
     () => renderJewelStoryImage(card),
     `perle-bijou-${card.jewel.rarityId}-${card.serial}.png`,
-    `J'ai trouvé : ${card.jewel.name} ${rarity.rarity}${perfect} (${serialLabel(card.serial)}) dans un écrin Perle.`,
-    { kind: 'jewel', jewel: card.jewel.rarityId, perfect: card.perfect },
+    `J'ai trouvé : ${name} ${rarity.rarity}${perfect} (${serialLabel(card.serial)}) dans un écrin Perle.`,
+    { kind: 'jewel', jewel: card.jewel.rarityId, perfect: card.perfect, variant: card.variant ?? 'aucune' },
   );
 }

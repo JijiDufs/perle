@@ -2,7 +2,7 @@ import { DEFAULT_TUNING, type Tuning } from '../tuning';
 import { pearlById, type PearlId } from './catalog';
 import { INITIAL_DRAW_STATE, type DrawState } from './draw';
 import { rollSweetAngle } from './glint';
-import { INITIAL_JEWEL_DRAW, roundValue, rollJewel, type Jewel, type JewelDrawState } from './jewels';
+import { INITIAL_JEWEL_DRAW, roundValue, rollJewel, rollRareVariant, type Jewel, type JewelDrawState, type JewelVariantId } from './jewels';
 import type { Lustre } from './lustre';
 import { createOyster, oysterWith, type Oyster } from './oyster';
 import type { Rng } from './rng';
@@ -25,9 +25,11 @@ export interface PearlCard {
 export interface JewelCard {
   serial: number;
   jewel: Jewel;
-  /** Estimation finale (×1,5 si éclat parfait). */
+  /** Estimation finale (×1,5 si éclat parfait, ×2 si variante rare). */
   value: number;
   perfect: boolean;
+  /** Variante rare révélée par l'éclat parfait (absente des anciennes sauvegardes). */
+  variant?: JewelVariantId | null;
   foundAt: number;
 }
 
@@ -35,6 +37,8 @@ export interface JewelCard {
 export interface PendingEcrin {
   jewel: Jewel;
   sweetAngle: number;
+  /** Variante obtenue SI l'éclat est parfait ; tirée à l'ouverture pour qu'un rechargement ne la relance pas. */
+  variantIfPerfect?: JewelVariantId | null;
 }
 
 export interface PlayerState {
@@ -143,15 +147,18 @@ export function recordOpening(
 export function ensureEcrin(state: PlayerState, rng: Rng, tuning: Tuning): PlayerState {
   if (state.currentEcrin || state.ecrins <= 0) return state;
   const { jewel, state: jewelDraw } = rollJewel(state.jewelDraw, rng, tuning);
-  return { ...state, ecrins: state.ecrins - 1, jewelDraw, currentEcrin: { jewel, sweetAngle: rollSweetAngle(rng, tuning) } };
+  const currentEcrin: PendingEcrin = { jewel, sweetAngle: rollSweetAngle(rng, tuning), variantIfPerfect: rollRareVariant(rng, tuning) };
+  return { ...state, ecrins: state.ecrins - 1, jewelDraw, currentEcrin };
 }
 
 /** Enregistre l'écrin ouvert et crée sa carte. */
 export function recordEcrin(state: PlayerState, result: { perfect: boolean }, now: number, tuning: Tuning): { state: PlayerState; card: JewelCard } {
   const pending = state.currentEcrin;
   if (!pending) throw new Error('Aucun écrin en cours');
-  const value = roundValue(pending.jewel.value * (result.perfect ? tuning.glintPerfectMultiplier : 1));
-  const card: JewelCard = { serial: state.nextSerial, jewel: pending.jewel, value, perfect: result.perfect, foundAt: now };
+  const variant = result.perfect ? (pending.variantIfPerfect ?? null) : null;
+  const multiplier = variant ? tuning.glintRareVariantMultiplier : result.perfect ? tuning.glintPerfectMultiplier : 1;
+  const value = roundValue(pending.jewel.value * multiplier);
+  const card: JewelCard = { serial: state.nextSerial, jewel: pending.jewel, value, perfect: result.perfect, variant, foundAt: now };
   return {
     state: { ...state, currentEcrin: null, nextSerial: state.nextSerial + 1, jewelCards: [...state.jewelCards, card] },
     card,

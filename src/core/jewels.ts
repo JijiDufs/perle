@@ -138,3 +138,50 @@ export function rollJewel(state: JewelDrawState, rng: Rng, tuning: Tuning): { je
     state: { sinceStarOrBetter: isStarOrBetter(rarity) ? 0 : state.sinceStarOrBetter + 1 },
   };
 }
+
+/** Variantes rares révélées par un éclat parfait (cahier §7). Couleurs : provisoires (AGENTS.md §6). */
+export type JewelVariantId = 'aurore' | 'nuit' | 'givre';
+
+export interface JewelVariant {
+  id: JewelVariantId;
+  label: string;
+  metal: string;
+  metalName: string;
+  gem: string;
+  glow: string;
+  /** Cadre de la carte [haut-gauche, bas-droite] et texte clair ou foncé. */
+  frame: { colors: [string, string]; dark: boolean };
+  flavor: string;
+}
+
+export const JEWEL_VARIANTS: readonly JewelVariant[] = [
+  { id: 'aurore', label: 'Aurore', metal: '#f1b9dc', metalName: 'Or aurore', gem: '#ffc4ec', glow: '#ff9ad5', frame: { colors: ['#ffd1e8', '#9af0ff'], dark: false }, flavor: 'Elle a gardé la couleur du premier rayon du matin.' },
+  { id: 'nuit', label: 'Nuit', metal: '#3a3d5c', metalName: 'Or noir', gem: '#7f8cff', glow: '#7f8cff', frame: { colors: ['#3b3f6b', '#0b0c1a'], dark: true }, flavor: 'Taillée à minuit, elle ne brille que pour ceux qui savent regarder.' },
+  { id: 'givre', label: 'Givre', metal: '#dff3ff', metalName: 'Platine givré', gem: '#bff3ff', glow: '#aef4ff', frame: { colors: ['#f2fbff', '#9ad7f0'], dark: false }, flavor: 'Froide au toucher, même en plein été.' },
+];
+
+export function jewelVariant(id: JewelVariantId): JewelVariant {
+  const found = JEWEL_VARIANTS.find((v) => v.id === id);
+  if (!found) throw new Error(`Variante inconnue : ${id}`);
+  return found;
+}
+
+/** Tire la variante qu'aurait l'écrin en cas d'éclat parfait (null : pas de variante). */
+export function rollRareVariant(rng: Rng, tuning: Tuning): JewelVariantId | null {
+  if (rng() >= tuning.glintRareVariantChance) return null;
+  return pick(JEWEL_VARIANTS, rng).id;
+}
+
+/** Le bijou transformé par sa variante : métal, pierre, nom et texte. */
+export function withVariant(jewel: Jewel, variantId: JewelVariantId | null | undefined): Jewel {
+  if (!variantId) return jewel;
+  const variant = jewelVariant(variantId);
+  return {
+    ...jewel,
+    name: `${jewel.name} · ${variant.label}`,
+    metal: variant.metal,
+    metalName: variant.metalName,
+    gem: jewel.gem ? variant.gem : null,
+    flavor: variant.flavor,
+  };
+}

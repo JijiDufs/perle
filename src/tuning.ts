@@ -53,6 +53,10 @@ export interface Tuning {
   glintMaxVelocity: number;
   /** Multiplicateur de valeur d'un éclat parfait. Cahier §7 : ×1,5. */
   glintPerfectMultiplier: number;
+  /** Chance (0…1) qu'un éclat parfait révèle une variante rare (cahier §7 ; valeur provisoire, AGENTS.md §6). */
+  glintRareVariantChance: number;
+  /** Multiplicateur de valeur d'une variante rare (remplace celui de l'éclat parfait). */
+  glintRareVariantMultiplier: number;
   /** Écrins d'affilée sans bijou ★ ou mieux avant que le suivant soit garanti. Cahier §7. */
   ecrinPityThreshold: number;
   /** Huîtres ouvertes pour gagner un écrin (bêta, AGENTS.md §6). */
@@ -88,6 +92,8 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   glintHoldMs: 900,
   glintMaxVelocity: 30,
   glintPerfectMultiplier: 1.5,
+  glintRareVariantChance: 0.12,
+  glintRareVariantMultiplier: 2,
   ecrinPityThreshold: 20,
   oystersPerEcrin: 8,
 };

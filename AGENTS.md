@@ -31,7 +31,7 @@ Objectif : valider la **sensation** du geste. Le rendu reprend la direction visu
 - Écran de réglages (debug) pour ajuster en direct tous les paramètres du geste.
 - Premières minutes (cahier §15) : 4 huîtres écrites à l'avance, bulles d'accompagnement, main fantôme qui montre le geste.
 - Partage d'une carte (perle ou bijou) en image story 1080×1920 (feuille de partage iOS, ou téléchargement).
-- **Écrin (V1.1, cahier §7)** : même geste que l'huître, sans fêlure ; angle d'éclat caché (55°–125°), le tenir immobile 0,9 s = éclat parfait (valeur ×1,5, carte holo). 10 raretés de bijoux du toc à la légende, garantie ★ après 20 écrins, probabilités affichées avant ouverture. Premier écrin offert à la fin du tutoriel (guidé), puis 1 toutes les 8 huîtres. Collection en deux volets : Perles / Bijoux.
+- **Écrin (V1.1, cahier §7)** : même geste que l'huître, sans fêlure ; angle d'éclat caché (55°–125°), le tenir immobile 0,9 s = éclat parfait (valeur ×1,5, carte holo), avec 12 % de chance de variante rare (Aurore, Nuit, Givre : valeur ×2, le bijou se transforme à l'écran). 10 raretés de bijoux du toc à la légende, garantie ★ après 20 écrins, probabilités affichées avant ouverture. Premier écrin offert à la fin du tutoriel (guidé), puis 1 toutes les 8 huîtres. Collection en deux volets : Perles / Bijoux.
 - Stock d'huîtres : 10 maximum, 1 qui revient toutes les 20 min (bêta) ; écran « La marée remonte… » avec compte à rebours quand il est vide.
 - Icône provisoire (huître ouverte + perle), installation sur l'écran d'accueil (aide affichée sur iPhone après le tutoriel), mode hors ligne.
 
@@ -104,6 +104,7 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 | Écrin : plage de l'angle d'éclat | 55° – 125° | prototype Duo |
 | Écrin : tolérance / temps à tenir / vitesse « immobile » | 6° / 900 ms / 30 °/s | prototype Duo (cahier §7 : « une seconde ») |
 | Écrin : éclat parfait | valeur ×1,5 | cahier §7 |
+| Écrin : variante rare sur éclat parfait | 12 % de chance, valeur ×2 | proposition (§6) |
 | Garantie bijou ★ ou mieux | 20 écrins | cahier §7 |
 | Huîtres pour gagner un écrin | 8 | bêta (§6) |
 
@@ -154,7 +155,8 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-05 | Écrins Velours gagnés : le 1er à la fin du tutoriel, puis 1 toutes les **8 huîtres** | Le cahier les lie aux niveaux, commandes et coffre quotidien, absents de la V1. 8 huîtres ≈ une session, soit « 5 à 10 huîtres, 1 écrin » (cahier §4) ; le 1er écrin guidé suit la chronologie du cahier §15 |
 | 2026-10-05 | Raretés, probabilités, noms, métaux, valeurs et textes des bijoux repris du prototype Duo ; estimations en euros avec la mention « Estimation fictive » | Cahier §17 |
 | 2026-10-05 | Les bijoux se classent par niveau (toc 0 … légende 5), pas par probabilité | Le toc (14 %) est plus rare que l'argent (20 %) mais ne vaut rien |
-| 2026-10-05 | Pas de fausse demande ni de variante rare d'éclat parfait pour l'instant | Fausse demande = app compagnon séparée (cahier §12) ; variantes rares à concevoir |
+| 2026-10-05 | Pas de fausse demande pour l'instant | App compagnon séparée (cahier §12) |
+| 2026-10-05 | **Variante rare** (cahier §7, non détaillée) = 3 variantes cosmétiques Aurore / Nuit / Givre (métal, pierre, cadre, texte), 12 % de chance sur un éclat parfait, valeur ×2 au lieu de ×1,5. Tirée à l'ouverture de l'écrin et sauvegardée ; affichée dans « Probabilités ». **Provisoire, à valider avec Mathys** | Un moment rare et visible (le bijou se transforme) qui récompense la précision, sans toucher aux probabilités des raretés |
 | 2026-10-05 | Pas de mise en ligne pour l'instant : tout est construit et testé en local | Choix de Jules |
 
 ## 7. Limites connues du prototype web

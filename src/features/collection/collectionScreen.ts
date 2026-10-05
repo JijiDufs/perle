@@ -3,7 +3,7 @@ import { jewelCanvas } from '../../art/jewel';
 import { pearlCanvas } from '../../art/pearl';
 import { PEARLS } from '../../core/catalog';
 import { jewelRarityRank, rarityRank, sortCards, sortJewelCards, type CardSort } from '../../core/collection';
-import { JEWEL_RARITIES } from '../../core/jewels';
+import { JEWEL_RARITIES, jewelVariant, withVariant } from '../../core/jewels';
 import type { JewelCard, PearlCard } from '../../core/player';
 import { track } from '../../platform/analytics';
 import type { AppContext } from '../context';
@@ -55,7 +55,10 @@ function jewelShelf(ctx: AppContext): Shelf<JewelCard> {
   const ofRarity = (id: string) => cards.filter((c) => c.jewel.rarityId === id);
   return {
     title: 'Les bijoux',
-    subtitle: `${rarities.filter((j) => ofRarity(j.id).length > 0).length} sur ${rarities.length} raretés découvertes · ${cards.length} écrins ouverts`,
+    subtitle: `${rarities.filter((j) => ofRarity(j.id).length > 0).length} sur ${rarities.length} raretés découvertes · ${cards.length} écrins ouverts${(() => {
+      const variants = cards.filter((c) => c.variant).length;
+      return variants ? ` · ${variants} variante${variants > 1 ? 's' : ''} rare${variants > 1 ? 's' : ''}` : '';
+    })()}`,
     emptyText: 'Aucun bijou pour l’instant. Ouvre un écrin dans l’onglet Écrin.',
     entries: rarities.map((j) => ({
       id: j.id,
@@ -63,7 +66,10 @@ function jewelShelf(ctx: AppContext): Shelf<JewelCard> {
       rarity: j.rarity,
       count: ofRarity(j.id).length,
       // La plus belle pièce obtenue de cette rareté (cahier §10).
-      art: () => jewelCanvas([...ofRarity(j.id)].sort((a, b) => b.value - a.value)[0].jewel, j.glow, 52),
+      art: () => {
+        const best = [...ofRarity(j.id)].sort((a, b) => b.value - a.value)[0];
+        return jewelCanvas(withVariant(best.jewel, best.variant), best.variant ? jewelVariant(best.variant).glow : j.glow, 52);
+      },
     })),
     cards,
     entryOf: (card) => card.jewel.rarityId,

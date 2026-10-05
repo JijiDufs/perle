@@ -6,7 +6,7 @@ import { renderEcrinArt, roundRectPath, VELVETS, type EcrinArt } from '../../art
 import { drawJewel, drawSparkles, drawStar } from '../../art/jewel';
 import { drawGlow } from '../../art/pearl';
 import { GlintEngine, type GlintEvent } from '../../core/glint';
-import { JEWEL_RARITIES, jewelRarity, type JewelRarity } from '../../core/jewels';
+import { JEWEL_RARITIES, jewelRarity, jewelVariant, withVariant, type Jewel, type JewelRarity, type JewelVariant } from '../../core/jewels';
 import { ensureEcrin, recordEcrin, type JewelCard } from '../../core/player';
 import { isInTutorial } from '../../core/tutorial';
 import { ThumbInput } from '../../input/thumb';
@@ -73,6 +73,11 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
   let revealStartedAt = 0;
   let suspenseMs = 0;
   let perfectAt = 0;
+  /** Bijou affiché : gardé localement car l'écrin en cours est vidé dès l'enregistrement de la carte. */
+  let shownJewel: Jewel | null = null;
+  /** Variante promise par cet écrin en cas d'éclat parfait, et si elle vient d'apparaître. */
+  let pendingVariant: JewelVariant | null = null;
+  let variantRevealed = false;
   let frame = 0;
   const timers: number[] = [];
 
@@ -117,7 +122,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     <div class="odds-panel">
       <h2>Ce que contient un écrin</h2>
       <table>${JEWEL_RARITIES.map((j) => `<tr><td>${j.label}</td><td>${j.rarity}</td><td>${(j.probability * 100).toLocaleString('fr-FR')} %</td></tr>`).join('')}</table>
-      <p class="muted">Un bijou ★ ou mieux est garanti après ${ctx.tuning.ecrinPityThreshold} écrins sans. Éclat parfait : valeur ×${ctx.tuning.glintPerfectMultiplier.toLocaleString('fr-FR')}.</p>
+      <p class="muted">Un bijou ★ ou mieux est garanti après ${ctx.tuning.ecrinPityThreshold} écrins sans. Éclat parfait : valeur ×${ctx.tuning.glintPerfectMultiplier.toLocaleString('fr-FR')}, et ${Math.round(ctx.tuning.glintRareVariantChance * 100)} % de chance d’une variante rare (Aurore, Nuit ou Givre) : valeur ×${ctx.tuning.glintRareVariantMultiplier}.</p>
       <p class="tap-hint">Touche pour fermer</p>
     </div>`;
   overlay.addEventListener('pointerup', () => {
@@ -136,6 +141,14 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
         hapticBurst(2, 60);
         ding();
         track('ecrin_perfect', { jewel: rarity.id, msSinceStart: Math.round(time - gestureStart) });
+        if (pendingVariant && shownJewel) {
+          // Le bijou se transforme sous les yeux du joueur.
+          variantRevealed = true;
+          shownJewel = withVariant(shownJewel, pendingVariant.id);
+          hapticBurst(4, 70);
+          timers.push(window.setTimeout(ding, 180), window.setTimeout(ding, 360));
+          track('ecrin_variant', { jewel: rarity.id, variant: pendingVariant.id });
+        }
       } else if (event.type === 'reveal') {
         reveal(event.perfect, time);
       }
@@ -146,8 +159,8 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     busy = true;
     const { state, card } = recordEcrin(ctx.player, { perfect }, Date.now(), ctx.tuning);
     ctx.setPlayer(state);
-    const tier = REVEAL_TIER[rarity.tier];
-    track('ecrin_reveal', { jewel: rarity.id, type: card.jewel.type, perfect, durationMs: Math.round(time - gestureStart), first: firstEcrin });
+    const tier = variantRevealed ? 3 : REVEAL_TIER[rarity.tier];
+    track('ecrin_reveal', { jewel: rarity.id, type: card.jewel.type, perfect, variant: card.variant ?? 'aucune', durationMs: Math.round(time - gestureStart), first: firstEcrin });
     revealStartedAt = performance.now();
     suspenseMs = revealSuspenseMs(ctx.tuning, tier);
     hapticBurst(tier + 1, 140);
@@ -191,6 +204,9 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     }
     empty.hidden = true;
     rarity = jewelRarity(pending.jewel.rarityId);
+    shownJewel = pending.jewel;
+    pendingVariant = pending.variantIfPerfect ? jewelVariant(pending.variantIfPerfect) : null;
+    variantRevealed = false;
     velvet = VELVETS[Math.floor(Math.random() * VELVETS.length)];
     artKey = '';
     engine = new GlintEngine(ctx.tuning, pending.sweetAngle);
@@ -270,9 +286,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     c.drawImage(art!.base, bx, hy, bw, bh);
     const jx = bx + bw / 2;
     const jy = hy + bh * 0.54;
-    const pending = ctx.player.currentEcrin;
-    const jewel = pending?.jewel;
-    if (jewel) drawJewel(c, jx, jy, (bw / 560) * 1.15, jewel);
+    if (shownJewel) drawJewel(c, jx, jy, (bw / 560) * 1.15, shownJewel);
 
     // Ombre tant que l'écrin est peu ouvert.
     const dim = 1 - smoothstep(4, 140, angle);
@@ -288,16 +302,23 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     const sparkle = engine.perfect ? 1 : engine.closeness;
     const open = smoothstep(1, 25, angle);
     const suspense = busy ? smoothstep(0, Math.max(suspenseMs, 1), now - revealStartedAt) : 0;
-    if (rarity.glow) {
-      drawGlow(c, jx, jy, bw * (0.45 + rarity.tier * 0.06), rarity.glow, open * (0.12 + 0.45 * sparkle) + suspense * 0.3);
-      drawSparkles(c, jx, jy, rarity.tier, rarity.glow, t, open * (0.15 + 0.85 * sparkle) + suspense * 0.5, bw / 600);
+    const glow = variantRevealed && pendingVariant ? pendingVariant.glow : rarity.glow;
+    const sparkleTier = variantRevealed ? Math.max(rarity.tier, 5) : rarity.tier;
+    if (glow) {
+      drawGlow(c, jx, jy, bw * (0.45 + sparkleTier * 0.06), glow, open * (0.12 + 0.45 * sparkle) + suspense * 0.3);
+      drawSparkles(c, jx, jy, sparkleTier, glow, t, open * (0.15 + 0.85 * sparkle) + suspense * 0.5, bw / 600);
     }
     if (perfectAt) {
-      const burst = 1 - smoothstep(0, 700, now - perfectAt);
-      for (let i = 0; i < 14; i++) {
-        const a = (i / 14) * Math.PI * 2;
-        const radius = (bw / 600) * (120 + (1 - burst) * 300);
-        drawStar(c, jx + Math.cos(a) * radius, jy + Math.sin(a) * radius * 0.8, (bw / 600) * (30 * burst + 8), burst, '#fff3c4');
+      // Gerbe d'étoiles ; deux vagues et la couleur de la variante si elle apparaît.
+      const waves = variantRevealed ? 2 : 1;
+      for (let wave = 0; wave < waves; wave++) {
+        const burst = 1 - smoothstep(0, 700 + wave * 400, now - perfectAt - wave * 250);
+        if (burst <= 0 || now - perfectAt < wave * 250) continue;
+        for (let i = 0; i < 14; i++) {
+          const a = (i / 14) * Math.PI * 2 + wave * 0.22;
+          const radius = (bw / 600) * (120 + (1 - burst) * (300 + wave * 120));
+          drawStar(c, jx + Math.cos(a) * radius, jy + Math.sin(a) * radius * 0.8, (bw / 600) * (30 * burst + 8), burst, wave && glow ? glow : '#fff3c4');
+        }
       }
     }
 
@@ -339,6 +360,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     if (busy) text = '';
     else if (phase === 'closed') text = rarity.tier >= 4 ? 'Un éclat filtre… Glisse le pouce vers le haut' : 'Ouvre l’écrin. Glisse le pouce vers le haut';
     else if (phase === 'resisting') text = 'Ouvre doucement…';
+    else if (engine.perfect && variantRevealed && pendingVariant) [text, gold] = [`Variante rare : ${pendingVariant.label} ! Ouvre jusqu’au bout`, true];
     else if (engine.perfect) [text, gold] = ['Éclat parfait ! Ouvre jusqu’au bout', true];
     else if (engine.angle > t.fragileMinAngle && engine.angle < t.revealAngle) text = engine.closeness > 0.75 ? 'Ça scintille… ne bouge plus' : 'Cherche l’angle d’éclat';
     else text = 'Encore un peu…';

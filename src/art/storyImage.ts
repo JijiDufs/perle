@@ -1,7 +1,7 @@
 // Image verticale 1080×1920 (format story) d'une carte, pour la partager (cahier §10).
 // Une seule mise en page ; perles et bijoux fournissent chacun une StorySpec.
 import { pearlById } from '../core/catalog';
-import { jewelRarity } from '../core/jewels';
+import { jewelRarity, jewelVariant, withVariant } from '../core/jewels';
 import type { JewelCard, PearlCard } from '../core/player';
 import { CARD_FRAMES, formatCarats, formatEuros, JEWEL_FRAMES, SANS, SERIF, serialLabel } from './cardStyle';
 import { drawJewel, drawSparkles } from './jewel';
@@ -229,21 +229,23 @@ export function renderStoryImage(card: PearlCard): Promise<Blob> {
 }
 
 export function renderJewelStoryImage(card: JewelCard): Promise<Blob> {
-  const { jewel } = card;
+  const variant = card.variant ? jewelVariant(card.variant) : null;
+  const jewel = withVariant(card.jewel, card.variant);
   const rarity = jewelRarity(jewel.rarityId);
+  const glow = variant?.glow ?? rarity.glow;
   return render({
-    subtitle: `Trouvé dans un écrin · ${serialLabel(card.serial)}`,
+    subtitle: variant ? `Variante rare · ${serialLabel(card.serial)}` : `Trouvé dans un écrin · ${serialLabel(card.serial)}`,
     title: jewel.name,
     rarity: rarity.rarity,
-    frame: JEWEL_FRAMES[rarity.tier],
-    glow: rarity.glow,
+    frame: variant?.frame ?? JEWEL_FRAMES[rarity.tier],
+    glow,
     artBackground: 'velvet',
     drawArt(c, x, y, w, h) {
       const cxArt = x + w / 2;
       const yOffset = jewel.type === 'collier' ? 0.62 : jewel.type === 'diademe' ? 0.52 : jewel.type === 'boucles' ? 0.56 : 0.5;
-      drawGlow(c, cxArt, y + h / 2, w * 0.6, rarity.glow, 0.45);
+      drawGlow(c, cxArt, y + h / 2, w * 0.6, glow, 0.45);
       drawJewel(c, cxArt, y + h * yOffset, (w / 520) * 1.05, jewel);
-      if (rarity.glow) drawSparkles(c, cxArt, y + h / 2, rarity.tier, rarity.glow, 1.3, card.perfect ? 1 : 0.7, w / 600);
+      if (glow) drawSparkles(c, cxArt, y + h / 2, Math.max(rarity.tier, variant ? 4 : 0), glow, 1.3, card.perfect ? 1 : 0.7, w / 600);
     },
     stats: [
       ['Métal', jewel.metalName],
@@ -252,7 +254,7 @@ export function renderJewelStoryImage(card: JewelCard): Promise<Blob> {
       ['N°', serialLabel(card.serial)],
     ],
     flavor: jewel.flavor,
-    flag: card.perfect ? { text: 'Éclat parfait : valeur ×1,5', tone: 'gold' } : null,
+    flag: variant ? { text: `Variante rare ${variant.label} : valeur ×2`, tone: 'gold' } : card.perfect ? { text: 'Éclat parfait : valeur ×1,5', tone: 'gold' } : null,
     fine: 'Estimation fictive',
     holo: rarity.tier >= 3 || card.perfect,
   });

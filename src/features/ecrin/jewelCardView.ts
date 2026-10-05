@@ -1,14 +1,15 @@
 import { formatCarats, formatEuros, JEWEL_FRAMES, serialLabel } from '../../art/cardStyle';
 import { jewelCanvas } from '../../art/jewel';
-import { jewelRarity } from '../../core/jewels';
+import { jewelRarity, jewelVariant, withVariant } from '../../core/jewels';
 import type { JewelCard } from '../../core/player';
 
 export function jewelCardElement(card: JewelCard, size: 'large' | 'small'): HTMLElement {
-  const { jewel } = card;
+  const variant = card.variant ? jewelVariant(card.variant) : null;
+  const jewel = withVariant(card.jewel, card.variant);
   const rarity = jewelRarity(jewel.rarityId);
-  const frame = JEWEL_FRAMES[rarity.tier];
+  const frame = variant?.frame ?? JEWEL_FRAMES[rarity.tier];
   const el = document.createElement('article');
-  el.className = `card card-${size}${frame.dark ? ' card-dark' : ''}${rarity.tier >= 3 || card.perfect ? ' card-holo' : ''}`;
+  el.className = `card card-${size}${frame.dark ? ' card-dark' : ''}${rarity.tier >= 3 || card.perfect ? ' card-holo' : ''}${variant ? ' card-variant' : ''}`;
   el.style.setProperty('--frame-a', frame.colors[0]);
   el.style.setProperty('--frame-b', frame.colors[1]);
   el.innerHTML = `
@@ -24,9 +25,9 @@ export function jewelCardElement(card: JewelCard, size: 'large' | 'small'): HTML
       <div><dt>N°</dt><dd>${serialLabel(card.serial)}</dd></div>
     </dl>
     ${size === 'large' && jewel.flavor ? `<p class="card-flavor">${jewel.flavor}</p>` : ''}
-    ${card.perfect ? '<p class="card-flag card-flag-gold">Éclat parfait : valeur ×1,5</p>' : ''}
+    ${variant ? `<p class="card-flag card-flag-gold">Variante rare ${variant.label} : valeur ×2</p>` : card.perfect ? '<p class="card-flag card-flag-gold">Éclat parfait : valeur ×1,5</p>' : ''}
     ${size === 'large' ? '<p class="card-fine">Estimation fictive</p>' : ''}
   `;
-  el.querySelector('.card-art')!.append(jewelCanvas(jewel, rarity.glow, size === 'large' ? 190 : 100));
+  el.querySelector('.card-art')!.append(jewelCanvas(jewel, variant?.glow ?? rarity.glow, size === 'large' ? 190 : 100));
   return el;
 }
