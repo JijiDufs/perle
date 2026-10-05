@@ -21,3 +21,11 @@ export function isInTutorial(oystersOpened: number): boolean {
 export function isCrackProtected(oystersOpened: number): boolean {
   return oystersOpened === 0;
 }
+
+/**
+ * L'onglet Écrin se débloque avec le premier écrin, offert à la fin du tutoriel (cahier §15 :
+ * les fonctions arrivent une à une). Un joueur qui a déjà un écrin ou un bijou l'a toujours débloqué.
+ */
+export function isEcrinUnlocked(state: { oystersOpened: number; ecrins: number; currentEcrin: unknown; jewelCards: readonly unknown[] }): boolean {
+  return !isInTutorial(state.oystersOpened) || state.ecrins > 0 || state.currentEcrin !== null || state.jewelCards.length > 0;
+}

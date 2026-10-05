@@ -4,6 +4,24 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (14) · Jules · Claude Code · branche `jules/navigation`
+
+Retour de Jules : l'UI/UX des onglets ne montrait pas d'évolution dans le jeu.
+
+**Fait**
+- `src/features/nav/` : coquille de l'app (`shell.ts`) et icônes SVG (`icons.ts`). `main.ts` ne fait plus que monter les écrans.
+- Onglets en bas (Pêche, Écrins, Collection) : icônes, pilule qui glisse vers l'onglet actif, pastilles (écrins à ouvrir, nouvelles cartes), transition d'écran dans le sens des onglets. Réglages : roue dentée en haut à droite.
+- Écrins verrouillé (cadenas + message) jusqu'au premier écrin, puis l'icône pulse en doré jusqu'à la première visite (`isEcrinUnlocked` dans `core/tutorial.ts`).
+- Barre de ressources : huîtres x/10 + minuteur (cachée pendant le tutoriel, rouge à 0), poussière d'or ; rebond quand la valeur monte. Le compteur sous la coquille a été retiré (doublon).
+- Collection : cartes « Nouveau » (contour lumineux) et point sur le volet Perles / Bijoux qui en contient ; `Settings.seenSerial` (les cartes déjà là lors de la mise à jour ne sont pas comptées comme nouvelles) ; `newCardsSince` dans `core/collection.ts`.
+- Tests : `tests/navigation.test.ts`.
+
+**Fragile / à revoir**
+- Sur iPhone : vérifier que la barre du bas ne gêne pas le geste d'ouverture (le pouce part juste au-dessus) et la marge de la barre de geste iOS.
+- Les icônes sont provisoires (phase 2).
+
+---
+
 ## 2026-10-05 (13) · Jules · Claude Code · branche `jules/poussiere-or`
 
 Poussière d'or (cahier §7), qui achète aussi des écrins (demande de Jules).

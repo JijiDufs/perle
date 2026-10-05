@@ -42,7 +42,6 @@ const TEMPLATE = `
     <button type="button" class="tide-button">Admirer ma collection</button>
   </div>
   <div class="oyster-dock">
-    <div class="stock" hidden><span class="stock-dots" aria-hidden="true"></span><span class="stock-text"></span></div>
     <p class="message" aria-live="polite"></p>
     <div class="gauge" hidden>
       <span class="gauge-angle"></span>
@@ -69,9 +68,6 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
   const installHint = root.querySelector<HTMLElement>('.install-hint')!;
   const tide = root.querySelector<HTMLElement>('.tide')!;
   const tideCountdown = root.querySelector<HTMLElement>('.tide-countdown')!;
-  const stockBox = root.querySelector<HTMLElement>('.stock')!;
-  const stockDots = root.querySelector<HTMLElement>('.stock-dots')!;
-  const stockText = root.querySelector<HTMLElement>('.stock-text')!;
   /** Stock vide : on attend la marée. */
   let waiting = false;
   for (const type of ['pointerdown', 'pointerup'] as const) tide.addEventListener(type, (event) => event.stopPropagation());
@@ -368,22 +364,12 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
 
   function renderStock(): void {
     const now = Date.now();
+    // Le stock s'affiche dans la barre du haut (features/nav) ; ici, seulement l'attente de la marée.
+    if (!waiting) return;
     const stock = refreshStock(ctx.player.stock, now, ctx.tuning);
-    const max = ctx.tuning.oysterStockMax;
     const wait = nextRefillIn(ctx.player.stock, now, ctx.tuning);
-    if (waiting) {
-      if (stock.count > 0) nextOyster();
-      else tideCountdown.textContent = wait === null ? '' : formatDuration(wait);
-    }
-    stockBox.hidden = isInTutorial(ctx.player.oystersOpened) || waiting;
-    if (stockBox.hidden) return;
-    const dots = `${stock.count}/${max}`;
-    if (stockDots.dataset.state !== dots) {
-      stockDots.dataset.state = dots;
-      stockDots.innerHTML = Array.from({ length: max }, (_, i) => `<i class="${i < stock.count ? 'on' : ''}"></i>`).join('');
-    }
-    const text = wait === null ? `${stock.count} huîtres` : `${stock.count}/${max} · +1 dans ${formatDuration(wait)}`;
-    if (stockText.textContent !== text) stockText.textContent = text;
+    if (stock.count > 0) nextOyster();
+    else tideCountdown.textContent = wait === null ? '' : formatDuration(wait);
   }
 
   function renderDock(): void {

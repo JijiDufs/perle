@@ -99,6 +99,10 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
   let kind: Kind = 'pearls';
   let filter: string | null = null;
   let closeShop = () => {};
+  // Cartes arrivées depuis la dernière visite : marquées « Nouveau » pendant cette visite.
+  const seenAtMount = ctx.settings.seenSerial;
+  ctx.setSettings({ ...ctx.settings, seenSerial: ctx.player.nextSerial - 1 });
+  const isNew = (serial: number) => serial > seenAtMount;
 
   function mount(): void {
     const shelf = (kind === 'pearls' ? pearlShelf(ctx) : jewelShelf(ctx, () => mount())) as Shelf<PearlCard | JewelCard>;
@@ -127,6 +131,11 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
       <div class="zoom-overlay" hidden></div>
     `;
     root.querySelectorAll<HTMLButtonElement>('[data-kind]').forEach((b) => b.classList.toggle('active', b.dataset.kind === kind));
+    // Point sur le volet qui contient des nouveautés.
+    const freshPearls = ctx.player.cards.some((c) => isNew(c.serial));
+    const freshJewels = ctx.player.jewelCards.some((c) => isNew(c.serial));
+    root.querySelector('[data-kind="pearls"]')!.classList.toggle('has-new', freshPearls && kind !== 'pearls');
+    root.querySelector('[data-kind="jewels"]')!.classList.toggle('has-new', freshJewels && kind !== 'jewels');
 
     // Encyclopédie : une case par rareté, silhouette pour ce qui manque. Toucher filtre les cartes.
     const encyclopedia = root.querySelector<HTMLElement>('.encyclopedia')!;
@@ -169,6 +178,7 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
       ...shown.map((card) => {
         const el = shelf.element(card, 'small');
         el.dataset.serial = String(card.serial);
+        if (isNew(card.serial)) el.insertAdjacentHTML('beforeend', '<span class="card-new">Nouveau</span>');
         el.tabIndex = 0;
         el.setAttribute('role', 'button');
         return el;
@@ -251,5 +261,8 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
   });
 
   mount();
-  return () => closeShop();
+  return () => {
+    closeShop();
+    ctx.setSettings({ ...ctx.settings, seenSerial: ctx.player.nextSerial - 1 });
+  };
 }

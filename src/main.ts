@@ -3,6 +3,7 @@ import type { PlayerState } from './core/player';
 import type { AppContext } from './features/context';
 import { mountCollectionScreen } from './features/collection/collectionScreen';
 import { mountEcrinScreen } from './features/ecrin/ecrinScreen';
+import { createShell, type ScreenName } from './features/nav/shell';
 import { mountOysterScreen } from './features/oyster/oysterScreen';
 import { mountTuningScreen } from './features/tuning/tuningScreen';
 import { track } from './platform/analytics';
@@ -10,7 +11,6 @@ import { registerOffline } from './platform/offline';
 import { loadPlayer, loadSettings, loadTuning, savePlayer, saveSettings, saveTuning, type Settings } from './platform/storage';
 import type { Tuning } from './tuning';
 
-type ScreenName = 'oyster' | 'ecrin' | 'collection' | 'tuning';
 const SCREENS: Record<ScreenName, (root: HTMLElement, ctx: AppContext) => () => void> = {
   oyster: mountOysterScreen,
   ecrin: mountEcrinScreen,
@@ -21,58 +21,39 @@ const SCREENS: Record<ScreenName, (root: HTMLElement, ctx: AppContext) => () => 
 let player: PlayerState = loadPlayer();
 let tuning: Tuning = loadTuning();
 let settings: Settings = loadSettings();
+// Première version avec la pastille « nouveau » : les cartes déjà là ne sont pas nouvelles.
+if (settings.seenSerial < 0) {
+  settings = { ...settings, seenSerial: player.nextSerial - 1 };
+  saveSettings(settings);
+}
 
 const ctx: AppContext = {
   get player() { return player; },
   get tuning() { return tuning; },
   get settings() { return settings; },
   rng: Math.random,
-  setPlayer(state) { player = state; savePlayer(state); updateBadge(); },
-  setTuning(value) { tuning = value; saveTuning(value); },
-  setSettings(value) { settings = value; saveSettings(value); },
+  setPlayer(state) { player = state; savePlayer(state); shell.update(shellState()); },
+  setTuning(value) { tuning = value; saveTuning(value); shell.update(shellState()); },
+  setSettings(value) { settings = value; saveSettings(value); shell.update(shellState()); },
   goTo(screen) { show(screen); },
 };
 
-const app = document.querySelector<HTMLElement>('#app')!;
-app.innerHTML = `
-  <header class="topbar">
-    <nav class="tabs" aria-label="Écrans">
-      <button data-screen="oyster">Huître</button>
-      <button data-screen="ecrin">Écrin<span class="badge" hidden></span></button>
-      <button data-screen="collection">Collection</button>
-      <button data-screen="tuning" aria-label="Réglages">⚙︎</button>
-    </nav>
-    <span class="chip">BÊTA</span>
-  </header>
-  <main class="screen-host"></main>
-`;
-const host = app.querySelector<HTMLElement>('.screen-host')!;
-const badge = app.querySelector<HTMLElement>('.badge')!;
-
-/** Pastille sur l'onglet Écrin : écrins gagnés pas encore ouverts (+ celui en cours). */
-function updateBadge(): void {
-  const count = player.ecrins + (player.currentEcrin ? 1 : 0);
-  badge.hidden = count === 0;
-  badge.textContent = String(count);
-}
+const shellState = () => ({ player, tuning, settings });
+const shell = createShell(document.querySelector<HTMLElement>('#app')!, (name) => show(name), shellState);
 let unmount: () => void = () => {};
 
 function show(name: ScreenName): void {
   unmount();
   // Nouvel élément à chaque écran : aucun écouteur ne survit d'un écran à l'autre.
   const root = document.createElement('div');
-  host.replaceChildren(root);
+  const direction = shell.setActive(name);
+  shell.host.replaceChildren(root);
   unmount = SCREENS[name](root, ctx);
-  app.querySelectorAll<HTMLButtonElement>('.topbar .tabs button').forEach((b) => b.classList.toggle('active', b.dataset.screen === name));
+  // Après le montage : chaque écran pose ses propres classes.
+  if (direction !== 0) root.classList.add('screen-enter', direction > 0 ? 'from-right' : 'from-left');
   track('screen_view', { screen: name });
 }
 
-app.querySelector('.topbar .tabs')!.addEventListener('click', (event) => {
-  const name = (event.target as HTMLElement).closest<HTMLElement>('[data-screen]')?.dataset.screen as ScreenName | undefined;
-  if (name) show(name);
-});
-
 track('session_start', { oystersOpened: player.oystersOpened, standalone: matchMedia('(display-mode: standalone)').matches });
-updateBadge();
 show('oyster');
 registerOffline();

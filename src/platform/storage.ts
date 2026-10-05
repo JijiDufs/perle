@@ -18,9 +18,11 @@ export interface Settings {
   collectionSort: CardSort;
   /** L'aide « Ajouter à l'écran d'accueil » a été fermée. */
   installHintDismissed: boolean;
+  /** Dernier numéro de carte vu dans la collection (pastille « nouveau »). -1 : jamais réglé. */
+  seenSerial: number;
 }
 
-const DEFAULT_SETTINGS: Settings = { showHud: true, sound: true, collectionSort: 'rarity', installHintDismissed: false };
+const DEFAULT_SETTINGS: Settings = { showHud: true, sound: true, collectionSort: 'rarity', installHintDismissed: false, seenSerial: -1 };
 
 function read<T>(key: string, fallback: T): T {
   try {

@@ -62,3 +62,8 @@ export function sortJewelCards(cards: readonly JewelCard[], sort: CardSort): Jew
         : (a: JewelCard, b: JewelCard) => byRarity(a, b) || byValue(a, b) || byRecent(a, b);
   return [...cards].sort(compare);
 }
+
+/** Cartes (perles et bijoux) obtenues après la carte n° `seenSerial` : les « nouvelles » depuis la dernière visite. */
+export function newCardsSince(state: { cards: readonly PearlCard[]; jewelCards: readonly JewelCard[] }, seenSerial: number): number {
+  return state.cards.filter((c) => c.serial > seenSerial).length + state.jewelCards.filter((c) => c.serial > seenSerial).length;
+}
