@@ -5,7 +5,8 @@ import { INITIAL_PLAYER_STATE, type PlayerState } from '../core/player';
 import { DEFAULT_TUNING, type Tuning } from '../tuning';
 
 const PLAYER_KEY = 'perle.player.v1';
-const TUNING_KEY = 'perle.tuning.v1';
+// v2 : course du pouce raccourcie pour l'ouverture à une main ; les anciens réglages sont ignorés.
+const TUNING_KEY = 'perle.tuning.v2';
 const SETTINGS_KEY = 'perle.settings.v1';
 
 export interface Settings {

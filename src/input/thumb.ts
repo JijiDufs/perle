@@ -18,7 +18,15 @@ export function thumbDistanceToAngle(distance: number, tuning: Tuning): number {
 export interface ThumbCallbacks {
   onSample(sample: OpeningSample, distance: number): void;
   onRelease(): void;
+  /**
+   * Angle (°) au-delà duquel lâcher le pouce laisse le couvercle finir de s'ouvrir seul
+   * (ouverture à une main). null : pas d'ouverture automatique pour l'instant.
+   */
+  autoOpenFrom?(): number | null;
 }
+
+/** Durée (ms) de l'ouverture automatique de fin de course. */
+const AUTO_OPEN_MS = 240;
 
 /**
  * Source de geste « pouce vers le haut » (iPhone classique).
@@ -30,6 +38,7 @@ export class ThumbInput {
   private pointerId: number | null = null;
   private startY = 0;
   private startDistance = 0;
+  private autoOpenFrame = 0;
 
   constructor(
     private readonly element: HTMLElement,
@@ -55,6 +64,7 @@ export class ThumbInput {
   }
 
   destroy(): void {
+    cancelAnimationFrame(this.autoOpenFrame);
     this.element.removeEventListener('pointerdown', this.onDown);
     this.element.removeEventListener('pointermove', this.onMove);
     this.element.removeEventListener('pointerup', this.onUp);
@@ -63,10 +73,15 @@ export class ThumbInput {
 
   private onDown = (event: PointerEvent): void => {
     if (this.pointerId !== null) return;
+    cancelAnimationFrame(this.autoOpenFrame);
     this.pointerId = event.pointerId;
     this.startY = event.clientY;
     this.startDistance = this.distance;
-    this.element.setPointerCapture(event.pointerId);
+    try {
+      this.element.setPointerCapture(event.pointerId);
+    } catch {
+      // Capture impossible (appui simulé, navigateur ancien) : le geste marche quand même.
+    }
   };
 
   private onMove = (event: PointerEvent): void => {
@@ -79,6 +94,26 @@ export class ThumbInput {
   private onUp = (event: PointerEvent): void => {
     if (event.pointerId !== this.pointerId) return;
     this.pointerId = null;
-    this.callbacks.onRelease();
+    const tuning = this.getTuning();
+    const threshold = this.callbacks.autoOpenFrom?.() ?? null;
+    const angle = thumbDistanceToAngle(this.distance, tuning);
+    if (threshold !== null && angle >= threshold && angle < 180) this.autoOpen(tuning);
+    else this.callbacks.onRelease();
   };
+
+  /** Termine la course jusqu'à 180° en douceur, comme si le pouce continuait. */
+  private autoOpen(tuning: Tuning): void {
+    const from = this.distance;
+    const to = tuning.resistanceDistance + tuning.fullOpenDistance;
+    const start = performance.now();
+    const step = (now: number) => {
+      const t = Math.min(1, (now - start) / AUTO_OPEN_MS);
+      const eased = 1 - Math.pow(1 - t, 3);
+      this.distance = from + (to - from) * eased;
+      this.callbacks.onSample({ angle: thumbDistanceToAngle(this.distance, tuning), time: now }, this.distance);
+      if (t < 1) this.autoOpenFrame = requestAnimationFrame(step);
+      else this.callbacks.onRelease();
+    };
+    this.autoOpenFrame = requestAnimationFrame(step);
+  }
 }

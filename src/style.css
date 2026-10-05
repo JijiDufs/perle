@@ -339,6 +339,8 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
   color: var(--ink-card);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
   overflow: hidden;
+  /* Nouveau contexte d'empilement : aide Safari à garder le contenu dans les coins arrondis. */
+  isolation: isolate;
 }
 .card-dark { --ink-card: #eef0ff; }
 .card-large { width: min(78vw, 320px); padding: 18px; }
@@ -372,6 +374,8 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
   content: '';
   position: absolute;
   inset: 0;
+  /* Safari iOS ne découpe pas toujours les calques animés selon les coins de la carte : on arrondit le calque lui-même. */
+  border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(115deg, transparent 20%, rgba(255, 209, 232, 0.45) 35%, rgba(201, 242, 255, 0.45) 45%, rgba(255, 242, 196, 0.45) 55%, transparent 70%);
   background-size: 250% 100%;

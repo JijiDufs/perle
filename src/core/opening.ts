@@ -64,7 +64,9 @@ export class OpeningEngine {
     }
 
     if (this.phase === 'opening') {
-      if (this.window.length >= 2) this.openingVelocities.push(this.velocity);
+      // Le lustre juge la régularité dans la zone fragile, là où elle compte
+      // (l'ouverture automatique de la fin ne doit pas la fausser).
+      if (this.window.length >= 2 && this.inFragileZone) this.openingVelocities.push(this.velocity);
 
       if (!this.crackProtected && !this.cracked && this.inFragileZone && this.velocity > t.maxSafeVelocity) {
         this.cracked = true;

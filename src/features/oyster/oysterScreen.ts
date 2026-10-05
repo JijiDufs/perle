@@ -121,6 +121,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
       }
       handle(engine.push(sample), sample.time);
     },
+    autoOpenFrom: () => (engine.phase === 'opening' ? ctx.tuning.autoOpenFromAngle : null),
     onRelease() {
       if (busy) return;
       const wasResisting = engine.phase === 'resisting';

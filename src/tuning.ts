@@ -23,6 +23,8 @@ export interface Tuning {
   velocityWindowMs: number;
   /** Angle (°) à partir duquel la perle est révélée. */
   revealAngle: number;
+  /** Au-delà de cet angle (°), lâcher le pouce laisse le couvercle finir de s'ouvrir seul (ouverture à une main). */
+  autoOpenFromAngle: number;
   /** Coefficient de variation de la vitesse max pour chaque note de lustre (plus bas = plus régulier). */
   lustreMaxVariationS: number;
   lustreMaxVariationA: number;
@@ -76,15 +78,16 @@ export interface Tuning {
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
   popAngle: 15,
-  resistanceDistance: 90,
+  resistanceDistance: 70,
   resistanceAngleRatio: 0.25,
-  fullOpenDistance: 380,
+  fullOpenDistance: 260,
   resistanceTickDistance: 18,
   fragileMinAngle: 20,
   fragileMaxAngle: 110,
-  maxSafeVelocity: 260,
+  maxSafeVelocity: 380,
   velocityWindowMs: 60,
   revealAngle: 140,
+  autoOpenFromAngle: 115,
   lustreMaxVariationS: 0.25,
   lustreMaxVariationA: 0.45,
   lustreMaxVariationB: 0.7,
@@ -97,11 +100,11 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   oysterStockMax: 10,
   oysterRechargeMinutes: 20,
   glintMinAngle: 55,
-  glintMaxAngle: 125,
+  glintMaxAngle: 115,
   glintTolerance: 6,
   glintSparkleRange: 28,
   glintHoldMs: 900,
-  glintMaxVelocity: 30,
+  glintMaxVelocity: 45,
   glintPerfectMultiplier: 1.5,
   glintRareVariantChance: 0.12,
   glintRareVariantMultiplier: 2,
@@ -133,6 +136,7 @@ export const TUNING_FIELDS: readonly TuningField[] = [
   { key: 'fullOpenDistance', label: 'Course du pouce (pop → 180°)', unit: 'pt', min: 150, max: 700, step: 10 },
   { key: 'maxSafeVelocity', label: 'Vitesse max en zone fragile', unit: '°/s', min: 60, max: 800, step: 10 },
   { key: 'velocityWindowMs', label: 'Lissage de la vitesse', unit: 'ms', min: 16, max: 200, step: 4 },
+  { key: 'autoOpenFromAngle', label: 'Ouverture automatique à partir de', unit: '°', min: 111, max: 180, step: 1 },
   { key: 'revealAngle', label: 'Angle de révélation', unit: '°', min: 111, max: 180, step: 1 },
   { key: 'lustreMaxVariationS', label: 'Lustre S : irrégularité max', unit: '', min: 0.05, max: 1, step: 0.05 },
   { key: 'lustreMaxVariationA', label: 'Lustre A : irrégularité max', unit: '', min: 0.05, max: 1.5, step: 0.05 },

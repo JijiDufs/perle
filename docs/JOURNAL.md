@@ -4,6 +4,26 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (12) · Jules · Claude Code · branche `jules/correctifs-iphone`
+
+Retours du premier test sur iPhone.
+
+**Fait**
+- **Coins carrés du reflet holographique** sur des cartes arrondies : Safari iOS ne découpe pas toujours les calques animés selon les coins de la carte. Les calques holo et « variante » héritent désormais des coins arrondis (`border-radius: inherit`) et les cartes isolent leur contenu (`isolation: isolate`).
+- **Ouverture à une main** :
+  - course du pouce raccourcie : pop à 70 pt, révélation à 267 pt (avant : 378 pt) ;
+  - ouverture automatique : lâcher au-delà de 115° laisse le couvercle finir seul en 240 ms (`src/input/thumb.ts`, réglage « Ouverture automatique à partir de ») ; pour l'écrin, jamais avant la fin de la zone de l'angle d'éclat (121°) ;
+  - vitesses rapportées à la nouvelle course (fêlure 380 °/s, « immobile » 45 °/s) ; angle d'éclat resserré à 55–115° ;
+  - lustre mesuré dans la zone fragile seulement, pour que l'ouverture automatique ne le fausse pas ;
+  - réglages sauvegardés sous `perle.tuning.v2` : les anciens réglages enregistrés sur le téléphone sont ignorés.
+- Vérifié dans le navigateur : un seul geste de 235 pt ouvre l'huître jusqu'à la carte (lustre S) ; lâcher à 98° laisse la coquille entrouverte ; écrin lâché à 115° reste ouvert, repris et lâché après 121° finit seul.
+
+**À revérifier sur iPhone**
+- Les coins des cartes holo (le défaut n'apparaît pas dans le navigateur du Mac, la correction n'a donc pas pu y être constatée).
+- Le confort d'une main, et si la fêlure est trop facile ou trop rare avec le nouveau seuil.
+
+---
+
 ## 2026-10-05 (11) · Jules · Claude Code · branche `jules/expertise`
 
 **Fait**

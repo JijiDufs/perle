@@ -101,6 +101,8 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
       }
       handle(engine.push(sample), sample.time);
     },
+    autoOpenFrom: () =>
+      engine?.phase === 'opening' ? Math.max(ctx.tuning.autoOpenFromAngle, ctx.tuning.glintMaxAngle + ctx.tuning.glintTolerance) : null,
     onRelease() {
       if (busy || !engine) return;
       const wasResisting = engine.phase === 'resisting';
