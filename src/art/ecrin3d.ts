@@ -68,8 +68,13 @@ export interface EcrinStyle {
   angle: number;
   /** Assombrissement de l'intérieur tant que l'écrin est peu ouvert (0…1). */
   dim: number;
-  /** Dessin du bijou, posé sur le plateau : (x, y, px par unité). */
-  drawJewel?: (x: number, y: number, unit: number) => void;
+  /**
+   * Dessin du bijou, couché à plat sur le plateau : appelé dans le repère du plateau (origine au centre,
+   * 1 = largeur de l'écrin, y vers l'avant). Il suffit de dessiner le bijou vu de dessus, centré en (0, 0).
+   */
+  drawJewel?: () => void;
+  /** Lumière et étincelles au-dessus du bijou, à l'écran : (x, y, px par unité). */
+  drawEffects?: (x: number, y: number, unit: number) => void;
   /** Reflet qui passe sur le couvercle (pièces ★), position 0…1 ou null. */
   sweep: number | null;
 }
@@ -133,6 +138,15 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
     return [view.cx + (scale * q[0]) / depth, view.cy - (scale * (q[1] - centre[1])) / depth];
   };
   const normalCam = (n: V3): V3 => toCam(n);
+  /**
+   * Une face est visible si elle regarde vers l'œil (placé en (0, centre, DIST) dans le repère caméra).
+   * Test fait depuis la vraie position de l'œil, pas « de très loin » : sinon, en perspective, un couvercle
+   * vu presque par la tranche perdait ses deux faces et l'on voyait à travers.
+   */
+  const facing = (nCam: V3, pointWorld: V3): boolean => {
+    const q = toCam(pointWorld);
+    return -q[0] * nCam[0] + (centre[1] - q[1]) * nCam[1] + (DIST - q[2]) * nCam[2] > 0;
+  };
   // Couvercle : rotation autour de la charnière (y = H, z = -D/2).
   const lid = (p: V3): V3 => {
     const dy = p[1] - H;
@@ -156,11 +170,15 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
 
   /** Dessine dans le plan d'une face (repère affine : origine, axe x, axe z de la face). */
   const inPlane = (origin: V3, ax: V3, az: V3, draw: () => void) => {
+    // Repère affine tangent au point d'origine (différences centrées) : juste autour de l'origine,
+    // même en perspective forte.
+    const e = 0.1;
+    const along = (v: V3, k: number): V3 => [origin[0] + v[0] * k, origin[1] + v[1] * k, origin[2] + v[2] * k];
     const o = project(origin);
-    const x = project([origin[0] + ax[0], origin[1] + ax[1], origin[2] + ax[2]]);
-    const z = project([origin[0] + az[0], origin[1] + az[1], origin[2] + az[2]]);
+    const [x1, x0] = [project(along(ax, e)), project(along(ax, -e))];
+    const [z1, z0] = [project(along(az, e)), project(along(az, -e))];
     c.save();
-    c.transform(x[0] - o[0], x[1] - o[1], z[0] - o[0], z[1] - o[1], o[0], o[1]);
+    c.transform((x1[0] - x0[0]) / (2 * e), (x1[1] - x0[1]) / (2 * e), (z1[0] - z0[0]) / (2 * e), (z1[1] - z0[1]) / (2 * e), o[0], o[1]);
     draw();
     c.restore();
   };
@@ -174,7 +192,7 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
       const nz = -(x1 - x0);
       const len = Math.hypot(nx, nz);
       const n = normalCam(rotateN([nx / len, 0, nz / len]));
-      if (n[2] <= 0.01) continue;
+      if (!facing(n, transform([(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2]))) continue;
       poly([transform([x0, y0, z0]), transform([x1, y0, z1]), transform([x1, y1, z1]), transform([x0, y1, z0])].map(project));
       c.fillStyle = leatherShade(leather, n, -0.12);
       c.fill();
@@ -226,19 +244,12 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
     c.strokeStyle = 'rgba(0,0,0,.55)';
     c.lineWidth = Math.max(1, scale * 0.004);
     c.stroke();
-    // Fente du plateau, où le bijou est posé.
-    inPlane([0, H - 0.005, 0.04], [1, 0, 0], [0, 0, 1], () => {
-      c.strokeStyle = 'rgba(0,0,0,.6)';
-      c.lineWidth = 0.01;
-      c.beginPath();
-      c.moveTo(-0.18, 0);
-      c.quadraticCurveTo(0, 0.02, 0.18, 0);
-      c.stroke();
-    });
   };
 
-  const jewelAt = project([0, H + 0.01, 0.04]);
-  const pxPerUnit = scale / (DIST - toCam([0, H, 0.04])[2]);
+  // Le bijou est couché au milieu du plateau, un peu vers l'avant.
+  const jewelOrigin: V3 = [0, H - 0.004, 0.03];
+  const jewelAt = project(jewelOrigin);
+  const pxPerUnit = scale / (DIST - toCam(jewelOrigin)[2]);
 
   const drawInterior = () => {
     // Le bijou reste dans le coin ouvert entre le bord de la base et le dessous du couvercle.
@@ -246,7 +257,8 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
     c.save();
     poly(hull);
     c.clip();
-    style.drawJewel?.(jewelAt[0], jewelAt[1], pxPerUnit);
+    if (style.drawJewel) inPlane(jewelOrigin, [1, 0, 0], [0, 0, 1], style.drawJewel);
+    style.drawEffects?.(jewelAt[0], jewelAt[1], pxPerUnit);
     if (style.dim > 0.001) {
       poly(OUTLINE.map(([x, z]) => project([x, H, z])));
       c.fillStyle = `rgba(0,0,0,${style.dim * 0.92})`;
@@ -259,7 +271,7 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
   const drawLid = () => {
     drawSides(H, H + T, lid, lidN, H + T * 0.5);
     const topN = normalCam(lidN([0, 1, 0]));
-    if (topN[2] > 0.01) {
+    if (facing(topN, lid([0, H + T, 0]))) {
       const top = OUTLINE.map(([x, z]) => project(lid([x, H + T, z])));
       poly(top);
       c.fillStyle = leatherShade(leather, topN);
@@ -364,48 +376,70 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
         c.fillText('M A I S O N   R O S E', 0, 0);
       });
     }
-    // L'intérieur du couvercle : satin ivoire, quand il est assez relevé pour qu'on le voie.
+    // L'intérieur du couvercle : capitonnage de velours (comme le plateau), avec le nom de la Maison en or.
+    // Volontairement différent du dessus (cuir et filets d'or) : on ne doit jamais croire voir à travers.
     const innerN = normalCam(lidN([0, -1, 0]));
-    if (innerN[2] > 0.01) {
-      poly(OUTLINE.map(([x, z]) => project(lid([x, H, z]))));
-      const k = 0.58 + 0.42 * Math.max(0, dot(innerN, LIGHT));
-      c.fillStyle = `rgb(${Math.round(246 * k)},${Math.round(238 * k)},${Math.round(222 * k)})`;
+    if (facing(innerN, lid([0, H, 0]))) {
+      const inner = OUTLINE.map(([x, z]) => project(lid([x, H, z])));
+      poly(inner);
+      c.fillStyle = leatherShade(leather, innerN, -0.15);
       c.fill();
-      // Reflet du satin (tout le panneau), filet d'or en perspective, nom de la Maison.
-      const io = lid([0, H - 0.001, 0]);
+      const lining = TRAY.map(([x, z]) => project(lid([x, H - 0.004, z])));
+      poly(lining);
+      const k = 0.55 + 0.45 * Math.max(0, dot(innerN, LIGHT));
+      const [lx, ly] = project(lid([0, H, 0]));
+      const velvet = c.createRadialGradient(lx, ly, 0, lx, ly, scale * 0.42);
+      velvet.addColorStop(0, `rgb(${Math.round(52 * k)},${Math.round(58 * k)},${Math.round(86 * k)})`);
+      velvet.addColorStop(1, `rgb(${Math.round(16 * k)},${Math.round(18 * k)},${Math.round(30 * k)})`);
+      c.fillStyle = velvet;
+      c.fill();
+      // Capitons : coutures en losanges et petits boutons.
+      const io = lid([0, H - 0.005, 0]);
       const ix = lidN([1, 0, 0]);
       const iz = lidN([0, 0, -1]);
       const iat = (u: number, v: number): P2 => project([io[0] + ix[0] * u + iz[0] * v, io[1] + ix[1] * u + iz[1] * v, io[2] + ix[2] * u + iz[2] * v]);
-      const [sx0, sy0] = iat(-W / 2, 0);
-      const [sx1, sy1] = iat(W / 2, 0);
-      const satin = c.createLinearGradient(sx0, sy0, sx1, sy1);
-      satin.addColorStop(0.3, 'rgba(255,255,255,0)');
-      satin.addColorStop(0.45, 'rgba(255,255,255,.35)');
-      satin.addColorStop(0.6, 'rgba(255,255,255,0)');
-      c.fillStyle = satin;
-      poly(OUTLINE.map(([x, z]) => project(lid([x, H, z]))));
-      c.fill();
-      c.strokeStyle = 'rgba(184, 138, 42, .85)';
-      c.lineWidth = Math.max(0.8, scale * 0.0015);
-      c.beginPath();
-      [[-W / 2 + 0.05, -D / 2 + 0.05], [W / 2 - 0.05, -D / 2 + 0.05], [W / 2 - 0.05, D / 2 - 0.05], [-W / 2 + 0.05, D / 2 - 0.05]].forEach(([u, v], i) =>
-        i ? c.lineTo(...iat(u, v)) : c.moveTo(...iat(u, v)),
-      );
-      c.closePath();
-      c.stroke();
-      for (const [v, text, font] of [
-        [-0.04, 'M A I S O N   R O S E', '600 34px "Figtree", system-ui, sans-serif'],
-        [0.035, 'Perles fines', '62px "Young Serif", Georgia, serif'],
-      ] as const) {
-        inPlane(lid([0, H - 0.002, -v]), ix, iz, () => {
-          c.scale(0.001, 0.001);
-          c.fillStyle = goldGradient(c, -200, 0, 200, 0);
-          c.textAlign = 'center';
-          c.textBaseline = 'middle';
-          c.font = font;
-          c.fillText(text, 0, 0);
-        });
+      c.save();
+      poly(lining);
+      c.clip();
+      c.strokeStyle = 'rgba(0, 0, 0, 0.45)';
+      c.lineWidth = Math.max(0.8, scale * 0.0025);
+      const step = 0.14;
+      for (let d = -1.2; d <= 1.2; d += step) {
+        c.beginPath();
+        c.moveTo(...iat(d - 0.4, -0.4));
+        c.lineTo(...iat(d + 0.4, 0.4));
+        c.moveTo(...iat(d + 0.4, -0.4));
+        c.lineTo(...iat(d - 0.4, 0.4));
+        c.stroke();
       }
+      c.fillStyle = 'rgba(255, 255, 255, 0.18)';
+      for (let u = -0.42; u <= 0.42; u += step) {
+        for (let v = -0.35; v <= 0.35; v += step) {
+          const [bx, by] = iat(u, v);
+          c.beginPath();
+          c.arc(bx, by, Math.max(0.8, scale * 0.003), 0, Math.PI * 2);
+          c.fill();
+        }
+      }
+      c.restore();
+      // Le nom de la Maison, sur un petit écusson de satin.
+      inPlane(lid([0, H - 0.006, 0.02]), ix, iz, () => {
+        c.fillStyle = 'rgba(245, 236, 218, 0.95)';
+        c.beginPath();
+        c.ellipse(0, 0, 0.17, 0.075, 0, 0, Math.PI * 2);
+        c.fill();
+        c.strokeStyle = goldGradient(c, -0.17, 0, 0.17, 0);
+        c.lineWidth = 0.006;
+        c.stroke();
+        c.scale(0.001, 0.001);
+        c.fillStyle = goldGradient(c, -150, 0, 150, 0);
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        c.font = '600 22px "Figtree", system-ui, sans-serif';
+        c.fillText('M A I S O N   R O S E', 0, -18);
+        c.font = '40px "Young Serif", Georgia, serif';
+        c.fillText('Perles fines', 0, 22);
+      });
     }
   };
 
@@ -413,7 +447,7 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
   // - tant qu'on voit le dessus du couvercle (il n'a pas dépassé l'angle de la caméra), il recouvre le bijou ;
   // - dès qu'on voit son satin, le bijou est devant lui ;
   // - au-delà de la verticale, le couvercle passe derrière la base.
-  if (alpha < PITCH) {
+  if (facing(normalCam(lidN([0, 1, 0])), lid([0, H + T, 0]))) {
     drawBase();
     drawInterior();
     drawLid();

@@ -314,18 +314,17 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
       angle,
       dim: 1 - smoothstep(4, 140, angle),
       sweep: rarity.tier >= 4 && engine.phase === 'closed' ? ((t * 0.5) % 1.6) - 0.3 : null,
-      drawJewel: (x, y, unit) => {
-        if (!shownJewel) return;
-        // Le bijou est piqué dans la fente : on le dessine un peu au-dessus, à l'échelle du coffret.
-        const s = (unit * 0.62) / 440;
-        drawJewel(c, x, y - unit * 0.1, s, shownJewel);
-        if (glow) {
-          drawGlow(c, x, y - unit * 0.1, unit * (0.32 + sparkleTier * 0.04), glow, open * (0.12 + 0.45 * sparkle) + suspense * 0.3);
-          drawSparkles(c, x, y - unit * 0.1, sparkleTier, glow, t, open * (0.15 + 0.85 * sparkle) + suspense * 0.5, unit / 700);
-        }
+      // Le bijou est couché à plat sur le plateau, vu de dessus (repère du plateau : 1 = largeur de l'écrin).
+      drawJewel: () => {
+        if (shownJewel) drawJewel(c, 0, 0, 0.66 / 440, shownJewel);
+      },
+      drawEffects: (x, y, unit) => {
+        if (!glow) return;
+        drawGlow(c, x, y, unit * (0.32 + sparkleTier * 0.04), glow, open * (0.12 + 0.45 * sparkle) + suspense * 0.3);
+        drawSparkles(c, x, y, sparkleTier, glow, t, open * (0.15 + 0.85 * sparkle) + suspense * 0.5, unit / 700);
       },
     });
-    const [jx, jy] = [anchors.jewel[0], anchors.jewel[1] - anchors.scale * 0.1];
+    const [jx, jy] = anchors.jewel;
 
     // La lumière filtre par l'entrebâillement, au bord avant du couvercle.
     const leak = smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle));
