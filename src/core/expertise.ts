@@ -3,6 +3,7 @@
 import type { Tuning } from '../tuning';
 import { jewelRarity, roundValue } from './jewels';
 import { gainReputation, reputationFor } from './levels';
+import { afterEvent } from './progression';
 import type { JewelCard, PlayerState } from './player';
 import { seededRng } from './rng';
 
@@ -89,5 +90,6 @@ export function recordExpertise(state: PlayerState, serial: number, found: numbe
   const { grade, bonus } = gradeExpertise(found, total, tuning);
   const updated: JewelCard = { ...card, value: roundValue(card.value * (1 + bonus)), expertise: { grade, found, total, bonus, at: now } };
   const next = { ...state, jewelCards: state.jewelCards.map((c) => (c.serial === serial ? updated : c)) };
-  return gainReputation(next, reputationFor({ kind: 'expertise', certified: bonus > 0 }, tuning), tuning);
+  const gained = gainReputation(next, reputationFor({ kind: 'expertise', certified: bonus > 0 }, tuning), tuning);
+  return afterEvent(gained, { kind: 'expertise', excellent: grade === 'excellent' }, now, tuning);
 }

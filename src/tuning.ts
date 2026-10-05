@@ -107,6 +107,15 @@ export interface Tuning {
   levelRewardOysters: number;
   levelRewardDust: number;
   levelEcrinEvery: number;
+  /** Succès (cahier §10) : poussière d'or selon le palier bronze / argent / or, et réputation. */
+  achievementDustBronze: number;
+  achievementDustSilver: number;
+  achievementDustGold: number;
+  achievementReputation: number;
+  /** Quêtes du jour (cahier §15) : nombre, et récompense de chacune ; les trois donnent un écrin. */
+  questsPerDay: number;
+  questRewardDust: number;
+  questRewardReputation: number;
 }
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
@@ -172,6 +181,13 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   levelRewardOysters: 3,
   levelRewardDust: 15,
   levelEcrinEvery: 3,
+  achievementDustBronze: 10,
+  achievementDustSilver: 30,
+  achievementDustGold: 80,
+  achievementReputation: 40,
+  questsPerDay: 3,
+  questRewardDust: 10,
+  questRewardReputation: 30,
 };
 
 /** Description des paramètres exposés dans l'écran Réglages. */

@@ -4,7 +4,8 @@ import { gainReputation, levelFromXp, levelReward, rankForLevel, reputationFor, 
 import { INITIAL_PLAYER_STATE, recordOpening, type PlayerState } from '../src/core/player';
 import { DEFAULT_TUNING } from '../src/tuning';
 
-const t = DEFAULT_TUNING;
+/** Sans récompense de succès, pour compter seulement ce que l'on teste. */
+const t = { ...DEFAULT_TUNING, achievementDustBronze: 0, achievementDustSilver: 0, achievementDustGold: 0, achievementReputation: 0 };
 
 describe('niveaux et réputation', () => {
   it('déduit le niveau de la réputation', () => {

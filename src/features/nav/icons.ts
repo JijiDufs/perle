@@ -7,5 +7,6 @@ export const ICONS = {
   ecrin: svg('<path d="M4.5 11h15v7.5a1.5 1.5 0 0 1-1.5 1.5H6a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M4.5 11 6 6.5h12l1.5 4.5"/><path d="M11 14.5h2"/>'),
   collection: svg('<rect x="8" y="3.5" width="11.5" height="15" rx="2"/><path d="M5.5 7v11.5a2 2 0 0 0 2 2h8.5"/>'),
   lock: svg('<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8a3 3 0 0 1 6 0v3"/>'),
+  quests: svg('<path d="M7 3.5h10a1.5 1.5 0 0 1 1.5 1.5v14.5a1.5 1.5 0 0 1-1.5 1.5H7a1.5 1.5 0 0 1-1.5-1.5V5A1.5 1.5 0 0 1 7 3.5z"/><path d="m8.5 8.5 1.3 1.3 2.2-2.3M8.5 14l1.3 1.3 2.2-2.3M14 9h2M14 14.5h2"/>'),
   gear: svg('<circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M6 18l1.6-1.6M16.4 7.6 18 6"/>'),
 };

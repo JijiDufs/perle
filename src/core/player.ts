@@ -6,6 +6,8 @@ import { rollSweetAngle } from './glint';
 import { INITIAL_JEWEL_DRAW, roundValue, rollJewel, rollRareVariant, type Jewel, type JewelDrawState, type JewelVariantId } from './jewels';
 import { gainReputation, reputationFor } from './levels';
 import type { Lustre } from './lustre';
+import { afterEvent, INITIAL_STATS, type PlayerStats } from './progression';
+import type { DailyQuests } from './quests';
 import { createOyster, oysterWith, type Oyster } from './oyster';
 import type { Rng } from './rng';
 import { consumeOyster, type StockState } from './stock';
@@ -71,6 +73,14 @@ export interface PlayerState {
   reputation: number;
   /** Dernier niveau dont la récompense a été donnée. */
   rewardedLevel: number;
+  /** Compteurs pour les succès (séries, lustres S, éclats parfaits…). */
+  stats: PlayerStats;
+  /** Succès obtenus : identifiant → date (ms). */
+  achievements: Record<string, number>;
+  /** Titre porté (gagné par un succès), ou null. */
+  title: string | null;
+  /** Quêtes du jour en cours. */
+  quests: DailyQuests | null;
 }
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
@@ -88,6 +98,10 @@ export const INITIAL_PLAYER_STATE: PlayerState = {
   dust: 0,
   reputation: 0,
   rewardedLevel: 1,
+  stats: INITIAL_STATS,
+  achievements: {},
+  title: null,
+  quests: null,
 };
 
 /**
@@ -148,7 +162,8 @@ export function recordOpening(
   const discovery = oyster.pearlId !== 'empty' && !state.cards.some((c) => c.pearlId === oyster.pearlId);
   const gained = reputationFor({ kind: 'oyster', pearlId: oyster.pearlId, lustre: result.lustre, cracked: result.cracked, discovery }, tuning);
   const base = gainReputation(earned.state, gained, tuning);
-  if (oyster.pearlId === 'empty') return { state: base, card: null, ecrinEarned: earned.earned };
+  const event = { kind: 'oyster', pearlId: oyster.pearlId, lustre: result.lustre, cracked: result.cracked } as const;
+  if (oyster.pearlId === 'empty') return { state: afterEvent(base, event, now, tuning), card: null, ecrinEarned: earned.earned };
 
   const card: PearlCard = {
     serial: state.nextSerial,
@@ -159,7 +174,8 @@ export function recordOpening(
     cracked: result.cracked,
     foundAt: now,
   };
-  return { state: { ...base, nextSerial: state.nextSerial + 1, cards: [...state.cards, card] }, card, ecrinEarned: earned.earned };
+  const withCard = { ...base, nextSerial: state.nextSerial + 1, cards: [...state.cards, card] };
+  return { state: afterEvent(withCard, event, now, tuning), card, ecrinEarned: earned.earned };
 }
 
 /** Renvoie l'écrin en cours, ou en ouvre un nouveau s'il en reste (sinon currentEcrin reste null). */
@@ -180,5 +196,6 @@ export function recordEcrin(state: PlayerState, result: { perfect: boolean }, no
   const card: JewelCard = { serial: state.nextSerial, jewel: pending.jewel, value, perfect: result.perfect, variant, foundAt: now };
   const discovery = !state.jewelCards.some((c) => c.jewel.rarityId === pending.jewel.rarityId);
   const opened = { ...state, currentEcrin: null, nextSerial: state.nextSerial + 1, jewelCards: [...state.jewelCards, card] };
-  return { state: gainReputation(opened, reputationFor({ kind: 'ecrin', perfect: result.perfect, discovery }, tuning), tuning), card };
+  const gained = gainReputation(opened, reputationFor({ kind: 'ecrin', perfect: result.perfect, discovery }, tuning), tuning);
+  return { state: afterEvent(gained, { kind: 'ecrin', perfect: result.perfect, variant: !!variant }, now, tuning), card };
 }

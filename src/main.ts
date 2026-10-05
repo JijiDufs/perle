@@ -1,5 +1,6 @@
 import './style.css';
 import type { PlayerState } from './core/player';
+import { unlockAchievements } from './core/progression';
 import type { AppContext } from './features/context';
 import { mountCollectionScreen } from './features/collection/collectionScreen';
 import { mountEcrinScreen } from './features/ecrin/ecrinScreen';
@@ -19,6 +20,9 @@ const SCREENS: Record<ScreenName, (root: HTMLElement, ctx: AppContext) => () => 
 };
 
 let player: PlayerState = loadPlayer();
+// Succès déjà remplis par une ancienne sauvegarde : donnés tout de suite, sans bannière.
+player = unlockAchievements(player, Date.now(), loadTuning());
+savePlayer(player);
 let tuning: Tuning = loadTuning();
 let settings: Settings = loadSettings();
 // Première version avec la pastille « nouveau » : les cartes déjà là ne sont pas nouvelles.
@@ -36,11 +40,11 @@ const ctx: AppContext = {
   setTuning(value) { tuning = value; saveTuning(value); shell.update(shellState()); },
   setSettings(value) { settings = value; saveSettings(value); shell.update(shellState()); },
   goTo(screen) { show(screen); },
-  showLevelUps() { shell.showLevelUps(); },
+  showRewards() { shell.showRewards(); },
 };
 
 const shellState = () => ({ player, tuning, settings });
-const shell = createShell(document.querySelector<HTMLElement>('#app')!, (name) => show(name), shellState);
+const shell = createShell(document.querySelector<HTMLElement>('#app')!, (name) => show(name), shellState, () => ctx);
 let unmount: () => void = () => {};
 
 function show(name: ScreenName): void {

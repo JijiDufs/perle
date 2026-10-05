@@ -100,9 +100,12 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .resource-star, .resource-dust .resource-value { color: var(--gold); }
 .resource.bump { animation: bump 0.5s cubic-bezier(0.2, 1.6, 0.4, 1); }
 @keyframes bump { 40% { transform: scale(1.18); box-shadow: 0 0 18px rgba(232, 190, 90, 0.45); } }
-.hud-gear { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--ink-soft); padding: 0; }
-.hud-gear svg { width: 18px; height: 18px; }
-.hud-gear.active { color: var(--bg-bottom); background: var(--ink); }
+.hud-quests { position: relative; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--ink-soft); padding: 0; }
+.hud-quests[hidden] { display: none; }
+.hud-quests svg { width: 18px; height: 18px; }
+.hud-quests.ready { color: var(--gold); border-color: rgba(232, 190, 90, 0.6); animation: quest-ready 1.8s ease-in-out infinite; }
+@keyframes quest-ready { 50% { box-shadow: 0 0 14px rgba(232, 190, 90, 0.5); } }
+.hud-quests .badge { top: -4px; right: -4px; }
 
 /* Onglets, en bas : à portée de pouce. */
 .tabbar {
@@ -833,3 +836,68 @@ select { font: inherit; background: var(--panel); color: var(--ink); border: 1px
 .milestones li.done em { color: var(--gold); }
 .rep-list li { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
 .rep-list b { color: var(--gold); white-space: nowrap; }
+
+/* ---------- Succès et quêtes ---------- */
+
+.banner-host { position: fixed; z-index: 35; top: calc(env(safe-area-inset-top) + 56px); left: 12px; right: 12px; display: flex; justify-content: center; pointer-events: none; }
+.banner {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(420px, 100%);
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(232, 190, 90, 0.55);
+  background: linear-gradient(100deg, rgba(60, 44, 10, 0.97), rgba(14, 22, 25, 0.97));
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), 0 0 24px rgba(232, 190, 90, 0.2);
+  color: var(--ink);
+  text-align: left;
+  animation: banner-in 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.banner.leaving { animation: banner-out 0.25s ease-in both; }
+@keyframes banner-in { from { opacity: 0; transform: translateY(-24px) scale(0.95); } }
+@keyframes banner-out { to { opacity: 0; transform: translateY(-16px); } }
+.banner small { display: block; color: var(--gold); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.banner b { display: block; font: 400 1.05rem/1.2 var(--serif); }
+.banner em { display: block; font-style: normal; color: var(--ink-soft); font-size: 0.78rem; }
+.banner-medal { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 1.2rem; color: #2a1d05; background: radial-gradient(circle at 35% 30%, #fff3c8, #e8be5a 50%, #8a6418); box-shadow: 0 0 16px rgba(232, 190, 90, 0.5); }
+.banner-bronze .banner-medal { background: radial-gradient(circle at 35% 30%, #ffe0c4, #c9874d 50%, #6e3f17); }
+.banner-argent .banner-medal { background: radial-gradient(circle at 35% 30%, #ffffff, #c4ccd6 50%, #6b7480); }
+.banner-quest { border-color: rgba(127, 224, 208, 0.55); background: linear-gradient(100deg, rgba(10, 50, 44, 0.97), rgba(14, 22, 25, 0.97)); }
+.banner-quest small { color: var(--accent); }
+.banner-quest .banner-medal { background: var(--accent); color: #062b26; box-shadow: 0 0 16px rgba(127, 224, 208, 0.45); }
+
+.sheet-tabs { margin: 14px 0 4px; }
+.settings-link { display: block; margin: 22px auto 4px; color: var(--ink-soft); font-weight: 500; }
+.worn-title { color: var(--ink); letter-spacing: 0; text-transform: none; font-weight: 600; }
+
+.quest-list, .achievement-list { list-style: none; padding: 0; margin: 12px 0 0; }
+.quest-list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.quest-main { flex: 1; display: flex; flex-direction: column; gap: 5px; font-weight: 600; }
+.quest-main small { color: var(--ink-soft); font-weight: 400; font-size: 0.76rem; }
+.quest-bar { display: block; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.quest-bar i { display: block; height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s; }
+.quest-list li.complete .quest-bar i { background: var(--gold); }
+.quest-list li.claimed { opacity: 0.55; }
+.quest-count { color: var(--ink-soft); font-variant-numeric: tabular-nums; font-size: 0.85rem; }
+.quest-done { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(127, 224, 208, 0.18); color: var(--accent); font-weight: 700; }
+.quest-bonus { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 12px; border-radius: 14px; border: 1px dashed rgba(232, 190, 90, 0.5); }
+.quest-bonus small { display: block; color: var(--ink-soft); font-size: 0.78rem; }
+.quest-bonus.claimed { border-style: solid; background: rgba(232, 190, 90, 0.1); }
+
+.title-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.title-list button { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); font-size: 0.82rem; }
+.title-list button.active { background: var(--gold); border-color: var(--gold); color: #1b1408; font-weight: 700; }
+.achievement { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.achievement-medal { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; border: 1px dashed var(--line); color: var(--ink-soft); }
+.achievement.done .achievement-medal { border: 0; color: #2a1d05; }
+.achievement.done.tier-bronze .achievement-medal { background: radial-gradient(circle at 35% 30%, #ffe0c4, #c9874d 50%, #6e3f17); }
+.achievement.done.tier-argent .achievement-medal { background: radial-gradient(circle at 35% 30%, #ffffff, #c4ccd6 50%, #6b7480); }
+.achievement.done.tier-or .achievement-medal { background: radial-gradient(circle at 35% 30%, #fff3c8, #e8be5a 50%, #8a6418); box-shadow: 0 0 12px rgba(232, 190, 90, 0.45); }
+.achievement-text { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.achievement-text small { color: var(--ink-soft); font-size: 0.78rem; }
+.achievement:not(.done) .achievement-text b { color: var(--ink-soft); }
+.achievement-title { color: var(--gold) !important; }
+.achievement em { font-style: normal; font-size: 0.75rem; color: var(--ink-soft); white-space: nowrap; }
+.achievement.done em { color: var(--gold); }

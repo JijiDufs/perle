@@ -1,15 +1,23 @@
 // Coquille de l'application : barre de ressources en haut, onglets en bas (à portée de pouce),
 // pastilles, onglets qui se débloquent au fil du jeu, transition entre écrans.
 // Les règles (déblocage, nouvelles cartes, stock) viennent du Core ; ce fichier ne fait qu'afficher.
+import { achievementById, achievementReward } from '../../core/achievements';
 import { newCardsSince } from '../../core/collection';
 import { levelFromXp } from '../../core/levels';
 import type { PlayerState } from '../../core/player';
 import { nextRefillIn, refreshStock } from '../../core/stock';
+import { currentQuests } from '../../core/progression';
+import { isClaimable, isComplete, questText } from '../../core/quests';
 import { isEcrinUnlocked, isInTutorial } from '../../core/tutorial';
+import { track } from '../../platform/analytics';
+import { chimeNotes } from '../../platform/audio';
+import { hapticBurst } from '../../platform/haptics';
 import type { Settings } from '../../platform/storage';
 import type { Tuning } from '../../tuning';
 import { showLevelUp } from '../progress/levelUp';
 import { openProgressSheet } from '../progress/progressSheet';
+import { openQuestsSheet } from '../progress/questsSheet';
+import type { AppContext } from '../context';
 import { ICONS } from './icons';
 
 export type ScreenName = 'oyster' | 'ecrin' | 'collection' | 'tuning';
@@ -30,8 +38,17 @@ export interface Shell {
   /** Marque l'onglet actif et renvoie le sens de la transition (-1, 0, 1). */
   setActive(name: ScreenName): -1 | 0 | 1;
   toast(text: string): void;
-  /** Montre la célébration des niveaux gagnés, s'il y en a (hors tutoriel). */
-  showLevelUps(): void;
+  /** Montre, à un moment calme, les succès, quêtes terminées et montées de niveau en attente (hors tutoriel). */
+  showRewards(): void;
+}
+
+/** Une bannière en attente : succès obtenu ou quête terminée. */
+interface Banner {
+  kind: 'achievement' | 'quest';
+  tier: string;
+  kicker: string;
+  title: string;
+  detail: string;
 }
 
 const RING = 2 * Math.PI * 15;
@@ -42,7 +59,7 @@ const formatWait = (ms: number) => {
   return `${minutes}:${String(total % 60).padStart(2, '0')}`;
 };
 
-export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => void, getState: () => ShellState): Shell {
+export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => void, getState: () => ShellState, getCtx: () => AppContext): Shell {
   app.innerHTML = `
     <header class="hud">
       <div class="hud-left">
@@ -60,7 +77,7 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
         <button type="button" class="resource resource-dust" data-screen="collection" aria-label="Poussière d’or">
           <span class="resource-star" aria-hidden="true">✦</span><b class="resource-value"></b>
         </button>
-        <button type="button" class="hud-gear" data-screen="tuning" aria-label="Réglages">${ICONS.gear}</button>
+        <button type="button" class="hud-quests" aria-label="Quêtes du jour" hidden>${ICONS.quests}<span class="badge" hidden></span></button>
       </div>
     </header>
     <main class="screen-host"></main>
@@ -71,6 +88,7 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
       <button type="button" data-screen="collection">${ICONS.collection}<span>Collection</span><span class="badge badge-new" hidden></span></button>
     </nav>
     <p class="toast" role="status" hidden></p>
+    <div class="banner-host" aria-live="polite"></div>
   `;
   const q = <T extends HTMLElement>(selector: string) => app.querySelector<T>(selector)!;
   const host = q('.screen-host');
@@ -81,7 +99,18 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
   const dustRes = q('.resource-dust');
   const toastEl = q('.toast');
   let active: ScreenName = 'oyster';
-  let last: { oysters?: number; dust?: number; unlocked?: boolean; reputation?: number; rewardedLevel?: number } = {};
+  let last: {
+    oysters?: number;
+    dust?: number;
+    unlocked?: boolean;
+    reputation?: number;
+    rewardedLevel?: number;
+    achievements?: Set<string>;
+    questsDone?: Set<string>;
+  } = {};
+  const questsButton = q('.hud-quests');
+  const banners: Banner[] = [];
+  let showingBanners = false;
   const levelRing = q('.level-ring');
   /** Niveaux gagnés pas encore célébrés : [depuis, jusqu'à]. */
   let pendingLevels: [number, number] | null = null;
@@ -135,6 +164,36 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     }
     last.rewardedLevel = player.rewardedLevel;
 
+    // Succès obtenus et quêtes terminées depuis la dernière fois : bannières mises de côté.
+    const achieved = new Set(Object.keys(player.achievements));
+    if (last.achievements) {
+      for (const id of achieved) {
+        if (last.achievements.has(id)) continue;
+        const achievement = achievementById(id);
+        if (!achievement) continue;
+        const reward = achievementReward(achievement.tier, tuning);
+        banners.push({ kind: 'achievement', tier: achievement.tier, kicker: 'Succès débloqué', title: achievement.name, detail: `+${reward.dust} ✦ · +${reward.reputation} réputation${achievement.title ? ` · titre « ${achievement.title} »` : ''}` });
+        track('achievement_unlocked', { id, tier: achievement.tier });
+      }
+    }
+    last.achievements = achieved;
+    const daily = currentQuests(player, now, tuning);
+    questsButton.hidden = !daily;
+    const doneKeys = new Set((daily?.quests ?? []).flatMap((quest, i) => (isComplete(quest) ? [`${daily!.day}:${i}`] : [])));
+    if (last.questsDone && daily) {
+      daily.quests.forEach((quest, i) => {
+        if (isComplete(quest) && !quest.claimed && !last.questsDone!.has(`${daily.day}:${i}`)) {
+          banners.push({ kind: 'quest', tier: 'quest', kicker: 'Quête terminée', title: questText(quest), detail: 'Récupère ta récompense dans les quêtes du jour' });
+        }
+      });
+    }
+    last.questsDone = doneKeys;
+    const claimable = daily ? daily.quests.filter(isClaimable).length : 0;
+    const questBadge = questsButton.querySelector<HTMLElement>('.badge')!;
+    questBadge.hidden = claimable === 0;
+    questBadge.textContent = String(claimable);
+    questsButton.classList.toggle('ready', claimable > 0);
+
     // Écrins : verrouillé jusqu'au premier écrin, puis pastille du nombre à ouvrir.
     const unlocked = isEcrinUnlocked(player);
     ecrinTab.classList.toggle('locked', !unlocked);
@@ -162,19 +221,59 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     const index = tabs.findIndex((b) => b.dataset.screen === name);
     app.querySelector<HTMLElement>('.tabbar')!.style.setProperty('--tab-index', String(Math.max(0, index)));
     app.querySelector('.tabbar')!.classList.toggle('no-active', index < 0);
-    q('.hud-gear').classList.toggle('active', name === 'tuning');
     if (name === 'ecrin') ecrinTab.classList.remove('just-unlocked');
     update(getState());
     return direction;
   }
 
-  function showLevelUps(): void {
+  /** Bannières une à une, puis la montée de niveau. */
+  function showRewards(): void {
     const { player, tuning } = getState();
-    if (!pendingLevels || celebrating || isInTutorial(player.oystersOpened)) return;
+    if (celebrating || showingBanners || isInTutorial(player.oystersOpened)) return;
+    const banner = banners.shift();
+    if (banner) {
+      showingBanners = true;
+      showBanner(banner, () => {
+        showingBanners = false;
+        showRewards();
+      });
+      return;
+    }
+    if (!pendingLevels) return;
     const [from, to] = pendingLevels;
     pendingLevels = null;
     celebrating = true;
+    track('level_up', { level: to });
     showLevelUp(from, to, tuning, () => (celebrating = false));
+  }
+
+  function showBanner(banner: Banner, done: () => void): void {
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = `banner banner-${banner.tier}`;
+    el.innerHTML = `<span class="banner-medal" aria-hidden="true">${banner.kind === 'quest' ? '✓' : '★'}</span><span><small>${banner.kicker}</small><b>${banner.title}</b><em>${banner.detail}</em></span>`;
+    q('.banner-host').append(el);
+    if (banner.kind === 'achievement') {
+      chimeNotes('normal', banner.tier === 'or' ? 3 : banner.tier === 'argent' ? 2 : 1);
+      hapticBurst(banner.tier === 'or' ? 4 : 2, 90);
+    }
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      el.classList.add('leaving');
+      window.setTimeout(() => {
+        el.remove();
+        done();
+      }, 250);
+    };
+    // Toucher la bannière : vers les succès ou les quêtes.
+    el.addEventListener('click', () => {
+      finish();
+      if (banner.kind === 'quest') openQuestsSheet(getCtx());
+      else openProgressSheet(getCtx(), 'achievements');
+    });
+    window.setTimeout(finish, 2800);
   }
 
   function toast(text: string): void {
@@ -187,10 +286,8 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     toastTimer = window.setTimeout(() => (toastEl.hidden = true), 2600);
   }
 
-  levelRing.addEventListener('click', () => {
-    const { player, tuning } = getState();
-    openProgressSheet(player, tuning);
-  });
+  levelRing.addEventListener('click', () => openProgressSheet(getCtx(), 'progress'));
+  questsButton.addEventListener('click', () => openQuestsSheet(getCtx()));
 
   app.addEventListener('click', (event) => {
     const button = (event.target as HTMLElement).closest<HTMLElement>('.tabbar [data-screen], .hud [data-screen]');
@@ -201,11 +298,11 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
       return;
     }
     if (name !== active) onNavigate(name);
-    showLevelUps();
+    showRewards();
   });
 
   // Le minuteur de recharge tourne en haut de l'écran.
   window.setInterval(() => update(getState()), 1000);
 
-  return { host, update, setActive, toast, showLevelUps };
+  return { host, update, setActive, toast, showRewards };
 }

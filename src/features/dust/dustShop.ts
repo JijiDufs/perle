@@ -78,7 +78,7 @@ export function meltButton(ctx: AppContext, card: PearlCard | JewelCard, onMelte
     }
     clearTimeout(timer);
     const kind: PieceKind = 'pearlId' in card ? 'pearl' : 'jewel';
-    ctx.setPlayer(meltCard(ctx.player, card.serial, ctx.tuning));
+    ctx.setPlayer(meltCard(ctx.player, card.serial, ctx.tuning, Date.now()));
     track('dust_melted', { kind, entry: 'pearlId' in card ? card.pearlId : card.jewel.rarityId, dust: gain, bulk: false });
     hapticTick();
     ding();
@@ -156,7 +156,7 @@ export function openDustShop(host: HTMLElement, ctx: AppContext, callbacks: Dust
     sheet.querySelector('[data-action="melt-all"]')!.addEventListener('click', () => {
       const count = ordinaryDuplicates(ctx.player).length;
       const gain = ordinaryDuplicatesValue(ctx.player, ctx.tuning);
-      ctx.setPlayer(meltOrdinaryDuplicates(ctx.player, ctx.tuning));
+      ctx.setPlayer(meltOrdinaryDuplicates(ctx.player, ctx.tuning, Date.now()));
       track('dust_melted', { kind: 'lot', entry: 'lot', dust: gain, bulk: true, count });
       hapticTick();
       ding();

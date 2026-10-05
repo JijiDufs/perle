@@ -69,7 +69,7 @@ export function openExpertise(ctx: AppContext, card: JewelCard, onDone: (card: J
     cancelAnimationFrame(frame);
     root.remove();
     onDone(result);
-    ctx.showLevelUps();
+    ctx.showRewards();
   };
   q('.expertise-close').addEventListener('click', () => {
     // Fermer en cours de route termine l'expertise avec ce qui a été trouvé : pas de relance gratuite.

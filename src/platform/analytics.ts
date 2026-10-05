@@ -33,7 +33,12 @@ export type AnalyticsEvent =
   | 'dust_shop_viewed'
   | 'dust_melted'
   | 'dust_piece_bought'
-  | 'dust_ecrin_bought';
+  | 'dust_ecrin_bought'
+  | 'achievement_unlocked'
+  | 'quests_viewed'
+  | 'quest_claimed'
+  | 'title_worn'
+  | 'level_up';
 
 export interface TrackedEvent {
   name: AnalyticsEvent;

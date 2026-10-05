@@ -4,6 +4,7 @@ import { dustForTier, type Tuning } from '../tuning';
 import { PEARLS, pearlById, pearlTier, type PearlId } from './catalog';
 import { JEWEL_RARITIES, jewelOfRarity, jewelRarity, type JewelRarityId } from './jewels';
 import { pearlValue, type JewelCard, type PearlCard, type PlayerState } from './player';
+import { afterEvent } from './progression';
 import type { Rng } from './rng';
 
 export type PieceKind = 'pearl' | 'jewel';
@@ -57,15 +58,16 @@ export function meltValueOfCard(state: PlayerState, serial: number, tuning: Tuni
 }
 
 /** Fond une carte en double. Sans effet si ce n'est pas un doublon. */
-export function meltCard(state: PlayerState, serial: number, tuning: Tuning): PlayerState {
+export function meltCard(state: PlayerState, serial: number, tuning: Tuning, now = 0): PlayerState {
   if (!canMelt(state, serial)) return state;
   const dust = state.dust + meltValueOfCard(state, serial, tuning);
-  return {
+  const melted = {
     ...state,
     dust,
     cards: state.cards.filter((c) => c.serial !== serial),
     jewelCards: state.jewelCards.filter((c) => c.serial !== serial),
   };
+  return afterEvent(melted, { kind: 'melt' }, now, tuning);
 }
 
 /**
@@ -93,8 +95,8 @@ export function ordinaryDuplicatesValue(state: PlayerState, tuning: Tuning): num
   return ordinaryDuplicates(state).reduce((sum, serial) => sum + meltValueOfCard(state, serial, tuning), 0);
 }
 
-export function meltOrdinaryDuplicates(state: PlayerState, tuning: Tuning): PlayerState {
-  return ordinaryDuplicates(state).reduce((s, serial) => meltCard(s, serial, tuning), state);
+export function meltOrdinaryDuplicates(state: PlayerState, tuning: Tuning, now = 0): PlayerState {
+  return ordinaryDuplicates(state).reduce((s, serial) => meltCard(s, serial, tuning, now), state);
 }
 
 /** Pièces jamais obtenues (l'huître vide n'est pas une pièce), de la moins chère à la plus chère. */

@@ -4,6 +4,30 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (16) · Jules · Claude Code · branche `jules/succes-quetes`
+
+Succès, titres et quêtes du jour.
+
+**Fait**
+- Core (tests : `tests/progression.test.ts`) :
+  - `achievements.ts` : 24 succès (pêche, geste, écrins, expertise, poussière), paliers bronze / argent / or, 2 secrets, titres, `wearTitle` ;
+  - `quests.ts` : quêtes du jour tirées par date (graine = AAAA-MM-JJ local), sans quête d'écrin tant que les écrins ne sont pas débloqués, série « sans fêlure » qui repart à zéro ;
+  - `progression.ts` : `afterEvent` (statistiques + quêtes + succès), appelé par `recordOpening`, `recordEcrin`, `recordExpertise`, `meltCard` ; `claimQuest` (récompense, écrin bonus au 3e) ; `unlockAchievements`.
+  - `PlayerState` : `stats`, `achievements`, `title`, `quests`.
+- Interface :
+  - bannières « Succès débloqué » / « Quête terminée » en haut, une à une, puis la montée de niveau (`ctx.showRewards()`, ex-`showLevelUps`) ; toucher une bannière ouvre les succès ou les quêtes ;
+  - bouton Quêtes dans la barre du haut (badge et lueur dorée quand une récompense attend) et fiche des quêtes ;
+  - « Ma progression » en deux volets : Progression (plus de statistiques) et Succès (avancement, secrets, titres à porter) ; lien « Réglages du prototype » (la roue dentée a quitté la barre du haut).
+- Tests existants : récompenses de succès coupées dans `dust.test.ts` et `levels.test.ts` pour garder leurs comptes.
+
+**À décider avec Mathys**
+- Liste des succès, titres, barèmes ; quêtes hebdomadaires et série de jours (cahier §15) plus tard.
+
+**Fragile**
+- Les quêtes changent à minuit selon l'heure du téléphone : changer l'heure à la main permet de les renouveler (à verrouiller côté serveur plus tard).
+
+---
+
 ## 2026-10-05 (15) · Jules · Claude Code · branche `jules/niveaux`
 
 Niveaux, réputation et rangs (cahier §8-9), pour sentir l'évolution dans la bêta.

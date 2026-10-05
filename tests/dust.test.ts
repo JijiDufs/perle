@@ -5,7 +5,8 @@ import { INITIAL_PLAYER_STATE, type JewelCard, type PearlCard, type PlayerState 
 import { seededRng } from '../src/core/rng';
 import { DEFAULT_TUNING } from '../src/tuning';
 
-const t = DEFAULT_TUNING;
+/** Sans récompense de succès, pour compter seulement ce que l'on teste. */
+const t = { ...DEFAULT_TUNING, achievementDustBronze: 0, achievementDustSilver: 0, achievementDustGold: 0, achievementReputation: 0 };
 
 const pearl = (serial: number, pearlId: PearlCard['pearlId'], value = 10): PearlCard => ({ serial, pearlId, sizeMm: 6, value, lustre: 'B', cracked: false, foundAt: 0 });
 const jewel = (serial: number, rarityId: JewelCard['jewel']['rarityId'], extra: Partial<JewelCard> = {}): JewelCard => {
