@@ -74,6 +74,17 @@ export interface Tuning {
   /** Bonus de valeur des certificats « Excellent » et « Bon » (0,25 = +25 %). */
   expertiseBonusExcellent: number;
   expertiseBonusGood: number;
+  /** Poussière d'or obtenue en fondant un doublon, selon sa rareté (— à ★★, perles et bijoux). */
+  dustTier0: number;
+  dustTier1: number;
+  dustTier2: number;
+  dustTier3: number;
+  dustTier4: number;
+  dustTier5: number;
+  /** Prix d'une pièce manquante = poussière qu'elle rapporterait fondue × ce multiplicateur. */
+  dustBuyMultiplier: number;
+  /** Prix d'un écrin Velours en poussière d'or. */
+  dustEcrinPrice: number;
 }
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
@@ -116,6 +127,14 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   expertiseGoodRatio: 2 / 3,
   expertiseBonusExcellent: 0.25,
   expertiseBonusGood: 0.12,
+  dustTier0: 1,
+  dustTier1: 2,
+  dustTier2: 5,
+  dustTier3: 12,
+  dustTier4: 40,
+  dustTier5: 120,
+  dustBuyMultiplier: 5,
+  dustEcrinPrice: 60,
 };
 
 /** Description des paramètres exposés dans l'écran Réglages. */
@@ -153,10 +172,17 @@ export const TUNING_FIELDS: readonly TuningField[] = [
   { key: 'expertiseHitRadius', label: 'Expertise : tolérance du viseur', unit: '× pierre', min: 0.03, max: 0.2, step: 0.01 },
   { key: 'expertiseDwellMs', label: 'Expertise : temps sur une inclusion', unit: 'ms', min: 100, max: 1500, step: 50 },
   { key: 'oystersPerEcrin', label: 'Huîtres pour gagner un écrin', unit: '', min: 1, max: 30, step: 1 },
+  { key: 'dustEcrinPrice', label: 'Poussière d’or : prix d’un écrin', unit: '✦', min: 5, max: 300, step: 5 },
+  { key: 'dustBuyMultiplier', label: 'Poussière d’or : prix d’une pièce', unit: '× fonte', min: 1, max: 20, step: 1 },
   { key: 'lustreMaxVariationB', label: 'Lustre B : irrégularité max', unit: '', min: 0.05, max: 2, step: 0.05 },
 ];
 
 /** Durée du suspense de révélation pour un niveau de rareté donné. */
 export function revealSuspenseMs(tuning: Tuning, tier: 0 | 1 | 2 | 3): number {
   return [tuning.revealSuspenseTier0Ms, tuning.revealSuspenseTier1Ms, tuning.revealSuspenseTier2Ms, tuning.revealSuspenseTier3Ms][tier];
+}
+
+/** Poussière d'or que rapporte un doublon fondu, selon son niveau de rareté (0 = —, 5 = ★★). */
+export function dustForTier(tuning: Tuning, tier: number): number {
+  return [tuning.dustTier0, tuning.dustTier1, tuning.dustTier2, tuning.dustTier3, tuning.dustTier4, tuning.dustTier5][Math.max(0, Math.min(5, tier))];
 }

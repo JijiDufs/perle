@@ -44,6 +44,7 @@ export function mountTuningScreen(root: HTMLElement, ctx: AppContext): () => voi
       <p class="muted">${localEvents().length} événements de mesure enregistrés sur cet appareil.</p>
       <button data-action="fill-stock">Remplir le stock d’huîtres</button>
       <button data-action="empty-stock">Vider le stock d’huîtres</button>
+      <button data-action="add-dust">Ajouter 200 ✦ de poussière d’or</button>
       <button class="danger" data-action="reset-player">Effacer ma collection</button>
     `;
 
@@ -65,6 +66,8 @@ export function mountTuningScreen(root: HTMLElement, ctx: AppContext): () => voi
     } else if (action === 'fill-stock' || action === 'empty-stock') {
       const count = action === 'fill-stock' ? ctx.tuning.oysterStockMax : 0;
       ctx.setPlayer({ ...ctx.player, stock: { count, lastRefillAt: Date.now() } });
+    } else if (action === 'add-dust') {
+      ctx.setPlayer({ ...ctx.player, dust: ctx.player.dust + 200 });
     } else if (action === 'reset-player' && confirm('Effacer toute la collection de cet appareil ?')) {
       ctx.setPlayer(INITIAL_PLAYER_STATE);
       render();

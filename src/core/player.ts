@@ -20,6 +20,8 @@ export interface PearlCard {
   cracked: boolean;
   /** Date de révélation (ms). */
   foundAt: number;
+  /** Achetée avec la poussière d'or plutôt que pêchée. */
+  fromDust?: boolean;
 }
 
 /** Une carte de bijou, créée à chaque écrin ouvert. */
@@ -34,6 +36,8 @@ export interface JewelCard {
   /** Certificat d'expertise à la loupe, une fois l'expertise faite. */
   expertise?: ExpertiseRecord;
   foundAt: number;
+  /** Achetée avec la poussière d'or plutôt que trouvée dans un écrin. */
+  fromDust?: boolean;
 }
 
 /** Écrin en cours d'ouverture : bijou et angle d'éclat décidés à l'avance, sauvegardés. */
@@ -60,6 +64,8 @@ export interface PlayerState {
   jewelDraw: JewelDrawState;
   currentEcrin: PendingEcrin | null;
   jewelCards: JewelCard[];
+  /** Poussière d'or (cahier §7) : vient des doublons fondus, achète une pièce manquante ou un écrin. */
+  dust: number;
 }
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
@@ -74,6 +80,7 @@ export const INITIAL_PLAYER_STATE: PlayerState = {
   jewelDraw: INITIAL_JEWEL_DRAW,
   currentEcrin: null,
   jewelCards: [],
+  dust: 0,
 };
 
 /**

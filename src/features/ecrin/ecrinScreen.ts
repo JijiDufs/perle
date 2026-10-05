@@ -5,6 +5,7 @@ import { smoothstep } from '../../art/color';
 import { renderEcrinArt, roundRectPath, VELVETS, type EcrinArt } from '../../art/ecrin';
 import { drawJewel, drawSparkles, drawStar } from '../../art/jewel';
 import { drawGlow } from '../../art/pearl';
+import { buyEcrin } from '../../core/dust';
 import { GlintEngine, type GlintEvent } from '../../core/glint';
 import { JEWEL_RARITIES, jewelRarity, jewelVariant, withVariant, type Jewel, type JewelRarity, type JewelVariant } from '../../core/jewels';
 import { ensureEcrin, recordEcrin, type JewelCard } from '../../core/player';
@@ -15,6 +16,7 @@ import { chimeNotes, ding, noise, pouet, setMuted, unlockAudio } from '../../pla
 import { hapticBurst, hapticTick } from '../../platform/haptics';
 import { revealSuspenseMs } from '../../tuning';
 import type { AppContext } from '../context';
+import { dustLabel } from '../dust/dustShop';
 import { expertiseButton } from '../expertise/expertiseButton';
 import { jewelShareButton } from '../share/shareButton';
 import { jewelCardElement } from './jewelCardView';
@@ -31,6 +33,7 @@ const TEMPLATE = `
     <p class="ecrin-empty-text"></p>
     <div class="ecrin-progress" aria-hidden="true"></div>
     <button type="button" class="tide-button">Aller pêcher</button>
+    <button type="button" class="dust-buy-ecrin"></button>
   </div>
   <div class="oyster-dock">
     <p class="message" aria-live="polite"></p>
@@ -115,7 +118,14 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
   for (const el of [overlay, empty, oddsButton, oddsSheet]) {
     for (const type of ['pointerdown', 'pointerup'] as const) el.addEventListener(type, (event) => event.stopPropagation());
   }
-  q('.ecrin-empty button').addEventListener('click', () => ctx.goTo('oyster'));
+  q('.ecrin-empty .tide-button').addEventListener('click', () => ctx.goTo('oyster'));
+  q('.dust-buy-ecrin').addEventListener('click', () => {
+    const after = buyEcrin(ctx.player, ctx.tuning);
+    if (!after) return;
+    ctx.setPlayer(after);
+    track('dust_ecrin_bought', { price: ctx.tuning.dustEcrinPrice, from: 'ecrin' });
+    nextEcrin();
+  });
   oddsButton.addEventListener('click', () => {
     oddsSheet.hidden = false;
     track('ecrin_odds_viewed', {});
@@ -237,6 +247,13 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
       text.textContent = `Encore ${left} huître${left > 1 ? 's' : ''} à ouvrir pour gagner ton prochain écrin.`;
       progress.innerHTML = Array.from({ length: ctx.tuning.oystersPerEcrin }, (_, i) => `<i class="${i < ctx.player.oystersSinceEcrin ? 'on' : ''}"></i>`).join('');
     }
+    // Hors tutoriel, un écrin s'achète aussi avec la poussière d'or.
+    const buy = q<HTMLButtonElement>('.dust-buy-ecrin');
+    buy.hidden = isInTutorial(opened);
+    buy.disabled = ctx.player.dust < ctx.tuning.dustEcrinPrice;
+    buy.textContent = buy.disabled
+      ? `Ou ${dustLabel(ctx.tuning.dustEcrinPrice)} de poussière d’or (tu en as ${ctx.player.dust})`
+      : `Acheter un écrin · ${dustLabel(ctx.tuning.dustEcrinPrice)}`;
     empty.hidden = false;
     message.textContent = '';
     gauge.hidden = true;

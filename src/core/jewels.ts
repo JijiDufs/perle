@@ -26,8 +26,8 @@ export interface JewelRarity {
   flavor: string;
 }
 
-const SYMBOLS = ['—', '◆', '◆◆', '◆◆◆', '★', '★★'];
-const r = (o: Omit<JewelRarity, 'rarity'>): JewelRarity => ({ ...o, rarity: SYMBOLS[o.tier] });
+export const RARITY_SYMBOLS = ['—', '◆', '◆◆', '◆◆◆', '★', '★★'];
+const r = (o: Omit<JewelRarity, 'rarity'>): JewelRarity => ({ ...o, rarity: RARITY_SYMBOLS[o.tier] });
 
 export const JEWEL_RARITIES: readonly JewelRarity[] = [
   r({ id: 'toc', label: 'Toc', tier: 0, probability: 0.14, glow: null, metal: '#ff8fc4', metalName: 'Plastique', gem: '#ff3d8b', suffix: '', carats: null, value: [0.5, 3], flavor: '' }),
@@ -106,6 +106,14 @@ export function rollJewel(state: JewelDrawState, rng: Rng, tuning: Tuning): { je
     }
   }
 
+  return {
+    jewel: jewelOfRarity(rarity, rng),
+    state: { sinceStarOrBetter: isStarOrBetter(rarity) ? 0 : state.sinceStarOrBetter + 1 },
+  };
+}
+
+/** Fabrique un bijou d'une rareté donnée (type, nom, carats, estimation). Sert au tirage et à la poussière d'or. */
+export function jewelOfRarity(rarity: JewelRarity, rng: Rng): Jewel {
   let type = pick(TYPES, rng);
   let name: string;
   let metal = rarity.metal;
@@ -133,10 +141,7 @@ export function rollJewel(state: JewelDrawState, rng: Rng, tuning: Tuning): { je
   const base = rarity.value[0] + rng() * (rarity.value[1] - rarity.value[0]);
   const value = roundValue(base * (carats ? Math.max(1, carats) : 1) * TYPE_MULTIPLIER[type]);
 
-  return {
-    jewel: { rarityId: rarity.id, type, name, metal, metalName, gem, candy, pearls: rarity.id === 'perles', carats, value, flavor },
-    state: { sinceStarOrBetter: isStarOrBetter(rarity) ? 0 : state.sinceStarOrBetter + 1 },
-  };
+  return { rarityId: rarity.id, type, name, metal, metalName, gem, candy, pearls: rarity.id === 'perles', carats, value, flavor };
 }
 
 /** Variantes rares révélées par un éclat parfait (cahier §7). Couleurs : provisoires (AGENTS.md §6). */

@@ -8,6 +8,7 @@ import type { JewelCard, PearlCard } from '../../core/player';
 import { track } from '../../platform/analytics';
 import type { AppContext } from '../context';
 import { jewelCardElement } from '../ecrin/jewelCardView';
+import { dustLabel, meltButton, openDustShop } from '../dust/dustShop';
 import { expertiseButton } from '../expertise/expertiseButton';
 import { jewelShareButton, pearlShareButton } from '../share/shareButton';
 import { cardElement } from './cardView';
@@ -33,7 +34,17 @@ interface Shelf<C extends { serial: number }> {
   entryOf(card: C): string;
   sort(cards: C[], sort: CardSort): C[];
   element(card: C, size: 'large' | 'small'): HTMLElement;
-  zoomExtras(card: C): HTMLElement[];
+  zoomExtras(card: C, onChanged: () => void): HTMLElement[];
+}
+
+/** Boutons sous la carte agrandie, sur une ligne. */
+function actions(...buttons: (HTMLElement | null)[]): HTMLElement[] {
+  const present = buttons.filter((b): b is HTMLElement => b !== null);
+  if (!present.length) return [];
+  const row = document.createElement('div');
+  row.className = 'card-actions';
+  row.append(...present);
+  return [row];
 }
 
 function pearlShelf(ctx: AppContext): Shelf<PearlCard> {
@@ -49,7 +60,7 @@ function pearlShelf(ctx: AppContext): Shelf<PearlCard> {
     entryOf: (card) => card.pearlId,
     sort: sortCards,
     element: (card, size) => cardElement(card.pearlId, card, size),
-    zoomExtras: (card) => [pearlShareButton(card)],
+    zoomExtras: (card, onChanged) => actions(pearlShareButton(card), meltButton(ctx, card, onChanged)),
   };
 }
 
@@ -79,10 +90,7 @@ function jewelShelf(ctx: AppContext, refresh: () => void): Shelf<JewelCard> {
     entryOf: (card) => card.jewel.rarityId,
     sort: sortJewelCards,
     element: jewelCardElement,
-    zoomExtras: (card) => {
-      const expertise = expertiseButton(ctx, card, refresh);
-      return expertise ? [expertise, jewelShareButton(card)] : [jewelShareButton(card)];
-    },
+    zoomExtras: (card, onChanged) => [...actions(expertiseButton(ctx, card, refresh), jewelShareButton(card)), ...actions(meltButton(ctx, card, onChanged))],
   };
 }
 
@@ -90,6 +98,7 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
   root.className = 'screen collection-screen';
   let kind: Kind = 'pearls';
   let filter: string | null = null;
+  let closeShop = () => {};
 
   function mount(): void {
     const shelf = (kind === 'pearls' ? pearlShelf(ctx) : jewelShelf(ctx, () => mount())) as Shelf<PearlCard | JewelCard>;
@@ -101,6 +110,10 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
       <header class="collection-header">
         <h2>${shelf.title}</h2>
         <p>${shelf.subtitle}</p>
+        <button type="button" class="dust-bar" data-action="dust">
+          <span class="dust-amount">${dustLabel(ctx.player.dust)}</span> poussière d’or
+          <span class="dust-cta">Fondre · Acheter</span>
+        </button>
       </header>
       <section class="encyclopedia" aria-label="Encyclopédie"></section>
       <div class="cards-toolbar">
@@ -170,7 +183,13 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
     const card = shelf.cards.find((c) => c.serial === serial);
     if (!card) return;
     const zoom = root.querySelector<HTMLElement>('.zoom-overlay')!;
-    zoom.replaceChildren(shelf.element(card, 'large'), ...shelf.zoomExtras(card));
+    zoom.replaceChildren(
+      shelf.element(card, 'large'),
+      ...shelf.zoomExtras(card, () => {
+        zoom.hidden = true;
+        mount();
+      }),
+    );
     zoom.insertAdjacentHTML('beforeend', '<p class="tap-hint">Touche pour fermer</p>');
     zoom.hidden = false;
     track('card_zoomed', { kind, entry: shelf.entryOf(card) });
@@ -200,6 +219,17 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
       const id = entryButton.dataset.entry!;
       filter = filter === id ? null : id;
       if (filter) track('collection_filtered', { kind, entry: filter });
+    } else if (target.closest('[data-action="dust"]')) {
+      closeShop = openDustShop(document.body, ctx, {
+        onChanged: () => mount(),
+        onPieceBought: (card, pieceKind) => {
+          kind = pieceKind === 'pearl' ? 'pearls' : 'jewels';
+          filter = null;
+          mount();
+          openCard(card.serial);
+        },
+      });
+      return;
     } else if (target.closest('[data-action="clear-filter"]')) {
       filter = null;
     } else if (cardEl) {
@@ -221,5 +251,5 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
   });
 
   mount();
-  return () => {};
+  return () => closeShop();
 }

@@ -28,6 +28,7 @@ export function jewelCardElement(card: JewelCard, size: 'large' | 'small'): HTML
     ${size === 'large' && jewel.flavor ? `<p class="card-flavor">${jewel.flavor}</p>` : ''}
     ${variant ? `<p class="card-flag card-flag-gold">Variante rare ${variant.label} : valeur ×2</p>` : card.perfect ? '<p class="card-flag card-flag-gold">Éclat parfait : valeur ×1,5</p>' : ''}
     ${card.expertise && card.expertise.bonus > 0 ? `<p class="card-flag card-flag-gold card-certificate">✦ Certificat d’expertise : ${GRADE_LABELS[card.expertise.grade]} (+${Math.round(card.expertise.bonus * 100)} %)</p>` : ''}
+    ${card.fromDust && size === 'large' ? '<p class="card-flag card-flag-dust">✦ Obtenu avec la poussière d’or</p>' : ''}
     ${size === 'large' ? '<p class="card-fine">Estimation fictive</p>' : ''}
   `;
   el.querySelector('.card-art')!.append(jewelCanvas(jewel, variant?.glow ?? rarity.glow, size === 'large' ? 190 : 100));

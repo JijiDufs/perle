@@ -543,3 +543,69 @@ select { font: inherit; background: var(--panel); color: var(--ink); border: 1px
 .certificate-failed { background: var(--panel); color: var(--ink); border-color: var(--line); }
 .certificate-failed .certificate-kicker { color: var(--ink-soft); }
 .expertise-overlay .share-button { animation: none; }
+
+/* Poussière d'or : barre de la collection, comptoir, bouton Fondre. */
+.dust-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 10px 0 14px;
+  padding: 10px 14px;
+  border: 1px solid rgba(232, 190, 90, 0.45);
+  border-radius: 14px;
+  background: linear-gradient(100deg, rgba(232, 190, 90, 0.16), rgba(232, 190, 90, 0.04));
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+}
+.dust-bar:active { transform: scale(0.98); }
+.dust-amount { color: var(--gold); font-weight: 700; font-variant-numeric: tabular-nums; }
+.dust-cta { margin-left: auto; color: var(--gold); font-size: 0.82rem; font-weight: 600; }
+.dust-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 6, 8, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.dust-panel {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 20px 16px calc(24px + env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+  border: 1px solid var(--line);
+  background: #0c1a1e;
+  animation: sheet-up 0.3s cubic-bezier(0.2, 1, 0.4, 1) both;
+}
+@keyframes sheet-up { from { transform: translateY(40px); opacity: 0; } }
+.dust-panel h2 { font: 400 1.5rem/1.1 var(--serif); margin: 0 0 4px; }
+.dust-panel h3 { font: 400 1.1rem var(--serif); margin: 20px 0 8px; }
+.dust-balance { margin: 0 0 4px; font-size: 1.6rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+.dust-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+.dust-notice { margin: 8px 0 0; padding: 8px 12px; border-radius: 10px; background: rgba(232, 190, 90, 0.14); color: var(--gold); }
+.dust-fine { color: var(--ink-soft); font-size: 0.8rem; margin: 8px 0 0; }
+.dust-subtitle { color: var(--ink-soft); font-size: 0.85rem; margin: 14px 0 4px; }
+.dust-action { width: 100%; padding: 12px; border-radius: 12px; border: 0; background: var(--gold); color: #1b1408; font-weight: 700; }
+.dust-action:disabled { background: var(--panel); color: var(--ink-soft); border: 1px solid var(--line); }
+.dust-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.dust-row-art { width: 40px; height: 40px; flex: none; display: grid; place-items: center; }
+.dust-row-ecrin::before { content: ''; width: 30px; height: 24px; border-radius: 6px; background: linear-gradient(160deg, #7a2141, #3a0d1f); box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.3); }
+.dust-row-name { flex: 1; font-weight: 600; }
+.dust-row-name small { display: block; font-weight: 400; color: var(--ink-soft); font-size: 0.78rem; }
+.dust-buy { min-width: 72px; padding: 8px 12px; border-radius: 999px; border: 0; background: var(--gold); color: #1b1408; font-weight: 700; font-variant-numeric: tabular-nums; }
+.dust-buy:disabled { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+.melt-button { background: transparent; color: var(--gold); border: 1px solid rgba(232, 190, 90, 0.6); box-shadow: none; }
+.melt-button.armed { background: var(--gold); color: #1b1408; }
+.card .card-flag-dust { color: #7a5000; }
+.card-dark .card-flag.card-flag-dust { color: #ffe08a; }
+.dust-buy-ecrin { margin-top: 12px; border: 1px solid rgba(232, 190, 90, 0.6); background: transparent; color: var(--gold); border-radius: 999px; padding: 10px 20px; font-weight: 600; }
+.dust-buy-ecrin:disabled { color: var(--ink-soft); border-color: transparent; font-weight: 400; font-size: 0.85rem; }
+.dust-buy-ecrin[hidden] { display: none; }

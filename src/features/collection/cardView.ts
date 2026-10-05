@@ -30,6 +30,7 @@ export function cardElement(pearlId: PearlId, card: PearlCard | null, size: 'lar
     ${stats}
     ${size === 'large' ? `<p class="card-flavor">${pearl.flavor}</p>` : ''}
     ${card?.cracked ? '<p class="card-flag">Fêlée : valeur divisée par deux</p>' : ''}
+    ${card?.fromDust && size === 'large' ? '<p class="card-flag card-flag-dust">✦ Obtenue avec la poussière d’or</p>' : ''}
   `;
   const art = el.querySelector('.card-art')!;
   if (card) {

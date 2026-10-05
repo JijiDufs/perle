@@ -29,7 +29,11 @@ export type AnalyticsEvent =
   | 'ecrin_odds_viewed'
   | 'ecrin_variant'
   | 'expertise_started'
-  | 'expertise_finished';
+  | 'expertise_finished'
+  | 'dust_shop_viewed'
+  | 'dust_melted'
+  | 'dust_piece_bought'
+  | 'dust_ecrin_bought';
 
 export interface TrackedEvent {
   name: AnalyticsEvent;
