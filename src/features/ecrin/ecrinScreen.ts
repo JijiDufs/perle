@@ -15,6 +15,7 @@ import { track } from '../../platform/analytics';
 import { chimeNotes, ding, noise, pouet, setMuted, unlockAudio } from '../../platform/audio';
 import { hapticBurst, hapticTick } from '../../platform/haptics';
 import { revealSuspenseMs } from '../../tuning';
+import { Salon } from '../../art/salon';
 import type { AppContext } from '../context';
 import { visibleBand } from '../nav/insets';
 import { dustLabel } from '../dust/dustShop';
@@ -266,6 +267,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
 
   // Bande visible entre la barre du haut et les onglets : le sujet s'y centre, le fond déborde dessous.
   let band = { top: 0, bottom: 0 };
+  const salon = new Salon();
 
   function resize(): void {
     band = visibleBand(canvas, root.querySelector('.oyster-dock'));
@@ -285,27 +287,19 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
 
-    const bg = c.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, '#1a1520');
-    bg.addColorStop(1, '#0b090e');
-    c.fillStyle = bg;
-    c.fillRect(0, 0, w, h);
-    for (let i = 0; i < 4; i++) {
-      const x = w * (0.5 + 0.45 * Math.sin(t * 0.11 + i * 1.9));
-      const y = h * (0.5 + 0.4 * Math.cos(t * 0.09 + i * 2.1));
-      const g = c.createRadialGradient(x, y, 0, x, y, w * 0.6);
-      g.addColorStop(0, 'rgba(255,220,170,.05)');
-      g.addColorStop(1, 'rgba(255,220,170,0)');
-      c.fillStyle = g;
-      c.fillRect(x - w * 0.6, y - w * 0.6, w * 1.2, w * 1.2);
-    }
-    if (!engine) return;
-
     const vh = h - band.top - band.bottom;
     const bw = Math.min(w * 0.78, vh * 0.55);
     const bh = bw * 0.78;
     const bx = (w - bw) / 2;
     const hy = band.top + vh * 0.47;
+    // Le salon du joaillier : mur, table de velours, faisceau chaud (art/salon.ts).
+    const focus = { x: w / 2, y: hy + bh / 2, w: bw, h: bh };
+    salon.draw(c, w, h, t, focus);
+    if (!engine) {
+      salon.drawOverlay(c, w, h, t, focus);
+      return;
+    }
+
     const key = `${bw}|${velvet}`;
     if (key !== artKey) {
       art = renderEcrinArt(bw, bh, velvet, Math.min(window.devicePixelRatio || 1, 3));
@@ -381,6 +375,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
       c.fillRect(bx, hy - height, bw, height);
     }
 
+    salon.drawOverlay(c, w, h, t, focus);
     renderDock();
   }
 

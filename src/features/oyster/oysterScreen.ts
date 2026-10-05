@@ -17,6 +17,7 @@ import { chime, noise, setMuted, unlockAudio } from '../../platform/audio';
 import { hapticBurst, hapticTick } from '../../platform/haptics';
 import { revealSuspenseMs } from '../../tuning';
 import { cardElement } from '../collection/cardView';
+import { Lagoon } from '../../art/lagoon';
 import type { AppContext } from '../context';
 import { visibleBand } from '../nav/insets';
 import { pearlShareButton } from '../share/shareButton';
@@ -247,6 +248,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
 
   // Bande visible entre la barre du haut et les onglets : le sujet s'y centre, le fond déborde dessous.
   let band = { top: 0, bottom: 0 };
+  const lagoon = new Lagoon();
 
   function resize(): void {
     band = visibleBand(canvas, root.querySelector('.oyster-dock'));
@@ -272,27 +274,15 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     let hx = w / 2;
     let hy = band.top + vh * 0.52;
 
-    // Fond : eau profonde et reflets qui dérivent.
-    const bg = c.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, '#0c3b45');
-    bg.addColorStop(1, '#03161c');
-    c.fillStyle = bg;
-    c.fillRect(0, 0, w, h);
-    for (let i = 0; i < 5; i++) {
-      const x = w * (0.5 + 0.45 * Math.sin(t * 0.13 + i * 1.7));
-      const y = h * (0.5 + 0.4 * Math.cos(t * 0.11 + i * 2.3));
-      const g = c.createRadialGradient(x, y, 0, x, y, w * 0.6);
-      g.addColorStop(0, 'rgba(170,240,235,.07)');
-      g.addColorStop(1, 'rgba(170,240,235,0)');
-      c.fillStyle = g;
-      c.fillRect(x - w * 0.6, y - w * 0.6, w * 1.2, w * 1.2);
-    }
+    // Le lagon : eau, rayons, sable et reflets, algues, bulles (art/lagoon.ts).
+    lagoon.draw(c, w, h, t, { x: hx, y: hy, size: L });
 
     if (waiting) {
       // Marée basse : une coquille vide, à peine visible, en attendant le minuteur.
       c.globalAlpha = 0.18;
       drawShellExterior(c, hx, hy, DOWN, L, phases);
       c.globalAlpha = 1;
+      lagoon.drawOverlay(c, w, h);
       renderDock();
       return;
     }
@@ -353,6 +343,8 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
       const leak = smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle));
       drawGlow(c, hx, hy + L * 0.98 * lift, L * 0.8, pearl.glow, leak * strength * 0.9);
     }
+
+    lagoon.drawOverlay(c, w, h);
 
     // Révélation : le halo envahit l'écran, puis éclair blanc pour les ★.
     if (busy) drawGlow(c, px, py, L * (1.4 + pearl.revealTier * 0.5), pearl.glow, suspense * 0.5 * cursedPulse, false);

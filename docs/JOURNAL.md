@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (22) · Jules · Claude Code · branche `jules/refonte-visuelle`
+
+Refonte visuelle, 1re passe : décors détaillés et design général. Direction choisie par Jules : tout en code animé, « lagon lumineux + luxe ».
+
+**Fait**
+- `art/lagoon.ts` (Pêche) : eau turquoise claire vers la surface, ondulation de la surface, 6 rayons de soleil qui ondulent, récif et coraux au loin dans la brume, sable avec rides en perspective, galets et étoiles de mer, caustiques (motif généré, sans couture, deux nappes qui glissent), algues qui ondulent, bulles, plancton, banc de poissons toutes les 22 s, ombre de l'huître, vignette. Le fixe est calculé une fois par taille d'écran (≈ 0,5 ms par image mesuré sur Mac).
+- `art/shell.ts` : coquille en relief (lumière du dessus, ombres portées entre les bandes, liserés), stries rayonnantes, taches, algues, balanes ; dessinée une fois puis gardée en cache.
+- `art/salon.ts` (Écrins) : mur de soie prune à motif losangé, lumières floues (bokeh), plinthe et filet doré, table de velours sombre, faisceau chaud, flaque de lumière, ombre de l'écrin, poussières dorées qui scintillent, vignette.
+- `art/house.ts` : cratères de la lune, nuages, phare au loin dont le feu tourne, reflet de la lune et de la lanterne sur l'eau, lucioles.
+- `style.css` (section « Refonte visuelle ») : fond « galerie » bleu nuit + motif d'écailles dorées ; barres en verre fumé à filet doré, onglet actif doré ; boutons principaux en or, secondaires en nacre ; cartes avec liseré intérieur et relief ; fenêtres en velours nuit ; vitrines de verre pour les listes.
+
+**Prochaines passes possibles**
+- Perles plus réalistes (irisation, reflets), effets de révélation (particules, rayons), cartes « foil », icônes, atelier et expertise, images story dans le nouveau style.
+
+**Fragile**
+- `ctx.filter` n'existe pas sur Safari : ne pas l'utiliser pour les flous (dégradés à la place).
+
+---
+
 ## 2026-10-05 (21) · Jules · Claude Code · branche `jules/affichage`
 
 Défauts d'affichage, passés en revue sur 375×812, 375×667 (iPhone SE) et 320×568.

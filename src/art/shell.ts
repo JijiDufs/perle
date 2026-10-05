@@ -32,18 +32,172 @@ export function tracePath(c: CanvasRenderingContext2D, points: Point[]): void {
   c.closePath();
 }
 
-const EXTERIOR_BANDS = ['#3a322b', '#57493c', '#2e2722', '#6a5a49', '#433931', '#7a6a57', '#3b332c'];
+/** Couleurs des bandes de croissance [éclairée, dans l'ombre], de l'extérieur vers la charnière. */
+const EXTERIOR_BANDS: readonly [string, string][] = [
+  ['#5a4a3c', '#2a211b'],
+  ['#7b6853', '#3e3229'],
+  ['#4a3f36', '#221b17'],
+  ['#988267', '#4f4236'],
+  ['#6a5a4b', '#30271f'],
+  ['#ad9878', '#5d4e3e'],
+  ['#5d5246', '#2d261f'],
+];
 
-/** Extérieur de la valve : bandes de croissance brunes et bord dentelé. */
-export function drawShellExterior(c: CanvasRenderingContext2D, ax: number, ay: number, angle: number, L: number, ph: Phases): void {
-  EXTERIOR_BANDS.forEach((color, k) => {
-    tracePath(c, shellOutline(ax, ay, angle, L * (1 - k * 0.085), [ph[0] + k * 0.2, ph[1], ph[2] + k], 0.045 - k * 0.004));
-    c.fillStyle = color;
+interface CachedShell {
+  canvas: HTMLCanvasElement;
+  /** Position de la charnière dans l'image. */
+  ox: number;
+  oy: number;
+  scale: number;
+}
+
+const exteriorCache = new Map<string, CachedShell>();
+
+/** Petit hasard déterministe tiré des phases : chaque huître garde ses taches et ses balanes. */
+function shellRandom(ph: Phases): () => number {
+  let seed = Math.floor((ph[0] * 1000 + ph[1] * 100 + ph[2] * 10) % 2147483646) + 1;
+  return () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+}
+
+/** Dessine l'extérieur une fois, charnière en (0, 0), avec relief, stries, taches et balanes. */
+function paintExterior(c: CanvasRenderingContext2D, angle: number, L: number, ph: Phases): void {
+  const rand = shellRandom(ph);
+  const ca = Math.cos(angle);
+  const sa = Math.sin(angle);
+  // Point le plus éclairé : vers la surface (en haut), un peu à gauche.
+  const lx = -L * 0.25;
+  const ly = L * 0.15;
+
+  EXTERIOR_BANDS.forEach(([light, dark], k) => {
+    const outline = shellOutline(0, 0, angle, L * (1 - k * 0.085), [ph[0] + k * 0.2, ph[1], ph[2] + k], 0.045 - k * 0.004);
+    // Ombre portée de la bande sur la précédente.
+    c.save();
+    c.translate(L * 0.006, L * 0.014);
+    tracePath(c, outline);
+    c.fillStyle = 'rgba(10, 6, 4, 0.35)';
     c.fill();
-    c.lineWidth = 2;
-    c.strokeStyle = 'rgba(220,200,170,.10)';
+    c.restore();
+    tracePath(c, outline);
+    const g = c.createRadialGradient(lx, ly, L * 0.05, lx, ly, L * 1.25);
+    g.addColorStop(0, light);
+    g.addColorStop(1, dark);
+    c.fillStyle = g;
+    c.fill();
+    // Liseré éclairé sur le bord dentelé.
+    c.lineWidth = Math.max(1, L * 0.006);
+    c.strokeStyle = `rgba(255, 238, 210, ${0.16 + k * 0.015})`;
     c.stroke();
   });
+
+  // Stries qui rayonnent depuis la charnière, et texture : taches, algues, balanes.
+  c.save();
+  tracePath(c, shellOutline(0, 0, angle, L, ph, 0.045));
+  c.clip();
+  for (let i = 0; i < 22; i++) {
+    const f = -1.3 + (2.6 * i) / 21 + (rand() - 0.5) * 0.05;
+    const dx = Math.cos(f) * L * 1.1;
+    const dy = Math.sin(f) * L * 1.1;
+    const ex = dx * ca - dy * sa;
+    const ey = dx * sa + dy * ca;
+    c.strokeStyle = 'rgba(20, 12, 8, 0.16)';
+    c.lineWidth = L * 0.008;
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.lineTo(ex, ey);
+    c.stroke();
+    c.strokeStyle = 'rgba(255, 240, 220, 0.07)';
+    c.lineWidth = L * 0.005;
+    c.beginPath();
+    c.moveTo(L * 0.008, 0);
+    c.lineTo(ex + L * 0.01, ey);
+    c.stroke();
+  }
+  // Traces d'algues vertes près du bord.
+  for (let i = 0; i < 3; i++) {
+    const f = -1 + rand() * 2;
+    const r = L * (0.6 + rand() * 0.3);
+    const x = Math.cos(f) * r * ca - Math.sin(f) * r * sa;
+    const y = Math.cos(f) * r * sa + Math.sin(f) * r * ca;
+    const g = c.createRadialGradient(x, y, 0, x, y, L * 0.22);
+    g.addColorStop(0, 'rgba(90, 140, 90, 0.32)');
+    g.addColorStop(1, 'rgba(90, 140, 90, 0)');
+    c.fillStyle = g;
+    c.fillRect(x - L * 0.25, y - L * 0.25, L * 0.5, L * 0.5);
+  }
+  // Petites taches claires et sombres.
+  for (let i = 0; i < 70; i++) {
+    const f = -1.35 + rand() * 2.7;
+    const r = L * Math.sqrt(rand()) * 0.98;
+    const x = Math.cos(f) * r * ca - Math.sin(f) * r * sa;
+    const y = Math.cos(f) * r * sa + Math.sin(f) * r * ca;
+    c.fillStyle = rand() > 0.5 ? `rgba(255, 245, 225, ${0.06 + rand() * 0.1})` : `rgba(15, 8, 5, ${0.1 + rand() * 0.15})`;
+    c.beginPath();
+    c.arc(x, y, L * (0.004 + rand() * 0.01), 0, Math.PI * 2);
+    c.fill();
+  }
+  // Balanes : petits cônes beiges, plissés, ouverts d'une fente (pas de rond sombre : on dirait des yeux).
+  for (let i = 0; i < 3; i++) {
+    const f = -1.1 + rand() * 2.2;
+    const r = L * (0.45 + rand() * 0.45);
+    const x = Math.cos(f) * r * ca - Math.sin(f) * r * sa;
+    const y = Math.cos(f) * r * sa + Math.sin(f) * r * ca;
+    const br = L * (0.016 + rand() * 0.014);
+    c.save();
+    c.translate(x, y);
+    c.rotate(rand() * Math.PI);
+    const g = c.createRadialGradient(-br * 0.3, -br * 0.3, br * 0.1, 0, 0, br);
+    g.addColorStop(0, 'rgba(225, 214, 192, 0.9)');
+    g.addColorStop(1, 'rgba(120, 108, 92, 0.85)');
+    c.fillStyle = g;
+    c.beginPath();
+    for (let p = 0; p < 12; p++) {
+      const a = (p / 12) * Math.PI * 2;
+      const rr = br * (p % 2 ? 0.86 : 1);
+      c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * 0.85);
+    }
+    c.closePath();
+    c.fill();
+    c.strokeStyle = 'rgba(70, 58, 48, 0.6)';
+    c.lineWidth = Math.max(0.8, br * 0.18);
+    c.beginPath();
+    c.moveTo(-br * 0.35, 0);
+    c.lineTo(br * 0.35, 0);
+    c.stroke();
+    c.restore();
+  }
+  // Reflet de la lumière du dessus.
+  const sheen = c.createRadialGradient(lx, ly, 0, lx, ly, L * 0.7);
+  sheen.addColorStop(0, 'rgba(255, 250, 235, 0.16)');
+  sheen.addColorStop(1, 'rgba(255, 250, 235, 0)');
+  c.fillStyle = sheen;
+  c.fillRect(-L * 1.2, -L * 0.2, L * 2.4, L * 1.5);
+  c.restore();
+}
+
+/** Extérieur de la valve : bandes de croissance en relief et bord dentelé (gardé en cache : c'est le dessin le plus lourd). */
+export function drawShellExterior(c: CanvasRenderingContext2D, ax: number, ay: number, angle: number, L: number, ph: Phases): void {
+  const scale = Math.min(typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1, 2);
+  const key = `${Math.round(L)}|${angle.toFixed(3)}|${ph.join(',')}|${scale}`;
+  let cached = exteriorCache.get(key);
+  if (!cached) {
+    const points = shellOutline(0, 0, angle, L, ph, 0.05);
+    const xs = points.map((p) => p[0]);
+    const ys = points.map((p) => p[1]);
+    const pad = L * 0.06;
+    const minX = Math.min(...xs, 0) - pad;
+    const minY = Math.min(...ys, 0) - pad;
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.ceil((Math.max(...xs, 0) + pad - minX) * scale);
+    canvas.height = Math.ceil((Math.max(...ys, 0) + pad - minY) * scale);
+    const cc = canvas.getContext('2d')!;
+    cc.scale(scale, scale);
+    cc.translate(-minX, -minY);
+    paintExterior(cc, angle, L, ph);
+    cached = { canvas, ox: -minX, oy: -minY, scale };
+    if (exteriorCache.size > 8) exteriorCache.delete(exteriorCache.keys().next().value!);
+    exteriorCache.set(key, cached);
+  }
+  c.drawImage(cached.canvas, ax - cached.ox, ay - cached.oy, cached.canvas.width / cached.scale, cached.canvas.height / cached.scale);
 }
 
 /** Intérieur nacré, irisé, avec des reflets qui tournent lentement (t en secondes). */

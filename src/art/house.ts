@@ -119,6 +119,39 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
   c.beginPath();
   c.arc(w * 0.18, h * 0.16, w * 0.045, 0, Math.PI * 2);
   c.fill();
+  // Quelques cratères, pour que la lune ne soit pas un simple disque.
+  c.fillStyle = 'rgba(160, 180, 195, 0.35)';
+  for (const [dx, dy, r] of [[-0.012, -0.01, 0.009], [0.014, 0.008, 0.007], [0.002, 0.018, 0.005]]) {
+    c.beginPath();
+    c.arc(w * (0.18 + dx), h * 0.16 + w * dy, w * r, 0, Math.PI * 2);
+    c.fill();
+  }
+
+  // Nuages qui passent lentement devant le ciel.
+  for (let i = 0; i < 3; i++) {
+    const cy = h * (0.08 + i * 0.07);
+    // `t` en ms : quelques pixels par seconde.
+    const cx = ((t * (0.004 + i * 0.002) + i * w * 0.4) % (w * 1.6)) - w * 0.3;
+    c.fillStyle = `rgba(120, 150, 170, ${0.1 - i * 0.02})`;
+    for (const [ox, rx, ry] of [[0, 0.16, 0.025], [0.1, 0.12, 0.02], [-0.09, 0.1, 0.018]]) {
+      c.beginPath();
+      c.ellipse(cx + w * ox, cy, w * rx, h * ry, 0, 0, Math.PI * 2);
+      c.fill();
+    }
+  }
+
+  // Le phare, au loin sur la pointe : son feu tourne.
+  const lhx = w * 0.9;
+  const lhy = l.horizon;
+  c.fillStyle = '#16232c';
+  c.beginPath();
+  c.moveTo(w * 0.8, lhy);
+  c.quadraticCurveTo(w * 0.9, lhy - h * 0.025, w * 1.02, lhy);
+  c.fill();
+  c.fillStyle = '#2a3a44';
+  c.fillRect(lhx - w * 0.008, lhy - h * 0.07, w * 0.016, h * 0.06);
+  const beam = (Math.sin(t / 900) + 1) / 2;
+  glow(c, lhx, lhy - h * 0.072, w * (0.03 + 0.06 * beam), '#fff1c4', 0.35 + 0.5 * beam);
 
   // Mer.
   const sea = c.createLinearGradient(0, l.horizon, 0, h);
@@ -139,8 +172,15 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
     }
     c.stroke();
   }
-  // Reflet de la lune.
+  // Reflet de la lune : une colonne de petits traits qui scintillent sur l'eau.
   glow(c, w * 0.18, l.horizon + (h - l.horizon) * 0.35, w * 0.12, '#cfe6ff', 0.08);
+  for (let i = 0; i < 14; i++) {
+    const k = i / 14;
+    const y = l.horizon + 3 + k * (h - l.horizon) * 0.8;
+    const width = w * (0.015 + k * 0.05) * (0.6 + 0.4 * Math.sin(t / 300 + i * 1.7));
+    c.fillStyle = `rgba(220, 235, 255, ${0.35 * (1 - k)})`;
+    c.fillRect(w * 0.18 - width / 2 + Math.sin(t / 700 + i) * 3, y, width, 1.5);
+  }
 
   // Ponton.
   c.fillStyle = '#3a2c22';
@@ -159,6 +199,13 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
   if (lit) {
     const flicker = 0.85 + 0.15 * Math.sin(t / 130) * Math.sin(t / 370);
     glow(c, l.lantern.x, l.lantern.y + h * 0.04, w * 0.42, '#ffc56b', 0.22 * flicker);
+    // Reflet chaud de la lanterne sur l'eau, sous le ponton.
+    for (let i = 0; i < 8; i++) {
+      const y = l.ground + h * 0.05 + i * h * 0.022;
+      const width = w * (0.04 + i * 0.012) * (0.6 + 0.4 * Math.sin(t / 260 + i * 2.1));
+      c.fillStyle = `rgba(255, 200, 120, ${0.28 * (1 - i / 8) * flicker})`;
+      c.fillRect(l.lantern.x - width / 2 + Math.sin(t / 500 + i) * 2, y, width, 1.5);
+    }
   }
 
   // Murs en planches.
@@ -324,6 +371,17 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
     c.fillRect(l.box.x - l.box.s / 2, l.box.y - l.box.s / 2, l.box.s, l.box.s * 0.8);
     c.fillStyle = '#e8be5a';
     c.fillRect(l.box.x - l.box.s * 0.08, l.box.y - l.box.s * 0.2, l.box.s * 0.16, l.box.s * 0.2);
+  }
+
+  // Lucioles autour de la lanterne allumée.
+  if (lit) {
+    for (let i = 0; i < 6; i++) {
+      const a = t / (1800 + i * 300) + i * 1.3;
+      const fx = l.lantern.x + Math.cos(a) * w * (0.08 + 0.03 * i) + Math.sin(t / 700 + i) * 8;
+      const fy = l.lantern.y + Math.sin(a * 1.3) * h * 0.06 + h * 0.02;
+      const blink = Math.max(0, Math.sin(t / 400 + i * 2.3));
+      glow(c, fx, fy, 7, '#fff3a0', 0.8 * blink);
+    }
   }
 
   // Éclat de restauration.
