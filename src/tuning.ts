@@ -116,6 +116,9 @@ export interface Tuning {
   questsPerDay: number;
   questRewardDust: number;
   questRewardReputation: number;
+  /** Récompense d'une lettre de grand-mère lue (La Maison). */
+  chapterRewardDust: number;
+  chapterRewardReputation: number;
 }
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
@@ -188,6 +191,8 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   questsPerDay: 3,
   questRewardDust: 10,
   questRewardReputation: 30,
+  chapterRewardDust: 20,
+  chapterRewardReputation: 20,
 };
 
 /** Description des paramètres exposés dans l'écran Réglages. */

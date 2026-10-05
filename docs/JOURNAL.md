@@ -4,6 +4,21 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (17) · Jules · Claude Code · branche `jules/maison`
+
+La Maison, début du fil narratif, en 4e onglet (choix de Jules).
+
+**Fait**
+- `src/core/house.ts` (tests : `tests/house.test.ts`) : 7 lettres de grand-mère Rose (niveaux 1, 3, 4, 5, 6, 8, 10), chacune restaure un élément ; `readChapter` (récompense une seule fois), `unreadChapters`, `restoredFeatures`, `houseStageName` (la cabane du ponton → … selon le rang). `PlayerState.chaptersRead`.
+- `src/art/house.ts` : la cabane au crépuscule (ciel, lune, mer animée, ponton) et ses éléments restaurés : porte décondamnée, lanterne allumée, enseigne « Maison Rose », fenêtre éclairée avec le carnet, établi, vitrine avec la plus belle pièce du joueur, boîte qui luit (mystère de la perle maudite). Éclat quand un élément apparaît.
+- `src/features/house/houseScreen.ts` : la scène, le nom de la Maison, le carnet (lettres nouvelles, lues, scellées, « La suite… niveau 15 ») et la lecture sur papier ; ranger une lettre restaure l'élément sous les yeux du joueur.
+- Onglet Maison (verrouillé pendant le tutoriel, pastille des lettres à lire) ; la célébration de niveau rappelle les lettres qui attendent.
+
+**À décider avec Mathys**
+- Le prénom de la grand-mère, le nom de la Maison, les textes, le rythme des lettres, la suite de l'histoire (chapitre 8 au niveau 15).
+
+---
+
 ## 2026-10-05 (16) · Jules · Claude Code · branche `jules/succes-quetes`
 
 Succès, titres et quêtes du jour.

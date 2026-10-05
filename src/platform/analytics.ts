@@ -38,7 +38,9 @@ export type AnalyticsEvent =
   | 'quests_viewed'
   | 'quest_claimed'
   | 'title_worn'
-  | 'level_up';
+  | 'level_up'
+  | 'chapter_opened'
+  | 'chapter_read';
 
 export interface TrackedEvent {
   name: AnalyticsEvent;

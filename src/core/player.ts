@@ -81,6 +81,8 @@ export interface PlayerState {
   title: string | null;
   /** Quêtes du jour en cours. */
   quests: DailyQuests | null;
+  /** Lettres de grand-mère lues (La Maison). */
+  chaptersRead: string[];
 }
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
@@ -102,6 +104,7 @@ export const INITIAL_PLAYER_STATE: PlayerState = {
   achievements: {},
   title: null,
   quests: null,
+  chaptersRead: [],
 };
 
 /**

@@ -13,7 +13,7 @@ export interface AppContext {
   setTuning(tuning: Tuning): void;
   setSettings(settings: Settings): void;
   /** Change d'écran. */
-  goTo(screen: 'oyster' | 'ecrin' | 'collection' | 'tuning'): void;
+  goTo(screen: 'oyster' | 'ecrin' | 'collection' | 'house' | 'tuning'): void;
   /** Moment calme (carte refermée) : montre les succès, quêtes terminées et montées de niveau en attente. */
   showRewards(): void;
 }

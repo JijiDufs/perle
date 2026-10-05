@@ -4,8 +4,8 @@ import { chimeNotes } from '../../platform/audio';
 import { hapticBurst } from '../../platform/haptics';
 import type { Tuning } from '../../tuning';
 
-/** Montre les niveaux franchis (de `from` exclu à `to` inclus) en une seule célébration. */
-export function showLevelUp(from: number, to: number, tuning: Tuning, onClose: () => void): void {
+/** Montre les niveaux franchis (de `from` exclu à `to` inclus) en une seule célébration, et les lettres qui attendent. */
+export function showLevelUp(from: number, to: number, tuning: Tuning, unreadLetters: number, onClose: () => void): void {
   let oysters = 0;
   let dust = 0;
   let ecrins = 0;
@@ -43,6 +43,7 @@ export function showLevelUp(from: number, to: number, tuning: Tuning, onClose: (
           ? `<p class="levelup-next">Prochain déblocage · niveau ${upcoming.level} : ${upcoming.label}${upcoming.available ? '' : ' <em>(à venir)</em>'}</p>`
           : ''
       }
+      ${unreadLetters ? `<p class="levelup-letter">✉ ${unreadLetters > 1 ? `${unreadLetters} lettres de grand-mère t’attendent` : 'Une lettre de grand-mère t’attend'} dans la Maison</p>` : ''}
       ${following ? `<p class="levelup-next">Rang suivant · ${following.title} au niveau ${following.level}</p>` : ''}
       <button type="button" class="levelup-button">Continuer</button>
     </div>`;

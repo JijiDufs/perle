@@ -9,6 +9,7 @@ import { nextRefillIn, refreshStock } from '../../core/stock';
 import { currentQuests } from '../../core/progression';
 import { isClaimable, isComplete, questText } from '../../core/quests';
 import { isEcrinUnlocked, isInTutorial } from '../../core/tutorial';
+import { isHouseUnlocked, unreadChapters } from '../../core/house';
 import { track } from '../../platform/analytics';
 import { chimeNotes } from '../../platform/audio';
 import { hapticBurst } from '../../platform/haptics';
@@ -20,10 +21,10 @@ import { openQuestsSheet } from '../progress/questsSheet';
 import type { AppContext } from '../context';
 import { ICONS } from './icons';
 
-export type ScreenName = 'oyster' | 'ecrin' | 'collection' | 'tuning';
+export type ScreenName = 'oyster' | 'ecrin' | 'collection' | 'house' | 'tuning';
 
 /** Ordre des onglets : sert au sens de la transition. */
-const ORDER: ScreenName[] = ['oyster', 'ecrin', 'collection', 'tuning'];
+const ORDER: ScreenName[] = ['oyster', 'ecrin', 'collection', 'house', 'tuning'];
 
 export interface ShellState {
   player: PlayerState;
@@ -86,6 +87,7 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
       <button type="button" data-screen="oyster">${ICONS.oyster}<span>Pêche</span></button>
       <button type="button" data-screen="ecrin"><span class="tab-icon">${ICONS.ecrin}</span><span>Écrins</span><span class="badge" hidden></span></button>
       <button type="button" data-screen="collection">${ICONS.collection}<span>Collection</span><span class="badge badge-new" hidden></span></button>
+      <button type="button" data-screen="house"><span class="tab-icon">${ICONS.house}</span><span>Maison</span><span class="badge badge-letter" hidden></span></button>
     </nav>
     <p class="toast" role="status" hidden></p>
     <div class="banner-host" aria-live="polite"></div>
@@ -95,6 +97,8 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
   const ecrinTab = q('.tabbar [data-screen="ecrin"]');
   const ecrinBadge = q('.tabbar [data-screen="ecrin"] .badge');
   const newBadge = q('.tabbar [data-screen="collection"] .badge');
+  const houseTab = q('.tabbar [data-screen="house"]');
+  const letterBadge = q('.tabbar [data-screen="house"] .badge');
   const oysterRes = q('.resource-oyster');
   const dustRes = q('.resource-dust');
   const toastEl = q('.toast');
@@ -106,6 +110,7 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     reputation?: number;
     rewardedLevel?: number;
     achievements?: Set<string>;
+    houseUnlocked?: boolean;
     questsDone?: Set<string>;
   } = {};
   const questsButton = q('.hud-quests');
@@ -204,6 +209,16 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     ecrinBadge.hidden = ecrins === 0;
     ecrinBadge.textContent = String(ecrins);
 
+    // Maison : verrouillée pendant le tutoriel, puis pastille des lettres à lire.
+    const houseOpen = isHouseUnlocked(player);
+    houseTab.classList.toggle('locked', !houseOpen);
+    houseTab.querySelector('.tab-icon')!.innerHTML = houseOpen ? ICONS.house : ICONS.lock;
+    if (last.houseUnlocked === false && houseOpen) houseTab.classList.add('just-unlocked');
+    last.houseUnlocked = houseOpen;
+    const letters = unreadChapters(player, tuning).length;
+    letterBadge.hidden = letters === 0;
+    letterBadge.textContent = String(letters);
+
     // Collection : nouvelles cartes depuis la dernière visite (pas pendant qu'on la regarde).
     const fresh = active === 'collection' ? 0 : newCardsSince(player, settings.seenSerial);
     newBadge.hidden = fresh === 0;
@@ -222,6 +237,7 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     app.querySelector<HTMLElement>('.tabbar')!.style.setProperty('--tab-index', String(Math.max(0, index)));
     app.querySelector('.tabbar')!.classList.toggle('no-active', index < 0);
     if (name === 'ecrin') ecrinTab.classList.remove('just-unlocked');
+    if (name === 'house') houseTab.classList.remove('just-unlocked');
     update(getState());
     return direction;
   }
@@ -244,7 +260,7 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     pendingLevels = null;
     celebrating = true;
     track('level_up', { level: to });
-    showLevelUp(from, to, tuning, () => (celebrating = false));
+    showLevelUp(from, to, tuning, unreadChapters(player, tuning).length, () => (celebrating = false));
   }
 
   function showBanner(banner: Banner, done: () => void): void {
@@ -295,6 +311,10 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     const name = button.dataset.screen as ScreenName;
     if (name === 'ecrin' && button.classList.contains('locked')) {
       toast('Les écrins se débloquent après tes premières huîtres.');
+      return;
+    }
+    if (name === 'house' && button.classList.contains('locked')) {
+      toast('La Maison t’attend après tes premières huîtres.');
       return;
     }
     if (name !== active) onNavigate(name);

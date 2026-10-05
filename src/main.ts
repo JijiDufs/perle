@@ -4,6 +4,7 @@ import { unlockAchievements } from './core/progression';
 import type { AppContext } from './features/context';
 import { mountCollectionScreen } from './features/collection/collectionScreen';
 import { mountEcrinScreen } from './features/ecrin/ecrinScreen';
+import { mountHouseScreen } from './features/house/houseScreen';
 import { createShell, type ScreenName } from './features/nav/shell';
 import { mountOysterScreen } from './features/oyster/oysterScreen';
 import { mountTuningScreen } from './features/tuning/tuningScreen';
@@ -16,6 +17,7 @@ const SCREENS: Record<ScreenName, (root: HTMLElement, ctx: AppContext) => () => 
   oyster: mountOysterScreen,
   ecrin: mountEcrinScreen,
   collection: mountCollectionScreen,
+  house: mountHouseScreen,
   tuning: mountTuningScreen,
 };
 

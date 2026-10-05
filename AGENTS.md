@@ -39,10 +39,11 @@ Objectif : valider la **sensation** du geste. Le rendu reprend la direction visu
 - **Niveaux et réputation (cahier §8-9)** : chaque huître, écrin et certificat rapporte de la réputation (plus pour la rareté, le lustre S/A, les découvertes, l'éclat parfait). Anneau de niveau dans la barre du haut (« +N » à chaque gain). Montée de niveau : célébration plein écran avec récompenses (3 huîtres, au-delà du maximum possible ; 15 ✦ ; un écrin tous les 3 niveaux et à chaque rang) et prochain déblocage, montrée quand la carte est refermée (jamais pendant le tutoriel). Rangs du cahier (Pêcheur → Maison de haute joaillerie). Fiche « Ma progression » (toucher l'anneau) : niveau, statistiques, chemin des rangs, déblocages (ceux qui n'existent pas encore sont marqués « à venir »), barème de réputation.
 - **Succès et titres (cahier §10)** : 24 succès bronze / argent / or (dont 2 secrets), avec poussière d'or et réputation ; certains donnent un titre à porter (affiché sous le rang). Bannière à l'obtention, au moment calme suivant ; volet « Succès » dans « Ma progression ».
 - **Quêtes du jour (cahier §15)** : 3 quêtes tirées chaque jour (mêmes pour tous, renouvelées à minuit), pas pendant le tutoriel ; 10 ✦ + 30 de réputation chacune, un écrin quand les trois sont récupérées. Bouton dans la barre du haut (doré quand une récompense attend), bannière « Quête terminée ». Les réglages du prototype s'ouvrent depuis « Ma progression ».
+- **La Maison (cahier §8), début du fil narratif** : 4e onglet, verrouillé pendant le tutoriel. La cabane de grand-mère Rose au bout du ponton, dessinée par code, qui change de nom avec le rang. 7 lettres débloquées par niveau (1 à 10) ; lire une lettre rapporte 20 ✦ + 20 de réputation et restaure un élément (porte, lanterne, enseigne, fenêtre et carnet, établi, vitrine avec ta plus belle pièce, boîte mystérieuse). Pastille sur l'onglet pour les lettres à lire, rappel dans la célébration de niveau. La 7e lettre amorce le mystère de la perle maudite ; la suite est annoncée au niveau 15.
 - Icône provisoire (huître ouverte + perle), installation sur l'écran d'accueil (aide affichée sur iPhone après le tutoriel), mode hors ligne.
 
 **Hors V1 — ne pas coder sans décision dans §6**
-Atelier, Maison, monnaies, écrins autres que Velours (Vintage, Saison, Couronne…), personnel (Expert), pubs récompensées, bourriche, social, 3D, assets graphiques, sons définitifs, charnière Duo (préparée par l'architecture, pas implémentée), framework UI (React, etc.).
+Atelier, Maison au-delà des lettres et de la cabane (pièces, personnel, vitrine qui vend…), monnaies, écrins autres que Velours (Vintage, Saison, Couronne…), personnel (Expert), pubs récompensées, bourriche, social, 3D, assets graphiques, sons définitifs, charnière Duo (préparée par l'architecture, pas implémentée), framework UI (React, etc.).
 
 ## 3. Architecture (à respecter)
 
@@ -68,13 +69,14 @@ src/
     achievements.ts Succès, paliers, titres
     quests.ts       Quêtes du jour : tirage par jour, avancement
     progression.ts  Après chaque action : statistiques, quêtes, succès (appelé par le Core lui-même)
+    house.ts        La Maison : lettres de grand-mère, déblocage, restauration
     levels.ts       Niveaux, réputation, rangs de prestige, récompenses de niveau, déblocages
     dust.ts         Poussière d'or : fonte des doublons, achat d'une pièce manquante ou d'un écrin
   input/            Sources du geste → produisent des OpeningSample
     thumb.ts        Pouce vers le haut (iPhone classique)
-  art/              Dessin procédural (Canvas 2D) : coquille, nacre, perle, halo, bijoux, écrin, image story. Aucune règle de jeu
+  art/              Dessin procédural (Canvas 2D) : coquille, nacre, perle, halo, bijoux, écrin, Maison, image story. Aucune règle de jeu
   platform/         Ce qui touche au navigateur : haptique, sons générés, sauvegarde, partage, mesure d'usage (analytics.ts)
-  features/         Écrans : nav/ (onglets du bas, barre de ressources, icônes), progress/ (montée de niveau, « Ma progression »), oyster/ (dont coach.ts, textes du tutoriel), ecrin/, expertise/ (mini-jeu), dust/ (comptoir de la poussière d'or), collection/, tuning/, share/ (bouton Partager)
+  features/         Écrans : nav/ (onglets du bas, barre de ressources, icônes), progress/ (montée de niveau, « Ma progression », quêtes), house/ (La Maison), oyster/ (dont coach.ts, textes du tutoriel), ecrin/, expertise/ (mini-jeu), dust/ (comptoir de la poussière d'or), collection/, tuning/, share/ (bouton Partager)
   main.ts           Point d'entrée, navigation entre écrans
 tests/              Tests du Core et des entrées
 public/
@@ -130,6 +132,7 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 | Réputation pour passer du niveau n à n+1 | 60 + 15 × n^1,5 | vise le niveau 50 en 4 à 6 mois (cahier §9) |
 | Récompense de niveau | 3 huîtres, 15 ✦ ; 1 écrin tous les 3 niveaux et à chaque rang | proposition (§6) |
 | Succès bronze / argent / or | 10 / 30 / 80 ✦, + 40 de réputation | proposition (§6) |
+| Lettre de la Maison lue | 20 ✦ + 20 de réputation | proposition (§6) |
 | Quêtes du jour | 3 par jour ; 10 ✦ + 30 de réputation chacune ; les trois = 1 écrin | cahier §15 (« trois quêtes du jour ») |
 
 ## 4. Conventions
@@ -187,6 +190,7 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-05 | **Navigation** : onglets en bas plutôt qu'en haut ; ressources (huîtres, poussière) en haut, sur tous les écrans ; fonctions débloquées une à une (Écrins après le tutoriel). Le compteur d'huîtres sous la coquille est remplacé par celui du haut | Retour de Jules : on ne sentait pas l'évolution du jeu. Jeu à une main : le pouce atteint le bas, pas le haut. Cahier §15 : les fonctions arrivent une à une |
 | 2026-10-05 | **Niveaux et réputation** avant l'atelier : la réputation vient des huîtres, écrins et expertises ; le niveau se déduit de la réputation, les récompenses sont données une seule fois (`rewardedLevel`). Les rangs et déblocages du cahier s'affichent, ceux qui n'existent pas encore marqués « à venir ». Les huîtres gagnées en montant de niveau peuvent dépasser le maximum. Les joueurs existants repartent du niveau 1. **Barème provisoire, à valider avec Mathys** | Retour de Jules : sentir l'évolution dès la bêta. Courbe : ≈ 200 de réputation par session, 4 sessions par jour, ≈ 100 000 pour le niveau 50, soit 4 à 6 mois (cahier §9). Montrer l'horizon (cahier §15) |
 | 2026-10-05 | **Succès et quêtes du jour.** Statistiques, quêtes et succès sont mis à jour dans le Core après chaque action (`progression.ts`). Quêtes tirées avec une graine = la date (heure locale du téléphone). Les célébrations (succès, quête terminée, niveau) attendent un moment calme, jamais pendant la révélation ni le tutoriel. Une ancienne sauvegarde reçoit ses succès déjà remplis au chargement, sans bannière. La roue des réglages quitte la barre du haut pour « Ma progression ». **Liste et barème provisoires, à valider avec Mathys** | Retour de Jules : sentir l'évolution ; raison de revenir chaque jour (cahier §15) ; ne pas gâcher la surprise de la carte |
+| 2026-10-05 | **La Maison en 4e onglet**, début du fil narratif : la grand-mère s'appelle **Rose** (clin d'œil à la première perle, rosée) et la Maison « Maison Rose, perles fines ». Lettres débloquées par niveau, chacune restaure un élément de la cabane. Les fonctions annoncées (atelier, recettes) sont marquées « prochaine version ». **Prénom, textes et rythme provisoires, à valider avec Mathys** | Choix de Jules : commencer le fil narratif tout de suite. Cahier §8 (carnet incomplet, boutique à l'abandon, mystère de la perle maudite) et §15 (horizon de la boutique abandonnée) |
 | 2026-10-05 | Pas de mise en ligne pour l'instant : tout est construit et testé en local | Choix de Jules |
 
 ## 7. Limites connues du prototype web
