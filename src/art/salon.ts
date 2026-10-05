@@ -49,20 +49,6 @@ export class Salon {
     c.drawImage(this.base!, 0, 0, w, h);
     this.drawLights(c, t);
     this.drawBeam(c, t, focus);
-    // Ombre de l'écrin sur le velours.
-    // (Dégradé plutôt que `filter: blur`, que Safari ne gère pas sur un canvas.)
-    const sy = focus.y + focus.h * 0.6;
-    const shadow = c.createRadialGradient(focus.x, sy, 0, focus.x, sy, focus.w * 0.7);
-    shadow.addColorStop(0, 'rgba(10, 0, 4, 0.6)');
-    shadow.addColorStop(0.7, 'rgba(10, 0, 4, 0.35)');
-    shadow.addColorStop(1, 'rgba(10, 0, 4, 0)');
-    c.save();
-    c.translate(0, sy);
-    c.scale(1, 0.85);
-    c.translate(0, -sy);
-    c.fillStyle = shadow;
-    c.fillRect(focus.x - focus.w, sy - focus.w, focus.w * 2, focus.w * 2);
-    c.restore();
   }
 
   /** Par-dessus l'écrin : poussières dans la lumière, vignette. */

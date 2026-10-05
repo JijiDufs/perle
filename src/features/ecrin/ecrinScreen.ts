@@ -2,10 +2,8 @@
 // du haut et se relève dans le sens du pouce. Chercher l'angle d'éclat, puis tenir : éclat parfait.
 // Aucune règle de jeu ici (AGENTS.md, invariant 7) : tout vient de GlintEngine et de player.ts.
 import { smoothstep } from '../../art/color';
-import { drawTapered, renderEcrinArt, taperPath, VELVETS, type EcrinArt } from '../../art/ecrin';
-
-/** Perspective du coffret : le fond est plus étroit que l'avant (part de la largeur). */
-const TAPER = 0.07;
+import { VELVETS } from '../../art/ecrin';
+import { drawEcrin3D, drawEcrinShadow } from '../../art/ecrin3d';
 import { drawJewel, drawSparkles, drawStar } from '../../art/jewel';
 import { drawGlow } from '../../art/pearl';
 import { buyEcrin } from '../../core/dust';
@@ -72,8 +70,6 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
 
   let engine: GlintEngine | null = null;
   let rarity: JewelRarity = JEWEL_RARITIES[0];
-  let art: EcrinArt | null = null;
-  let artKey = '';
   let velvet = VELVETS[0];
   let busy = false;
   let firstEcrin = false;
@@ -233,7 +229,6 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     pendingVariant = pending.variantIfPerfect ? jewelVariant(pending.variantIfPerfect) : null;
     variantRevealed = false;
     velvet = VELVETS[Math.floor(Math.random() * VELVETS.length)];
-    artKey = '';
     engine = new GlintEngine(ctx.tuning, pending.sweetAngle);
     input.reset();
     busy = false;
@@ -279,7 +274,6 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    artKey = '';
   }
   const observer = new ResizeObserver(resize);
   observer.observe(canvas);
@@ -293,7 +287,6 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     const vh = h - band.top - band.bottom;
     const bw = Math.min(w * 0.78, vh * 0.55);
     const bh = bw * 0.78;
-    const bx = (w - bw) / 2;
     const hy = band.top + vh * 0.47;
     // Le salon du joaillier : mur, table de velours, faisceau chaud (art/salon.ts).
     const focus = { x: w / 2, y: hy + bh / 2, w: bw, h: bh };
@@ -303,31 +296,8 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
       return;
     }
 
-    const key = `${bw}|${velvet}`;
-    if (key !== artKey) {
-      art = renderEcrinArt(bw, bh, velvet, Math.min(window.devicePixelRatio || 1, 3));
-      artKey = key;
-    }
     const angle = engine.angle;
-    const theta = (angle * Math.PI) / 180;
     handle(engine.tick(now), now);
-
-    // Base, sa tranche avant (profondeur du coffret), et bijou.
-    c.drawImage(art!.baseFront, bx, hy + bh, bw, art!.baseFrontHeight);
-    drawTapered(c, art!.base, bx, hy, bw, bh, TAPER);
-    const jx = bx + bw / 2;
-    const jy = hy + bh * 0.54;
-    if (shownJewel) drawJewel(c, jx, jy, (bw / 560) * 1.15, shownJewel);
-
-    // Ombre tant que l'écrin est peu ouvert.
-    const dim = 1 - smoothstep(4, 140, angle);
-    if (dim > 0.001) {
-      c.save();
-      taperPath(c, bx, hy, bw, bh, TAPER, Math.min(bw, bh) * 0.08);
-      c.fillStyle = `rgba(0,0,0,${dim * 0.94})`;
-      c.fill();
-      c.restore();
-    }
 
     // Scintillement : plus on approche de l'angle d'éclat, plus ça brille.
     const sparkle = engine.perfect ? 1 : engine.closeness;
@@ -335,10 +305,32 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     const suspense = busy ? smoothstep(0, Math.max(suspenseMs, 1), now - revealStartedAt) : 0;
     const glow = variantRevealed && pendingVariant ? pendingVariant.glow : rarity.glow;
     const sparkleTier = variantRevealed ? Math.max(rarity.tier, 5) : rarity.tier;
-    if (glow) {
-      drawGlow(c, jx, jy, bw * (0.45 + sparkleTier * 0.06), glow, open * (0.12 + 0.45 * sparkle) + suspense * 0.3);
-      drawSparkles(c, jx, jy, sparkleTier, glow, t, open * (0.15 + 0.85 * sparkle) + suspense * 0.5, bw / 600);
-    }
+
+    // Le coffret en 3D : le couvercle tourne avec le geste (art/ecrin3d.ts).
+    const view = { cx: w / 2, cy: hy + bh * 0.55, width: bw };
+    drawEcrinShadow(c, view);
+    const anchors = drawEcrin3D(c, view, {
+      velvet,
+      angle,
+      dim: 1 - smoothstep(4, 140, angle),
+      sweep: rarity.tier >= 4 && engine.phase === 'closed' ? ((t * 0.5) % 1.6) - 0.3 : null,
+      drawJewel: (x, y, unit) => {
+        if (!shownJewel) return;
+        // Le bijou est piqué dans la fente : on le dessine un peu au-dessus, à l'échelle du coffret.
+        const s = (unit * 0.62) / 440;
+        drawJewel(c, x, y - unit * 0.1, s, shownJewel);
+        if (glow) {
+          drawGlow(c, x, y - unit * 0.1, unit * (0.32 + sparkleTier * 0.04), glow, open * (0.12 + 0.45 * sparkle) + suspense * 0.3);
+          drawSparkles(c, x, y - unit * 0.1, sparkleTier, glow, t, open * (0.15 + 0.85 * sparkle) + suspense * 0.5, unit / 700);
+        }
+      },
+    });
+    const [jx, jy] = [anchors.jewel[0], anchors.jewel[1] - anchors.scale * 0.1];
+
+    // La lumière filtre par l'entrebâillement, au bord avant du couvercle.
+    const leak = smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle));
+    if (leak > 0.001) drawGlow(c, anchors.lidEdge[0], anchors.lidEdge[1], bw * 0.5, rarity.glow ?? '#fff1d6', leak * 0.6);
+
     if (perfectAt) {
       // Gerbe d'étoiles ; deux vagues et la couleur de la variante si elle apparaît.
       const waves = variantRevealed ? 2 : 1;
@@ -351,37 +343,6 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
           drawStar(c, jx + Math.cos(a) * radius, jy + Math.sin(a) * radius * 0.8, (bw / 600) * (30 * burst + 8), burst, wave && glow ? glow : '#fff3c4');
         }
       }
-    }
-
-    // Couvercle : extérieur tant qu'il est rabattu, satin intérieur une fois relevé.
-    const lift = Math.cos(theta);
-    if (lift > 0.002) {
-      // Le couvercle se redresse : il perd sa perspective à mesure qu'il se lève.
-      drawTapered(c, art!.lidOutside, bx, hy, bw, bh * lift, TAPER * lift);
-      c.fillStyle = `rgba(0,0,0,${Math.sin(theta) * 0.35})`;
-      taperPath(c, bx, hy, bw, bh * lift, TAPER * lift, Math.min(bw, bh) * 0.08 * lift);
-      c.fill();
-      // Un éclat filtre sous le couvercle des pièces ★ et plus.
-      if (rarity.tier >= 4 && engine.phase === 'closed') {
-        const p = ((t * 0.5) % 1.6) - 0.3;
-        const g = c.createLinearGradient(bx, hy, bx + bw, hy + bh);
-        const at = (v: number) => Math.min(1, Math.max(0, v));
-        g.addColorStop(at(p - 0.1), 'rgba(255,240,180,0)');
-        g.addColorStop(at(p), 'rgba(255,240,180,.55)');
-        g.addColorStop(at(p + 0.1), 'rgba(255,240,180,0)');
-        c.fillStyle = g;
-        taperPath(c, bx, hy, bw, bh * lift, TAPER * lift, Math.min(bw, bh) * 0.08 * lift);
-        c.fill();
-      }
-      // La tranche du couvercle (et son fermoir) suit le bord avant qui se soulève.
-      c.drawImage(art!.lidFront, bx, hy + bh * lift, bw, art!.lidFrontHeight * lift);
-      const leak = smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle));
-      drawGlow(c, jx, hy + bh * lift, bw * 0.6, rarity.glow ?? '#fff1d6', leak * 0.6);
-    } else if (lift < -0.002) {
-      const height = bh * -lift;
-      c.drawImage(art!.lidInside, bx, hy - height, bw, height);
-      c.fillStyle = `rgba(0,0,0,${Math.sin(theta) * 0.25})`;
-      c.fillRect(bx, hy - height, bw, height);
     }
 
     salon.drawOverlay(c, w, h, t, focus);

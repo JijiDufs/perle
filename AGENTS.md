@@ -80,7 +80,7 @@ src/
   input/            Sources du geste → produisent des OpeningSample
     thumb.ts        Pouce vers le haut (iPhone classique)
     pinch.ts        Pincer deux doigts (sertissage), ou un doigt vers le bas
-  art/              Dessin procédural (Canvas 2D) : décors (lagon, salon, Maison), coquille, nacre, perle, halo, bijoux, écrin, établi, image story. Aucune règle de jeu
+  art/              Dessin procédural (Canvas 2D) : décors (lagon, salon, Maison), coquille, nacre, perle, halo, bijoux, écrin en 3D (ecrin3d.ts), établi, image story. Aucune règle de jeu
   platform/         Ce qui touche au navigateur : haptique, sons générés, sauvegarde, partage, mesure d'usage (analytics.ts)
   features/         Écrans : nav/ (onglets du bas, barre de ressources, icônes), progress/ (montée de niveau, « Ma progression », quêtes), house/ (La Maison), atelier/ (carnet, établi, cartes de création), oyster/ (dont coach.ts, textes du tutoriel), ecrin/, expertise/ (mini-jeu), dust/ (comptoir de la poussière d'or), collection/, tuning/, share/ (bouton Partager)
   main.ts           Point d'entrée, navigation entre écrans
