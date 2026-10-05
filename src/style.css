@@ -195,13 +195,11 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .toast.show { animation: toast 2.6s ease both; }
 @keyframes toast { 0% { opacity: 0; transform: translate(-50%, 10px); } 10%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
 
-/* Transition entre écrans, dans le sens des onglets. */
-/* « backwards » et pas « both » : une animation de transform qui reste appliquée ferait de l'écran le repère des
-   éléments position: fixed (carte agrandie, comptoir…), qui s'afficheraient en haut de la page défilée, sous la barre. */
-.screen-enter.from-right { animation: enter-right 0.28s cubic-bezier(0.2, 0.9, 0.3, 1) backwards; }
-.screen-enter.from-left { animation: enter-left 0.28s cubic-bezier(0.2, 0.9, 0.3, 1) backwards; }
-@keyframes enter-right { from { opacity: 0; transform: translateX(24px); } }
-@keyframes enter-left { from { opacity: 0; transform: translateX(-24px); } }
+/* Transition entre écrans : fondu enchaîné (l'ancien écran reste dessous, voir main.ts). Pas de glissement :
+   les écrans couvrent tout l'écran, un décalage découvrirait une bande vide sur un bord. Pas de transform non plus :
+   il ferait de l'écran le repère des éléments position: fixed (carte agrandie, comptoir…). */
+.screen-enter { animation: screen-fade 0.24s ease-out backwards; }
+@keyframes screen-fade { from { opacity: 0; } }
 
 /* Nouveautés de la collection. */
 .card-new {
@@ -225,7 +223,7 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .kind-tabs button.has-new::after { content: ''; display: inline-block; width: 7px; height: 7px; margin-left: 6px; border-radius: 50%; background: var(--accent); vertical-align: middle; }
 
 .screen-host { position: absolute; inset: 0; }
-.screen-host > div { height: 100%; }
+.screen-host > div { position: absolute; inset: 0; }
 
 /* ---------- Écran huître ---------- */
 

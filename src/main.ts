@@ -49,15 +49,26 @@ const shellState = () => ({ player, tuning, settings });
 const shell = createShell(document.querySelector<HTMLElement>('#app')!, (name) => show(name), shellState, () => ctx);
 let unmount: () => void = () => {};
 
+/** Durée du fondu enchaîné entre deux écrans (ms), alignée sur l'animation CSS `.screen-enter`. */
+const SCREEN_FADE_MS = 240;
+
 function show(name: ScreenName): void {
   unmount();
   // Nouvel élément à chaque écran : aucun écouteur ne survit d'un écran à l'autre.
   const root = document.createElement('div');
   const direction = shell.setActive(name);
-  shell.host.replaceChildren(root);
+  // Fondu enchaîné : l'ancien écran (figé) reste dessous le temps que le nouveau apparaisse,
+  // pour ne jamais découvrir le fond (plus de bande vide sur un bord pendant la transition).
+  const previous = [...shell.host.children];
+  shell.host.append(root);
   unmount = SCREENS[name](root, ctx);
   // Après le montage : chaque écran pose ses propres classes.
-  if (direction !== 0) root.classList.add('screen-enter', direction > 0 ? 'from-right' : 'from-left');
+  if (direction !== 0 && previous.length) {
+    root.classList.add('screen-enter');
+    window.setTimeout(() => previous.forEach((el) => el.remove()), SCREEN_FADE_MS);
+  } else {
+    previous.forEach((el) => el.remove());
+  }
   track('screen_view', { screen: name });
 }
 
