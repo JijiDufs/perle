@@ -250,10 +250,9 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
   const pxPerUnit = scale / jewelDepth;
 
   const drawInterior = () => {
-    // Le bijou ne sort pas de la boîte : il reste dans l'espace ouvert entre le rebord et le couvercle
-    // (fermé, rien ne dépasse ; grand ouvert, il peut se dresser au-dessus du rebord).
-    const gap = Math.min(0.55, D * Math.sin(alpha) + (alpha > Math.PI / 2 ? 0.4 : 0));
-    const hull = convexHull([...OUTLINE.map(([x, z]) => project([x, H, z])), ...OUTLINE.map(([x, z]) => project([x, H + gap, z]))]);
+    // Le bijou ne sort pas de la boîte : il reste dans le coin ouvert entre le rebord de la base et le dessous
+    // du couvercle (fermé, rien ne dépasse ; à mi-ouverture, rien ne passe au-dessus du couvercle).
+    const hull = convexHull([...OUTLINE.map(([x, z]) => project([x, H, z])), ...OUTLINE.map(([x, z]) => project(lid([x, H, z])))]);
     c.save();
     poly(hull);
     c.clip();
@@ -351,11 +350,18 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
     }
   };
 
-  // Ordre : couvercle devant la base tant qu'il n'a pas dépassé la verticale, derrière ensuite.
-  if (alpha < Math.PI / 2) {
+  // Ordre de dessin :
+  // - tant qu'on voit le dessus du couvercle (il n'a pas dépassé l'angle de la caméra), il recouvre le bijou ;
+  // - dès qu'on voit son satin, le bijou est devant lui ;
+  // - au-delà de la verticale, le couvercle passe derrière la base.
+  if (alpha < PITCH) {
     drawBase();
     drawInterior();
     drawLid();
+  } else if (alpha < Math.PI / 2) {
+    drawBase();
+    drawLid();
+    drawInterior();
   } else {
     drawLid();
     drawBase();
