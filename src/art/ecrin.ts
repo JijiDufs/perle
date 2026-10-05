@@ -1,2 +1,2 @@
-// Couleurs des écrins de velours. Le coffret lui-même est dessiné en 3D (art/ecrin3d.ts).
-export const VELVETS = ['#1d2b5c', '#5a1030', '#0f4a3c', '#3d1747'];
+// Couleurs du cuir des écrins. L'écrin lui-même est dessiné en 3D (art/ecrin3d.ts).
+export const LEATHERS = ['#1b2b5c', '#6a1426', '#16463a', '#e3d5bb'];

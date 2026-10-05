@@ -2,7 +2,7 @@
 // du haut et se relève dans le sens du pouce. Chercher l'angle d'éclat, puis tenir : éclat parfait.
 // Aucune règle de jeu ici (AGENTS.md, invariant 7) : tout vient de GlintEngine et de player.ts.
 import { smoothstep } from '../../art/color';
-import { VELVETS } from '../../art/ecrin';
+import { LEATHERS } from '../../art/ecrin';
 import { drawEcrin3D, drawEcrinShadow } from '../../art/ecrin3d';
 import { drawJewel, drawSparkles, drawStar } from '../../art/jewel';
 import { drawGlow } from '../../art/pearl';
@@ -70,7 +70,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
 
   let engine: GlintEngine | null = null;
   let rarity: JewelRarity = JEWEL_RARITIES[0];
-  let velvet = VELVETS[0];
+  let leather = LEATHERS[0];
   let busy = false;
   let firstEcrin = false;
   let gestureStart = 0;
@@ -228,7 +228,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     shownJewel = pending.jewel;
     pendingVariant = pending.variantIfPerfect ? jewelVariant(pending.variantIfPerfect) : null;
     variantRevealed = false;
-    velvet = VELVETS[Math.floor(Math.random() * VELVETS.length)];
+    leather = LEATHERS[Math.floor(Math.random() * LEATHERS.length)];
     engine = new GlintEngine(ctx.tuning, pending.sweetAngle);
     input.reset();
     busy = false;
@@ -285,11 +285,12 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     const h = canvas.clientHeight;
 
     const vh = h - band.top - band.bottom;
-    const bw = Math.min(w * 0.78, vh * 0.55);
-    const bh = bw * 0.78;
-    const hy = band.top + vh * 0.47;
-    // Le salon du joaillier : mur, table de velours, faisceau chaud (art/salon.ts).
-    const focus = { x: w / 2, y: hy + bh / 2, w: bw, h: bh };
+    // L'écrin plat est large : il prend presque toute la largeur, un peu sous le milieu de l'espace libre
+    // (le couvercle a la place de se relever au-dessus).
+    const view = { cx: w / 2, cy: band.top + vh * 0.64, width: Math.min(w * 0.86, vh * 0.68) };
+    const bw = view.width;
+    // Le salon du joaillier : mur, table de velours, faisceau chaud centré sur l'écrin (art/salon.ts).
+    const focus = { x: w / 2, y: view.cy, w: bw * 0.8, h: bw * 0.45 };
     salon.draw(c, w, h, t, focus);
     if (!engine) {
       salon.drawOverlay(c, w, h, t, focus);
@@ -307,10 +308,9 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     const sparkleTier = variantRevealed ? Math.max(rarity.tier, 5) : rarity.tier;
 
     // Le coffret en 3D : le couvercle tourne avec le geste (art/ecrin3d.ts).
-    const view = { cx: w / 2, cy: hy + bh * 0.55, width: bw };
     drawEcrinShadow(c, view);
     const anchors = drawEcrin3D(c, view, {
-      velvet,
+      leather,
       angle,
       dim: 1 - smoothstep(4, 140, angle),
       sweep: rarity.tier >= 4 && engine.phase === 'closed' ? ((t * 0.5) % 1.6) - 0.3 : null,
