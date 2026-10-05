@@ -1,10 +1,12 @@
 // Image verticale 1080×1920 (format story) d'une carte, pour la partager (cahier §10).
-// Une seule mise en page ; perles et bijoux fournissent chacun une StorySpec.
+// Une seule mise en page ; perles, bijoux et créations fournissent chacun une StorySpec.
+import { metalById, RECIPES, type CraftedCard } from '../core/atelier';
 import { pearlById } from '../core/catalog';
 import { GRADE_LABELS } from '../core/expertise';
 import { jewelRarity, jewelVariant, withVariant } from '../core/jewels';
 import type { JewelCard, PearlCard } from '../core/player';
 import { CARD_FRAMES, formatCarats, formatEuros, JEWEL_FRAMES, SANS, SERIF, serialLabel } from './cardStyle';
+import { craftedJewel } from './atelier';
 import { drawJewel, drawSparkles } from './jewel';
 import { drawGlow, drawPearl } from './pearl';
 
@@ -260,5 +262,35 @@ export function renderJewelStoryImage(card: JewelCard): Promise<Blob> {
     ],
     fine: 'Estimation fictive',
     holo: rarity.tier >= 3 || card.perfect,
+  });
+}
+
+export function renderCraftedStoryImage(card: CraftedCard): Promise<Blob> {
+  const jewel = craftedJewel({ name: card.name, type: card.type, metal: card.metal }, card.pearlColors);
+  const recipe = RECIPES.find((r) => r.id === card.recipeId);
+  return render({
+    subtitle: `Fait main à l’atelier · ${serialLabel(card.serial)}`,
+    title: card.name,
+    rarity: '★'.repeat(card.stars) + '☆'.repeat(5 - card.stars),
+    frame: JEWEL_FRAMES[Math.min(JEWEL_FRAMES.length - 1, card.stars)],
+    glow: '#fff1d6',
+    artBackground: 'velvet',
+    drawArt(c, x, y, w, h) {
+      const cxArt = x + w / 2;
+      const yOffset = jewel.type === 'collier' ? 0.62 : jewel.type === 'boucles' ? 0.56 : 0.5;
+      drawGlow(c, cxArt, y + h / 2, w * 0.6, '#fff1d6', 0.4);
+      drawJewel(c, cxArt, y + h * yOffset, (w / 520) * 1.05, jewel);
+      if (card.stars >= 4) drawSparkles(c, cxArt, y + h / 2, card.stars - 1, '#fff1d6', 1.3, 1, w / 600);
+    },
+    stats: [
+      ['Métal', metalById(card.metal).name],
+      ['Perles', String(card.pearlIds.length)],
+      ['Estimation', formatEuros(card.value)],
+      ['N°', serialLabel(card.serial)],
+    ],
+    flavor: recipe?.flavor ?? '',
+    flags: [{ text: card.setting === 'parfait' ? 'Fait main · sertissage parfait' : 'Fait main', tone: 'gold' }],
+    fine: 'Estimation fictive',
+    holo: card.stars >= 4,
   });
 }

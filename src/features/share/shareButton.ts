@@ -1,5 +1,6 @@
 import { serialLabel } from '../../art/cardStyle';
-import { renderJewelStoryImage, renderStoryImage } from '../../art/storyImage';
+import { renderCraftedStoryImage, renderJewelStoryImage, renderStoryImage } from '../../art/storyImage';
+import type { CraftedCard } from '../../core/atelier';
 import { pearlById } from '../../core/catalog';
 import { jewelRarity, withVariant } from '../../core/jewels';
 import type { JewelCard, PearlCard } from '../../core/player';
@@ -42,5 +43,14 @@ export function jewelShareButton(card: JewelCard): HTMLButtonElement {
     `perle-bijou-${card.jewel.rarityId}-${card.serial}.png`,
     `J'ai trouvé : ${name} ${rarity.rarity}${perfect} (${serialLabel(card.serial)}) dans un écrin Perle.`,
     { kind: 'jewel', jewel: card.jewel.rarityId, perfect: card.perfect, variant: card.variant ?? 'aucune' },
+  );
+}
+
+export function craftedShareButton(card: CraftedCard): HTMLButtonElement {
+  return shareButton(
+    () => renderCraftedStoryImage(card),
+    `perle-creation-${card.recipeId}-${card.serial}.png`,
+    `J'ai créé ${card.name} (${card.stars}★, ${serialLabel(card.serial)}) à l'atelier de Perle.`,
+    { kind: 'crafted', recipe: card.recipeId, stars: card.stars },
   );
 }

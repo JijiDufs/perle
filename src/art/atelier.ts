@@ -1,4 +1,5 @@
 // L'établi (cahier §6) : la perle à gauche de la pliure, la monture à droite. Refermer les deux moitiés sertit le bijou.
+import { metalById, type Recipe } from '../core/atelier';
 import type { Jewel } from '../core/jewels';
 import { rgba } from './color';
 import { drawJewel } from './jewel';
@@ -106,3 +107,23 @@ export function drawWorkbench(c: Ctx, w: number, h: number, scene: WorkbenchScen
     c.fillRect(0, 0, w, h);
   }
 }
+
+/** Le bijou à dessiner pour une recette, avec les couleurs des perles utilisées. */
+export function craftedJewel(recipe: Pick<Recipe, 'name' | 'type' | 'metal'>, pearlColors: string[]): Jewel {
+  const metal = metalById(recipe.metal);
+  return {
+    rarityId: 'perles',
+    type: recipe.type,
+    name: recipe.name,
+    metal: metal.color,
+    metalName: metal.name,
+    gem: null,
+    candy: false,
+    pearls: true,
+    carats: 0,
+    value: 0,
+    flavor: '',
+    pearlColors,
+  };
+}
+

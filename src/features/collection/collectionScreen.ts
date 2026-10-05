@@ -10,7 +10,7 @@ import type { AppContext } from '../context';
 import { jewelCardElement } from '../ecrin/jewelCardView';
 import { dustLabel, meltButton, openDustShop } from '../dust/dustShop';
 import { expertiseButton } from '../expertise/expertiseButton';
-import { jewelShareButton, pearlShareButton } from '../share/shareButton';
+import { craftedShareButton, jewelShareButton, pearlShareButton } from '../share/shareButton';
 import { cardElement } from './cardView';
 import { RECIPES, type CraftedCard } from '../../core/atelier';
 import { craftedCardElement, craftedJewel } from '../atelier/craftedView';
@@ -121,7 +121,7 @@ function craftedShelf(ctx: AppContext): Shelf<CraftedCard> {
         sort === 'recent' ? b.serial - a.serial : sort === 'value' ? b.value - a.value || b.stars - a.stars : b.stars - a.stars || b.value - a.value,
       ),
     element: craftedCardElement,
-    zoomExtras: () => [],
+    zoomExtras: (card) => actions(craftedShareButton(card)),
   };
 }
 

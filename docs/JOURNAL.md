@@ -4,6 +4,17 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (20) · Jules · Claude Code · branche `jules/finitions`
+
+Finitions : partage des créations, et parcours d'un nouveau joueur rejoué de bout en bout.
+
+**Fait**
+- Les créations de l'atelier se partagent comme les perles et les bijoux : image story (`renderCraftedStoryImage`), bouton Partager sur la carte agrandie et sur l'écran de résultat. `craftedJewel` est passé dans `art/atelier.ts` (utilisé par le dessin et par l'image).
+- Parcours rejoué (4 huîtres du tutoriel → fin) : à la fin du tutoriel, le calendrier s'ouvrait avant les succès, le niveau 3 et les lettres, juste quand le joueur doit aller vers son premier écrin guidé (cahier §15). Le calendrier ne s'ouvre plus tout seul pendant la séance où l'on découvre le jeu (il reste dans la fiche des quêtes, et s'ouvrira à la prochaine visite).
+- Ordre constaté ensuite : « Première perle » → « Geste parfait » → niveau 3 (rappel des 2 lettres de la Maison) → onglet Écrin avec la bulle du premier écrin. Pastille 2 sur la Maison.
+
+---
+
 ## 2026-10-05 (19) · Jules · Claude Code · branche `jules/atelier`
 
 L'Atelier (cahier §6), première version jouable.

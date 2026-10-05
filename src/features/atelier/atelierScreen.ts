@@ -10,6 +10,7 @@ import { track } from '../../platform/analytics';
 import { chimeNotes, noise } from '../../platform/audio';
 import { hapticBurst, hapticTick } from '../../platform/haptics';
 import type { AppContext } from '../context';
+import { craftedShareButton } from '../share/shareButton';
 import { craftedCardElement, craftedJewel, starsLabel } from './craftedView';
 
 function ingredientText(recipe: Recipe): string {
@@ -194,9 +195,11 @@ export function openAtelier(ctx: AppContext, onClose: () => void): void {
           .join('')}</p>
         <div class="result-card"></div>
         <p class="muted">Estimation ${formatEuros(card.value)} · rangé dans ta collection (Créations)</p>
+        <div class="card-actions result-actions"></div>
         <button type="button" class="levelup-button" data-action="again">Retour au carnet</button>
       </div>`;
     root.querySelector('.result-card')!.append(craftedCardElement(card, 'large'));
+    root.querySelector('.result-actions')!.append(craftedShareButton(card));
     chimeNotes('normal', Math.min(3, card.stars - 1));
     root.querySelector('[data-action="again"]')!.addEventListener('click', showRecipes);
   }

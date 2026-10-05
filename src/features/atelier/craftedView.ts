@@ -1,26 +1,9 @@
 import { formatEuros, JEWEL_FRAMES, serialLabel } from '../../art/cardStyle';
 import { jewelCanvas } from '../../art/jewel';
-import { metalById, RECIPES, type CraftedCard, type Recipe } from '../../core/atelier';
-import type { Jewel } from '../../core/jewels';
+import { craftedJewel } from '../../art/atelier';
+import { metalById, RECIPES, type CraftedCard } from '../../core/atelier';
 
-/** Le bijou à dessiner pour une recette, avec les couleurs des perles utilisées. */
-export function craftedJewel(recipe: Pick<Recipe, 'name' | 'type' | 'metal'>, pearlColors: string[]): Jewel {
-  const metal = metalById(recipe.metal);
-  return {
-    rarityId: 'perles',
-    type: recipe.type,
-    name: recipe.name,
-    metal: metal.color,
-    metalName: metal.name,
-    gem: null,
-    candy: false,
-    pearls: true,
-    carats: 0,
-    value: 0,
-    flavor: '',
-    pearlColors,
-  };
-}
+export { craftedJewel };
 
 export const starsLabel = (stars: number) => '★'.repeat(stars) + '☆'.repeat(5 - stars);
 

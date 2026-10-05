@@ -119,8 +119,10 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
   const questsButton = q('.hud-quests');
   const banners: Banner[] = [];
   let showingBanners = false;
-  /** Le calendrier s'ouvre tout seul une fois par jour. */
+  /** Le calendrier s'ouvre tout seul une fois par jour… */
   let calendarShownDay: string | null = null;
+  /** …mais pas pendant la séance où le joueur découvre le jeu : la fin du tutoriel a déjà assez à montrer. */
+  const firstSession = isInTutorial(getState().player.oystersOpened);
   const levelRing = q('.level-ring');
   /** Niveaux gagnés pas encore célébrés : [depuis, jusqu'à]. */
   let pendingLevels: [number, number] | null = null;
@@ -252,7 +254,7 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     const { player, tuning } = getState();
     if (celebrating || showingBanners || isInTutorial(player.oystersOpened)) return;
     const now = Date.now();
-    if (canClaimDaily(player, now) && calendarShownDay !== dayKey(now)) {
+    if (!firstSession && canClaimDaily(player, now) && calendarShownDay !== dayKey(now)) {
       calendarShownDay = dayKey(now);
       celebrating = true;
       openDailyCalendar(getCtx(), () => {
