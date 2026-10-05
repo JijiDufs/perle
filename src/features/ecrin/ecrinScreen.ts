@@ -15,6 +15,7 @@ import { chimeNotes, ding, noise, pouet, setMuted, unlockAudio } from '../../pla
 import { hapticBurst, hapticTick } from '../../platform/haptics';
 import { revealSuspenseMs } from '../../tuning';
 import type { AppContext } from '../context';
+import { expertiseButton } from '../expertise/expertiseButton';
 import { jewelShareButton } from '../share/shareButton';
 import { jewelCardElement } from './jewelCardView';
 
@@ -183,7 +184,13 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
         : `Pas d’éclat parfait cette fois : arrête-toi pile quand ça brille le plus, et tiens une seconde. Prochain écrin dans ${ctx.tuning.oystersPerEcrin} huîtres.`;
       overlay.append(tip);
     }
-    overlay.append(jewelCardElement(card, 'large'), jewelShareButton(card));
+    overlay.append(jewelCardElement(card, 'large'));
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
+    const expertise = expertiseButton(ctx, card, (updated) => showCard(updated, perfect));
+    if (expertise) actions.append(expertise);
+    actions.append(jewelShareButton(card));
+    overlay.append(actions);
     const hint = document.createElement('p');
     hint.className = 'tap-hint';
     hint.textContent = ctx.player.ecrins > 0 ? `Touche pour l’écrin suivant (${ctx.player.ecrins})` : 'Touche pour continuer';

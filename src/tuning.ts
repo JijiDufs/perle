@@ -61,6 +61,17 @@ export interface Tuning {
   ecrinPityThreshold: number;
   /** Huîtres ouvertes pour gagner un écrin (bêta, AGENTS.md §6). */
   oystersPerEcrin: number;
+  /** Expertise à la loupe (cahier §7) : durée du mini-jeu (ms). */
+  expertiseDurationMs: number;
+  /** Rayon (en fraction du rayon de la pierre) dans lequel le viseur « tient » une inclusion. */
+  expertiseHitRadius: number;
+  /** Temps (ms) à garder le viseur sur une inclusion pour la repérer. */
+  expertiseDwellMs: number;
+  /** Part minimale d'inclusions trouvées pour un certificat « Bon ». */
+  expertiseGoodRatio: number;
+  /** Bonus de valeur des certificats « Excellent » et « Bon » (0,25 = +25 %). */
+  expertiseBonusExcellent: number;
+  expertiseBonusGood: number;
 }
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
@@ -96,6 +107,12 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   glintRareVariantMultiplier: 2,
   ecrinPityThreshold: 20,
   oystersPerEcrin: 8,
+  expertiseDurationMs: 20_000,
+  expertiseHitRadius: 0.09,
+  expertiseDwellMs: 350,
+  expertiseGoodRatio: 2 / 3,
+  expertiseBonusExcellent: 0.25,
+  expertiseBonusGood: 0.12,
 };
 
 /** Description des paramètres exposés dans l'écran Réglages. */
@@ -128,6 +145,9 @@ export const TUNING_FIELDS: readonly TuningField[] = [
   { key: 'glintTolerance', label: 'Écrin : tolérance de l’angle d’éclat', unit: '°', min: 1, max: 20, step: 1 },
   { key: 'glintHoldMs', label: 'Écrin : temps à tenir l’éclat', unit: 'ms', min: 200, max: 2500, step: 50 },
   { key: 'glintMaxVelocity', label: 'Écrin : vitesse « immobile » max', unit: '°/s', min: 5, max: 120, step: 5 },
+  { key: 'expertiseDurationMs', label: 'Expertise : durée', unit: 'ms', min: 5000, max: 60000, step: 1000 },
+  { key: 'expertiseHitRadius', label: 'Expertise : tolérance du viseur', unit: '× pierre', min: 0.03, max: 0.2, step: 0.01 },
+  { key: 'expertiseDwellMs', label: 'Expertise : temps sur une inclusion', unit: 'ms', min: 100, max: 1500, step: 50 },
   { key: 'oystersPerEcrin', label: 'Huîtres pour gagner un écrin', unit: '', min: 1, max: 30, step: 1 },
   { key: 'lustreMaxVariationB', label: 'Lustre B : irrégularité max', unit: '', min: 0.05, max: 2, step: 0.05 },
 ];

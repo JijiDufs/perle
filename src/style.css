@@ -482,3 +482,60 @@ select { font: inherit; background: var(--panel); color: var(--ink); border: 1px
   animation: variant-spin 4s linear infinite;
 }
 @keyframes variant-spin { to { --variant-angle: 360deg; } }
+
+/* Boutons sous une carte révélée. */
+.card-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.expertise-button { background: rgba(232, 190, 90, 0.95); color: #1b1408; }
+
+/* Expertise à la loupe. */
+.expertise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px);
+  background: radial-gradient(120% 90% at 50% 40%, #241d2c 0%, #0b090e 100%);
+  touch-action: none;
+  animation: fade-in 0.25s both;
+}
+.expertise-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.expertise-head h2 { font: 400 1.5rem/1.1 var(--serif); margin: 0; }
+.expertise-name { margin: 4px 0 0; color: var(--ink-soft); }
+.expertise-close { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; width: 36px; height: 36px; }
+.expertise-hud { display: grid; gap: 6px; margin-top: 12px; font-variant-numeric: tabular-nums; }
+.expertise-hud[hidden] { display: grid; visibility: hidden; } /* garde sa place : la pierre ne saute pas */
+.expertise-time { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.expertise-time i { display: block; height: 100%; background: var(--gold); }
+.expertise-time i.hot { background: var(--danger); }
+.expertise-scene { flex: 1; min-height: 0; width: 100%; display: block; }
+.expertise-intro, .expertise-result {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: calc(env(safe-area-inset-bottom) + 24px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.expertise-intro[hidden], .expertise-result[hidden] { display: none; }
+.expertise-intro p { margin: 0; max-width: 34ch; }
+.certificate {
+  width: min(100%, 340px);
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f6eedf, #d6c6a8);
+  color: #2a2010;
+  border: 2px solid #b8862b;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  animation: card-in 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.certificate h3 { font: 400 2rem/1 var(--serif); margin: 4px 0 8px; }
+.certificate p { margin: 4px 0; }
+.certificate-kicker { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: #7a5000; }
+.certificate-value strong { color: #7a5000; }
+.certificate-failed { background: var(--panel); color: var(--ink); border-color: var(--line); }
+.certificate-failed .certificate-kicker { color: var(--ink-soft); }
+.expertise-overlay .share-button { animation: none; }

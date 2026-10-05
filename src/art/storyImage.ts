@@ -1,6 +1,7 @@
 // Image verticale 1080×1920 (format story) d'une carte, pour la partager (cahier §10).
 // Une seule mise en page ; perles et bijoux fournissent chacun une StorySpec.
 import { pearlById } from '../core/catalog';
+import { GRADE_LABELS } from '../core/expertise';
 import { jewelRarity, jewelVariant, withVariant } from '../core/jewels';
 import type { JewelCard, PearlCard } from '../core/player';
 import { CARD_FRAMES, formatCarats, formatEuros, JEWEL_FRAMES, SANS, SERIF, serialLabel } from './cardStyle';
@@ -24,7 +25,7 @@ interface StorySpec {
   drawArt(c: Ctx, x: number, y: number, w: number, h: number): void;
   stats: [string, string][];
   flavor: string;
-  flag: { text: string; tone: 'danger' | 'gold' } | null;
+  flags: { text: string; tone: 'danger' | 'gold' }[];
   fine: string | null;
   /** Reflet holographique en diagonale. */
   holo: boolean;
@@ -161,11 +162,10 @@ async function render(spec: StorySpec): Promise<Blob> {
   c.globalAlpha = 0.85;
   let y = spec.flavor ? wrapText(c, spec.flavor, cx + pad, sy + 130, cw - pad * 2, 46) : sy + 130;
   c.globalAlpha = 1;
-  if (spec.flag) {
+  for (const flag of spec.flags) {
     c.font = `600 30px ${SANS}`;
-    const colors = spec.flag.tone === 'gold' ? (spec.frame.dark ? '#ffe08a' : '#7a5000') : spec.frame.dark ? '#ffb3a6' : '#8a2a1e';
-    c.fillStyle = colors;
-    y = wrapText(c, spec.flag.text, cx + pad, y, cw - pad * 2, 40);
+    c.fillStyle = flag.tone === 'gold' ? (spec.frame.dark ? '#ffe08a' : '#7a5000') : spec.frame.dark ? '#ffb3a6' : '#8a2a1e';
+    y = wrapText(c, flag.text, cx + pad, y, cw - pad * 2, 40);
   }
   if (spec.fine) {
     c.font = `500 24px ${SANS}`;
@@ -222,7 +222,7 @@ export function renderStoryImage(card: PearlCard): Promise<Blob> {
       ['N°', serialLabel(card.serial)],
     ],
     flavor: pearl.flavor,
-    flag: card.cracked ? { text: 'Fêlée : valeur divisée par deux', tone: 'danger' } : null,
+    flags: card.cracked ? [{ text: 'Fêlée : valeur divisée par deux', tone: 'danger' }] : [],
     fine: null,
     holo: false,
   });
@@ -254,7 +254,10 @@ export function renderJewelStoryImage(card: JewelCard): Promise<Blob> {
       ['N°', serialLabel(card.serial)],
     ],
     flavor: jewel.flavor,
-    flag: variant ? { text: `Variante rare ${variant.label} : valeur ×2`, tone: 'gold' } : card.perfect ? { text: 'Éclat parfait : valeur ×1,5', tone: 'gold' } : null,
+    flags: [
+      ...(variant ? [{ text: `Variante rare ${variant.label} : valeur ×2`, tone: 'gold' as const }] : card.perfect ? [{ text: 'Éclat parfait : valeur ×1,5', tone: 'gold' as const }] : []),
+      ...(card.expertise && card.expertise.bonus > 0 ? [{ text: `✦ Certificat d’expertise : ${GRADE_LABELS[card.expertise.grade]} (+${Math.round(card.expertise.bonus * 100)} %)`, tone: 'gold' as const }] : []),
+    ],
     fine: 'Estimation fictive',
     holo: rarity.tier >= 3 || card.perfect,
   });

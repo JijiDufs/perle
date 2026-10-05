@@ -1,6 +1,7 @@
 import { DEFAULT_TUNING, type Tuning } from '../tuning';
 import { pearlById, type PearlId } from './catalog';
 import { INITIAL_DRAW_STATE, type DrawState } from './draw';
+import type { ExpertiseRecord } from './expertise';
 import { rollSweetAngle } from './glint';
 import { INITIAL_JEWEL_DRAW, roundValue, rollJewel, rollRareVariant, type Jewel, type JewelDrawState, type JewelVariantId } from './jewels';
 import type { Lustre } from './lustre';
@@ -30,6 +31,8 @@ export interface JewelCard {
   perfect: boolean;
   /** Variante rare révélée par l'éclat parfait (absente des anciennes sauvegardes). */
   variant?: JewelVariantId | null;
+  /** Certificat d'expertise à la loupe, une fois l'expertise faite. */
+  expertise?: ExpertiseRecord;
   foundAt: number;
 }
 

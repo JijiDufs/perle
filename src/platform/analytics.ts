@@ -27,7 +27,9 @@ export type AnalyticsEvent =
   | 'ecrin_perfect'
   | 'ecrin_reveal'
   | 'ecrin_odds_viewed'
-  | 'ecrin_variant';
+  | 'ecrin_variant'
+  | 'expertise_started'
+  | 'expertise_finished';
 
 export interface TrackedEvent {
   name: AnalyticsEvent;

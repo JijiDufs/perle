@@ -8,6 +8,7 @@ import type { JewelCard, PearlCard } from '../../core/player';
 import { track } from '../../platform/analytics';
 import type { AppContext } from '../context';
 import { jewelCardElement } from '../ecrin/jewelCardView';
+import { expertiseButton } from '../expertise/expertiseButton';
 import { jewelShareButton, pearlShareButton } from '../share/shareButton';
 import { cardElement } from './cardView';
 
@@ -18,6 +19,9 @@ const SORTS: { id: CardSort; label: string }[] = [
 ];
 
 type Kind = 'pearls' | 'jewels';
+
+/** « 1 huître ouverte », « 3 huîtres ouvertes ». */
+const plural = (n: number, singular: string, pluralForm: string) => `${n} ${n > 1 ? pluralForm : singular}`;
 
 /** Une étagère de la collection : ce qui change entre perles et bijoux. */
 interface Shelf<C extends { serial: number }> {
@@ -38,7 +42,7 @@ function pearlShelf(ctx: AppContext): Shelf<PearlCard> {
   const countOf = (id: string) => cards.filter((c) => c.pearlId === id).length;
   return {
     title: 'La Crique',
-    subtitle: `${findable.filter((p) => countOf(p.id) > 0).length} sur ${findable.length} perles découvertes · ${ctx.player.oystersOpened} huîtres ouvertes`,
+    subtitle: `${findable.filter((p) => countOf(p.id) > 0).length} sur ${findable.length} perles découvertes · ${plural(ctx.player.oystersOpened, 'huître ouverte', 'huîtres ouvertes')}`,
     emptyText: 'Aucune perle pour l’instant. Va ouvrir ta première huître.',
     entries: findable.map((p) => ({ id: p.id, name: p.name, rarity: p.rarity, count: countOf(p.id), art: () => pearlCanvas(p, 52, false, 0.3) })),
     cards,
@@ -49,13 +53,13 @@ function pearlShelf(ctx: AppContext): Shelf<PearlCard> {
   };
 }
 
-function jewelShelf(ctx: AppContext): Shelf<JewelCard> {
+function jewelShelf(ctx: AppContext, refresh: () => void): Shelf<JewelCard> {
   const cards = ctx.player.jewelCards;
   const rarities = [...JEWEL_RARITIES].sort((a, b) => jewelRarityRank(a.id) - jewelRarityRank(b.id));
   const ofRarity = (id: string) => cards.filter((c) => c.jewel.rarityId === id);
   return {
     title: 'Les bijoux',
-    subtitle: `${rarities.filter((j) => ofRarity(j.id).length > 0).length} sur ${rarities.length} raretés découvertes · ${cards.length} écrins ouverts${(() => {
+    subtitle: `${rarities.filter((j) => ofRarity(j.id).length > 0).length} sur ${rarities.length} raretés découvertes · ${plural(cards.length, 'écrin ouvert', 'écrins ouverts')}${(() => {
       const variants = cards.filter((c) => c.variant).length;
       return variants ? ` · ${variants} variante${variants > 1 ? 's' : ''} rare${variants > 1 ? 's' : ''}` : '';
     })()}`,
@@ -75,7 +79,10 @@ function jewelShelf(ctx: AppContext): Shelf<JewelCard> {
     entryOf: (card) => card.jewel.rarityId,
     sort: sortJewelCards,
     element: jewelCardElement,
-    zoomExtras: (card) => [jewelShareButton(card)],
+    zoomExtras: (card) => {
+      const expertise = expertiseButton(ctx, card, refresh);
+      return expertise ? [expertise, jewelShareButton(card)] : [jewelShareButton(card)];
+    },
   };
 }
 
@@ -85,7 +92,7 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
   let filter: string | null = null;
 
   function mount(): void {
-    const shelf = (kind === 'pearls' ? pearlShelf(ctx) : jewelShelf(ctx)) as Shelf<PearlCard | JewelCard>;
+    const shelf = (kind === 'pearls' ? pearlShelf(ctx) : jewelShelf(ctx, () => mount())) as Shelf<PearlCard | JewelCard>;
     root.innerHTML = `
       <div class="tabs kind-tabs" role="group" aria-label="Type de collection">
         <button data-kind="pearls">Perles</button>
@@ -156,7 +163,7 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
     );
   }
 
-  const currentShelf = () => (kind === 'pearls' ? pearlShelf(ctx) : jewelShelf(ctx)) as Shelf<PearlCard | JewelCard>;
+  const currentShelf = () => (kind === 'pearls' ? pearlShelf(ctx) : jewelShelf(ctx, () => mount())) as Shelf<PearlCard | JewelCard>;
 
   function openCard(serial: number): void {
     const shelf = currentShelf();
