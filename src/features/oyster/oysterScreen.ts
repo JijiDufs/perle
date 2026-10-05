@@ -18,7 +18,7 @@ import { hapticBurst, hapticTick } from '../../platform/haptics';
 import { revealSuspenseMs } from '../../tuning';
 import { cardElement } from '../collection/cardView';
 import type { AppContext } from '../context';
-import { shareButton } from '../share/shareButton';
+import { pearlShareButton } from '../share/shareButton';
 import { coachAfterReveal, coachDuringGesture } from './coach';
 
 const DOWN = Math.PI / 2;
@@ -204,7 +204,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
       overlay.append(p);
     }
     overlay.append(cardElement(pearl.id, card, 'large'));
-    if (card) overlay.append(shareButton(card));
+    if (card) overlay.append(pearlShareButton(card));
     const tap = document.createElement('p');
     tap.className = 'tap-hint';
     tap.textContent = 'Touche pour la prochaine huître';

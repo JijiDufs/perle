@@ -8,7 +8,7 @@ import type { JewelCard, PearlCard } from '../../core/player';
 import { track } from '../../platform/analytics';
 import type { AppContext } from '../context';
 import { jewelCardElement } from '../ecrin/jewelCardView';
-import { shareButton } from '../share/shareButton';
+import { jewelShareButton, pearlShareButton } from '../share/shareButton';
 import { cardElement } from './cardView';
 
 const SORTS: { id: CardSort; label: string }[] = [
@@ -45,7 +45,7 @@ function pearlShelf(ctx: AppContext): Shelf<PearlCard> {
     entryOf: (card) => card.pearlId,
     sort: sortCards,
     element: (card, size) => cardElement(card.pearlId, card, size),
-    zoomExtras: (card) => [shareButton(card)],
+    zoomExtras: (card) => [pearlShareButton(card)],
   };
 }
 
@@ -69,7 +69,7 @@ function jewelShelf(ctx: AppContext): Shelf<JewelCard> {
     entryOf: (card) => card.jewel.rarityId,
     sort: sortJewelCards,
     element: jewelCardElement,
-    zoomExtras: () => [],
+    zoomExtras: (card) => [jewelShareButton(card)],
   };
 }
 

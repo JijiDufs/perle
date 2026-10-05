@@ -15,6 +15,7 @@ import { chimeNotes, ding, noise, pouet, setMuted, unlockAudio } from '../../pla
 import { hapticBurst, hapticTick } from '../../platform/haptics';
 import { revealSuspenseMs } from '../../tuning';
 import type { AppContext } from '../context';
+import { jewelShareButton } from '../share/shareButton';
 import { jewelCardElement } from './jewelCardView';
 
 /** Niveau de mise en scène (0…3) selon la rareté du bijou (0…5). */
@@ -169,7 +170,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
         : `Pas d’éclat parfait cette fois : arrête-toi pile quand ça brille le plus, et tiens une seconde. Prochain écrin dans ${ctx.tuning.oystersPerEcrin} huîtres.`;
       overlay.append(tip);
     }
-    overlay.append(jewelCardElement(card, 'large'));
+    overlay.append(jewelCardElement(card, 'large'), jewelShareButton(card));
     const hint = document.createElement('p');
     hint.className = 'tap-hint';
     hint.textContent = ctx.player.ecrins > 0 ? `Touche pour l’écrin suivant (${ctx.player.ecrins})` : 'Touche pour continuer';

@@ -30,7 +30,7 @@ Objectif : valider la **sensation** du geste. Le rendu reprend la direction visu
 - Collection : encyclopédie (toucher une perle filtre ses cartes), cartes triables par rareté / récentes / valeur, carte agrandie au toucher.
 - Écran de réglages (debug) pour ajuster en direct tous les paramètres du geste.
 - Premières minutes (cahier §15) : 4 huîtres écrites à l'avance, bulles d'accompagnement, main fantôme qui montre le geste.
-- Partage d'une carte en image story 1080×1920 (feuille de partage iOS, ou téléchargement).
+- Partage d'une carte (perle ou bijou) en image story 1080×1920 (feuille de partage iOS, ou téléchargement).
 - **Écrin (V1.1, cahier §7)** : même geste que l'huître, sans fêlure ; angle d'éclat caché (55°–125°), le tenir immobile 0,9 s = éclat parfait (valeur ×1,5, carte holo). 10 raretés de bijoux du toc à la légende, garantie ★ après 20 écrins, probabilités affichées avant ouverture. Premier écrin offert à la fin du tutoriel (guidé), puis 1 toutes les 8 huîtres. Collection en deux volets : Perles / Bijoux.
 - Stock d'huîtres : 10 maximum, 1 qui revient toutes les 20 min (bêta) ; écran « La marée remonte… » avec compte à rebours quand il est vide.
 - Icône provisoire (huître ouverte + perle), installation sur l'écran d'accueil (aide affichée sur iPhone après le tutoriel), mode hors ligne.
