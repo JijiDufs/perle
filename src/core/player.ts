@@ -1,5 +1,6 @@
 import { DEFAULT_TUNING, type Tuning } from '../tuning';
 import { pearlById, type PearlId } from './catalog';
+import type { CraftedCard } from './atelier';
 import { INITIAL_LOGIN, type LoginState } from './daily';
 import { INITIAL_DRAW_STATE, type DrawState } from './draw';
 import type { ExpertiseRecord } from './expertise';
@@ -86,6 +87,8 @@ export interface PlayerState {
   chaptersRead: string[];
   /** Calendrier de connexion et série de jours. */
   login: LoginState;
+  /** Bijoux créés à l'atelier. */
+  craftedCards: CraftedCard[];
 }
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
@@ -109,6 +112,7 @@ export const INITIAL_PLAYER_STATE: PlayerState = {
   quests: null,
   chaptersRead: [],
   login: INITIAL_LOGIN,
+  craftedCards: [],
 };
 
 /**

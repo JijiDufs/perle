@@ -32,7 +32,7 @@ export function showLevelUp(from: number, to: number, tuning: Tuning, unreadLett
       <p class="levelup-kicker">${newRank ? 'Nouveau rang' : 'Niveau supérieur'}</p>
       <div class="levelup-level"><span>Niveau</span><strong>${to}</strong></div>
       <p class="levelup-rank">${newRank ? `Te voilà <b>${newRank.title}</b>` : rank.title}</p>
-      ${newRank ? `<p class="levelup-opens">${newRank.opens} <em>(à venir dans le jeu)</em></p>` : ''}
+      ${newRank ? `<p class="levelup-opens">${newRank.opens}${newRank.level === tuning.atelierLevel ? ' <em>(l’atelier est ouvert, dans la Maison)</em>' : ' <em>(à venir dans le jeu)</em>'}</p>` : ''}
       <ul class="levelup-rewards">
         ${oysters ? `<li><b>+${oysters}</b> huîtres</li>` : ''}
         ${dust ? `<li><b>+${dust} ✦</b> poussière d’or</li>` : ''}

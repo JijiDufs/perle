@@ -19,6 +19,10 @@ export interface PlayerStats {
   variants: number;
   melted: number;
   excellentCertificates: number;
+  /** Bijoux fabriqués à l'atelier, sertissages parfaits, et créations 5 étoiles. */
+  crafted: number;
+  perfectSettings: number;
+  fiveStars: number;
 }
 
 export const INITIAL_STATS: PlayerStats = {
@@ -30,13 +34,17 @@ export const INITIAL_STATS: PlayerStats = {
   variants: 0,
   melted: 0,
   excellentCertificates: 0,
+  crafted: 0,
+  perfectSettings: 0,
+  fiveStars: 0,
 };
 
 export type GameEvent =
   | { kind: 'oyster'; pearlId: PearlId; lustre: Lustre; cracked: boolean }
   | { kind: 'ecrin'; perfect: boolean; variant: boolean }
   | { kind: 'melt' }
-  | { kind: 'expertise'; excellent: boolean };
+  | { kind: 'expertise'; excellent: boolean }
+  | { kind: 'craft'; stars: number; perfect: boolean };
 
 function updateStats(stats: PlayerStats, event: GameEvent): PlayerStats {
   switch (event.kind) {
@@ -57,6 +65,13 @@ function updateStats(stats: PlayerStats, event: GameEvent): PlayerStats {
       return { ...stats, melted: stats.melted + 1 };
     case 'expertise':
       return { ...stats, excellentCertificates: stats.excellentCertificates + (event.excellent ? 1 : 0) };
+    case 'craft':
+      return {
+        ...stats,
+        crafted: stats.crafted + 1,
+        perfectSettings: stats.perfectSettings + (event.perfect ? 1 : 0),
+        fiveStars: stats.fiveStars + (event.stars >= 5 ? 1 : 0),
+      };
   }
 }
 
@@ -71,6 +86,7 @@ function questEvent(event: GameEvent): QuestEvent | null {
     case 'melt':
       return { kind: 'melt' };
     case 'expertise':
+    case 'craft':
       return null;
   }
 }
@@ -95,7 +111,7 @@ export function unlockAchievements(state: PlayerState, now: number, tuning: Tuni
 
 /** Après une action : statistiques, quêtes du jour, succès. */
 export function afterEvent(state: PlayerState, event: GameEvent, now: number, tuning: Tuning): PlayerState {
-  let next: PlayerState = { ...state, stats: updateStats(state.stats, event) };
+  let next: PlayerState = { ...state, stats: updateStats({ ...INITIAL_STATS, ...state.stats }, event) };
   const quests = currentQuests(next, now, tuning);
   const qe = questEvent(event);
   if (quests) next = { ...next, quests: qe ? advanceQuests(quests, qe) : quests };

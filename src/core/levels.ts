@@ -34,7 +34,7 @@ export interface Milestone {
 export const MILESTONES: readonly Milestone[] = [
   { level: 1, label: 'Pêche, La Crique', available: true },
   { level: 1, label: 'Écrins (après le tutoriel)', available: true },
-  { level: 5, label: 'Atelier', available: false },
+  { level: 5, label: 'Atelier (dans la Maison)', available: true },
   { level: 8, label: 'Commandes clients, Le Lagon', available: false },
   { level: 10, label: 'Vitrine, amis et cadeaux', available: false },
   { level: 15, label: 'Le Récif, taille de pierres', available: false },

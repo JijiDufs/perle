@@ -121,6 +121,22 @@ export interface Tuning {
   chapterRewardReputation: number;
   /** Réputation de la case du calendrier de connexion (en plus de sa récompense). */
   dailyRewardReputation: number;
+  /** Niveau qui ouvre l'atelier (cahier §6 : 5). */
+  atelierLevel: number;
+  /** Sertissage : fermeture qui démarre le chrono, fermeture qui termine. */
+  settingStartAt: number;
+  settingCompleteAt: number;
+  /** Durée idéale de la fermeture (ms) : plus court = brusque, plus long = hésitant. */
+  settingIdealMinMs: number;
+  settingIdealMaxMs: number;
+  /** Irrégularité de vitesse (coefficient de variation) qui annule la note de régularité. */
+  settingMaxVariation: number;
+  /** Score du geste (0…1) à partir duquel le sertissage est parfait. */
+  settingPerfectScore: number;
+  /** Écart des doigts (pt) à refermer pour un sertissage complet ; un doigt seul : distance à glisser vers le bas. */
+  settingPinchDistance: number;
+  /** Réputation par bijou fabriqué. */
+  repCraft: number;
 }
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
@@ -196,6 +212,15 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   chapterRewardDust: 20,
   chapterRewardReputation: 20,
   dailyRewardReputation: 15,
+  atelierLevel: 5,
+  settingStartAt: 0.08,
+  settingCompleteAt: 0.95,
+  settingIdealMinMs: 350,
+  settingIdealMaxMs: 1000,
+  settingMaxVariation: 1.2,
+  settingPerfectScore: 0.85,
+  settingPinchDistance: 140,
+  repCraft: 30,
 };
 
 /** Description des paramètres exposés dans l'écran Réglages. */
@@ -238,6 +263,9 @@ export const TUNING_FIELDS: readonly TuningField[] = [
   { key: 'levelBaseXp', label: 'Niveaux : réputation de base par niveau', unit: 'XP', min: 10, max: 500, step: 10 },
   { key: 'levelGrowthXp', label: 'Niveaux : croissance par niveau', unit: 'XP', min: 0, max: 100, step: 1 },
   { key: 'levelEcrinEvery', label: 'Niveaux : un écrin tous les', unit: 'niv.', min: 1, max: 10, step: 1 },
+  { key: 'settingIdealMinMs', label: 'Sertissage : durée idéale min', unit: 'ms', min: 100, max: 1500, step: 50 },
+  { key: 'settingIdealMaxMs', label: 'Sertissage : durée idéale max', unit: 'ms', min: 300, max: 3000, step: 50 },
+  { key: 'settingPinchDistance', label: 'Sertissage : écart des doigts à refermer', unit: 'pt', min: 60, max: 300, step: 10 },
   { key: 'lustreMaxVariationB', label: 'Lustre B : irrégularité max', unit: '', min: 0.05, max: 2, step: 0.05 },
 ];
 

@@ -67,6 +67,11 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     title: 'Grand collectionneur',
     progress: (s) => count(JEWEL_RARITIES.filter((j) => hasJewel(s, j.id)).length, JEWEL_RARITIES.length),
   },
+  // L'atelier
+  { id: 'fait-main', name: 'Fait main', description: 'Fabriquer ton premier bijou à l’atelier.', tier: 'bronze', progress: (s) => count(s.stats.crafted ?? 0, 1) },
+  { id: 'sertissage-parfait', name: 'Doigts de fée', description: 'Réussir un sertissage parfait.', tier: 'argent', progress: (s) => count(s.stats.perfectSettings ?? 0, 1) },
+  { id: 'cinq-etoiles', name: 'Pièce de maître', description: 'Créer un bijou 5 étoiles.', tier: 'or', title: 'Maître sertisseur', progress: (s) => count(s.stats.fiveStars ?? 0, 1) },
+  { id: 'rivage', name: 'La recette de toujours', description: 'Fabriquer le collier « Rivage ».', tier: 'argent', progress: (s) => count((s.craftedCards ?? []).some((c) => c.recipeId === 'rivage') ? 1 : 0, 1) },
   // La fidélité
   { id: 'serie-7', name: 'Fidèle au ponton', description: 'Venir 7 jours d’affilée.', tier: 'argent', title: 'Habitué du port', progress: (s) => count(s.login.bestStreak, 7) },
   { id: 'serie-30', name: 'La marée et moi', description: 'Venir 30 jours d’affilée.', tier: 'or', title: 'Enfant des marées', progress: (s) => count(s.login.bestStreak, 30) },

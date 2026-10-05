@@ -98,11 +98,11 @@ export function drawGem(c: Ctx, x: number, y: number, r: number, col: string, ca
   c.restore();
 }
 
-function pearlDot(c: Ctx, x: number, y: number, r: number): void {
+function pearlDot(c: Ctx, x: number, y: number, r: number, color = '#f2ece4'): void {
   const g = c.createRadialGradient(x - r * 0.35, y - r * 0.4, r * 0.05, x, y, r);
   g.addColorStop(0, '#ffffff');
-  g.addColorStop(0.45, '#f2ece4');
-  g.addColorStop(1, '#a99d90');
+  g.addColorStop(0.45, color);
+  g.addColorStop(1, shade(color, 0.35));
   c.fillStyle = g;
   c.beginPath();
   c.arc(x, y, r, 0, Math.PI * 2);
@@ -130,6 +130,8 @@ export function drawJewel(c: Ctx, x: number, y: number, s: number, jewel: Jewel)
   const toc = jewel.rarityId === 'toc';
   const metal = (x0: number, y0: number, x1: number, y1: number) => metalGradient(c, x0, y0, x1, y1, jewel.metal);
   const gemRadius = (base: number, max: number) => (base + Math.min(max, (jewel.carats || 1) * 6)) * s;
+  // Perles de l'atelier : leurs vraies couleurs, en alternance.
+  const pearlAt = (k: number) => (jewel.pearlColors?.length ? jewel.pearlColors[k % jewel.pearlColors.length] : undefined);
 
   if (jewel.type === 'bague') {
     const R = 64 * s;
@@ -149,6 +151,15 @@ export function drawJewel(c: Ctx, x: number, y: number, s: number, jewel: Jewel)
     c.beginPath();
     c.arc(x, cy, R + lw * 0.12, Math.PI * 1.15, Math.PI * 1.45);
     c.stroke();
+    if (jewel.pearls && !jewel.gem) {
+      // Bague à perle (atelier) : une ou deux perles posées sur l'anneau.
+      const colors = jewel.pearlColors?.length ? jewel.pearlColors : ['#f2ece4'];
+      const r = 26 * s;
+      if (colors.length > 1) {
+        pearlDot(c, x - r * 0.75, cy - R - r * 0.6, r * 0.85, colors[0]);
+        pearlDot(c, x + r * 0.75, cy - R - r * 0.6, r * 0.85, colors[1]);
+      } else pearlDot(c, x, cy - R - r * 0.6, r, colors[0]);
+    }
     if (jewel.gem) {
       const r = toc ? 42 * s : jewel.rarityId === 'fantaisie' ? 22 * s : gemRadius(18, 30);
       const gy = cy - R - r * 0.7;
@@ -158,7 +169,7 @@ export function drawJewel(c: Ctx, x: number, y: number, s: number, jewel: Jewel)
   } else if (jewel.type === 'collier') {
     const q = curve([x - 210 * s, y - 190 * s], [x, y + 120 * s], [x + 210 * s, y - 190 * s]);
     if (jewel.pearls) {
-      for (let k = 0; k <= 34; k++) pearlDot(c, ...q(k / 34), 11 * s);
+      for (let k = 0; k <= 34; k++) pearlDot(c, ...q(k / 34), 11 * s, pearlAt(k));
     } else {
       c.strokeStyle = metal(x - 210 * s, y - 190 * s, x + 210 * s, y);
       c.lineWidth = 3 * s;
@@ -173,7 +184,7 @@ export function drawJewel(c: Ctx, x: number, y: number, s: number, jewel: Jewel)
       }
     }
     const [bx, by] = q(0.5);
-    if (jewel.pearls) pearlDot(c, bx, by + 24 * s, 18 * s);
+    if (jewel.pearls) pearlDot(c, bx, by + 24 * s, 18 * s, pearlAt(0));
     else if (jewel.gem) {
       c.strokeStyle = metal(bx - 10, by, bx + 10, by + 20);
       c.lineWidth = 3 * s;
@@ -216,7 +227,7 @@ export function drawJewel(c: Ctx, x: number, y: number, s: number, jewel: Jewel)
         const a = (k / n) * Math.PI * 2;
         const px = x + Math.cos(a) * rx;
         const py = y + Math.sin(a) * ry;
-        if (jewel.pearls) pearlDot(c, px, py, 13 * s);
+        if (jewel.pearls) pearlDot(c, px, py, 13 * s, pearlAt(k));
         else {
           c.beginPath();
           c.ellipse(px, py, 6 * s, 4 * s, a, 0, Math.PI * 2);
@@ -240,7 +251,7 @@ export function drawJewel(c: Ctx, x: number, y: number, s: number, jewel: Jewel)
       c.moveTo(px, top);
       c.lineTo(px, top + 34 * s);
       c.stroke();
-      if (jewel.pearls) pearlDot(c, px, top + 62 * s, 24 * s);
+      if (jewel.pearls) pearlDot(c, px, top + 62 * s, 24 * s, pearlAt(side < 0 ? 0 : 1));
       else if (jewel.gem) {
         const r = gemRadius(16, 14);
         prongs(c, px, top + 40 * s + r, r, jewel.metal, s);

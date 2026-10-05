@@ -41,10 +41,11 @@ Objectif : valider la **sensation** du geste. Le rendu reprend la direction visu
 - **Quêtes du jour (cahier §15)** : 3 quêtes tirées chaque jour (mêmes pour tous, renouvelées à minuit), pas pendant le tutoriel ; 10 ✦ + 30 de réputation chacune, un écrin quand les trois sont récupérées. Bouton dans la barre du haut (doré quand une récompense attend), bannière « Quête terminée ». Les réglages du prototype s'ouvrent depuis « Ma progression ».
 - **La Maison (cahier §8), début du fil narratif** : 4e onglet, verrouillé pendant le tutoriel. La cabane de grand-mère Rose au bout du ponton, dessinée par code, qui change de nom avec le rang. 7 lettres débloquées par niveau (1 à 10) ; lire une lettre rapporte 20 ✦ + 20 de réputation et restaure un élément (porte, lanterne, enseigne, fenêtre et carnet, établi, vitrine avec ta plus belle pièce, boîte mystérieuse). Pastille sur l'onglet pour les lettres à lire, rappel dans la célébration de niveau. La 7e lettre amorce le mystère de la perle maudite ; la suite est annoncée au niveau 15.
 - **Rendez-vous quotidiens (cahier §15)** : calendrier de connexion sur 7 jours (huîtres, poussière d'or, un écrin le 7e), ouvert tout seul une fois par jour (au lancement, au retour dans l'app, ou à la fin du tutoriel) et depuis la fiche des quêtes. Série de jours consécutifs avec un joker par semaine (un jour manqué ne casse pas la série). Succès « Fidèle au ponton » (7 jours) et « La marée et moi » (30 jours).
+- **L'Atelier (cahier §6), première version** : s'ouvre au niveau 5, depuis la Maison. Carnet de 8 recettes (pages retrouvées du niveau 5 au 12, dont le collier « Rivage » du cahier). Les perles viennent de la collection (les meilleures, en gardant si possible un exemplaire de chaque sorte) ; la monture se paie en poussière d'or. **Sertissage** : pincer deux doigts pour refermer les deux moitiés de l'établi (un doigt qui glisse vers le bas marche aussi) ; ni trop brusque ni trop hésitant. Note de 1 à 5 étoiles = qualité des perles (lustre, fêlure) × réussite du geste. Les créations ont leur volet dans la collection et peuvent prendre place dans la vitrine de la Maison.
 - Icône provisoire (huître ouverte + perle), installation sur l'écran d'accueil (aide affichée sur iPhone après le tutoriel), mode hors ligne.
 
 **Hors V1 — ne pas coder sans décision dans §6**
-Atelier, Maison au-delà des lettres et de la cabane (pièces, personnel, vitrine qui vend…), monnaies, écrins autres que Velours (Vintage, Saison, Couronne…), personnel (Expert), pubs récompensées, bourriche, social, 3D, assets graphiques, sons définitifs, charnière Duo (préparée par l'architecture, pas implémentée), framework UI (React, etc.).
+Atelier au-delà des recettes et du sertissage (création libre, parures, taille, fonte, polissage, gravure, temps de production, métaux et nacre), Maison au-delà des lettres et de la cabane (pièces, personnel, vitrine qui vend…), monnaies, écrins autres que Velours (Vintage, Saison, Couronne…), personnel (Expert), pubs récompensées, bourriche, social, 3D, assets graphiques, sons définitifs, charnière Duo (préparée par l'architecture, pas implémentée), framework UI (React, etc.).
 
 ## 3. Architecture (à respecter)
 
@@ -71,14 +72,17 @@ src/
     quests.ts       Quêtes du jour : tirage par jour, avancement
     progression.ts  Après chaque action : statistiques, quêtes, succès (appelé par le Core lui-même)
     daily.ts        Calendrier de connexion sur 7 jours, série de jours et joker
+    atelier.ts      L'atelier : recettes, montures, choix des perles, fabrication, étoiles
+    setting.ts      Moteur du sertissage : fermeture, durée, régularité, verdict
     house.ts        La Maison : lettres de grand-mère, déblocage, restauration
     levels.ts       Niveaux, réputation, rangs de prestige, récompenses de niveau, déblocages
     dust.ts         Poussière d'or : fonte des doublons, achat d'une pièce manquante ou d'un écrin
   input/            Sources du geste → produisent des OpeningSample
     thumb.ts        Pouce vers le haut (iPhone classique)
+    pinch.ts        Pincer deux doigts (sertissage), ou un doigt vers le bas
   art/              Dessin procédural (Canvas 2D) : coquille, nacre, perle, halo, bijoux, écrin, Maison, image story. Aucune règle de jeu
   platform/         Ce qui touche au navigateur : haptique, sons générés, sauvegarde, partage, mesure d'usage (analytics.ts)
-  features/         Écrans : nav/ (onglets du bas, barre de ressources, icônes), progress/ (montée de niveau, « Ma progression », quêtes), house/ (La Maison), oyster/ (dont coach.ts, textes du tutoriel), ecrin/, expertise/ (mini-jeu), dust/ (comptoir de la poussière d'or), collection/, tuning/, share/ (bouton Partager)
+  features/         Écrans : nav/ (onglets du bas, barre de ressources, icônes), progress/ (montée de niveau, « Ma progression », quêtes), house/ (La Maison), atelier/ (carnet, établi, cartes de création), oyster/ (dont coach.ts, textes du tutoriel), ecrin/, expertise/ (mini-jeu), dust/ (comptoir de la poussière d'or), collection/, tuning/, share/ (bouton Partager)
   main.ts           Point d'entrée, navigation entre écrans
 tests/              Tests du Core et des entrées
 public/
@@ -135,6 +139,10 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 | Récompense de niveau | 3 huîtres, 15 ✦ ; 1 écrin tous les 3 niveaux et à chaque rang | proposition (§6) |
 | Succès bronze / argent / or | 10 / 30 / 80 ✦, + 40 de réputation | proposition (§6) |
 | Calendrier de connexion (jours 1 à 7) | 3 huîtres · 20 ✦ · 5 huîtres · 30 ✦ · 5 huîtres · 50 ✦ · 1 écrin + 30 ✦ ; + 15 de réputation par jour | cahier §15 (écrin le 7e) ; montants : proposition (§6) |
+| Sertissage : durée idéale / régularité / parfait à partir de | 350 – 1000 ms / CV ≤ 1,2 / score 0,85 | à régler sur iPhone |
+| Sertissage : écart des doigts à refermer | 140 pt | à régler sur iPhone |
+| Atelier : montures (argent / or / or rose / platine) | 10 / 25 / 30 / 60 ✦ | proposition (§6) |
+| Atelier : étoiles | 1 + 4 × (0,4 × matériaux + 0,6 × geste) | cahier §6 (« matériaux × réussite du geste ») |
 | Lettre de la Maison lue | 20 ✦ + 20 de réputation | proposition (§6) |
 | Quêtes du jour | 3 par jour ; 10 ✦ + 30 de réputation chacune ; les trois = 1 écrin | cahier §15 (« trois quêtes du jour ») |
 
@@ -195,6 +203,7 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-05 | **Succès et quêtes du jour.** Statistiques, quêtes et succès sont mis à jour dans le Core après chaque action (`progression.ts`). Quêtes tirées avec une graine = la date (heure locale du téléphone). Les célébrations (succès, quête terminée, niveau) attendent un moment calme, jamais pendant la révélation ni le tutoriel. Une ancienne sauvegarde reçoit ses succès déjà remplis au chargement, sans bannière. La roue des réglages quitte la barre du haut pour « Ma progression ». **Liste et barème provisoires, à valider avec Mathys** | Retour de Jules : sentir l'évolution ; raison de revenir chaque jour (cahier §15) ; ne pas gâcher la surprise de la carte |
 | 2026-10-05 | **La Maison en 4e onglet**, début du fil narratif : la grand-mère s'appelle **Rose** (clin d'œil à la première perle, rosée) et la Maison « Maison Rose, perles fines ». Lettres débloquées par niveau, chacune restaure un élément de la cabane. Les fonctions annoncées (atelier, recettes) sont marquées « prochaine version ». **Prénom, textes et rythme provisoires, à valider avec Mathys** | Choix de Jules : commencer le fil narratif tout de suite. Cahier §8 (carnet incomplet, boutique à l'abandon, mystère de la perle maudite) et §15 (horizon de la boutique abandonnée) |
 | 2026-10-05 | **Calendrier de connexion** : une case par jour où l'on vient (pas forcément consécutifs), on recommence après la 7e. **Série** : jours consécutifs ; un seul jour manqué est rattrapé par le joker s'il n'a pas servi dans les 7 derniers jours. Le jour suit l'heure du téléphone, comme les quêtes. **Montants provisoires, à valider avec Mathys** | Cahier §15 : « calendrier de connexion sur 7 jours, avec un écrin le 7e jour » et « série de jours consécutifs, avec un joker par semaine » |
+| 2026-10-05 | **Atelier V1** : dans la Maison plutôt qu'en 5e onglet. Recettes seulement (la création libre viendra). En attendant les métaux, la nacre et les coquillages, **les montures se paient en poussière d'or**. Le sertissage est une nouvelle source de geste (`input/pinch.ts`, `SettingSample`), prête pour la charnière du Duo. Fabriquer consomme les perles, mais garde si possible un exemplaire de chaque sorte (sinon un avertissement). **Recettes, prix et réglages provisoires, à valider avec Mathys** | Choix de Jules : continuer avec l'atelier. Cahier §6 : l'établi, la pliure, le pincement sur iPhone classique, les étoiles ; garder le geste au centre |
 | 2026-10-05 | Pas de mise en ligne pour l'instant : tout est construit et testé en local | Choix de Jules |
 
 ## 7. Limites connues du prototype web

@@ -12,6 +12,8 @@ import { dustLabel, meltButton, openDustShop } from '../dust/dustShop';
 import { expertiseButton } from '../expertise/expertiseButton';
 import { jewelShareButton, pearlShareButton } from '../share/shareButton';
 import { cardElement } from './cardView';
+import { RECIPES, type CraftedCard } from '../../core/atelier';
+import { craftedCardElement, craftedJewel } from '../atelier/craftedView';
 
 const SORTS: { id: CardSort; label: string }[] = [
   { id: 'rarity', label: 'Rareté' },
@@ -19,7 +21,7 @@ const SORTS: { id: CardSort; label: string }[] = [
   { id: 'value', label: 'Valeur' },
 ];
 
-type Kind = 'pearls' | 'jewels';
+type Kind = 'pearls' | 'jewels' | 'crafted';
 
 /** « 1 huître ouverte », « 3 huîtres ouvertes ». */
 const plural = (n: number, singular: string, pluralForm: string) => `${n} ${n > 1 ? pluralForm : singular}`;
@@ -94,6 +96,35 @@ function jewelShelf(ctx: AppContext, refresh: () => void): Shelf<JewelCard> {
   };
 }
 
+function craftedShelf(ctx: AppContext): Shelf<CraftedCard> {
+  const cards = ctx.player.craftedCards;
+  const ofRecipe = (id: string) => cards.filter((c) => c.recipeId === id);
+  return {
+    title: 'Mes créations',
+    subtitle: `${RECIPES.filter((r) => ofRecipe(r.id).length > 0).length} sur ${RECIPES.length} recettes réalisées · ${cards.filter((c) => c.stars >= 5).length} pièce${cards.filter((c) => c.stars >= 5).length > 1 ? 's' : ''} 5 étoiles`,
+    emptyText: 'Aucune création pour l’instant. L’atelier s’ouvre dans la Maison, au niveau 5.',
+    entries: RECIPES.map((r) => ({
+      id: r.id,
+      // « Première lueur » plutôt que « Bague « Première lueur » » : la case est petite.
+      name: r.name.split('«')[1]?.replace('»', '').trim() ?? r.name,
+      rarity: `niv. ${r.level}`,
+      count: ofRecipe(r.id).length,
+      art: () => {
+        const best = [...ofRecipe(r.id)].sort((a, b) => b.stars - a.stars || b.value - a.value)[0];
+        return jewelCanvas(craftedJewel(r, best.pearlColors), '#fff1d6', 52);
+      },
+    })),
+    cards,
+    entryOf: (card) => card.recipeId,
+    sort: (list, sort) =>
+      [...list].sort((a, b) =>
+        sort === 'recent' ? b.serial - a.serial : sort === 'value' ? b.value - a.value || b.stars - a.stars : b.stars - a.stars || b.value - a.value,
+      ),
+    element: craftedCardElement,
+    zoomExtras: () => [],
+  };
+}
+
 export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () => void {
   root.className = 'screen collection-screen';
   let kind: Kind = 'pearls';
@@ -105,11 +136,12 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
   const isNew = (serial: number) => serial > seenAtMount;
 
   function mount(): void {
-    const shelf = (kind === 'pearls' ? pearlShelf(ctx) : jewelShelf(ctx, () => mount())) as Shelf<PearlCard | JewelCard>;
+    const shelf = currentShelf();
     root.innerHTML = `
       <div class="tabs kind-tabs" role="group" aria-label="Type de collection">
         <button data-kind="pearls">Perles</button>
         <button data-kind="jewels">Bijoux</button>
+        <button data-kind="crafted">Créations</button>
       </div>
       <header class="collection-header">
         <h2>${shelf.title}</h2>
@@ -136,6 +168,8 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
     const freshJewels = ctx.player.jewelCards.some((c) => isNew(c.serial));
     root.querySelector('[data-kind="pearls"]')!.classList.toggle('has-new', freshPearls && kind !== 'pearls');
     root.querySelector('[data-kind="jewels"]')!.classList.toggle('has-new', freshJewels && kind !== 'jewels');
+    const freshCrafted = ctx.player.craftedCards.some((c) => isNew(c.serial));
+    root.querySelector('[data-kind="crafted"]')!.classList.toggle('has-new', freshCrafted && kind !== 'crafted');
 
     // Encyclopédie : une case par rareté, silhouette pour ce qui manque. Toucher filtre les cartes.
     const encyclopedia = root.querySelector<HTMLElement>('.encyclopedia')!;
@@ -151,7 +185,7 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
     render(shelf);
   }
 
-  function render(shelf: Shelf<PearlCard | JewelCard>): void {
+  function render(shelf: Shelf<PearlCard | JewelCard | CraftedCard>): void {
     const sort = ctx.settings.collectionSort;
     root.querySelectorAll<HTMLButtonElement>('[data-sort]').forEach((b) => {
       b.classList.toggle('active', b.dataset.sort === sort);
@@ -186,7 +220,11 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
     );
   }
 
-  const currentShelf = () => (kind === 'pearls' ? pearlShelf(ctx) : jewelShelf(ctx, () => mount())) as Shelf<PearlCard | JewelCard>;
+  function currentShelf(): Shelf<PearlCard | JewelCard | CraftedCard> {
+    if (kind === 'pearls') return pearlShelf(ctx) as Shelf<PearlCard | JewelCard | CraftedCard>;
+    if (kind === 'jewels') return jewelShelf(ctx, () => mount()) as Shelf<PearlCard | JewelCard | CraftedCard>;
+    return craftedShelf(ctx) as Shelf<PearlCard | JewelCard | CraftedCard>;
+  }
 
   function openCard(serial: number): void {
     const shelf = currentShelf();

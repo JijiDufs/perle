@@ -9,6 +9,9 @@ import { levelFromXp, rankForLevel } from '../../core/levels';
 import { track } from '../../platform/analytics';
 import { chimeNotes } from '../../platform/audio';
 import { hapticBurst } from '../../platform/haptics';
+import { isAtelierUnlocked } from '../../core/atelier';
+import { openAtelier } from '../atelier/atelierScreen';
+import { craftedJewel } from '../atelier/craftedView';
 import type { AppContext } from '../context';
 
 /** Durée de l'éclat quand un élément est restauré (ms). */
@@ -16,6 +19,11 @@ const APPEAR_MS = 1600;
 
 /** La plus belle pièce du joueur, dessinée pour la vitrine. */
 function showcase(ctx: AppContext): HTMLCanvasElement | null {
+  const crafted = [...ctx.player.craftedCards].sort((a, b) => b.value - a.value)[0];
+  const bestJewel = [...ctx.player.jewelCards].sort((a, b) => b.value - a.value)[0];
+  if (crafted && (!bestJewel || crafted.value >= bestJewel.value)) {
+    return jewelCanvas(craftedJewel({ name: crafted.name, type: crafted.type, metal: crafted.metal }, crafted.pearlColors), '#fff1d6', 160);
+  }
   const jewel = [...ctx.player.jewelCards].sort((a, b) => b.value - a.value)[0];
   if (jewel) {
     const glow = jewel.variant ? jewelVariant(jewel.variant).glow : jewelRarity(jewel.jewel.rarityId).glow;
@@ -32,6 +40,7 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
       <canvas aria-label="La Maison de grand-mère Rose"></canvas>
       <div class="house-title"><p class="house-kicker"></p><h2></h2></div>
     </section>
+    <section class="house-atelier"></section>
     <section class="house-letters">
       <h3 class="section-title">Le carnet de grand-mère Rose</h3>
       <p class="muted house-intro">Chaque lettre lue redonne vie à un coin de la Maison.</p>
@@ -90,6 +99,14 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
     list.innerHTML = rows.join('');
   }
 
+  /** L'entrée de l'atelier (cahier §6 : niveau 5). */
+  function renderAtelier(): void {
+    const open = isAtelierUnlocked(ctx.player, ctx.tuning);
+    root.querySelector('.house-atelier')!.innerHTML = open
+      ? `<button type="button" class="atelier-door" data-action="atelier"><span class="atelier-icon" aria-hidden="true">⚒</span><span><b>L’atelier</b><small>Transforme tes perles en bijoux · ${ctx.player.craftedCards.length} création${ctx.player.craftedCards.length > 1 ? 's' : ''}</small></span><span class="chapter-action">Entrer</span></button>`
+      : `<div class="atelier-door locked"><span class="atelier-icon" aria-hidden="true">⚒</span><span><b>L’atelier</b><small>S’ouvre au niveau ${ctx.tuning.atelierLevel}</small></span></div>`;
+  }
+
   function openLetter(chapter: Chapter): void {
     const firstRead = !ctx.player.chaptersRead.includes(chapter.id);
     const overlay = document.createElement('div');
@@ -126,6 +143,15 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
   }
 
   root.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('[data-action="atelier"]')) {
+      openAtelier(ctx, () => {
+        art = showcase(ctx);
+        renderAtelier();
+        renderLetters();
+        renderHeader();
+      });
+      return;
+    }
     const button = (event.target as HTMLElement).closest<HTMLElement>('[data-chapter]');
     const chapter = CHAPTERS.find((c) => c.id === button?.dataset.chapter);
     if (chapter) openLetter(chapter);
@@ -135,11 +161,12 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
   observer.observe(canvas);
   resize();
   renderHeader();
+  renderAtelier();
   renderLetters();
   frame = requestAnimationFrame(loop);
   return () => {
     cancelAnimationFrame(frame);
     observer.disconnect();
-    document.querySelectorAll('.letter-overlay').forEach((el) => el.remove());
+    document.querySelectorAll('.letter-overlay, .atelier').forEach((el) => el.remove());
   };
 }

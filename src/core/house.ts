@@ -67,7 +67,7 @@ export const CHAPTERS: readonly Chapter[] = [
     level: 5,
     restores: 'notebook',
     restoresLabel: 'La fenêtre et le carnet',
-    teaser: 'Les recettes de l’atelier arriveront dans une prochaine version.',
+    teaser: 'Les pages retrouvées du carnet sont les recettes de l’atelier, sous la cabane.',
     paragraphs: [
       'Dans le tiroir de gauche, il y a mon carnet. Mes colliers, mes montages, mes petits secrets. Il manque des pages : j’en ai donné, j’en ai perdu, et une ou deux… je préfère ne pas en parler.',
       'Retrouve-les. Elles t’apprendront à faire des bijoux de tes perles.',
@@ -80,7 +80,7 @@ export const CHAPTERS: readonly Chapter[] = [
     level: 6,
     restores: 'workbench',
     restoresLabel: 'L’établi',
-    teaser: 'L’atelier arrivera dans une prochaine version.',
+    teaser: 'L’atelier s’ouvre depuis la Maison.',
     paragraphs: [
       'Te voilà perlier. Je suis fière de toi.',
       'L’établi est sous la bâche, au fond. Les outils ont rouillé, mais une pince, ça se dérouille. Bientôt, tu y enfileras tes propres colliers.',

@@ -69,6 +69,8 @@ export interface Jewel {
   /** Estimation de base, avant l'éclat parfait. */
   value: number;
   flavor: string;
+  /** Couleurs des perles (bijoux de l'atelier) ; sinon perles blanches. */
+  pearlColors?: string[];
 }
 
 export function jewelRarity(id: JewelRarityId): JewelRarity {

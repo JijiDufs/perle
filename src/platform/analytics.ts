@@ -42,7 +42,10 @@ export type AnalyticsEvent =
   | 'chapter_opened'
   | 'chapter_read'
   | 'daily_viewed'
-  | 'daily_claimed';
+  | 'daily_claimed'
+  | 'atelier_opened'
+  | 'craft_started'
+  | 'crafted';
 
 export interface TrackedEvent {
   name: AnalyticsEvent;

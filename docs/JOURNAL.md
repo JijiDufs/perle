@@ -4,6 +4,27 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (19) · Jules · Claude Code · branche `jules/atelier`
+
+L'Atelier (cahier §6), première version jouable.
+
+**Fait**
+- Core (tests : `tests/atelier.test.ts`) :
+  - `setting.ts` : `SettingEngine` (fermeture 0…1 → durée, régularité mesurée sur une fenêtre de temps, verdict parfait / bien / brusque / hésitant) ; lâcher avant la fin recommence sans pénalité ;
+  - `atelier.ts` : 8 recettes (niveaux 5 à 12), 4 montures, `pickPearls` (meilleures perles, garde un exemplaire), `craft`, `craftStars` ; `CraftedCard`, `PlayerState.craftedCards`, statistiques et 4 succès d'atelier.
+- `input/pinch.ts` : pincement à deux doigts (ou un doigt vers le bas). Sur Duo, une source « charnière » donnera les mêmes `SettingSample`.
+- `art/atelier.ts` : l'établi (bois, feutre, pliure) ; perles à gauche, monture à droite, qui se rejoignent ; le bijou serti qui brille. `art/jewel.ts` : perles en couleur (`Jewel.pearlColors`) et bagues à perle.
+- `features/atelier/` : carnet de recettes (ingrédients, ce qui manque, avertissement « dernier exemplaire »), établi, résultat (étoiles, carte « Fait main »). Entrée dans la Maison ; volet « Créations » dans la collection ; la vitrine de la Maison peut montrer une création.
+- Le déblocage « Atelier » du niveau 5 est marqué disponible ; les lettres 4 et 5 renvoient à l'atelier.
+
+**À régler sur iPhone**
+- Le confort du pincement (écart de 140 pt, durée idéale 350–1000 ms) ; un doigt qui glisse vers le bas marche aussi.
+
+**À décider avec Mathys**
+- Recettes, montures payées en poussière d'or (provisoire), étoiles et valeurs ; création libre, parures et autres mini-jeux plus tard.
+
+---
+
 ## 2026-10-05 (18) · Jules · Claude Code · branche `jules/calendrier`
 
 Rendez-vous quotidiens (cahier §15) : calendrier de connexion et série de jours.
