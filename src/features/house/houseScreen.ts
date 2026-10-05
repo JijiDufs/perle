@@ -103,7 +103,7 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
   function renderAtelier(): void {
     const open = isAtelierUnlocked(ctx.player, ctx.tuning);
     root.querySelector('.house-atelier')!.innerHTML = open
-      ? `<button type="button" class="atelier-door" data-action="atelier"><span class="atelier-icon" aria-hidden="true">⚒</span><span><b>L’atelier</b><small>Transforme tes perles en bijoux · ${ctx.player.craftedCards.length} création${ctx.player.craftedCards.length > 1 ? 's' : ''}</small></span><span class="chapter-action">Entrer</span></button>`
+      ? `<button type="button" class="atelier-door" data-action="atelier"><span class="atelier-icon" aria-hidden="true">⚒</span><span><b>L’atelier</b><small>Transforme tes perles en bijoux · ${ctx.player.craftedCards.length ? `${ctx.player.craftedCards.length} création${ctx.player.craftedCards.length > 1 ? 's' : ''}` : 'aucune création pour l’instant'}</small></span><span class="chapter-action">Entrer</span></button>`
       : `<div class="atelier-door locked"><span class="atelier-icon" aria-hidden="true">⚒</span><span><b>L’atelier</b><small>S’ouvre au niveau ${ctx.tuning.atelierLevel}</small></span></div>`;
   }
 

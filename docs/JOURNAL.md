@@ -4,6 +4,24 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-05 (21) · Jules · Claude Code · branche `jules/affichage`
+
+Défauts d'affichage, passés en revue sur 375×812, 375×667 (iPhone SE) et 320×568.
+
+**Fait**
+- **Fond plein écran** : les écrans occupent tout l'écran, sous la barre du haut et sous les onglets (plus de bande vide). Barre du haut et onglets flottent par-dessus ; `--hud-h` et `--tab-h` (sur `#app`) décalent le contenu. La barre du haut a un voile dégradé pour rester lisible quand le contenu défile dessous.
+- **Scènes huître et écrin** : centrées dans la bande libre entre la barre du haut et le pied (message + jauge) grâce à `features/nav/insets.ts` (`visibleBand`). Avant, l'huître touchait le message sur petit écran.
+- **Cartes** : la carte révélée ou agrandie rapetisse selon la hauteur disponible (et plus encore avec la bulle du tutoriel ou la bannière « Écrin gagné ») ; l'illustration et le texte suivent la taille de la carte (requêtes de conteneur) ; si rien ne tient, la fenêtre défile au lieu d'écraser la carte. Jauge et message masqués sous la carte révélée.
+- **Petites cartes** : taille et valeur (métal et estimation pour les bijoux) au lieu de deux mesures coupées.
+- **Écrans étroits** (320 pt) : barre du haut resserrée (elle débordait), grilles de 2 cartes et 3 cases d'encyclopédie (au lieu d'une carte géante par ligne).
+- Barres de défilement masquées (comme sur iPhone) ; « aucune création pour l'instant » au lieu de « 0 création ».
+
+**Fragile**
+- Les scènes mesurent la barre du haut et le pied au redimensionnement : si on change leur hauteur, vérifier que l'huître reste centrée.
+- `:has()` et les requêtes de conteneur demandent iOS 16.4 ou plus récent.
+
+---
+
 ## 2026-10-05 (20) · Jules · Claude Code · branche `jules/finitions`
 
 Finitions : partage des créations, et parcours d'un nouveau joueur rejoué de bout en bout.

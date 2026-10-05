@@ -16,6 +16,7 @@ import { chimeNotes, ding, noise, pouet, setMuted, unlockAudio } from '../../pla
 import { hapticBurst, hapticTick } from '../../platform/haptics';
 import { revealSuspenseMs } from '../../tuning';
 import type { AppContext } from '../context';
+import { visibleBand } from '../nav/insets';
 import { dustLabel } from '../dust/dustShop';
 import { expertiseButton } from '../expertise/expertiseButton';
 import { jewelShareButton } from '../share/shareButton';
@@ -263,7 +264,11 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
 
   // ---------- Rendu ----------
 
+  // Bande visible entre la barre du haut et les onglets : le sujet s'y centre, le fond déborde dessous.
+  let band = { top: 0, bottom: 0 };
+
   function resize(): void {
+    band = visibleBand(canvas, root.querySelector('.oyster-dock'));
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
     const { width, height } = canvas.getBoundingClientRect();
     canvas.width = Math.round(width * dpr);
@@ -296,10 +301,11 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     }
     if (!engine) return;
 
-    const bw = Math.min(w * 0.78, h * 0.42);
+    const vh = h - band.top - band.bottom;
+    const bw = Math.min(w * 0.78, vh * 0.55);
     const bh = bw * 0.78;
     const bx = (w - bw) / 2;
-    const hy = h * 0.4;
+    const hy = band.top + vh * 0.47;
     const key = `${bw}|${velvet}`;
     if (key !== artKey) {
       art = renderEcrinArt(bw, bh, velvet, Math.min(window.devicePixelRatio || 1, 3));

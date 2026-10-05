@@ -18,6 +18,7 @@ import { hapticBurst, hapticTick } from '../../platform/haptics';
 import { revealSuspenseMs } from '../../tuning';
 import { cardElement } from '../collection/cardView';
 import type { AppContext } from '../context';
+import { visibleBand } from '../nav/insets';
 import { pearlShareButton } from '../share/shareButton';
 import { coachAfterReveal, coachDuringGesture } from './coach';
 
@@ -244,7 +245,11 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
 
   // ---------- Rendu ----------
 
+  // Bande visible entre la barre du haut et les onglets : le sujet s'y centre, le fond déborde dessous.
+  let band = { top: 0, bottom: 0 };
+
   function resize(): void {
+    band = visibleBand(canvas, root.querySelector('.oyster-dock'));
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
     const { width, height } = canvas.getBoundingClientRect();
     canvas.width = Math.round(width * dpr);
@@ -261,9 +266,11 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     const h = canvas.clientHeight;
     const angle = engine.angle;
     const theta = (angle * Math.PI) / 180;
-    const L = Math.min(w * 0.6, h * 0.34);
+    const vh = h - band.top - band.bottom;
+    // Le couvercle s'ouvre vers le haut : l'huître est un peu sous le milieu de la bande libre.
+    const L = Math.min(w * 0.6, vh * 0.42);
     let hx = w / 2;
-    let hy = h * 0.41;
+    let hy = band.top + vh * 0.52;
 
     // Fond : eau profonde et reflets qui dérivent.
     const bg = c.createLinearGradient(0, 0, 0, h);
