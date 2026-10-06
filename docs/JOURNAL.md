@@ -6,6 +6,29 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ## 2026-10-06 · Codex · branche `jules/codex-retention-maison`
 
+Atlas des trouvailles filtrable et projection enrichie des destinations, dans la DA « lagon lumineux + luxe ».
+
+**Fait**
+- Remplacement du cabinet de curiosités par l’Atlas : filtres synchronisés avec les destinations sur la carte, cartes en grille et compteurs de découverte.
+- La Crique reprend les perles du catalogue V1 et leur état réel dans la collection : les perles inconnues restent anonymes, les découvertes affichent leur nombre d’exemplaires.
+- Ajout de 15 trouvailles illustrées en SVG (cinq pour le Jardin d’algues, l’Épave des échos et la Faille d’azur), entre perles, bijoux et objets insolites.
+- Les destinations futures restent verrouillées et leurs objets sont signalés comme des rumeurs. Aucun tirage, taux, valeur, récompense ou règle n’a changé.
+
+**À faire ensuite**
+- Choisir séparément les rumeurs qui méritent de devenir du contenu jouable, puis décider de leur découverte, leur économie et leur progression.
+
+**Fragile / à surveiller**
+- Noms et objets futurs sont une proposition de contenu ; ils ne font pas partie du catalogue de jeu.
+- Confirmer les illustrations et la lisibilité sur iPhone réel avant d’intégrer de nouvelles destinations au gameplay.
+
+**Vérification**
+- `npm test` : 15 fichiers, 127 tests passés.
+- `npm run build` : TypeScript et build Vite réussis.
+- `git diff --check` : aucun problème d’espacement.
+- Vérification visuelle et interactive de la Crique et des trois destinations dans le navigateur, au format par défaut et à 375 × 812.
+
+## 2026-10-06 · Codex · branche `jules/codex-retention-maison`
+
 Refonte de la Maison et concept de progression du monde, dans la DA « lagon lumineux + luxe ».
 
 **Fait**

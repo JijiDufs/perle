@@ -1,10 +1,11 @@
 // Aperçu de la suite du voyage : destinations et trouvailles proposées, sans tirage ni déblocage.
+import { atlasFindIllustration } from '../../art/atlasFind';
 import { drawWorldMap } from '../../art/worldMap';
+import { pearlCanvas } from '../../art/pearl';
 import { PEARLS } from '../../core/catalog';
 import { track } from '../../platform/analytics';
 import type { AppContext } from '../context';
-
-type DestinationId = 'cove' | 'garden' | 'wreck' | 'rift';
+import { RUMOR_FINDS, type DestinationId, type FindKind, type RumorFind } from './finds';
 
 interface Destination {
   id: DestinationId;
@@ -15,23 +16,11 @@ interface Destination {
 }
 
 const DESTINATIONS: readonly Destination[] = [
-  { id: 'cove', name: 'La Crique', status: 'Ponton ouvert', finds: 'Perle baroque · Verre de marée', description: 'Le premier rivage. Une crique familière, pleine de petites choses rejetées par le courant.' },
+  { id: 'cove', name: 'La Crique', status: 'Ponton ouvert', finds: 'Perle baroque · Perle noire', description: 'Le premier rivage. Une crique familière, pleine de petites choses rejetées par le courant.' },
   { id: 'garden', name: 'Le Jardin d’algues', status: 'À venir', finds: 'Bouton de scaphandre · Perle feuille-de-lune', description: 'Une forêt mouvante où les algues gardent les objets venus de bien plus haut.' },
   { id: 'wreck', name: 'L’Épave des échos', status: 'À venir', finds: 'Jeton « Continue ? » · Coquillage-radio', description: 'Un vieux navire répond encore aux sons. Personne ne sait qui l’écoute.' },
-  { id: 'rift', name: 'La Faille d’azur', status: 'À venir', finds: 'Perle comète · Galet de verre bleu', description: 'Sous la dernière ligne de lumière, l’eau garde des formes qu’on ne trouve nulle part ailleurs.' },
+  { id: 'rift', name: 'La Faille d’azur', status: 'À venir', finds: 'Perle comète · Géode-lanterne', description: 'Sous la dernière ligne de lumière, l’eau garde des formes qu’on ne trouve nulle part ailleurs.' },
 ];
-
-const CURIOSITIES = [
-  { id: 'radio', name: 'Le coquillage-radio', note: 'Une seule station. Elle annonce la marée depuis 1978.', place: 'Épave des échos' },
-  { id: 'token', name: 'Le jeton « Continue ? »', note: 'La partie est finie depuis longtemps. Le compteur, lui, tourne encore.', place: 'Épave des échos' },
-  { id: 'button', name: 'Le bouton de scaphandre', note: 'Trop petit pour une combinaison normale. Beaucoup trop lourd pour un jouet.', place: 'Jardin d’algues' },
-] as const;
-
-function curiosityGlyph(id: typeof CURIOSITIES[number]['id']): string {
-  if (id === 'radio') return `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M11 38c3-17 17-28 30-24 8 2 14 11 13 21-1 12-12 19-25 18-11-1-20-6-18-15Z" fill="#b5d5c6" stroke="#e4d0a1" stroke-width="2"/><path d="M17 37c6-9 23-14 34-5M19 43c9-7 22-9 30-4" fill="none" stroke="#588f86" stroke-width="2"/><path d="M29 28c-3 8-3 17 0 25M38 26c-2 9-2 18 1 26" fill="none" stroke="#e9f0dc" stroke-width="1.5"/><path d="M47 16c6-5 10-5 14-4m-11 10c5-2 8-2 11 0" fill="none" stroke="#f0ce82" stroke-linecap="round" stroke-width="2"/></svg>`;
-  if (id === 'token') return `<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="33" r="24" fill="#9d7541" stroke="#f3d78f" stroke-width="3"/><circle cx="32" cy="33" r="18" fill="none" stroke="#d8b66e" stroke-width="1.5" stroke-dasharray="2 2"/><path d="m32 17 4.7 10.1L48 29l-8 7.8 1.9 11.3L32 42.8l-9.9 5.3L24 36.8 16 29l11.3-1.9L32 17Z" fill="#f1dea6"/><path d="M24 33h16" stroke="#79572f" stroke-width="1.5"/></svg>`;
-  return `<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="34" r="23" fill="#bf9c60" stroke="#f2daa0" stroke-width="3"/><circle cx="32" cy="34" r="17" fill="#365b63" stroke="#c9b072" stroke-width="2"/><path d="M32 16v8m0 21v8M14 34h8m20 0h8" stroke="#eed394" stroke-width="2"/><circle cx="32" cy="34" r="5" fill="#f0dba4"/><path d="M32 2v10m-4-6 4-4 4 4" fill="none" stroke="#8ccabd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>`;
-}
 
 export function mountMapScreen(root: HTMLElement, ctx: AppContext): () => void {
   root.className = 'screen world-map-screen';
@@ -63,15 +52,17 @@ export function mountMapScreen(root: HTMLElement, ctx: AppContext): () => void {
       <div class="map-detail-finds"><span>On raconte qu’on y trouve</span><b></b></div>
       <button type="button" class="map-dive" data-action="dive">Retourner pêcher <span aria-hidden="true">↗</span></button>
     </section>
-    <section class="curiosity-shelf" aria-labelledby="curiosity-title">
-      <div class="curiosity-heading"><div><p>Quelques rumeurs</p><h2 id="curiosity-title">Le cabinet des curiosités</h2></div><span>3 objets aperçus</span></div>
-      <div class="curiosity-list">${CURIOSITIES.map((item) => `
-        <article class="curiosity-item curiosity-${item.id}">
-          <div class="curiosity-art">${curiosityGlyph(item.id)}</div>
-          <div class="curiosity-copy"><h3>${item.name}</h3><p>${item.note}</p><small>${item.place}</small></div>
-        </article>`).join('')}
+    <section class="atlas-shelf" aria-labelledby="atlas-title">
+      <div class="atlas-heading"><div><p>Le carnet de Rose</p><h2 id="atlas-title">L’Atlas des trouvailles</h2></div><span class="atlas-count"></span></div>
+      <p class="atlas-intro">Des perles connues aux rumeurs échouées sur les autres rivages.</p>
+      <div class="atlas-filters" role="group" aria-label="Filtrer l’Atlas par destination">
+        <button type="button" data-atlas-destination="cove" aria-pressed="true">La Crique</button>
+        <button type="button" data-atlas-destination="garden" aria-pressed="false">Jardin d’algues</button>
+        <button type="button" data-atlas-destination="wreck" aria-pressed="false">Épave des échos</button>
+        <button type="button" data-atlas-destination="rift" aria-pressed="false">Faille d’azur</button>
       </div>
-      <p class="map-concept-note">Pistes pour la suite · Ces objets et destinations sont un aperçu du monde à construire.</p>
+      <div class="atlas-grid" aria-live="polite"></div>
+      <p class="map-concept-note">Les 15 trouvailles des nouveaux rivages sont des rumeurs illustrées ; leurs règles restent à imaginer.</p>
     </section>
   `;
 
@@ -87,6 +78,74 @@ export function mountMapScreen(root: HTMLElement, ctx: AppContext): () => void {
   };
 
   let selected: DestinationId = 'cove';
+
+  function kindLabel(kind: FindKind): string {
+    return kind === 'perle' ? 'PERLE' : kind === 'bijou' ? 'BIJOU' : 'OBJET';
+  }
+
+  function rumorCard(find: RumorFind): HTMLElement {
+    const card = document.createElement('article');
+    card.className = `atlas-find atlas-rumor atlas-${find.kind}`;
+    const art = document.createElement('div');
+    art.className = 'atlas-find-art';
+    art.style.setProperty('--find-color', find.color);
+    art.innerHTML = atlasFindIllustration(find);
+    const copy = document.createElement('div');
+    copy.className = 'atlas-find-copy';
+    copy.innerHTML = `<span class="atlas-find-kind">${kindLabel(find.kind)}</span>`;
+    const title = document.createElement('h3');
+    title.textContent = find.name;
+    const note = document.createElement('p');
+    note.textContent = find.note;
+    const status = document.createElement('small');
+    status.className = 'atlas-find-state';
+    status.textContent = 'Rumeur';
+    copy.append(title, note, status);
+    card.append(art, copy);
+    return card;
+  }
+
+  function pearlCard(pearl: typeof possiblePearls[number]): HTMLElement {
+    const count = ctx.player.cards.filter((card) => card.pearlId === pearl.id).length;
+    const card = document.createElement('article');
+    card.className = `atlas-find atlas-pearl ${count ? 'discovered' : 'unknown'}`;
+    const art = document.createElement('div');
+    art.className = 'atlas-find-art';
+    if (count) art.append(pearlCanvas(pearl, 62, false, 0.33));
+    else art.innerHTML = '<span class="atlas-pearl-silhouette" aria-hidden="true"></span>';
+    const copy = document.createElement('div');
+    copy.className = 'atlas-find-copy';
+    copy.innerHTML = '<span class="atlas-find-kind">PERLE</span>';
+    const title = document.createElement('h3');
+    title.textContent = count ? pearl.name : 'Perle à découvrir';
+    const note = document.createElement('p');
+    note.textContent = count ? pearl.flavor : `Rareté ${pearl.rarity} · à trouver dans la Crique`;
+    const status = document.createElement('small');
+    status.className = `atlas-find-state${count ? ' found' : ''}`;
+    status.textContent = count ? `Découverte · ×${count}` : 'Encore cachée';
+    copy.append(title, note, status);
+    card.append(art, copy);
+    return card;
+  }
+
+  function renderAtlas(): void {
+    root.querySelectorAll<HTMLButtonElement>('[data-atlas-destination]').forEach((button) => {
+      const active = button.dataset.atlasDestination === selected;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    const grid = root.querySelector<HTMLElement>('.atlas-grid')!;
+    if (selected === 'cove') {
+      const count = possiblePearls.filter((pearl) => foundIds.has(pearl.id)).length;
+      root.querySelector('.atlas-count')!.textContent = `${count} / ${possible} découvertes`;
+      grid.replaceChildren(...possiblePearls.map(pearlCard));
+    } else {
+      const finds = RUMOR_FINDS.filter((find) => find.destination === selected);
+      root.querySelector('.atlas-count')!.textContent = `${finds.length} rumeurs`;
+      grid.replaceChildren(...finds.map(rumorCard));
+    }
+  }
+
   function renderDestination(): void {
     const destination = DESTINATIONS.find((entry) => entry.id === selected)!;
     root.querySelector('.map-detail-state')!.textContent = destination.status;
@@ -102,6 +161,7 @@ export function mountMapScreen(root: HTMLElement, ctx: AppContext): () => void {
       button.classList.toggle('active', active);
       button.setAttribute('aria-pressed', String(active));
     });
+    renderAtlas();
   }
 
   root.addEventListener('click', (event) => {
@@ -109,6 +169,13 @@ export function mountMapScreen(root: HTMLElement, ctx: AppContext): () => void {
     const pin = target.closest<HTMLButtonElement>('[data-destination]');
     if (pin) {
       selected = pin.dataset.destination as DestinationId;
+      renderDestination();
+      if (selected !== 'cove') track('map_destination_previewed', { destination: selected });
+      return;
+    }
+    const atlasFilter = target.closest<HTMLButtonElement>('[data-atlas-destination]');
+    if (atlasFilter) {
+      selected = atlasFilter.dataset.atlasDestination as DestinationId;
       renderDestination();
       if (selected !== 'cove') track('map_destination_previewed', { destination: selected });
       return;
