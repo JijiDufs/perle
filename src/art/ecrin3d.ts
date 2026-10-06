@@ -435,10 +435,11 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
         c.fillStyle = goldGradient(c, -150, 0, 150, 0);
         c.textAlign = 'center';
         c.textBaseline = 'middle';
-        c.font = '600 22px "Figtree", system-ui, sans-serif';
-        c.fillText('P E A R L   I N C .', 0, -18);
-        c.font = '40px "Young Serif", Georgia, serif';
-        c.fillText('Perles fines', 0, 22);
+        // Textes tenus dans l'ovale de l'écusson (0,17 × 0,075 d'écrin, soit ±170 × ±75 ici).
+        c.font = '600 19px "Figtree", system-ui, sans-serif';
+        c.fillText('P E A R L   I N C .', 0, -20, 250);
+        c.font = '32px "Young Serif", Georgia, serif';
+        c.fillText('Perles fines', 0, 20, 230);
       });
     }
   };

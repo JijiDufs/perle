@@ -4,6 +4,42 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-06 (suite) · Jules · Claude Code · branche `jules/pearl-inc`
+
+Perles uniques, bijoux variés, puis chasse aux bugs d'affichage et de mécanique (demande de Jules : « tout ce qui rend le jeu cheap »).
+
+**Perles et bijoux**
+- `core/pearlTraits.ts` : forme, reflet, marque rare (4 %), tirés avec la perle et sauvegardés ; facteurs de valeur. Anciennes cartes : traits par défaut (`traitsOf`). Perles marquées protégées de la fonte en lot. L'atelier teinte les perles de leur reflet.
+- `core/jewels.ts` : types pendentif et broche (diadème dès le rubis), 22 modèles, métaux par rareté, 8 tailles de pierre (pendentif goutte = poire, cœur = cœur). Noms générés (« Bague trilogie aux émeraudes », « Gourmette en or jaune »…).
+- Dessins : `art/pearl.ts` (formes, reflets, jumelle, étoile, lune, cœur, cerclée), `art/jewel.ts` (un dessin par modèle, griffes qui suivent la taille). `jewelYOffset()` centre chaque modèle (cartes, story, écrin).
+- Collection : carnet des variantes quand on touche une case (formes / reflets / marques ; types / tailles). 6 succès.
+
+**Bugs corrigés**
+- Écrin : griffes et arêtes des pierres dessinées géantes (disque blanc sur tout le plateau) — épaisseurs minimales en pixels ajoutées par Codex, alors que l'écrin dessine dans un repère où 1 = la largeur du coffret.
+- Transitions : glissement latéral sur toute la largeur au lieu du fondu (qui superposait deux écrans) ; atelier et expertise montent depuis le bas au lieu d'apparaître en fondu.
+- Pêche : la coquille passait sous la consigne sur petit écran (le pied changeait de hauteur après le calcul) ; jauge de réglage masquée par défaut (`showGauge`) ; la « main fantôme » était un disque blanc qui ressemblait à une perle → un doigt dessiné.
+- Haut de l'écran : l'aide d'installation et le cap du jour se recouvraient ; les bannières de succès les recouvraient aussi → un seul panneau à la fois, effacé pendant une bannière.
+- Récompenses : la montée de niveau (plein écran) passait après la file de bannières et pouvait surgir en plein geste → elle passe en premier, au moment calme.
+- Stock au-delà du maximum affiché « 16/10 » → « 16 » en or.
+- Cartes de bijoux étroites : la ligne de stats débordait (n° coupé) → deux lignes.
+- Collection : bloc « Carnet de la Crique » de Codex retiré (doublon de l'en-tête) ; barre vide sous « Mes pièces ».
+- Maison : le titre recouvrait le toit, le toit sortait du cadre → la scène est dessinée sous le titre.
+- Carte des marées : onglet Maison allumé, plus de perles non trouvées dévoilées, note de développeur retirée.
+- Textes : « 0 jour d'affilée », comptoir de poussière d'or, bulle du premier écrin, écusson de l'écrin.
+
+**À faire ensuite**
+- La Maison en maison de poupée 3/4 et le passage à Pearl Inc.
+- Doublons de trouvailles (fonte) ; décider du sort de la carte des marées.
+- Fonctions à débloquer (Lagon, commandes, vitrine qui vend, outils).
+
+**Fragile / à surveiller**
+- Le réglage `showHud` est abandonné au profit de `showGauge` (faux par défaut) : ceux qui voulaient la jauge doivent la rallumer.
+- Vérifier le glissement entre onglets sur un vrai iPhone (fluidité des canvas animés pendant 320 ms).
+
+**Vérification**
+- `npm test` : 17 fichiers, 147 tests passés. `npm run build` : OK.
+- Parcours complet dans le navigateur sur une partie neuve, en 375 × 667 (iPhone SE) puis 375 × 812 : tutoriel, premier écrin, collection, Maison, lettre, atelier, carte, quêtes, comptoir, réglages, expertise. Sauvegarde de Jules remise ensuite.
+
 ## 2026-10-06 · Jules · Claude Code · branche `jules/pearl-inc`
 
 Revue des passes de Codex avec Jules, puis : le jeu s'appelle **Pearl Inc.**, et les **trouvailles** arrivent dans les huîtres. Branche partie de `jules/codex-retention-maison` (les changements de Codex y sont encore, à retravailler).

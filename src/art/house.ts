@@ -34,10 +34,11 @@ interface Layout {
 }
 
 function layout(w: number, h: number): Layout {
-  const cx = w * 0.57;
+  // Un peu à droite (la vitrine est à gauche), sans que le toit ne sorte du cadre.
+  const cx = w * 0.55;
   const ground = h * 0.74;
   const wallH = Math.min(h * 0.39, w * 0.5);
-  const wallW = Math.min(w * 0.7, h * 0.84);
+  const wallW = Math.min(w * 0.64, h * 0.84);
   const x0 = cx - wallW / 2;
   const x1 = cx + wallW / 2;
   const wallTop = ground - wallH;

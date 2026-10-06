@@ -124,7 +124,7 @@ export function openDustShop(host: HTMLElement, ctx: AppContext, callbacks: Dust
         <button type="button" class="dust-action" data-action="melt-all" ${duplicates ? '' : 'disabled'}>
           ${duplicates ? `Fondre ${duplicates} doublon${duplicates > 1 ? 's' : ''} ordinaire${duplicates > 1 ? 's' : ''} · +${dustLabel(duplicatesValue)}` : 'Aucun doublon ordinaire'}
         </button>
-        <p class="dust-fine">On garde ton plus bel exemplaire de chaque pièce, et tous les bijoux à éclat parfait, variante ou certificat. Pour fondre une carte précise, touche-la dans ta collection.</p>
+        <p class="dust-fine">On garde ton plus bel exemplaire de chaque pièce, les perles marquées (jumelle, étoilée…) et les bijoux à éclat parfait, variante ou certificat. Pour fondre une carte précise, touche-la dans ta collection.</p>
 
         <h3>Acheter</h3>
         <div class="dust-row">

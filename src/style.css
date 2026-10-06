@@ -195,11 +195,18 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .toast.show { animation: toast 2.6s ease both; }
 @keyframes toast { 0% { opacity: 0; transform: translate(-50%, 10px); } 10%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
 
-/* Transition entre écrans : fondu enchaîné (l'ancien écran reste dessous, voir main.ts). Pas de glissement :
-   les écrans couvrent tout l'écran, un décalage découvrirait une bande vide sur un bord. Pas de transform non plus :
-   il ferait de l'écran le repère des éléments position: fixed (carte agrandie, comptoir…). */
-.screen-enter { animation: screen-fade 0.24s ease-out backwards; }
-@keyframes screen-fade { from { opacity: 0; } }
+/* Transition entre écrans : glissement sur toute la largeur, dans le sens des onglets (voir main.ts).
+   L'ancien écran part pendant que le nouveau arrive : jamais de bande vide ni de superposition.
+   Le transform ne dure que le temps de l'animation (pas de fill « forwards ») : sinon il ferait de l'écran
+   le repère des éléments position: fixed (carte agrandie, comptoir…). */
+.screen-in-right { animation: screen-in-right 0.32s cubic-bezier(0.22, 0.8, 0.24, 1) backwards; }
+.screen-in-left { animation: screen-in-left 0.32s cubic-bezier(0.22, 0.8, 0.24, 1) backwards; }
+.screen-out-right { animation: screen-out-right 0.32s cubic-bezier(0.22, 0.8, 0.24, 1) forwards; pointer-events: none; }
+.screen-out-left { animation: screen-out-left 0.32s cubic-bezier(0.22, 0.8, 0.24, 1) forwards; pointer-events: none; }
+@keyframes screen-in-right { from { transform: translateX(100%); } }
+@keyframes screen-in-left { from { transform: translateX(-100%); } }
+@keyframes screen-out-right { to { transform: translateX(-100%); } }
+@keyframes screen-out-left { to { transform: translateX(100%); } }
 
 /* Nouveautés de la collection. */
 .card-new {
@@ -222,7 +229,7 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .card:has(.card-new) { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 2px var(--accent), 0 0 18px rgba(127, 224, 208, 0.45); }
 .kind-tabs button.has-new::after { content: ''; display: inline-block; width: 7px; height: 7px; margin-left: 6px; border-radius: 50%; background: var(--accent); vertical-align: middle; }
 
-.screen-host { position: absolute; inset: 0; }
+.screen-host { position: absolute; inset: 0; overflow: hidden; }
 .screen-host > div { position: absolute; inset: 0; }
 
 /* ---------- Écran huître ---------- */
@@ -279,7 +286,13 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .message {
   margin: 0;
   text-shadow: 0 1px 2px rgba(0, 20, 25, 0.8), 0 0 14px rgba(0, 30, 40, 0.65);
-  min-height: 1.4em;
+  /* Hauteur réservée (flèche + deux lignes) : le pied de l'écran ne change pas de taille quand le texte change,
+     et la coquille, centrée au-dessus, ne bouge pas et ne passe jamais dessous. */
+  min-height: calc(2.6em + 1.9rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
   font-size: 1.05rem;
   text-align: center;
   max-width: 34ch;
@@ -351,16 +364,19 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .ghost-thumb {
   position: absolute;
   left: 50%;
-  top: 62%;
-  width: 46px;
-  height: 46px;
-  margin-left: -23px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(232, 241, 240, 0.85) 0 40%, rgba(232, 241, 240, 0.25) 41% 100%);
-  box-shadow: 0 0 24px rgba(127, 224, 208, 0.5);
+  top: 60%;
+  width: 60px;
+  height: 96px;
+  margin-left: -30px;
   pointer-events: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 25, 30, 0.45));
   animation: ghost-swipe 2.2s cubic-bezier(0.4, 0, 0.3, 1) infinite;
 }
+.ghost-thumb svg { display: block; overflow: visible; }
+.ghost-finger { stroke: rgba(120, 80, 60, 0.35); stroke-width: 1; }
+.ghost-nail { fill: rgba(255, 255, 255, 0.55); }
+.ghost-ripple { fill: rgba(127, 224, 208, 0.18); stroke: rgba(200, 255, 245, 0.7); stroke-width: 1.5; transform-origin: 30px 18px; animation: ghost-ripple 2.2s ease-out infinite; }
+@keyframes ghost-ripple { 0%, 12% { transform: scale(0.4); opacity: 0; } 22% { opacity: 1; } 45%, 100% { transform: scale(1.5); opacity: 0; } }
 .ghost-thumb[hidden] { display: none; }
 @keyframes ghost-swipe {
   0% { transform: translateY(0) scale(0.8); opacity: 0; }
@@ -591,16 +607,6 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 }
 .collection-header h2, .tuning-screen h2 { font: 400 1.7rem/1.1 var(--serif); margin: 10px 0 4px; }
 .collection-header p, .muted { color: var(--ink-soft); margin-top: 0; }
-.collection-journey { display: grid; gap: 9px; margin: 13px 0 17px; padding: 12px 14px 10px; border: 1px solid rgba(246, 217, 140, 0.24); border-radius: 15px; background: radial-gradient(90% 120% at 100% 0%, rgba(127, 224, 208, 0.12), transparent 58%), linear-gradient(120deg, rgba(18, 37, 42, 0.94), rgba(7, 15, 18, 0.96)); box-shadow: 0 8px 23px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.06); }
-.collection-journey-copy { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px; }
-.collection-kicker { grid-column: 1 / -1; margin: 0; color: var(--gold-light); font-size: 0.64rem; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; }
-.collection-journey-copy b { grid-column: 1; grid-row: 2 / span 2; font: 400 1.55rem/1 var(--serif); color: var(--pearl); font-variant-numeric: tabular-nums; }
-.collection-journey-copy b span { color: var(--ink-soft); font: 400 0.94rem var(--sans); }
-.collection-journey-copy small { grid-column: 2; grid-row: 2 / span 2; color: var(--ink-soft); font-size: 0.75rem; text-align: right; }
-.collection-journey-meter { height: 5px; overflow: hidden; border-radius: 5px; background: rgba(232, 241, 240, 0.11); }
-.collection-journey-meter i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--gold-light)); }
-.collection-return { display: flex; align-items: center; justify-content: space-between; padding: 6px 0 0; border: 0; border-top: 1px solid rgba(232, 241, 240, 0.1); background: transparent; color: var(--gold-light); font-size: 0.76rem; font-weight: 700; text-align: left; }
-.collection-return span { font-size: 1rem; }
 .collection-section-label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin: 0 0 8px; font: 400 1.06rem var(--serif); }
 .collection-section-label small { color: var(--ink-soft); font: 400 0.68rem var(--sans); text-align: right; }
 .section-title { font: 400 1.2rem var(--serif); margin: 22px 0 10px; }
@@ -698,7 +704,7 @@ select { font: inherit; background: var(--panel); color: var(--ink); border: 1px
   padding: calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px);
   background: radial-gradient(120% 90% at 50% 40%, #241d2c 0%, #0b090e 100%);
   touch-action: none;
-  animation: fade-in 0.25s both;
+  animation: panel-up 0.34s cubic-bezier(0.22, 0.8, 0.24, 1) backwards;
 }
 .expertise-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .expertise-head h2 { font: 400 1.5rem/1.1 var(--serif); margin: 0; }
@@ -904,6 +910,9 @@ select { font: inherit; background: var(--panel); color: var(--ink); border: 1px
 /* ---------- Succès et quêtes ---------- */
 
 .banner-host { position: fixed; z-index: 35; top: calc(var(--hud-h) + 2px); left: 12px; right: 12px; display: flex; justify-content: center; pointer-events: none; }
+/* Pendant qu'une bannière passe, ce qui occupe le haut de l'écran s'efface : jamais deux panneaux l'un sur l'autre. */
+.daily-peek, .install-hint, .odds-button { transition: opacity 0.2s; }
+#app:has(.banner-host .banner) :is(.daily-peek, .install-hint, .odds-button) { opacity: 0; pointer-events: none; }
 .banner {
   pointer-events: auto;
   display: flex;
@@ -969,7 +978,8 @@ select { font: inherit; background: var(--panel); color: var(--ink); border: 1px
 /* ---------- La Maison ---------- */
 
 .house-screen { overflow-y: auto; padding-bottom: calc(var(--tab-h) + 16px); -webkit-user-select: text; user-select: text; }
-.house-scene { position: relative; height: calc(var(--hud-h) + min(48vh, 400px)); }
+/* La scène est dessinée sous le titre (voir houseScreen.ts) : la hauteur prévoit la place du titre. */
+.house-scene { position: relative; height: calc(var(--hud-h) + 84px + min(44vh, 380px)); }
 .house-scene canvas { width: 100%; height: 100%; display: block; }
 .house-scene::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: linear-gradient(transparent, var(--bg-bottom)); pointer-events: none; }
 .house-title { position: absolute; top: calc(var(--hud-h) + 6px); left: 16px; max-width: min(68%, 300px); padding: 10px 13px 11px; border-left: 2px solid var(--gold); border-radius: 0 12px 12px 0; background: linear-gradient(100deg, rgba(5, 16, 20, 0.76), rgba(5, 16, 20, 0.08)); text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
@@ -1106,8 +1116,11 @@ select { font: inherit; background: var(--panel); color: var(--ink); border: 1px
   background: radial-gradient(120% 90% at 50% 20%, #2b2119 0%, #0b0806 100%);
   padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
   overflow-y: auto;
-  animation: fade-in 0.25s both;
+  animation: panel-up 0.34s cubic-bezier(0.22, 0.8, 0.24, 1) backwards;
 }
+/* Panneaux plein écran (atelier, expertise) : ils montent depuis le bas, opaques. Un fondu laissait lire
+   l'écran de dessous à travers pendant l'animation (deux textes superposés). */
+@keyframes panel-up { from { transform: translateY(100%); } }
 .atelier-head { position: relative; padding: 16px 16px 6px; }
 .atelier-head h2 { font: 400 1.7rem/1.1 var(--serif); margin: 2px 0 6px; }
 .atelier-head .dust-close { top: 14px; right: 14px; }
@@ -1161,6 +1174,11 @@ select { font: inherit; background: var(--panel); color: var(--ink); border: 1px
 .card-art { container-type: size; overflow: hidden; }
 .card-art canvas { width: min(100%, 86cqmin) !important; height: auto !important; aspect-ratio: 1; }
 .card-stats dd { white-space: nowrap; }
+/* Bijou sur une carte étroite : métal, carats et estimation sont longs, les stats passent sur deux lignes
+   plutôt que de déborder. */
+@container (max-width: 300px) {
+  .card-large.card-jewel .card-stats { grid-template-columns: repeat(2, auto); row-gap: 6px; }
+}
 @container (max-width: 280px) {
   .card-large .card-title { font-size: 1.12rem; }
   .card-large .card-stats dd { font-size: 0.76rem; }
@@ -1407,7 +1425,6 @@ html, body {
 .atlas-find-copy p { margin: 0; color: var(--ink-soft); font-size: 0.63rem; line-height: 1.32; }
 .atlas-find-state { margin-top: auto; padding-top: 2px; color: #d3be88; font-size: 0.56rem; font-weight: 700; }
 .atlas-find-state.found { color: #c7e7c5; }
-.map-concept-note { margin: 3px 2px 0; color: rgba(157, 181, 181, 0.72); font-size: 0.61rem; }
 
 /* Accès à la carte depuis le carnet et la Maison restaurée. */
 .house-map-entry { position: relative; z-index: 1; display: grid; grid-template-columns: 64px minmax(0, 1fr) 28px; align-items: center; gap: 11px; width: calc(100% - 32px); margin: -3px 16px 14px; padding: 9px 11px 9px 9px; overflow: hidden; border: 1px solid rgba(193, 208, 172, 0.27); border-radius: 15px; background: radial-gradient(80% 140% at 0% 0%, rgba(109, 181, 162, 0.2), transparent 70%), linear-gradient(110deg, rgba(13, 40, 44, 0.96), rgba(10, 21, 27, 0.96)); text-align: left; box-shadow: 0 9px 23px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.06); }
@@ -1457,3 +1474,4 @@ html, body {
 .variant-chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 999px; font-size: 0.75rem; border: 1px dashed var(--line); color: var(--ink-soft); opacity: 0.6; }
 .variant-chip.found { opacity: 1; border-style: solid; border-color: var(--gold); color: inherit; background: rgba(232, 190, 90, 0.1); }
 .variant-chip i { width: 10px; height: 10px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25); }
+.variant-panel[hidden] { display: none; }

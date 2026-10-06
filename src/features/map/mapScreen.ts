@@ -64,7 +64,6 @@ export function mountMapScreen(root: HTMLElement, ctx: AppContext): () => void {
         <button type="button" data-atlas-destination="rift" aria-pressed="false">Faille d’azur</button>
       </div>
       <div class="atlas-grid" aria-live="polite"></div>
-      <p class="map-concept-note">Les 15 trouvailles des nouveaux rivages sont des rumeurs illustrées ; leurs règles restent à imaginer.</p>
     </section>
   `;
 
@@ -154,7 +153,10 @@ export function mountMapScreen(root: HTMLElement, ctx: AppContext): () => void {
     root.querySelector('.map-detail-progress')!.textContent = selected === 'cove' ? `${found} / ${possible} perles découvertes` : 'Nouvelle destination';
     root.querySelector('.map-detail-title')!.textContent = destination.name;
     root.querySelector('.map-detail-copy')!.textContent = destination.description;
-    root.querySelector('.map-detail-finds b')!.textContent = destination.finds;
+    // La Crique : seulement les perles déjà trouvées (jamais celles qui restent à découvrir).
+    const known = possiblePearls.filter((pearl) => foundIds.has(pearl.id)).reverse().slice(0, 2).map((pearl) => pearl.name);
+    root.querySelector('.map-detail-finds b')!.textContent =
+      selected === 'cove' ? (known.length ? `${known.join(' · ')}${found < possible ? ' · et d’autres encore cachées' : ''}` : 'Ouvre ta première huître pour le savoir') : destination.finds;
     const dive = root.querySelector<HTMLButtonElement>('.map-dive')!;
     dive.disabled = selected !== 'cove';
     dive.innerHTML = selected === 'cove' ? 'Retourner pêcher <span aria-hidden="true">↗</span>' : 'Destination à venir <span aria-hidden="true">✦</span>';

@@ -16,7 +16,6 @@ export type AnalyticsEvent =
   | 'card_zoomed'
   | 'collection_sorted'
   | 'collection_filtered'
-  | 'collection_continue_clicked'
   | 'tutorial_step'
   | 'tutorial_completed'
   | 'card_shared'

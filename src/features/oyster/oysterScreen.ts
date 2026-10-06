@@ -39,7 +39,18 @@ const IDLE_HINT_MS = 6000;
 const TEMPLATE = `
   <canvas class="scene" aria-label="Huître. Glisse le pouce vers le haut pour l'ouvrir."></canvas>
   <p class="coach" aria-live="polite" hidden></p>
-  <div class="ghost-thumb" aria-hidden="true" hidden></div>
+  <div class="ghost-thumb" aria-hidden="true" hidden>
+    <svg viewBox="0 0 60 96" width="60" height="96">
+      <defs>
+        <linearGradient id="ghost-skin" x1="0" x2="1">
+          <stop offset="0" stop-color="#fff4ea" /><stop offset="0.55" stop-color="#ffe6d2" /><stop offset="1" stop-color="#e9c3a6" />
+        </linearGradient>
+      </defs>
+      <circle class="ghost-ripple" cx="30" cy="18" r="16" />
+      <path class="ghost-finger" d="M18 96 V30 a12 12 0 0 1 24 0 V96 Z" fill="url(#ghost-skin)" />
+      <path class="ghost-nail" d="M23 24 a7 7 0 0 1 14 0 v6 a7 5 0 0 1 -14 0 Z" />
+    </svg>
+  </div>
   <div class="install-hint" role="note" hidden>
     <p>Installe Pearl Inc. sur ton écran d'accueil : touche <strong>Partager</strong> <span aria-hidden="true">⬆︎</span> puis <strong>« Sur l'écran d'accueil »</strong>. Tu pourras jouer même sans réseau.</p>
     <button type="button">OK</button>
@@ -302,6 +313,8 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
   }
   const observer = new ResizeObserver(resize);
   observer.observe(canvas);
+  // Le pied (message, jauge) peut changer de taille : la scène se recentre au-dessus.
+  observer.observe(root.querySelector('.oyster-dock')!);
 
   function draw(now: number): void {
     frame = requestAnimationFrame(draw);
@@ -420,7 +433,8 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
   }
 
   function renderQuestPeek(): void {
-    const hidden = waiting || busy || engine.phase !== 'closed' || isInTutorial(step);
+    // Une seule chose en haut de l'écran : l'aide à l'installation passe avant le cap du jour.
+    const hidden = waiting || busy || engine.phase !== 'closed' || isInTutorial(step) || !installHint.hidden;
     if (hidden) {
       if (questPeekHidden !== true) dailyPeek.hidden = true;
       questPeekHidden = true;
@@ -497,7 +511,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     }
     ghost.hidden = !(engine.phase === 'closed' && !busy && (step === 0 || performance.now() - lastInteraction > IDLE_HINT_MS));
 
-    gauge.hidden = !ctx.settings.showHud;
+    gauge.hidden = !ctx.settings.showGauge;
     if (!gauge.hidden) {
       gaugeAngle.innerHTML = `${engine.angle.toFixed(0)}°<small>ouverture</small>`;
       gaugeState.textContent = engine.cracked && pearl.glow ? 'Perle fêlée' : engine.inFragileZone ? 'Zone fragile' : engine.phase === 'closed' ? 'Fermée' : engine.phase === 'resisting' ? 'Résistance' : engine.phase === 'revealed' ? 'Ouverte' : 'Ouverture';

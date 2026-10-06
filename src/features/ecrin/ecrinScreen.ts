@@ -193,9 +193,13 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     if (firstEcrin) {
       const tip = document.createElement('p');
       tip.className = 'coach coach-card';
+      const left = ctx.player.ecrins;
+      const next = left > 0
+        ? `Il t’en reste ${left} à ouvrir, puis un nouvel écrin toutes les ${ctx.tuning.oystersPerEcrin} huîtres.`
+        : `Tu gagneras un nouvel écrin toutes les ${ctx.tuning.oystersPerEcrin} huîtres.`;
       tip.textContent = perfect
-        ? `Éclat parfait ! Le bijou vaut 50 % de plus. Tu gagneras un nouvel écrin toutes les ${ctx.tuning.oystersPerEcrin} huîtres.`
-        : `Pas d’éclat parfait cette fois : arrête-toi pile quand ça brille le plus, et tiens une seconde. Prochain écrin dans ${ctx.tuning.oystersPerEcrin} huîtres.`;
+        ? `Éclat parfait ! Le bijou vaut 50 % de plus. ${next}`
+        : `Pas d’éclat parfait cette fois : arrête-toi pile quand ça brille le plus, et tiens une seconde. ${next}`;
       overlay.append(tip);
     }
     overlay.append(jewelCardElement(card, 'large'));
@@ -277,6 +281,8 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
   }
   const observer = new ResizeObserver(resize);
   observer.observe(canvas);
+  // Le pied (message, jauge) peut changer de taille : la scène se recentre au-dessus.
+  observer.observe(root.querySelector('.oyster-dock')!);
 
   function draw(now: number): void {
     frame = requestAnimationFrame(draw);
@@ -374,7 +380,7 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
     oddsButton.hidden = busy || phase !== 'closed';
 
     // La jauge d'éclat est toujours visible pour le premier écrin (angle d'éclat guidé, cahier §15).
-    gauge.hidden = busy || !(ctx.settings.showHud || firstEcrin);
+    gauge.hidden = busy || !(ctx.settings.showGauge || firstEcrin);
     if (!gauge.hidden) {
       gaugeAngle.innerHTML = `${engine.angle.toFixed(0)}°<small>ouverture</small>`;
       gaugeState.textContent = engine.perfect ? 'Éclat parfait' : 'Éclat';

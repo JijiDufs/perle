@@ -18,7 +18,7 @@ export function craftedCardElement(card: CraftedCard, size: 'large' | 'small'): 
   const recipe = RECIPES.find((r) => r.id === card.recipeId);
   const frame = JEWEL_FRAMES[Math.min(JEWEL_FRAMES.length - 1, card.stars)];
   const el = document.createElement('article');
-  el.className = `card card-${size}${frame.dark ? ' card-dark' : ''}${card.stars >= 4 ? ' card-holo' : ''}`;
+  el.className = `card card-jewel card-${size}${frame.dark ? ' card-dark' : ''}${card.stars >= 4 ? ' card-holo' : ''}`;
   el.style.setProperty('--frame-a', frame.colors[0]);
   el.style.setProperty('--frame-b', frame.colors[1]);
   el.innerHTML = `

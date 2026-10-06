@@ -51,23 +51,34 @@ const shellState = () => ({ player, tuning, settings });
 const shell = createShell(document.querySelector<HTMLElement>('#app')!, (name) => show(name), shellState, () => ctx);
 let unmount: () => void = () => {};
 
-/** Durée du fondu enchaîné entre deux écrans (ms), alignée sur l'animation CSS `.screen-enter`. */
-const SCREEN_FADE_MS = 240;
+/** Durée du glissement entre deux écrans (ms), alignée sur les animations CSS `.screen-in-*` / `.screen-out-*`. */
+const SCREEN_SLIDE_MS = 320;
 
 function show(name: ScreenName): void {
   unmount();
   // Nouvel élément à chaque écran : aucun écouteur ne survit d'un écran à l'autre.
   const root = document.createElement('div');
   const direction = shell.setActive(name);
-  // Fondu enchaîné : l'ancien écran (figé) reste dessous le temps que le nouveau apparaisse,
-  // pour ne jamais découvrir le fond (plus de bande vide sur un bord pendant la transition).
-  const previous = [...shell.host.children];
+  // Un écran encore en train de partir (navigation rapide) disparaît tout de suite.
+  shell.host.querySelectorAll(':scope > .screen-leaving').forEach((el) => el.remove());
+  const previous = [...shell.host.children] as HTMLElement[];
   shell.host.append(root);
   unmount = SCREENS[name](root, ctx);
+  // Glissement dans le sens des onglets : l'ancien écran (figé) part d'un côté pendant que le nouveau
+  // arrive de l'autre, sur toute la largeur. Ils ne se superposent jamais et aucune bande vide n'apparaît.
   // Après le montage : chaque écran pose ses propres classes.
-  if (direction !== 0 && previous.length) {
-    root.classList.add('screen-enter');
-    window.setTimeout(() => previous.forEach((el) => el.remove()), SCREEN_FADE_MS);
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (direction !== 0 && previous.length && !reduceMotion) {
+    const side = direction > 0 ? 'right' : 'left';
+    root.classList.add(`screen-in-${side}`);
+    for (const el of previous) {
+      el.classList.add('screen-leaving', `screen-out-${side}`);
+      el.inert = true;
+    }
+    window.setTimeout(() => {
+      previous.forEach((el) => el.remove());
+      root.classList.remove(`screen-in-${side}`);
+    }, SCREEN_SLIDE_MS);
   } else {
     previous.forEach((el) => el.remove());
   }

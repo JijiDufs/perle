@@ -3,7 +3,7 @@
 import { formatEuros } from '../../art/cardStyle';
 import { drawGem } from '../../art/jewel';
 import { GRADE_LABELS, inclusionAt, inclusionsFor, recordExpertise, type Inclusion } from '../../core/expertise';
-import { jewelVariant } from '../../core/jewels';
+import { jewelVariant, type GemCut } from '../../core/jewels';
 import type { JewelCard } from '../../core/player';
 import { track } from '../../platform/analytics';
 import { ding, noise, unlockAudio } from '../../platform/audio';
@@ -40,6 +40,10 @@ export function openExpertise(ctx: AppContext, card: JewelCard, onDone: (card: J
   const inclusions = inclusionsFor(card);
   const t = ctx.tuning;
   const gemColor = (card.variant ? jewelVariant(card.variant).gem : card.jewel.gem) ?? '#f2fbff';
+  // La pierre sous la loupe garde sa taille quand elle est assez large pour contenir les inclusions
+  // (jusqu'à 0,75 du rayon) ; les tailles étroites (poire, marquise, cœur) sont vues par leur table, ronde.
+  const WIDE_CUTS: readonly GemCut[] = ['rond', 'ovale', 'coussin', 'emeraude', 'princesse'];
+  const gemCut: GemCut = card.jewel.cut && WIDE_CUTS.includes(card.jewel.cut) ? card.jewel.cut : 'rond';
 
   const root = document.createElement('div');
   root.className = 'expertise-overlay';
@@ -191,7 +195,7 @@ export function openExpertise(ctx: AppContext, card: JewelCard, onDone: (card: J
     c.clearRect(0, 0, w, h);
 
     // Pierre vue à l'œil nu : les inclusions ne se voient pas.
-    drawGem(c, cx, cy, R, gemColor);
+    drawGem(c, cx, cy, R, gemColor, false, gemCut);
 
     // Inclusions déjà repérées : cerclées d'or, visibles partout.
     for (const i of found) {
@@ -233,7 +237,7 @@ export function openExpertise(ctx: AppContext, card: JewelCard, onDone: (card: J
     c.translate(lx, ly);
     c.scale(ZOOM, ZOOM);
     c.translate(-(cx + gx * R), -(cy + gy * R));
-    drawGem(c, cx, cy, R, gemColor);
+    drawGem(c, cx, cy, R, gemColor, false, gemCut);
     inclusions.forEach((inc, i) => {
       drawInclusion(inc, cx + inc.x * R, cy + inc.y * R, R * 0.018);
       if (found.has(i)) {

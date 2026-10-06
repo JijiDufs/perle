@@ -10,8 +10,11 @@ const TUNING_KEY = 'perle.tuning.v2';
 const SETTINGS_KEY = 'perle.settings.v1';
 
 export interface Settings {
-  /** Affiche les mesures en direct (angle, vitesse, zone fragile). */
-  showHud: boolean;
+  /**
+   * Affiche la jauge de réglage (angle, vitesse, zone fragile). Outil du prototype : masqué par défaut.
+   * (Remplace `showHud`, qui valait vrai par défaut : l'ancien réglage est ignoré.)
+   */
+  showGauge: boolean;
   /** Sons générés (craquement, pop, carillon). */
   sound: boolean;
   /** Tri choisi dans la collection. */
@@ -22,7 +25,7 @@ export interface Settings {
   seenSerial: number;
 }
 
-const DEFAULT_SETTINGS: Settings = { showHud: true, sound: true, collectionSort: 'rarity', installHintDismissed: false, seenSerial: -1 };
+const DEFAULT_SETTINGS: Settings = { showGauge: false, sound: true, collectionSort: 'rarity', installHintDismissed: false, seenSerial: -1 };
 
 function read<T>(key: string, fallback: T): T {
   try {

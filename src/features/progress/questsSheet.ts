@@ -36,7 +36,7 @@ export function openQuestsSheet(ctx: AppContext): void {
           <p class="muted">Nouvelles quêtes dans ${formatHours(msUntilNextDay(now))}.</p>
           <button type="button" class="daily-row${canClaimDaily(ctx.player, now) ? ' ready' : ''}" data-action="calendar">
             <span class="flame" aria-hidden="true"></span>
-            <span><b>${ctx.player.login.streak} jour${ctx.player.login.streak > 1 ? 's' : ''} d’affilée</b><small>Calendrier · jour ${(canClaimDaily(ctx.player, now) ? ctx.player.login.calendarIndex : (ctx.player.login.calendarIndex + CALENDAR.length - 1) % CALENDAR.length) + 1} sur ${CALENDAR.length}</small></span>
+            <span><b>${ctx.player.login.streak > 0 ? `${ctx.player.login.streak} jour${ctx.player.login.streak > 1 ? 's' : ''} d’affilée` : 'Ta série commence aujourd’hui'}</b><small>Calendrier · jour ${(canClaimDaily(ctx.player, now) ? ctx.player.login.calendarIndex : (ctx.player.login.calendarIndex + CALENDAR.length - 1) % CALENDAR.length) + 1} sur ${CALENDAR.length}</small></span>
             <span class="chapter-action">${canClaimDaily(ctx.player, now) ? 'Récupérer' : 'Voir'}</span>
           </button>
           <ul class="quest-list">

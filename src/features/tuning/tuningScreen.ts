@@ -29,7 +29,7 @@ export function mountTuningScreen(root: HTMLElement, ctx: AppContext): () => voi
       <button data-action="reset-tuning">Revenir aux valeurs par défaut</button>
 
       <h2>Affichage</h2>
-      <label class="toggle"><input type="checkbox" data-action="hud" ${ctx.settings.showHud ? 'checked' : ''}/> Afficher la jauge (angle, vitesse, zone fragile)</label>
+      <label class="toggle"><input type="checkbox" data-action="hud" ${ctx.settings.showGauge ? 'checked' : ''}/> Afficher la jauge (angle, vitesse, zone fragile)</label>
       <label class="toggle"><input type="checkbox" data-action="sound" ${ctx.settings.sound ? 'checked' : ''}/> Son</label>
 
       <h2>Installer l'app</h2>
@@ -76,7 +76,7 @@ export function mountTuningScreen(root: HTMLElement, ctx: AppContext): () => voi
   root.addEventListener('change', (event) => {
     const target = event.target as HTMLInputElement | HTMLSelectElement;
     if (target.dataset.action === 'hud') {
-      ctx.setSettings({ ...ctx.settings, showHud: (target as HTMLInputElement).checked });
+      ctx.setSettings({ ...ctx.settings, showGauge: (target as HTMLInputElement).checked });
     } else if (target.dataset.action === 'sound') {
       ctx.setSettings({ ...ctx.settings, sound: (target as HTMLInputElement).checked });
     } else if (target.dataset.action === 'force' && target.value) {

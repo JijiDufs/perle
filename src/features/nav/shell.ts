@@ -143,7 +143,10 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     oysterRes.hidden = tutorial;
     const stock = refreshStock(player.stock, now, tuning);
     const wait = nextRefillIn(player.stock, now, tuning);
-    oysterRes.querySelector('.resource-value')!.textContent = `${stock.count}/${tuning.oysterStockMax}`;
+    // Au-delà du maximum (huîtres offertes), on affiche le compte seul, en or : « 16/10 » ressemblait à un bug.
+    const bonus = stock.count > tuning.oysterStockMax;
+    oysterRes.querySelector('.resource-value')!.textContent = bonus ? String(stock.count) : `${stock.count}/${tuning.oysterStockMax}`;
+    oysterRes.title = bonus ? `${stock.count - tuning.oysterStockMax} huîtres en bonus, au-delà du maximum de ${tuning.oysterStockMax}` : '';
     oysterRes.querySelector('.resource-sub')!.textContent = wait === null ? '' : formatWait(wait);
     oysterRes.classList.toggle('empty', stock.count === 0);
     // Au-delà du maximum (récompenses de niveau) : en doré.
@@ -236,11 +239,13 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     const direction = Math.sign(ORDER.indexOf(name) - ORDER.indexOf(active)) as -1 | 0 | 1;
     active = name;
     const tabs = [...app.querySelectorAll<HTMLButtonElement>('.tabbar [data-screen]')];
+    // La carte des marées s'ouvre depuis la Maison : c'est l'onglet Maison qui reste allumé.
+    const tab = name === 'map' ? 'house' : name;
     tabs.forEach((b) => {
-      b.classList.toggle('active', b.dataset.screen === name);
-      b.setAttribute('aria-current', b.dataset.screen === name ? 'page' : 'false');
+      b.classList.toggle('active', b.dataset.screen === tab);
+      b.setAttribute('aria-current', b.dataset.screen === tab ? 'page' : 'false');
     });
-    const index = tabs.findIndex((b) => b.dataset.screen === name);
+    const index = tabs.findIndex((b) => b.dataset.screen === tab);
     app.querySelector<HTMLElement>('.tabbar')!.style.setProperty('--tab-index', String(Math.max(0, index)));
     app.querySelector('.tabbar')!.classList.toggle('no-active', index < 0);
     if (name === 'ecrin') ecrinTab.classList.remove('just-unlocked');
@@ -249,12 +254,15 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
     return direction;
   }
 
-  /** Bannières une à une, puis la montée de niveau. */
-  function showRewards(): void {
+  /**
+   * Au moment calme : le calendrier du jour, puis la montée de niveau (plein écran), puis les bannières une à une.
+   * Le plein écran passe avant les bannières : après elles (≈ 3 s chacune), il pouvait surgir en plein geste.
+   */
+  function showRewards(bannersOnly = false): void {
     const { player, tuning } = getState();
     if (celebrating || showingBanners || isInTutorial(player.oystersOpened)) return;
     const now = Date.now();
-    if (!firstSession && canClaimDaily(player, now) && calendarShownDay !== dayKey(now)) {
+    if (!bannersOnly && !firstSession && canClaimDaily(player, now) && calendarShownDay !== dayKey(now)) {
       calendarShownDay = dayKey(now);
       celebrating = true;
       openDailyCalendar(getCtx(), () => {
@@ -263,21 +271,25 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
       });
       return;
     }
-    const banner = banners.shift();
-    if (banner) {
-      showingBanners = true;
-      showBanner(banner, () => {
-        showingBanners = false;
+    // À la fin d'une bannière, on ne sait pas si le joueur a commencé un geste : le plein écran attend le prochain moment calme.
+    if (pendingLevels && !bannersOnly) {
+      const [from, to] = pendingLevels;
+      pendingLevels = null;
+      celebrating = true;
+      track('level_up', { level: to });
+      showLevelUp(from, to, tuning, unreadChapters(player, tuning).length, () => {
+        celebrating = false;
         showRewards();
       });
       return;
     }
-    if (!pendingLevels) return;
-    const [from, to] = pendingLevels;
-    pendingLevels = null;
-    celebrating = true;
-    track('level_up', { level: to });
-    showLevelUp(from, to, tuning, unreadChapters(player, tuning).length, () => (celebrating = false));
+    const banner = banners.shift();
+    if (!banner) return;
+    showingBanners = true;
+    showBanner(banner, () => {
+      showingBanners = false;
+      showRewards(true);
+    });
   }
 
   function showBanner(banner: Banner, done: () => void): void {

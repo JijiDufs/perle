@@ -10,7 +10,7 @@ export function jewelCardElement(card: JewelCard, size: 'large' | 'small'): HTML
   const rarity = jewelRarity(jewel.rarityId);
   const frame = variant?.frame ?? JEWEL_FRAMES[rarity.tier];
   const el = document.createElement('article');
-  el.className = `card card-${size}${frame.dark ? ' card-dark' : ''}${rarity.tier >= 3 || card.perfect ? ' card-holo' : ''}${variant ? ' card-variant' : ''}`;
+  el.className = `card card-jewel card-${size}${frame.dark ? ' card-dark' : ''}${rarity.tier >= 3 || card.perfect ? ' card-holo' : ''}${variant ? ' card-variant' : ''}`;
   el.style.setProperty('--frame-a', frame.colors[0]);
   el.style.setProperty('--frame-b', frame.colors[1]);
   el.innerHTML = `

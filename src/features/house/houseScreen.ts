@@ -15,6 +15,9 @@ import { openAtelier } from '../atelier/atelierScreen';
 import { craftedJewel } from '../atelier/craftedView';
 import type { AppContext } from '../context';
 
+/** Couleur du haut du ciel de la Maison (art/house.ts), peinte au-dessus de la scène, derrière le titre. */
+const SKY_TOP = '#081422';
+
 /** Durée de l'éclat quand un élément est restauré (ms). */
 const APPEAR_MS = 1600;
 
@@ -96,7 +99,15 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
     }
     // Pendant l'éclat, l'élément restauré apparaît déjà (il est dans l'état).
     const brand = houseBrand(levelFromXp(ctx.player.reputation, ctx.tuning).level);
-    drawHouse(c, width, height, { restored: restoredFeatures(ctx.player), brand, showcase: art.art, appearing: appear }, now);
+    // La scène commence sous le titre : il ne recouvre jamais le toit. Au-dessus, le haut du ciel.
+    const title = root.querySelector<HTMLElement>('.house-title')!;
+    const top = Math.min(height * 0.4, title.offsetTop + title.offsetHeight + 4);
+    c.fillStyle = SKY_TOP;
+    c.fillRect(0, 0, width, top + 1);
+    c.save();
+    c.translate(0, top);
+    drawHouse(c, width, height - top, { restored: restoredFeatures(ctx.player), brand, showcase: art.art, appearing: appear }, now);
+    c.restore();
     frame = requestAnimationFrame(loop);
   }
 
