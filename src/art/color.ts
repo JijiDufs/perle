@@ -10,6 +10,11 @@ export function rgba(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
+/** Éclaircit une couleur (k = 0 : identique, 1 : blanc). */
+export function tint(hex: string, k: number): string {
+  return `rgb(${hexRgb(hex).map((v) => Math.round(v + (255 - v) * k)).join(',')})`;
+}
+
 /** Assombrit une couleur (k = 0 : identique, 1 : noir). */
 export function shade(hex: string, k: number): string {
   return `rgb(${hexRgb(hex).map((v) => Math.round(v * (1 - k))).join(',')})`;

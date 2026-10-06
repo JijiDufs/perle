@@ -65,9 +65,9 @@ export function sortJewelCards(cards: readonly JewelCard[], sort: CardSort): Jew
 
 /** Cartes (perles, bijoux, créations) obtenues après la carte n° `seenSerial` : les « nouvelles » depuis la dernière visite. */
 export function newCardsSince(
-  state: { cards: readonly PearlCard[]; jewelCards: readonly JewelCard[]; craftedCards?: readonly { serial: number }[] },
+  state: { cards: readonly PearlCard[]; jewelCards: readonly JewelCard[]; craftedCards?: readonly { serial: number }[]; findCards?: readonly { serial: number }[] },
   seenSerial: number,
 ): number {
   const fresh = (list: readonly { serial: number }[]) => list.filter((c) => c.serial > seenSerial).length;
-  return fresh(state.cards) + fresh(state.jewelCards) + fresh(state.craftedCards ?? []);
+  return fresh(state.cards) + fresh(state.jewelCards) + fresh(state.craftedCards ?? []) + fresh(state.findCards ?? []);
 }

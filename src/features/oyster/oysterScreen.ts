@@ -3,9 +3,11 @@
 // Vue de dessus : la valve du bas reste posée, le couvercle pivote autour de la charnière
 // et se soulève vers le haut de l'écran, dans le sens du pouce.
 import { smoothstep } from '../../art/color';
+import { drawFind } from '../../art/finds';
 import { drawGlow, drawPearl } from '../../art/pearl';
 import { drawFlesh, drawNacre, drawShellExterior, randomPhases, shellOutline, tracePath, type Phases } from '../../art/shell';
 import { pearlById, type PearlType } from '../../core/catalog';
+import { findById, findRevealTier, findTrembles, type FindCard, type FindType } from '../../core/finds';
 import { OpeningEngine, type OpeningEvent } from '../../core/opening';
 import { ensureOyster, recordOpening, type PearlCard } from '../../core/player';
 import { currentQuests } from '../../core/progression';
@@ -15,14 +17,15 @@ import { isCrackProtected, isInTutorial } from '../../core/tutorial';
 import { isIos, isStandalone } from '../../platform/offline';
 import { ThumbInput } from '../../input/thumb';
 import { track } from '../../platform/analytics';
-import { chime, noise, setMuted, unlockAudio } from '../../platform/audio';
+import { chime, chimeNotes, noise, setMuted, unlockAudio } from '../../platform/audio';
 import { hapticBurst, hapticTick } from '../../platform/haptics';
 import { revealSuspenseMs } from '../../tuning';
 import { cardElement } from '../collection/cardView';
+import { findCardElement } from '../collection/findCardView';
 import { Lagoon } from '../../art/lagoon';
 import type { AppContext } from '../context';
 import { visibleBand } from '../nav/insets';
-import { pearlShareButton } from '../share/shareButton';
+import { findShareButton, pearlShareButton } from '../share/shareButton';
 import { coachAfterReveal, coachDuringGesture } from './coach';
 import { openQuestsSheet } from '../progress/questsSheet';
 
@@ -94,7 +97,13 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
 
   let engine = new OpeningEngine(ctx.tuning);
   let pearl: PearlType = pearlById('white');
+  /** Trouvaille cachée à la place de la perle (pearl est alors l'huître vide). */
+  let find: FindType | null = null;
   let sizeMm = 6;
+  // Ce qui se voit de l'extérieur : la lumière, l'ampleur de la révélation, le tremblement.
+  const glowColor = () => (find ? find.glow : pearl.glow);
+  const revealTier = () => (find ? findRevealTier(find) : pearl.revealTier);
+  const trembles = () => (find ? findTrembles(find) : pearl.trembles);
   let phases: Phases = randomPhases(Math.random);
   let gestureStart = 0;
   let lastTick = 0;
@@ -176,12 +185,13 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
 
   function reveal(lustre: 'S' | 'A' | 'B' | 'C', cracked: boolean, time: number): void {
     busy = true;
-    const { state, card, ecrinEarned } = recordOpening(ctx.player, { lustre, cracked }, Date.now(), ctx.tuning);
+    const { state, card, find: findCard, ecrinEarned } = recordOpening(ctx.player, { lustre, cracked }, Date.now(), ctx.tuning);
     if (ecrinEarned) track('ecrin_earned', { oystersOpened: state.oystersOpened });
     ctx.setPlayer(state);
-    const tier = pearl.revealTier;
+    const tier = revealTier();
     track('reveal', {
       pearlId: pearl.id,
+      findId: find?.id ?? 'aucune',
       tier,
       lustre,
       cracked: cracked && pearl.glow !== null,
@@ -197,13 +207,14 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     timers.push(
       window.setTimeout(() => {
         if (tier === 3) flashAt = performance.now();
-        chime(pearl);
-        showCard(card, cracked && pearl.glow !== null, ecrinEarned);
+        if (find) chimeNotes('find', tier);
+        else chime(pearl);
+        showCard(card, findCard, cracked && pearl.glow !== null, ecrinEarned);
       }, suspenseMs),
     );
   }
 
-  function showCard(card: PearlCard | null, cracked: boolean, ecrinEarned: boolean): void {
+  function showCard(card: PearlCard | null, findCard: FindCard | null, cracked: boolean, ecrinEarned: boolean): void {
     overlay.replaceChildren();
     if (ecrinEarned) {
       const banner = document.createElement('button');
@@ -221,8 +232,16 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
       p.textContent = tip;
       overlay.append(p);
     }
-    overlay.append(cardElement(pearl.id, card, 'large'));
-    if (card) overlay.append(pearlShareButton(card));
+    if (findCard) {
+      const kicker = document.createElement('p');
+      kicker.className = 'find-kicker';
+      const first = ctx.player.findCards.filter((c) => c.findId === findCard.findId).length === 1;
+      kicker.textContent = first ? 'Ce n’est pas une perle… Nouvelle trouvaille !' : 'Ce n’est pas une perle…';
+      overlay.append(kicker, findCardElement(findCard, 'large', ctx.tuning), findShareButton(findCard));
+    } else {
+      overlay.append(cardElement(pearl.id, card, 'large'));
+      if (card) overlay.append(pearlShareButton(card));
+    }
     const tap = document.createElement('p');
     tap.className = 'tap-hint';
     tap.textContent = 'Touche pour la prochaine huître';
@@ -253,6 +272,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     waiting = false;
     tide.hidden = true;
     pearl = pearlById(oyster.pearlId);
+    find = oyster.findId ? findById(oyster.findId) : null;
     sizeMm = oyster.sizeMm;
     phases = randomPhases(Math.random);
     step = ctx.player.oystersOpened;
@@ -307,7 +327,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     }
 
     // Tremblement des plus rares, petit choc au pop.
-    if (pearl.trembles && engine.phase === 'closed' && !busy && t % 2.4 < 0.45) {
+    if (trembles() && engine.phase === 'closed' && !busy && t % 2.4 < 0.45) {
       hx += (Math.random() - 0.5) * 6;
       hy += (Math.random() - 0.5) * 4;
     }
@@ -320,11 +340,16 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
 
     const px = hx;
     const py = hy + L * 0.5;
-    let prad = L * (0.05 + sizeMm * 0.0055);
+    const tier = revealTier();
+    const glow = glowColor();
+    let prad = find ? L * 0.12 : L * (0.05 + sizeMm * 0.0055);
     const suspense = busy ? smoothstep(0, Math.max(suspenseMs, 1), now - revealStartedAt) : 0;
-    const cursedPulse = pearl.id === 'cursed' ? 0.75 + 0.25 * Math.sin(t * 6) : 1;
-    if (busy) prad *= 1 + 0.1 * suspense * Math.max(0, Math.sin(t * (6 + pearl.revealTier * 3)));
-    drawPearl(c, px, py, prad, pearl, engine.cracked);
+    // La perle maudite palpite ; une trouvaille vacille, comme une lumière qui n'est pas celle d'une perle.
+    const cursedPulse = pearl.id === 'cursed' ? 0.75 + 0.25 * Math.sin(t * 6) : find ? 0.8 + 0.2 * Math.sin(t * 9) * Math.sin(t * 2.3) : 1;
+    const pulse = busy ? 1 + 0.1 * suspense * Math.max(0, Math.sin(t * (6 + tier * 3))) : 1;
+    prad *= pulse;
+    if (find) drawFind(c, px, py, L * 0.2 * pulse, find, t);
+    else drawPearl(c, px, py, prad, pearl, engine.cracked);
 
     // L'intérieur reste dans l'ombre tant que la coquille est peu ouverte.
     const dim = 1 - smoothstep(4, 140, angle);
@@ -337,8 +362,8 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     }
 
     // Halo de la perle, puis couvercle par-dessus.
-    const strength = GLOW_STRENGTH[pearl.revealTier] * cursedPulse * (engine.cracked ? 0.35 : 1);
-    drawGlow(c, px, py, prad * (4 + pearl.revealTier * 0.8), pearl.glow, smoothstep(1, 25, angle) * strength, false);
+    const strength = GLOW_STRENGTH[tier] * cursedPulse * (engine.cracked && !find ? 0.35 : 1);
+    drawGlow(c, px, py, prad * (4 + tier * 0.8), glow, smoothstep(1, 25, angle) * strength, false);
 
     const lift = Math.cos(theta);
     c.save();
@@ -360,13 +385,13 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     // La lumière filtre par l'entrebâillement, au bord du couvercle.
     if (lift > 0) {
       const leak = smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle));
-      drawGlow(c, hx, hy + L * 0.98 * lift, L * 0.8, pearl.glow, leak * strength * 0.9);
+      drawGlow(c, hx, hy + L * 0.98 * lift, L * 0.8, glow, leak * strength * 0.9);
     }
 
     lagoon.drawOverlay(c, w, h);
 
     // Révélation : le halo envahit l'écran, puis éclair blanc pour les ★.
-    if (busy) drawGlow(c, px, py, L * (1.4 + pearl.revealTier * 0.5), pearl.glow, suspense * 0.5 * cursedPulse, false);
+    if (busy) drawGlow(c, px, py, L * (1.4 + tier * 0.5), glow, suspense * 0.5 * cursedPulse, false);
     const flash = flashAt ? 1 - smoothstep(0, 500, now - flashAt) : 0;
     if (flash > 0) {
       c.fillStyle = `rgba(255,250,235,${flash * 0.7})`;
@@ -446,7 +471,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     let text = '';
     let danger = false;
     if (busy) text = '';
-    else if (engine.phase === 'closed') text = pearl.trembles ? 'Elle tremble… Glisse le pouce vers le haut' : 'Ouvre-moi. Glisse le pouce vers le haut';
+    else if (engine.phase === 'closed') text = trembles() ? 'Elle tremble… Glisse le pouce vers le haut' : 'Ouvre-moi. Glisse le pouce vers le haut';
     else if (engine.phase === 'resisting') text = 'Ouvre doucement…';
     else if (engine.cracked && pearl.glow) [text, danger] = ['Crac. La perle est fêlée.', true];
     else if (engine.inFragileZone && engine.velocity > t.maxSafeVelocity * 0.6) [text, danger] = ['Trop vite !', true];
@@ -472,7 +497,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     gauge.hidden = !ctx.settings.showHud;
     if (!gauge.hidden) {
       gaugeAngle.innerHTML = `${engine.angle.toFixed(0)}°<small>ouverture</small>`;
-      gaugeState.textContent = engine.cracked ? 'Perle fêlée' : engine.inFragileZone ? 'Zone fragile' : engine.phase === 'closed' ? 'Fermée' : engine.phase === 'resisting' ? 'Résistance' : engine.phase === 'revealed' ? 'Ouverte' : 'Ouverture';
+      gaugeState.textContent = engine.cracked && pearl.glow ? 'Perle fêlée' : engine.inFragileZone ? 'Zone fragile' : engine.phase === 'closed' ? 'Fermée' : engine.phase === 'resisting' ? 'Résistance' : engine.phase === 'revealed' ? 'Ouverte' : 'Ouverture';
       gaugeState.classList.toggle('warn', engine.inFragileZone || engine.cracked);
       const ratio = Math.min(1, Math.max(0, engine.velocity) / t.maxSafeVelocity);
       gaugeSpeed.style.width = `${ratio * 100}%`;

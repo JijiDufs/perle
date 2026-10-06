@@ -1,8 +1,11 @@
-// Collection : deux volets, Perles et Bijoux, avec encyclopédie (toucher filtre), tri et carte agrandie.
+// Collection : volets Perles, Bijoux, Créations et Trouvailles (ce dernier après la première trouvaille),
+// avec encyclopédie (toucher filtre), tri et carte agrandie.
 import { jewelCanvas } from '../../art/jewel';
 import { pearlCanvas } from '../../art/pearl';
 import { PEARLS } from '../../core/catalog';
 import { jewelRarityRank, rarityRank, sortCards, sortJewelCards, type CardSort } from '../../core/collection';
+import { albumProgress, FIND_ALBUMS, FINDS, findRarity, type FindCard } from '../../core/finds';
+import { findCanvas } from '../../art/finds';
 import { JEWEL_RARITIES, jewelVariant, withVariant } from '../../core/jewels';
 import type { JewelCard, PearlCard } from '../../core/player';
 import { track } from '../../platform/analytics';
@@ -10,8 +13,9 @@ import type { AppContext } from '../context';
 import { jewelCardElement } from '../ecrin/jewelCardView';
 import { dustLabel, meltButton, openDustShop } from '../dust/dustShop';
 import { expertiseButton } from '../expertise/expertiseButton';
-import { craftedShareButton, jewelShareButton, pearlShareButton } from '../share/shareButton';
+import { craftedShareButton, findShareButton, jewelShareButton, pearlShareButton } from '../share/shareButton';
 import { cardElement } from './cardView';
+import { findCardElement } from './findCardView';
 import { RECIPES, type CraftedCard } from '../../core/atelier';
 import { craftedCardElement, craftedJewel } from '../atelier/craftedView';
 
@@ -21,7 +25,8 @@ const SORTS: { id: CardSort; label: string }[] = [
   { id: 'value', label: 'Valeur' },
 ];
 
-type Kind = 'pearls' | 'jewels' | 'crafted';
+type Kind = 'pearls' | 'jewels' | 'crafted' | 'finds';
+type AnyCard = PearlCard | JewelCard | CraftedCard | FindCard;
 
 /** « 1 huître ouverte », « 3 huîtres ouvertes ». */
 const plural = (n: number, singular: string, pluralForm: string) => `${n} ${n > 1 ? pluralForm : singular}`;
@@ -31,7 +36,8 @@ interface Shelf<C extends { serial: number }> {
   title: string;
   subtitle: string;
   emptyText: string;
-  entries: { id: string; name: string; rarity: string; count: number; art: () => HTMLElement }[];
+  /** `group` : intertitre (album) affiché avant la première case du groupe. */
+  entries: { id: string; name: string; rarity: string; count: number; art: () => HTMLElement; group?: string }[];
   cards: C[];
   entryOf(card: C): string;
   sort(cards: C[], sort: CardSort): C[];
@@ -125,6 +131,36 @@ function craftedShelf(ctx: AppContext): Shelf<CraftedCard> {
   };
 }
 
+function findShelf(ctx: AppContext): Shelf<FindCard> {
+  const cards = ctx.player.findCards ?? [];
+  const countOf = (id: string) => cards.filter((c) => c.findId === id).length;
+  const complete = FIND_ALBUMS.filter((album) => {
+    const [found, total] = albumProgress(cards, album.id);
+    return found === total;
+  }).length;
+  const groupLabel = (albumId: (typeof FIND_ALBUMS)[number]['id']) => {
+    const [found, total] = albumProgress(cards, albumId);
+    return `${FIND_ALBUMS.find((a) => a.id === albumId)!.name} · ${found}/${total}`;
+  };
+  const tierOf = (card: FindCard) => FINDS.find((f) => f.id === card.findId)?.tier ?? 0;
+  return {
+    title: 'Les trouvailles',
+    subtitle: `${FINDS.filter((f) => countOf(f.id) > 0).length} sur ${FINDS.length} trouvailles · ${plural(complete, 'album complet', 'albums complets')}`,
+    emptyText: 'Aucune trouvaille pour l’instant. Certaines huîtres cachent autre chose qu’une perle…',
+    entries: FIND_ALBUMS.flatMap((album) =>
+      FINDS.filter((f) => f.album === album.id)
+        .sort((a, b) => a.tier - b.tier)
+        .map((f) => ({ id: f.id, name: f.name, rarity: findRarity(f), count: countOf(f.id), art: () => findCanvas(f, 52, 0.36), group: groupLabel(album.id) })),
+    ),
+    cards,
+    entryOf: (card) => card.findId,
+    sort: (list, sort) =>
+      [...list].sort((a, b) => (sort === 'recent' ? b.serial - a.serial : sort === 'value' ? b.value - a.value || b.serial - a.serial : tierOf(b) - tierOf(a) || b.serial - a.serial)),
+    element: (card, size) => findCardElement(card, size, ctx.tuning),
+    zoomExtras: (card) => actions(findShareButton(card)),
+  };
+}
+
 export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () => void {
   root.className = 'screen collection-screen';
   let kind: Kind = 'pearls';
@@ -140,13 +176,15 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
     const discovered = shelf.entries.filter((entry) => entry.count > 0).length;
     const missing = shelf.entries.length - discovered;
     const percent = shelf.entries.length ? Math.round((discovered / shelf.entries.length) * 100) : 0;
-    const collectionTitle = kind === 'pearls' ? 'Carnet de la Crique' : kind === 'jewels' ? 'Galerie des écrins' : 'Carnet de l’atelier';
-    const returnLabel = kind === 'pearls' ? 'Retourner pêcher' : kind === 'jewels' ? 'Ouvrir un écrin' : 'Revenir à la Maison';
+    const collectionTitle = kind === 'pearls' ? 'Carnet de la Crique' : kind === 'jewels' ? 'Galerie des écrins' : kind === 'finds' ? 'Albums des trouvailles' : 'Carnet de l’atelier';
+    const returnLabel = kind === 'pearls' || kind === 'finds' ? 'Retourner pêcher' : kind === 'jewels' ? 'Ouvrir un écrin' : 'Revenir à la Maison';
+    const hasFinds = (ctx.player.findCards ?? []).length > 0;
     root.innerHTML = `
       <div class="tabs kind-tabs" role="group" aria-label="Type de collection">
         <button data-kind="pearls">Perles</button>
         <button data-kind="jewels">Bijoux</button>
         <button data-kind="crafted">Créations</button>
+        ${hasFinds ? '<button data-kind="finds">Trouvailles</button>' : ''}
       </div>
       <header class="collection-header">
         <h2>${shelf.title}</h2>
@@ -181,10 +219,20 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
     root.querySelector('[data-kind="jewels"]')!.classList.toggle('has-new', freshJewels && kind !== 'jewels');
     const freshCrafted = ctx.player.craftedCards.some((c) => isNew(c.serial));
     root.querySelector('[data-kind="crafted"]')!.classList.toggle('has-new', freshCrafted && kind !== 'crafted');
+    const freshFinds = (ctx.player.findCards ?? []).some((c) => isNew(c.serial));
+    root.querySelector('[data-kind="finds"]')?.classList.toggle('has-new', freshFinds && kind !== 'finds');
 
     // Encyclopédie : une case par rareté, silhouette pour ce qui manque. Toucher filtre les cartes.
     const encyclopedia = root.querySelector<HTMLElement>('.encyclopedia')!;
+    let group: string | undefined;
     for (const entry of shelf.entries) {
+      if (entry.group && entry.group !== group) {
+        group = entry.group;
+        const heading = document.createElement('p');
+        heading.className = 'encyclo-group';
+        heading.textContent = group;
+        encyclopedia.append(heading);
+      }
       const item = document.createElement('button');
       item.className = `encyclo-item${entry.count ? '' : ' missing'}`;
       item.dataset.entry = entry.id;
@@ -196,7 +244,7 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
     render(shelf);
   }
 
-  function render(shelf: Shelf<PearlCard | JewelCard | CraftedCard>): void {
+  function render(shelf: Shelf<AnyCard>): void {
     const sort = ctx.settings.collectionSort;
     root.querySelectorAll<HTMLButtonElement>('[data-sort]').forEach((b) => {
       b.classList.toggle('active', b.dataset.sort === sort);
@@ -231,10 +279,11 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
     );
   }
 
-  function currentShelf(): Shelf<PearlCard | JewelCard | CraftedCard> {
-    if (kind === 'pearls') return pearlShelf(ctx) as Shelf<PearlCard | JewelCard | CraftedCard>;
-    if (kind === 'jewels') return jewelShelf(ctx, () => mount()) as Shelf<PearlCard | JewelCard | CraftedCard>;
-    return craftedShelf(ctx) as Shelf<PearlCard | JewelCard | CraftedCard>;
+  function currentShelf(): Shelf<AnyCard> {
+    if (kind === 'pearls') return pearlShelf(ctx) as Shelf<AnyCard>;
+    if (kind === 'jewels') return jewelShelf(ctx, () => mount()) as Shelf<AnyCard>;
+    if (kind === 'finds') return findShelf(ctx) as Shelf<AnyCard>;
+    return craftedShelf(ctx) as Shelf<AnyCard>;
   }
 
   function openCard(serial: number): void {
@@ -290,7 +339,7 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
       });
       return;
     } else if (target.closest('[data-action="continue-loop"]')) {
-      const screen = kind === 'pearls' ? 'oyster' : kind === 'jewels' ? 'ecrin' : 'house';
+      const screen = kind === 'pearls' || kind === 'finds' ? 'oyster' : kind === 'jewels' ? 'ecrin' : 'house';
       track('collection_continue_clicked', { kind, screen });
       ctx.goTo(screen);
       return;

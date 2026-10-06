@@ -4,6 +4,37 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-06 · Jules · Claude Code · branche `jules/pearl-inc`
+
+Revue des passes de Codex avec Jules, puis : le jeu s'appelle **Pearl Inc.**, et les **trouvailles** arrivent dans les huîtres. Branche partie de `jules/codex-retention-maison` (les changements de Codex y sont encore, à retravailler).
+
+**Retours de Jules sur la passe Codex**
+- « Trop plat partout » : ce sont surtout les **dessins** (relief, lumière, matière). La Maison ne lui plaît pas : à refaire en **maison de poupée en 3/4** (vue en coupe, pièces visibles, qui grandit jusqu'à Pearl Inc.).
+- Veut plus de contenu : objets plus variés (perles, bijoux, objets), des easter eggs dans les huîtres, des fonctions à débloquer.
+- iPhone Duo : conseillé de ne pas attendre la fin du jeu ; petit test natif de la charnière dès qu'un Duo est disponible.
+
+**Fait**
+- **Pearl Inc.** : nom de l'app (manifeste, titre, icône), textes d'installation, partage, image story, dorures de l'écrin. La Maison garde l'enseigne « Maison Rose » jusqu'au rang de Joaillier (niveau 20), puis devient « Pearl Inc. — Joailliers » (`houseBrand()` dans `core/house.ts`). Clés de sauvegarde inchangées.
+- **Trouvailles** (`core/finds.ts`) : 25 objets, 3 albums, 5 % des huîtres à la place de la perle. Effets : pièce d'or → 15 ✦, clé d'épave → 1 écrin, bouteille → un message (8 messages, choisis par le n° de série). Réputation comme une perle de même rareté (+ découverte). 5 succès (première trouvaille, 3 albums avec titre + 1 écrin, 1 secret). Les succès peuvent maintenant donner des écrins (`album: true`).
+- **Dessins en relief** (`art/finds.ts`) : les 25 objets dessinés en code avec la même lumière (dégradé de matière, liseré, reflet, ombre de contact) ; quelques détails animés (compte à rebours du jeton, diode de la clé USB, aiguille de la boussole, inscription de l'anneau, éclats du diamant).
+- Pêche : l'objet est dessiné dans la coquille, la lumière prend sa couleur et vacille ; carte « Ce n'est pas une perle… », son dédié, bouton Partager. Collection : volet « Trouvailles » (apparaît après la première), rangé par album avec avancement.
+
+**À faire ensuite** (choix de Jules)
+1. Perles uniques (forme, reflet, marques) et bijoux plus variés (types, métaux, tailles de pierre).
+2. Dessins plus riches partout (coquille, perles, bijoux, décors).
+3. La Maison en maison de poupée 3/4, et le passage à Pearl Inc.
+4. Fonctions à débloquer (Le Lagon niv. 8, commandes clients, vitrine qui vend, outils de pêche).
+5. Décider du sort de la carte des marées et de l'atlas de Codex (ses 15 « rumeurs » font doublon avec les trouvailles).
+
+**Fragile / à surveiller**
+- Les doublons de trouvailles ne se fondent pas encore en poussière d'or, et la poussière n'achète pas de trouvaille manquante.
+- Le volet « Trouvailles » fait 4 onglets dans la collection : vérifier la largeur sur iPhone SE.
+- Probabilités des perles changées (vide 9 %, blanche 38 %) : écart au cahier, à valider avec Mathys.
+
+**Vérification**
+- `npm test` : 16 fichiers, 138 tests passés. `npm run build` : OK.
+- Dans le navigateur (375 × 812), sur une copie de la sauvegarde : ouverture d'une huître à trouvaille (jeton), carte, montée de niveau, volet Trouvailles, carte de la bouteille avec son message. Sauvegarde de Jules remise ensuite.
+
 ## 2026-10-06 · Codex · branche `jules/codex-retention-maison`
 
 Atlas des trouvailles filtrable et projection enrichie des destinations, dans la DA « lagon lumineux + luxe ».

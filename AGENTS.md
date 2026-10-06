@@ -42,6 +42,7 @@ Objectif : valider la **sensation** du geste. Le rendu reprend la direction visu
 - **La Maison (cahier §8), début du fil narratif** : 4e onglet, verrouillé pendant le tutoriel. La cabane de grand-mère Rose au bout du ponton, dessinée par code, qui change de nom avec le rang. 7 lettres débloquées par niveau (1 à 10) ; lire une lettre rapporte 20 ✦ + 20 de réputation et restaure un élément (porte, lanterne, enseigne, fenêtre et carnet, établi, vitrine avec ta plus belle pièce, boîte mystérieuse). Pastille sur l'onglet pour les lettres à lire, rappel dans la célébration de niveau. La 7e lettre amorce le mystère de la perle maudite ; la suite est annoncée au niveau 15.
 - **Rendez-vous quotidiens (cahier §15)** : calendrier de connexion sur 7 jours (huîtres, poussière d'or, un écrin le 7e), ouvert tout seul une fois par jour (au lancement ou au retour dans l'app ; pas pendant la toute première séance) et depuis la fiche des quêtes. Série de jours consécutifs avec un joker par semaine (un jour manqué ne casse pas la série). Succès « Fidèle au ponton » (7 jours) et « La marée et moi » (30 jours).
 - **L'Atelier (cahier §6), première version** : s'ouvre au niveau 5, depuis la Maison. Carnet de 8 recettes (pages retrouvées du niveau 5 au 12, dont le collier « Rivage » du cahier). Les perles viennent de la collection (les meilleures, en gardant si possible un exemplaire de chaque sorte) ; la monture se paie en poussière d'or. **Sertissage** : pincer deux doigts pour refermer les deux moitiés de l'établi (un doigt qui glisse vers le bas marche aussi) ; ni trop brusque ni trop hésitant. Note de 1 à 5 étoiles = qualité des perles (lustre, fêlure) × réussite du geste. Les créations ont leur volet dans la collection et peuvent prendre place dans la vitrine de la Maison.
+- **Trouvailles (cahier §5)** : 5 % des huîtres cachent un objet à la place de la perle (pris sur l'huître vide et la perle blanche ; les perles rares ne bougent pas, la garantie non plus). 25 objets en 3 albums : « Le bric-à-brac du port » (humour du quotidien), « Clins d'œil » (pop culture, sans nommer d'œuvre ni de marque) et « Trésors engloutis » (pièce d'or → poussière d'or, clé d'épave → écrin, bouteille à la mer → un message, pierre brute). Lumière de la couleur de l'objet, qui vacille ; une trouvaille ne se fêle pas. Carte, partage, volet « Trouvailles » de la collection (visible après la première), un succès par album complété (titre + 1 écrin) et un succès secret.
 - Icône provisoire (huître ouverte + perle), installation sur l'écran d'accueil (aide affichée sur iPhone après le tutoriel), mode hors ligne.
 
 **Hors V1 — ne pas coder sans décision dans §6**
@@ -77,10 +78,11 @@ src/
     house.ts        La Maison : lettres de grand-mère, déblocage, restauration
     levels.ts       Niveaux, réputation, rangs de prestige, récompenses de niveau, déblocages
     dust.ts         Poussière d'or : fonte des doublons, achat d'une pièce manquante ou d'un écrin
+    finds.ts        Trouvailles : objets à la place de la perle, albums, tirage, messages des bouteilles
   input/            Sources du geste → produisent des OpeningSample
     thumb.ts        Pouce vers le haut (iPhone classique)
     pinch.ts        Pincer deux doigts (sertissage), ou un doigt vers le bas
-  art/              Dessin procédural (Canvas 2D) : décors (lagon, salon, Maison), coquille, nacre, perle, halo, bijoux, écrin plat en cuir en 3D (ecrin3d.ts), établi, image story. Aucune règle de jeu
+  art/              Dessin procédural (Canvas 2D) : décors (lagon, salon, Maison), coquille, nacre, perle, halo, bijoux, trouvailles en relief (finds.ts), écrin plat en cuir en 3D (ecrin3d.ts), établi, image story. Aucune règle de jeu
   platform/         Ce qui touche au navigateur : haptique, sons générés, sauvegarde, partage, mesure d'usage (analytics.ts)
   features/         Écrans : nav/ (onglets du bas, barre de ressources, icônes), progress/ (montée de niveau, « Ma progression », quêtes), house/ (La Maison), atelier/ (carnet, établi, cartes de création), oyster/ (dont coach.ts, textes du tutoriel), ecrin/, expertise/ (mini-jeu), dust/ (comptoir de la poussière d'or), collection/, tuning/, share/ (bouton Partager)
   main.ts           Point d'entrée, navigation entre écrans
@@ -145,6 +147,9 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 | Atelier : étoiles | 1 + 4 × (0,4 × matériaux + 0,6 × geste) | cahier §6 (« matériaux × réussite du geste ») |
 | Lettre de la Maison lue | 20 ✦ + 20 de réputation | proposition (§6) |
 | Quêtes du jour | 3 par jour ; 10 ✦ + 30 de réputation chacune ; les trois = 1 écrin | cahier §15 (« trois quêtes du jour ») |
+| Trouvailles : part des huîtres | 5 % (huître vide 12 → 9 %, perle blanche 40 → 38 %) | choix de Jules (§6) |
+| Trouvailles : poids par rareté (◆ ◆◆ ◆◆◆ ★ ★★) | 40 / 18 / 12 / 5 / 2 | proposition (§6) |
+| Pièce d'or / clé d'épave / album complété | 15 ✦ / 1 écrin / 1 écrin | proposition (§6) |
 
 ## 4. Conventions
 
@@ -210,6 +215,7 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-06 | **UX de rétention et rendu des objets/Maison** : mettre en avant la quête active à la Pêche, la progression de l'encyclopédie et la prochaine lettre / pièce maîtresse de la Maison. Enrichir les matières des perles, les tailles de gemmes et les détails de la cabane en dessin procédural. Garder la DA « lagon lumineux + luxe » et les règles / probabilités actuelles. | Choix de Jules : retravailler toute l'UX et la rétention, les objets et la Maison, en conservant la DA existante |
 | 2026-10-06 | **Carte des marées (concept)** : montrer La Crique puis le Jardin d’algues, l’Épave des échos et la Faille d’azur comme destinations à venir. Les objets insolites illustrent le catalogue futur uniquement ; ils ne sont ni tirés ni déblocables en V1. Aucun changement aux probabilités ou aux règles sans décision séparée. | Choix de Jules : rendre l’évolution du jeu visible par une carte et des trouvailles possibles |
 | 2026-10-06 | **Le jeu s'appelle Pearl Inc.** (nom de l'app, de l'icône, partage, dorures des écrins). La Maison de grand-mère Rose garde son enseigne « Maison Rose, perles fines » jusqu'au rang de **Joaillier** (niveau 20), puis devient **Pearl Inc.**, la maison de joaillerie du joueur. Les clés de sauvegarde (`perle.*`) ne changent pas, pour ne perdre aucune partie | Choix de Jules ; le nouveau nom devient une récompense de progression |
+| 2026-10-06 | **Trouvailles à la place de la perle** (cahier §5) : 5 % des huîtres, pris sur l'huître vide (12 → 9 %) et la perle blanche (40 → 38 %) ; les perles ◆◆ et plus, et la garantie perle dorée, ne changent pas (pas de trouvaille sous garantie). Ton : humour du quotidien et clins d'œil à la pop culture, **jamais de nom d'œuvre, de personnage ni de marque** (App Store). Une trouvaille ne se fêle pas. Un album complété donne un écrin (cahier §10). **Probabilités, liste et textes provisoires, à valider avec Mathys** | Choix de Jules : « des easter eggs en référence à la pop culture pour avoir du fun », rares quand même. Écart au cahier §5 (probabilités des perles) |
 
 ## 7. Limites connues du prototype web
 

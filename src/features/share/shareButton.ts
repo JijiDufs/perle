@@ -1,7 +1,8 @@
 import { serialLabel } from '../../art/cardStyle';
-import { renderCraftedStoryImage, renderJewelStoryImage, renderStoryImage } from '../../art/storyImage';
+import { renderCraftedStoryImage, renderFindStoryImage, renderJewelStoryImage, renderStoryImage } from '../../art/storyImage';
 import type { CraftedCard } from '../../core/atelier';
 import { pearlById } from '../../core/catalog';
+import { findById, findRarity, type FindCard } from '../../core/finds';
 import { jewelRarity, withVariant } from '../../core/jewels';
 import type { JewelCard, PearlCard } from '../../core/player';
 import { track, type TrackedEvent } from '../../platform/analytics';
@@ -52,5 +53,15 @@ export function craftedShareButton(card: CraftedCard): HTMLButtonElement {
     `perle-creation-${card.recipeId}-${card.serial}.png`,
     `J'ai créé ${card.name} (${card.stars}★, ${serialLabel(card.serial)}) à l'atelier de Pearl Inc.`,
     { kind: 'crafted', recipe: card.recipeId, stars: card.stars },
+  );
+}
+
+export function findShareButton(card: FindCard): HTMLButtonElement {
+  const find = findById(card.findId);
+  return shareButton(
+    () => renderFindStoryImage(card),
+    `pearl-inc-trouvaille-${card.findId}-${card.serial}.png`,
+    `J'ai ouvert une huître et… ${find.name} ${findRarity(find)} (${serialLabel(card.serial)}). Pas une perle. Pearl Inc.`,
+    { kind: 'find', findId: card.findId },
   );
 }

@@ -3,11 +3,13 @@
 import { metalById, RECIPES, type CraftedCard } from '../core/atelier';
 import { pearlById } from '../core/catalog';
 import { GRADE_LABELS } from '../core/expertise';
+import { bottleMessage, findAlbum, findById, findRarity, type FindCard } from '../core/finds';
 import { jewelRarity, jewelVariant, withVariant } from '../core/jewels';
 import type { JewelCard, PearlCard } from '../core/player';
 import { CARD_FRAMES, formatCarats, formatEuros, JEWEL_FRAMES, SANS, SERIF, serialLabel } from './cardStyle';
 import { craftedJewel } from './atelier';
 import { drawJewel, drawSparkles } from './jewel';
+import { drawFind } from './finds';
 import { drawGlow, drawPearl } from './pearl';
 
 const W = 1080;
@@ -292,5 +294,30 @@ export function renderCraftedStoryImage(card: CraftedCard): Promise<Blob> {
     flags: [{ text: card.setting === 'parfait' ? 'Fait main · sertissage parfait' : 'Fait main', tone: 'gold' }],
     fine: 'Estimation fictive',
     holo: card.stars >= 4,
+  });
+}
+
+export function renderFindStoryImage(card: FindCard): Promise<Blob> {
+  const find = findById(card.findId);
+  return render({
+    subtitle: `Trouvée dans une huître · ${serialLabel(card.serial)}`,
+    title: find.name,
+    rarity: findRarity(find),
+    frame: JEWEL_FRAMES[find.tier],
+    glow: find.glow,
+    artBackground: 'nacre',
+    drawArt(c, x, y, w, h) {
+      drawGlow(c, x + w / 2, y + h / 2, w * 0.55, find.glow, 0.5, false);
+      drawFind(c, x + w / 2, y + h / 2, w * 0.3, find, 1);
+    },
+    stats: [
+      ['Album', findAlbum(find.album).name.replace(/^Le |^Les /, '')],
+      ['Valeur', String(card.value)],
+      ['N°', serialLabel(card.serial)],
+    ],
+    flavor: find.effect === 'message' ? `« ${bottleMessage(card.serial)} »` : find.flavor,
+    flags: [],
+    fine: null,
+    holo: find.tier >= 3,
   });
 }

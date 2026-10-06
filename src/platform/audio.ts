@@ -47,16 +47,22 @@ export function chime(pearl: PearlType): void {
   chimeNotes(pearl.id === 'cursed' ? 'cursed' : !pearl.glow ? 'empty' : 'normal', pearl.revealTier);
 }
 
-/** Carillon générique : `level` 0 à 3 ajoute des notes ; `cursed` grince ; `empty` descend. */
-export function chimeNotes(style: 'normal' | 'cursed' | 'empty', level: number): void {
+/** Carillon générique : `level` 0 à 3 ajoute des notes ; `cursed` grince ; `empty` descend ; `find` sautille. */
+export function chimeNotes(style: 'normal' | 'cursed' | 'empty' | 'find', level: number): void {
   if (!context || muted) return;
   const cursed = style === 'cursed';
-  const notes = cursed ? [220, 233, 311, 207] : style === 'empty' ? [330, 262] : [523, 659, 784, 988, 1175, 1568].slice(0, 3 + level);
+  const notes = cursed
+    ? [220, 233, 311, 207]
+    : style === 'empty'
+      ? [330, 262]
+      : style === 'find'
+        ? [392, 587, 494, 784, 988, 1175].slice(0, 3 + level)
+        : [523, 659, 784, 988, 1175, 1568].slice(0, 3 + level);
   notes.forEach((frequency, i) => {
     const oscillator = context!.createOscillator();
     const volume = context!.createGain();
     const t = context!.currentTime + i * 0.09;
-    oscillator.type = cursed ? 'sawtooth' : 'sine';
+    oscillator.type = cursed ? 'sawtooth' : style === 'find' ? 'triangle' : 'sine';
     oscillator.frequency.value = frequency;
     volume.gain.setValueAtTime(0, t);
     volume.gain.linearRampToValueAtTime(cursed ? 0.05 : 0.12, t + 0.02);
