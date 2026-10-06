@@ -1,4 +1,4 @@
-// Service worker de Perle : permet de jouer hors ligne une fois l'app ouverte une première fois.
+// Service worker de Pearl Inc. : permet de jouer hors ligne une fois l'app ouverte une première fois.
 // - Page (navigation) : réseau d'abord, sinon la version en cache → les mises à jour arrivent dès qu'il y a du réseau.
 // - Fichiers de build (/assets/, noms uniques à chaque build) : cache d'abord.
 // - Polices Google et autres fichiers : cache, puis rafraîchissement en arrière-plan.

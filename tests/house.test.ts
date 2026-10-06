@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CHAPTERS, houseStageName, isHouseUnlocked, readChapter, restoredFeatures, unreadChapters } from '../src/core/house';
+import { CHAPTERS, houseBrand, houseBrandName, houseStageName, isHouseUnlocked, readChapter, restoredFeatures, unreadChapters } from '../src/core/house';
 import { xpToNext } from '../src/core/levels';
 import { INITIAL_PLAYER_STATE, type PlayerState } from '../src/core/player';
 import { TUTORIAL_PEARLS } from '../src/core/tutorial';
@@ -43,5 +43,13 @@ describe('La Maison', () => {
     expect(houseStageName(1)).toBe('La cabane du ponton');
     expect(houseStageName(5)).toBe('L’atelier de fortune');
     expect(houseStageName(10)).toBe('La petite boutique');
+    expect(houseStageName(20)).toBe('Pearl Inc.');
+  });
+
+  it('la Maison de Rose devient Pearl Inc. au rang de Joaillier', () => {
+    expect(houseBrand(19)).toBe('rose');
+    expect(houseBrandName(19)).toBe('Maison Rose');
+    expect(houseBrand(20)).toBe('pearl-inc');
+    expect(houseBrandName(50)).toBe('Pearl Inc.');
   });
 });

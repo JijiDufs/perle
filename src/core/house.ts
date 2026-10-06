@@ -1,7 +1,7 @@
 // La Maison (cahier §8) : le fil narratif. Les lettres de grand-mère Rose se débloquent avec les niveaux ;
 // chaque lettre lue restaure un morceau de la Maison. Textes et prénom : provisoires (AGENTS.md §6).
 import type { Tuning } from '../tuning';
-import { gainReputation, levelFromXp } from './levels';
+import { gainReputation, levelFromXp, RANKS } from './levels';
 import type { PlayerState } from './player';
 import { isInTutorial } from './tutorial';
 
@@ -142,11 +142,26 @@ export function readChapter(state: PlayerState, id: string, tuning: Tuning): Pla
   return gainReputation(read, tuning.chapterRewardReputation, tuning);
 }
 
+/** Enseigne de la Maison : celle de Rose, puis Pearl Inc. */
+export type HouseBrand = 'rose' | 'pearl-inc';
+
+/** La Maison de Rose devient Pearl Inc. quand le joueur passe Joaillier (AGENTS.md §6). */
+const PEARL_INC_LEVEL = RANKS.find((rank) => rank.id === 'joaillier')!.level;
+
+export function houseBrand(level: number): HouseBrand {
+  return level >= PEARL_INC_LEVEL ? 'pearl-inc' : 'rose';
+}
+
+/** Nom de la Maison tel qu'on l'écrit dans les textes. */
+export function houseBrandName(level: number): string {
+  return houseBrand(level) === 'pearl-inc' ? 'Pearl Inc.' : 'Maison Rose';
+}
+
 /** Nom de la Maison selon le rang (de la cabane à la boutique de luxe, cahier §8). */
 export function houseStageName(level: number): string {
-  if (level >= 50) return 'La Maison de haute joaillerie';
-  if (level >= 35) return 'La Maison des maîtres';
-  if (level >= 20) return 'La joaillerie du port';
+  if (level >= 50) return 'Pearl Inc., haute joaillerie';
+  if (level >= 35) return 'Pearl Inc., la maison des maîtres';
+  if (houseBrand(level) === 'pearl-inc') return 'Pearl Inc.';
   if (level >= 10) return 'La petite boutique';
   if (level >= 5) return 'L’atelier de fortune';
   return 'La cabane du ponton';

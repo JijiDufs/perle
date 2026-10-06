@@ -303,7 +303,7 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
       c.lineWidth = Math.max(1, scale * 0.003);
       c.stroke();
 
-      // Dorures poussées au fer : double filet, fleurons d'angle, cartouche à la perle, « Maison Rose ».
+      // Dorures poussées au fer : double filet, fleurons d'angle, cartouche à la perle, « Pearl Inc. ».
       // Tracées point par point en vraie perspective (une transformation affine les ferait déborder du cuir).
       const origin = lid([0, H + T + 0.001, 0]);
       const ax = lidN([1, 0, 0]);
@@ -436,7 +436,7 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
         c.textAlign = 'center';
         c.textBaseline = 'middle';
         c.font = '600 22px "Figtree", system-ui, sans-serif';
-        c.fillText('M A I S O N   R O S E', 0, -18);
+        c.fillText('P E A R L   I N C .', 0, -18);
         c.font = '40px "Young Serif", Georgia, serif';
         c.fillText('Perles fines', 0, 22);
       });

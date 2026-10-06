@@ -97,7 +97,7 @@ async function render(spec: StorySpec): Promise<Blob> {
   c.textAlign = 'center';
   c.fillStyle = '#e8f1f0';
   c.font = `96px ${SERIF}`;
-  c.fillText('Perle', W / 2, 200);
+  c.fillText('Pearl Inc.', W / 2, 200);
   c.font = `500 36px ${SANS}`;
   c.fillStyle = '#9db5b5';
   c.fillText(spec.subtitle, W / 2, 262);

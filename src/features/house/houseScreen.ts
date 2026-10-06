@@ -3,7 +3,7 @@ import { drawHouse } from '../../art/house';
 import { jewelCanvas } from '../../art/jewel';
 import { pearlCanvas } from '../../art/pearl';
 import { pearlById } from '../../core/catalog';
-import { CHAPTERS, houseStageName, isChapterUnlocked, NEXT_CHAPTER_LEVEL, readChapter, restoredFeatures, unreadChapters, type Chapter, type HouseFeature } from '../../core/house';
+import { CHAPTERS, houseBrand, houseStageName, isChapterUnlocked, NEXT_CHAPTER_LEVEL, readChapter, restoredFeatures, unreadChapters, type Chapter, type HouseFeature } from '../../core/house';
 import { jewelRarity, jewelVariant, withVariant } from '../../core/jewels';
 import { levelFromXp, rankForLevel, xpToNext } from '../../core/levels';
 import { track } from '../../platform/analytics';
@@ -94,7 +94,8 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
       else appear = { feature: appearing.feature, progress };
     }
     // Pendant l'éclat, l'élément restauré apparaît déjà (il est dans l'état).
-    drawHouse(c, width, height, { restored: restoredFeatures(ctx.player), showcase: art.art, appearing: appear }, now);
+    const brand = houseBrand(levelFromXp(ctx.player.reputation, ctx.tuning).level);
+    drawHouse(c, width, height, { restored: restoredFeatures(ctx.player), brand, showcase: art.art, appearing: appear }, now);
     frame = requestAnimationFrame(loop);
   }
 

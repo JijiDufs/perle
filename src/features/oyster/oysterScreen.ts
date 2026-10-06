@@ -37,7 +37,7 @@ const TEMPLATE = `
   <p class="coach" aria-live="polite" hidden></p>
   <div class="ghost-thumb" aria-hidden="true" hidden></div>
   <div class="install-hint" role="note" hidden>
-    <p>Installe Perle sur ton écran d'accueil : touche <strong>Partager</strong> <span aria-hidden="true">⬆︎</span> puis <strong>« Sur l'écran d'accueil »</strong>. Tu pourras jouer même sans réseau.</p>
+    <p>Installe Pearl Inc. sur ton écran d'accueil : touche <strong>Partager</strong> <span aria-hidden="true">⬆︎</span> puis <strong>« Sur l'écran d'accueil »</strong>. Tu pourras jouer même sans réseau.</p>
     <button type="button">OK</button>
   </div>
   <button type="button" class="daily-peek" aria-label="Voir les quêtes du jour" hidden>

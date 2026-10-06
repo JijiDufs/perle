@@ -4,6 +4,8 @@ import { formatEuros } from '../../art/cardStyle';
 import { drawJewel } from '../../art/jewel';
 import { canCraft, craft, isRecipeUnlocked, metalById, pickPearls, RECIPES, type CraftedCard, type Recipe } from '../../core/atelier';
 import { pearlById } from '../../core/catalog';
+import { houseBrandName } from '../../core/house';
+import { levelFromXp } from '../../core/levels';
 import { SettingEngine, type SettingResult } from '../../core/setting';
 import { PinchInput } from '../../input/pinch';
 import { track } from '../../platform/analytics';
@@ -44,7 +46,7 @@ export function openAtelier(ctx: AppContext, onClose: () => void): void {
     root.innerHTML = `
       <header class="atelier-head">
         <button type="button" class="dust-close" data-action="close" aria-label="Fermer">✕</button>
-        <p class="house-kicker">La Maison Rose</p>
+        <p class="house-kicker">${houseBrandName(levelFromXp(ctx.player.reputation, ctx.tuning).level)}</p>
         <h2>L’atelier</h2>
         <p class="muted">Choisis une page du carnet, pose les perles sur l’établi, et sertis. Montures payées en poussière d’or (<b class="gold">${ctx.player.dust} ✦</b>).</p>
       </header>

@@ -3,6 +3,8 @@ import { atlasFindIllustration } from '../../art/atlasFind';
 import { drawWorldMap } from '../../art/worldMap';
 import { pearlCanvas } from '../../art/pearl';
 import { PEARLS } from '../../core/catalog';
+import { houseBrandName } from '../../core/house';
+import { levelFromXp } from '../../core/levels';
 import { track } from '../../platform/analytics';
 import type { AppContext } from '../context';
 import { RUMOR_FINDS, type DestinationId, type FindKind, type RumorFind } from './finds';
@@ -30,7 +32,7 @@ export function mountMapScreen(root: HTMLElement, ctx: AppContext): () => void {
   const possible = possiblePearls.length;
   root.innerHTML = `
     <header class="map-heading">
-      <button type="button" class="map-back" data-action="house" aria-label="Retour à la Maison"><span aria-hidden="true">‹</span> Maison Rose</button>
+      <button type="button" class="map-back" data-action="house" aria-label="Retour à la Maison"><span aria-hidden="true">‹</span> ${houseBrandName(levelFromXp(ctx.player.reputation, ctx.tuning).level)}</button>
       <p class="map-edition">Le carnet de voyage de Rose</p>
       <h1>La carte des marées</h1>
       <p class="map-deck">La Crique n’est que le premier rivage. Au-delà, l’océan garde ses propres curiosités.</p>

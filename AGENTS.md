@@ -1,4 +1,4 @@
-# Perle — Règles communes du projet
+# Pearl Inc. — Règles communes du projet
 
 > **À lire en entier avant toute modification**, par un humain ou par une IA (Claude Code, ChatGPT, Codex, Cursor…).
 > Ce fichier est la source de vérité du projet. `CLAUDE.md` ne fait que pointer ici.
@@ -6,7 +6,7 @@
 
 ## 1. Le projet en 30 secondes
 
-Perle est un jeu où l'on ouvre des huîtres pour révéler des perles. **Le geste d'ouverture est le jeu.**
+Pearl Inc. (d'abord appelé « Perle ») est un jeu où l'on ouvre des huîtres pour révéler des perles. **Le geste d'ouverture est le jeu.**
 Sur iPhone Duo (pliable), l'angle de la charnière pilotera l'ouverture ; sur iPhone classique, c'est un geste tactile.
 Les deux appareils jouent **exactement le même jeu** : seule la source du geste change.
 
@@ -209,6 +209,7 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-05 | Pas de mise en ligne pour l'instant : tout est construit et testé en local | Choix de Jules |
 | 2026-10-06 | **UX de rétention et rendu des objets/Maison** : mettre en avant la quête active à la Pêche, la progression de l'encyclopédie et la prochaine lettre / pièce maîtresse de la Maison. Enrichir les matières des perles, les tailles de gemmes et les détails de la cabane en dessin procédural. Garder la DA « lagon lumineux + luxe » et les règles / probabilités actuelles. | Choix de Jules : retravailler toute l'UX et la rétention, les objets et la Maison, en conservant la DA existante |
 | 2026-10-06 | **Carte des marées (concept)** : montrer La Crique puis le Jardin d’algues, l’Épave des échos et la Faille d’azur comme destinations à venir. Les objets insolites illustrent le catalogue futur uniquement ; ils ne sont ni tirés ni déblocables en V1. Aucun changement aux probabilités ou aux règles sans décision séparée. | Choix de Jules : rendre l’évolution du jeu visible par une carte et des trouvailles possibles |
+| 2026-10-06 | **Le jeu s'appelle Pearl Inc.** (nom de l'app, de l'icône, partage, dorures des écrins). La Maison de grand-mère Rose garde son enseigne « Maison Rose, perles fines » jusqu'au rang de **Joaillier** (niveau 20), puis devient **Pearl Inc.**, la maison de joaillerie du joueur. Les clés de sauvegarde (`perle.*`) ne changent pas, pour ne perdre aucune partie | Choix de Jules ; le nouveau nom devient une récompense de progression |
 
 ## 7. Limites connues du prototype web
 

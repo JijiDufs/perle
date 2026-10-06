@@ -34,8 +34,8 @@ export function mountTuningScreen(root: HTMLElement, ctx: AppContext): () => voi
 
       <h2>Installer l'app</h2>
       <p class="muted">${isStandalone()
-        ? 'Perle est installée sur ton écran d’accueil. Elle marche aussi sans réseau.'
-        : 'Sur iPhone, dans Safari : touche <strong>Partager</strong> puis <strong>« Sur l’écran d’accueil »</strong>. Perle s’ouvrira en plein écran et marchera sans réseau.'}</p>
+        ? 'Pearl Inc. est installé sur ton écran d’accueil. Le jeu marche aussi sans réseau.'
+        : 'Sur iPhone, dans Safari : touche <strong>Partager</strong> puis <strong>« Sur l’écran d’accueil »</strong>. Pearl Inc. s’ouvrira en plein écran et marchera sans réseau.'}</p>
 
       <h2>Test</h2>
       <label class="toggle">Forcer la prochaine huître :

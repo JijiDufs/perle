@@ -29,7 +29,7 @@ export function pearlShareButton(card: PearlCard): HTMLButtonElement {
   return shareButton(
     () => renderStoryImage(card),
     `perle-${card.pearlId}-${card.serial}.png`,
-    `J'ai pêché une ${pearl.name.toLowerCase()} ${pearl.rarity} (${serialLabel(card.serial)}) dans Perle.`,
+    `J'ai pêché une ${pearl.name.toLowerCase()} ${pearl.rarity} (${serialLabel(card.serial)}) dans Pearl Inc.`,
     { kind: 'pearl', pearlId: card.pearlId },
   );
 }
@@ -41,7 +41,7 @@ export function jewelShareButton(card: JewelCard): HTMLButtonElement {
   return shareButton(
     () => renderJewelStoryImage(card),
     `perle-bijou-${card.jewel.rarityId}-${card.serial}.png`,
-    `J'ai trouvé : ${name} ${rarity.rarity}${perfect} (${serialLabel(card.serial)}) dans un écrin Perle.`,
+    `J'ai trouvé : ${name} ${rarity.rarity}${perfect} (${serialLabel(card.serial)}) dans un écrin Pearl Inc.`,
     { kind: 'jewel', jewel: card.jewel.rarityId, perfect: card.perfect, variant: card.variant ?? 'aucune' },
   );
 }
@@ -50,7 +50,7 @@ export function craftedShareButton(card: CraftedCard): HTMLButtonElement {
   return shareButton(
     () => renderCraftedStoryImage(card),
     `perle-creation-${card.recipeId}-${card.serial}.png`,
-    `J'ai créé ${card.name} (${card.stars}★, ${serialLabel(card.serial)}) à l'atelier de Perle.`,
+    `J'ai créé ${card.name} (${card.stars}★, ${serialLabel(card.serial)}) à l'atelier de Pearl Inc.`,
     { kind: 'crafted', recipe: card.recipeId, stars: card.stars },
   );
 }

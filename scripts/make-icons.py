@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Génère l'icône provisoire de Perle (en attendant la mascotte, voir AGENTS.md §8).
+"""Génère l'icône provisoire de Pearl Inc. (en attendant la mascotte, voir AGENTS.md §8).
 
 Reprend la formule de coquille du jeu (src/art/shell.ts) pour rester cohérent avec l'écran.
 Produit public/icons/icon.svg, puis les PNG via les outils intégrés à macOS (qlmanage, sips).
@@ -46,7 +46,7 @@ def svg():
     L = 262
     down, up = math.pi / 2, -math.pi / 2
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Icône provisoire de Perle, générée par scripts/make-icons.py. Ne pas modifier à la main. -->
+  <!-- Icône provisoire de Pearl Inc., générée par scripts/make-icons.py. Ne pas modifier à la main. -->
   <defs>
     <radialGradient id="sea" cx="50%" cy="40%" r="75%">
       <stop offset="0" stop-color="#1d5e6b"/><stop offset="0.55" stop-color="#0c3b45"/><stop offset="1" stop-color="#03161c"/>

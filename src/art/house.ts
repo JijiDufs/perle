@@ -1,6 +1,6 @@
 // La Maison dessinée par code (Canvas 2D) : une cabane au bout d'un ponton, au crépuscule,
 // dont chaque élément restauré par une lettre change l'image. Provisoire : phase 2 (design).
-import type { HouseFeature } from '../core/house';
+import type { HouseBrand, HouseFeature } from '../core/house';
 import { rgba } from './color';
 import { SERIF } from './cardStyle';
 
@@ -8,6 +8,8 @@ type Ctx = CanvasRenderingContext2D;
 
 export interface HouseScene {
   restored: ReadonlySet<HouseFeature>;
+  /** Enseigne peinte : Maison Rose, puis Pearl Inc. */
+  brand: HouseBrand;
   /** Plus belle pièce, affichée dans la vitrine (déjà dessinée). */
   showcase: HTMLCanvasElement | null;
   /** Élément tout juste restauré et avancement de son apparition (0…1), pour l'éclat. */
@@ -600,10 +602,11 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
   c.textBaseline = 'middle';
   c.font = `700 ${Math.max(8, Math.round(sign.h * (has('sign') ? 0.4 : 0.37)))}px ${SERIF}`;
   c.fillStyle = has('sign') ? '#65483a' : 'rgba(27, 37, 40, 0.78)';
-  c.fillText(has('sign') ? 'MAISON ROSE' : 'ROSE', sign.x + sign.w / 2, sign.y + sign.h * 0.43);
+  const pearlInc = has('sign') && scene.brand === 'pearl-inc';
+  c.fillText(pearlInc ? 'PEARL INC.' : has('sign') ? 'MAISON ROSE' : 'ROSE', sign.x + sign.w / 2, sign.y + sign.h * 0.43);
   c.font = `600 ${Math.max(5, Math.round(sign.h * 0.16))}px sans-serif`;
   c.fillStyle = has('sign') ? '#80684d' : 'rgba(30, 35, 36, 0.55)';
-  c.fillText('PERLES FINES', sign.x + sign.w / 2, sign.y + sign.h * 0.76);
+  c.fillText(pearlInc ? 'JOAILLIERS' : 'PERLES FINES', sign.x + sign.w / 2, sign.y + sign.h * 0.76);
 
   // Vitrine-bijoutière au bout du ponton, bâchée avant sa restauration.
   const { vitrine } = l;
