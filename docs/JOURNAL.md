@@ -6,6 +6,29 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ## 2026-10-06 · Codex · branche `jules/codex-retention-maison`
 
+Refonte de la Maison et concept de progression du monde, dans la DA « lagon lumineux + luxe ».
+
+**Fait**
+- Maison : remplacement de la façade rectangulaire par une boutique maritime sur pilotis, à pignon et toit dissymétrique, avec fenêtres et porte cintrées, cheminée, jardinières, enseigne émaillée, lanterne et vitrine. Les restaurations du carnet continuent de piloter l'apparition des éléments.
+- Carte des marées : nouvel écran accessible depuis la Maison, avec La Crique et trois destinations annoncées (Jardin d’algues, Épave des échos, Faille d’azur), une progression d'encyclopédie de la crique, et un aperçu d'objets insolites (coquillage-radio, jeton « Continue ? », bouton de scaphandre).
+- Ces lieux et trouvailles sont des pistes visuelles uniquement : aucune zone n'est déblocable, aucun objet n'est tiré, aucun taux ni règle de jeu ne change.
+- Événements `map_viewed` et `map_destination_previewed` pour mesurer l'intérêt pour cette projection du monde.
+
+**À faire ensuite**
+- Valider le style et le niveau de détail de la Maison et de la carte avec Jules ; décider séparément quelles destinations et quels objets entrent dans le jeu.
+
+**Fragile / à surveiller**
+- Vérifier la lisibilité des détails dessinés en Canvas sur petit écran et les performances sur iPhone réel.
+- La carte a volontairement quatre destinations de démonstration, sans calendrier, conditions de déblocage ni nouveaux objets de catalogue.
+
+**Vérification**
+- `npm test` : 15 fichiers, 127 tests passés.
+- `npm run build` : TypeScript et build Vite réussis.
+- `git diff --check` : aucun problème d'espacement.
+- Vérification visuelle dans le navigateur sur le format par défaut et à 375 × 812 : parcours Maison → carte → sélection de l’Épave, retour lisible vers la Maison.
+
+## 2026-10-06 · Codex · branche `jules/codex-retention-maison`
+
 Passe UX / rétention et rendu procédural des objets, en conservant la direction « lagon lumineux + luxe ».
 
 **Fait**

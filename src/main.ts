@@ -5,6 +5,7 @@ import type { AppContext } from './features/context';
 import { mountCollectionScreen } from './features/collection/collectionScreen';
 import { mountEcrinScreen } from './features/ecrin/ecrinScreen';
 import { mountHouseScreen } from './features/house/houseScreen';
+import { mountMapScreen } from './features/map/mapScreen';
 import { createShell, type ScreenName } from './features/nav/shell';
 import { mountOysterScreen } from './features/oyster/oysterScreen';
 import { mountTuningScreen } from './features/tuning/tuningScreen';
@@ -18,6 +19,7 @@ const SCREENS: Record<ScreenName, (root: HTMLElement, ctx: AppContext) => () => 
   ecrin: mountEcrinScreen,
   collection: mountCollectionScreen,
   house: mountHouseScreen,
+  map: mountMapScreen,
   tuning: mountTuningScreen,
 };
 

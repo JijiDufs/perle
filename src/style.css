@@ -1334,6 +1334,89 @@ html, body {
   background: rgba(246, 217, 140, 0.35);
 }
 .card.card-variant { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 24px rgba(255, 154, 213, 0.35); }
+
+/* ---------- Carte des marées : aperçu des destinations à venir ---------- */
+.world-map-screen {
+  overflow-y: auto;
+  padding: calc(var(--hud-h) + 9px) 16px calc(var(--tab-h) + 24px);
+  background:
+    radial-gradient(95% 38% at 50% 0%, rgba(52, 135, 132, 0.16), transparent 72%),
+    linear-gradient(180deg, rgba(8, 23, 29, 0.94), rgba(5, 12, 17, 0.99));
+  scrollbar-width: none;
+}
+.world-map-screen::-webkit-scrollbar { display: none; }
+.map-heading { position: relative; padding: 0 2px 14px; }
+.map-back { display: inline-flex; align-items: center; gap: 7px; padding: 4px 0; border: 0; background: none; color: var(--gold-light); font-size: 0.78rem; font-weight: 700; }
+.map-back span { font-size: 1.4rem; line-height: 0.8; }
+.map-edition { margin: 14px 0 2px; color: #a4cfc0; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+.map-heading h1 { margin: 0; font: 400 clamp(1.65rem, 7vw, 2.2rem)/1.12 var(--serif); letter-spacing: -0.02em; }
+.map-deck { max-width: 36ch; margin: 7px 0 0; color: var(--ink-soft); font-size: 0.83rem; }
+.map-board { position: relative; height: clamp(280px, 41vh, 370px); overflow: hidden; border: 1px solid rgba(223, 208, 166, 0.36); border-radius: 17px; background: #0c2c38; box-shadow: 0 16px 38px rgba(0, 0, 0, 0.3), inset 0 0 0 4px rgba(8, 19, 24, 0.48); }
+.map-board::after { content: ''; position: absolute; inset: 7px; border: 1px solid rgba(232, 215, 174, 0.22); border-radius: 11px; pointer-events: none; }
+.map-board canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.map-cartouche { position: absolute; z-index: 1; top: 13px; left: 50%; transform: translateX(-50%); padding: 4px 9px; border: 1px solid rgba(220, 202, 156, 0.32); border-radius: 4px; background: rgba(7, 26, 33, 0.68); color: rgba(240, 225, 190, 0.86); font-size: 0.54rem; font-weight: 800; letter-spacing: 0.16em; white-space: nowrap; }
+.map-pin { position: absolute; z-index: 2; display: grid; justify-items: center; gap: 4px; padding: 0; border: 0; background: none; color: #d9e5d6; text-shadow: 0 2px 7px rgba(0, 0, 0, 0.9); transform: translate(-50%, -50%); }
+.map-pin > span { display: grid; width: 35px; height: 35px; place-items: center; border: 1px solid rgba(246, 223, 173, 0.7); border-radius: 50%; background: rgba(8, 35, 43, 0.82); box-shadow: 0 0 0 4px rgba(228, 203, 155, 0.1), 0 4px 10px rgba(0, 0, 0, 0.4); color: #e8c779; font-size: 1.15rem; transition: transform 0.2s, background 0.2s, box-shadow 0.2s; }
+.map-pin b { max-width: 105px; padding: 3px 6px; border-radius: 7px; background: rgba(6, 19, 26, 0.66); font-size: 0.64rem; line-height: 1.15; font-weight: 700; }
+.map-pin.active > span { transform: scale(1.13); border-color: #ffdfa0; background: linear-gradient(145deg, #e8c982, #997845); color: #183b3b; box-shadow: 0 0 0 5px rgba(241, 218, 163, 0.14), 0 0 22px rgba(251, 220, 148, 0.36); }
+.map-pin.active b { color: #fff0cb; }
+.map-pin:active > span { transform: scale(0.94); }
+.map-pin.cove { left: 22%; top: 72%; }
+.map-pin.garden { left: 55%; top: 42%; }
+.map-pin.wreck { left: 78%; top: 28%; }
+.map-pin.rift { left: 77%; top: 72%; }
+.map-coord { position: absolute; z-index: 1; color: rgba(227, 225, 199, 0.72); font-size: 0.51rem; font-weight: 700; letter-spacing: 0.11em; text-shadow: 0 1px 4px #07141b; }
+.coord-north { top: 17px; right: 13px; }
+.coord-depth { bottom: 13px; left: 14px; }
+.map-destination-detail { position: relative; margin-top: 12px; padding: 13px 14px 12px; border: 1px solid rgba(223, 208, 166, 0.22); border-radius: 15px; background: radial-gradient(90% 90% at 100% 0%, rgba(92, 170, 154, 0.13), transparent 67%), linear-gradient(140deg, rgba(17, 39, 43, 0.96), rgba(8, 19, 24, 0.96)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04); }
+.map-detail-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #bdd4c8; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; }
+.map-detail-state { color: var(--gold-light); }
+.map-detail-progress { color: var(--ink-soft); font-size: 0.61rem; letter-spacing: 0; text-transform: none; }
+.map-detail-title { margin: 5px 0 3px; font: 400 1.28rem/1.16 var(--serif); }
+.map-detail-copy { margin: 0; color: var(--ink-soft); font-size: 0.77rem; }
+.map-detail-finds { display: grid; gap: 2px; margin-top: 9px; padding-top: 8px; border-top: 1px solid rgba(232, 241, 240, 0.09); }
+.map-detail-finds span { color: #91b1aa; font-size: 0.62rem; }
+.map-detail-finds b { color: #efe3c2; font-size: 0.73rem; font-weight: 600; }
+.map-dive { display: flex; width: 100%; justify-content: space-between; align-items: center; margin-top: 11px; padding: 9px 12px; border: 1px solid rgba(221, 190, 119, 0.43); border-radius: 10px; background: linear-gradient(100deg, rgba(222, 184, 107, 0.16), rgba(42, 84, 78, 0.22)); color: var(--gold-light); font-size: 0.75rem; font-weight: 800; }
+.map-dive:disabled { border-color: rgba(232, 241, 240, 0.12); background: rgba(232, 241, 240, 0.035); color: #849998; cursor: default; }
+.curiosity-shelf { margin-top: 20px; }
+.curiosity-heading { display: flex; align-items: end; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+.curiosity-heading p { margin: 0 0 2px; color: var(--gold-light); font-size: 0.61rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+.curiosity-heading h2 { margin: 0; font: 400 1.22rem/1.1 var(--serif); }
+.curiosity-heading > span { padding-bottom: 2px; color: var(--ink-soft); font-size: 0.62rem; white-space: nowrap; }
+.curiosity-list { display: grid; grid-auto-columns: minmax(215px, 79%); grid-auto-flow: column; gap: 9px; overflow-x: auto; padding: 1px 1px 8px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.curiosity-list::-webkit-scrollbar { display: none; }
+.curiosity-item { display: grid; grid-template-columns: 62px 1fr; align-items: center; gap: 10px; min-height: 101px; padding: 10px; border: 1px solid rgba(228, 211, 164, 0.2); border-radius: 13px; background: linear-gradient(145deg, rgba(19, 42, 47, 0.96), rgba(7, 17, 22, 0.98)); scroll-snap-align: start; }
+.curiosity-art { display: grid; width: 60px; height: 60px; place-items: center; border-radius: 13px; background: radial-gradient(circle at 45% 38%, rgba(162, 207, 186, 0.16), rgba(4, 16, 22, 0.4) 73%); }
+.curiosity-art svg { width: 54px; height: 54px; filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.4)); }
+.curiosity-copy h3 { margin: 0; font: 400 0.91rem/1.15 var(--serif); }
+.curiosity-copy p { margin: 4px 0; color: var(--ink-soft); font-size: 0.67rem; line-height: 1.32; }
+.curiosity-copy small { color: #d4b975; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.04em; }
+.map-concept-note { margin: 3px 2px 0; color: rgba(157, 181, 181, 0.72); font-size: 0.61rem; }
+
+/* Accès à la carte depuis le carnet et la Maison restaurée. */
+.house-map-entry { position: relative; z-index: 1; display: grid; grid-template-columns: 64px minmax(0, 1fr) 28px; align-items: center; gap: 11px; width: calc(100% - 32px); margin: -3px 16px 14px; padding: 9px 11px 9px 9px; overflow: hidden; border: 1px solid rgba(193, 208, 172, 0.27); border-radius: 15px; background: radial-gradient(80% 140% at 0% 0%, rgba(109, 181, 162, 0.2), transparent 70%), linear-gradient(110deg, rgba(13, 40, 44, 0.96), rgba(10, 21, 27, 0.96)); text-align: left; box-shadow: 0 9px 23px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+.house-map-thumbnail { position: relative; display: block; width: 64px; height: 49px; overflow: hidden; border: 1px solid rgba(225, 204, 151, 0.42); border-radius: 9px; background: linear-gradient(145deg, #1a5c60, #0b2937 65%, #14253a); }
+.house-map-thumbnail::before, .house-map-thumbnail::after { content: ''; position: absolute; border: 1px solid rgba(193, 212, 177, 0.36); border-radius: 50%; transform: rotate(-24deg); }
+.house-map-thumbnail::before { width: 48px; height: 25px; left: -10px; bottom: -5px; }
+.house-map-thumbnail::after { width: 37px; height: 22px; right: -12px; top: 1px; }
+.house-map-thumbnail i, .house-map-thumbnail b, .house-map-thumbnail em { position: absolute; z-index: 1; display: block; width: 9px; height: 9px; border: 1px solid #ead39d; border-radius: 50%; background: #b7955f; box-shadow: 0 0 0 3px rgba(232, 205, 147, 0.13), 0 0 9px rgba(232, 205, 147, 0.45); }
+.house-map-thumbnail i { left: 15px; bottom: 11px; }
+.house-map-thumbnail b { left: 34px; top: 13px; }
+.house-map-thumbnail em { right: 8px; bottom: 8px; }
+.house-map-copy { display: grid; gap: 1px; min-width: 0; }
+.house-map-copy small { color: #c9b573; font-size: 0.55rem; font-weight: 800; letter-spacing: 0.13em; }
+.house-map-copy > b { overflow: hidden; font: 400 1rem/1.2 var(--serif); text-overflow: ellipsis; white-space: nowrap; }
+.house-map-copy > span { overflow: hidden; color: var(--ink-soft); font-size: 0.66rem; text-overflow: ellipsis; white-space: nowrap; }
+.house-map-open { display: grid; width: 27px; height: 27px; place-items: center; border: 1px solid rgba(232, 211, 161, 0.25); border-radius: 50%; color: var(--gold-light); font-size: 1.06rem; }
+@media (max-width: 360px) {
+  .map-coord { font-size: 0.45rem; }
+  .map-pin > span { width: 31px; height: 31px; }
+  .map-pin b { max-width: 84px; font-size: 0.58rem; }
+  .house-map-entry { grid-template-columns: 54px minmax(0, 1fr) 25px; gap: 9px; }
+  .house-map-thumbnail { width: 54px; }
+}
+
 /* Listes de la Maison et des fenêtres : vitrines de verre au filet doré. */
 .chapter > button, .chapter.locked, .recipe, .daily-row, .quest-bonus, .progress-stats div {
   background: linear-gradient(180deg, rgba(20, 38, 44, 0.72), rgba(6, 14, 17, 0.78));

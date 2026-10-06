@@ -57,6 +57,11 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
       <canvas aria-label="La Maison de grand-mère Rose"></canvas>
       <div class="house-title"><p class="house-kicker"></p><h2></h2></div>
     </section>
+    <button type="button" class="house-map-entry" data-action="map">
+      <span class="house-map-thumbnail" aria-hidden="true"><i></i><b></b><em></em></span>
+      <span class="house-map-copy"><small>LE VOYAGE CONTINUE</small><b>La carte des marées</b><span>Trois rivages encore inexplorés</span></span>
+      <span class="house-map-open" aria-hidden="true">⌖</span>
+    </button>
     <section class="house-return" aria-live="polite"></section>
     <section class="house-atelier"></section>
     <section class="house-showcase" hidden></section>
@@ -211,6 +216,10 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
   }
 
   root.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('[data-action="map"]')) {
+      ctx.goTo('map');
+      return;
+    }
     if ((event.target as HTMLElement).closest('[data-action="collection"]')) {
       track('house_showcase_opened', {});
       ctx.goTo('collection');

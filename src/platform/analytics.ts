@@ -43,6 +43,8 @@ export type AnalyticsEvent =
   | 'chapter_opened'
   | 'chapter_read'
   | 'house_showcase_opened'
+  | 'map_viewed'
+  | 'map_destination_previewed'
   | 'daily_viewed'
   | 'daily_claimed'
   | 'atelier_opened'

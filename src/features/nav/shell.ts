@@ -24,10 +24,10 @@ import { dayKey } from '../../core/quests';
 import type { AppContext } from '../context';
 import { ICONS } from './icons';
 
-export type ScreenName = 'oyster' | 'ecrin' | 'collection' | 'house' | 'tuning';
+export type ScreenName = 'oyster' | 'ecrin' | 'collection' | 'house' | 'map' | 'tuning';
 
 /** Ordre des onglets : sert au sens de la transition. */
-const ORDER: ScreenName[] = ['oyster', 'ecrin', 'collection', 'house', 'tuning'];
+const ORDER: ScreenName[] = ['oyster', 'ecrin', 'collection', 'house', 'map', 'tuning'];
 
 export interface ShellState {
   player: PlayerState;
