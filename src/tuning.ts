@@ -137,6 +137,11 @@ export interface Tuning {
   settingPinchDistance: number;
   /** Réputation par bijou fabriqué. */
   repCraft: number;
+  /** Trouvailles (cahier §5) : poussière d'or d'une pièce d'or engloutie, écrins d'une clé d'épave. */
+  findCoinDust: number;
+  findKeyEcrins: number;
+  /** Écrins donnés par un album de trouvailles complété (cahier §10). */
+  albumRewardEcrins: number;
 }
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
@@ -221,6 +226,9 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   settingPerfectScore: 0.85,
   settingPinchDistance: 140,
   repCraft: 30,
+  findCoinDust: 15,
+  findKeyEcrins: 1,
+  albumRewardEcrins: 1,
 };
 
 /** Description des paramètres exposés dans l'écran Réglages. */

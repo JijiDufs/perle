@@ -183,8 +183,8 @@ export function createShell(app: HTMLElement, onNavigate: (name: ScreenName) => 
         if (last.achievements.has(id)) continue;
         const achievement = achievementById(id);
         if (!achievement) continue;
-        const reward = achievementReward(achievement.tier, tuning);
-        banners.push({ kind: 'achievement', tier: achievement.tier, kicker: 'Succès débloqué', title: achievement.name, detail: `+${reward.dust} ✦ · +${reward.reputation} réputation${achievement.title ? ` · titre « ${achievement.title} »` : ''}` });
+        const reward = achievementReward(achievement, tuning);
+        banners.push({ kind: 'achievement', tier: achievement.tier, kicker: 'Succès débloqué', title: achievement.name, detail: `+${reward.dust} ✦ · +${reward.reputation} réputation${reward.ecrins ? ` · +${reward.ecrins} écrin` : ''}${achievement.title ? ` · titre « ${achievement.title} »` : ''}` });
         track('achievement_unlocked', { id, tier: achievement.tier });
       }
     }

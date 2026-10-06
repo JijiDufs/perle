@@ -75,7 +75,7 @@ export function openProgressSheet(ctx: AppContext, initialTab: Tab): void {
       const done = player.achievements[a.id] !== undefined;
       const [n, goal] = a.progress(player);
       const hidden = a.secret && !done;
-      const reward = achievementReward(a.tier, tuning);
+      const reward = achievementReward(a, tuning);
       const percent = Math.round((n / goal) * 100);
       return `<li class="achievement ${done ? 'done' : ''} tier-${a.tier}">
         <span class="achievement-medal" aria-hidden="true">${done ? '★' : hidden ? '?' : '☆'}</span>
@@ -85,7 +85,7 @@ export function openProgressSheet(ctx: AppContext, initialTab: Tab): void {
           ${!done && !hidden && goal > 1 ? `<span class="quest-bar"><i style="width:${percent}%"></i></span><small>${n}/${goal}</small>` : ''}
           ${a.title && !hidden ? `<small class="achievement-title">Titre : « ${a.title} »</small>` : ''}
         </span>
-        <em>${done ? new Date(player.achievements[a.id]).toLocaleDateString('fr-FR') : `+${reward.dust} ✦`}</em>
+        <em>${done ? new Date(player.achievements[a.id]).toLocaleDateString('fr-FR') : `+${reward.dust} ✦${reward.ecrins ? ` · +${reward.ecrins} écrin` : ''}`}</em>
       </li>`;
     });
     const doneCount = ACHIEVEMENTS.filter((a) => player.achievements[a.id] !== undefined).length;

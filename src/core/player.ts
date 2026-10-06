@@ -4,6 +4,7 @@ import type { CraftedCard } from './atelier';
 import { INITIAL_LOGIN, type LoginState } from './daily';
 import { INITIAL_DRAW_STATE, type DrawState } from './draw';
 import type { ExpertiseRecord } from './expertise';
+import { findById, type FindCard } from './finds';
 import { rollSweetAngle } from './glint';
 import { INITIAL_JEWEL_DRAW, roundValue, rollJewel, rollRareVariant, type Jewel, type JewelDrawState, type JewelVariantId } from './jewels';
 import { gainReputation, reputationFor } from './levels';
@@ -89,6 +90,8 @@ export interface PlayerState {
   login: LoginState;
   /** Bijoux créés à l'atelier. */
   craftedCards: CraftedCard[];
+  /** Trouvailles (objets trouvés à la place d'une perle). */
+  findCards: FindCard[];
 }
 
 export const INITIAL_PLAYER_STATE: PlayerState = {
@@ -113,6 +116,7 @@ export const INITIAL_PLAYER_STATE: PlayerState = {
   chaptersRead: [],
   login: INITIAL_LOGIN,
   craftedCards: [],
+  findCards: [],
 };
 
 /**
@@ -158,7 +162,7 @@ function earnEcrins(state: PlayerState, tuning: Tuning): { state: PlayerState; e
 }
 
 /**
- * Enregistre l'huître ouverte. Renvoie la carte créée (null pour une huître vide)
+ * Enregistre l'huître ouverte. Renvoie la carte créée (perle ou trouvaille ; null pour une huître vide)
  * et si un écrin vient d'être gagné.
  */
 export function recordOpening(
@@ -166,15 +170,16 @@ export function recordOpening(
   result: { lustre: Lustre; cracked: boolean },
   now: number,
   tuning: Tuning = DEFAULT_TUNING,
-): { state: PlayerState; card: PearlCard | null; ecrinEarned: boolean } {
+): { state: PlayerState; card: PearlCard | null; find: FindCard | null; ecrinEarned: boolean } {
   const oyster = state.currentOyster;
   if (!oyster) throw new Error('Aucune huître en cours');
   const earned = earnEcrins({ ...state, currentOyster: null, oystersOpened: state.oystersOpened + 1 }, tuning);
+  if (oyster.findId) return recordFind(state, earned, oyster.findId, result.lustre, now, tuning);
   const discovery = oyster.pearlId !== 'empty' && !state.cards.some((c) => c.pearlId === oyster.pearlId);
   const gained = reputationFor({ kind: 'oyster', pearlId: oyster.pearlId, lustre: result.lustre, cracked: result.cracked, discovery }, tuning);
   const base = gainReputation(earned.state, gained, tuning);
   const event = { kind: 'oyster', pearlId: oyster.pearlId, lustre: result.lustre, cracked: result.cracked } as const;
-  if (oyster.pearlId === 'empty') return { state: afterEvent(base, event, now, tuning), card: null, ecrinEarned: earned.earned };
+  if (oyster.pearlId === 'empty') return { state: afterEvent(base, event, now, tuning), card: null, find: null, ecrinEarned: earned.earned };
 
   const card: PearlCard = {
     serial: state.nextSerial,
@@ -186,7 +191,28 @@ export function recordOpening(
     foundAt: now,
   };
   const withCard = { ...base, nextSerial: state.nextSerial + 1, cards: [...state.cards, card] };
-  return { state: afterEvent(withCard, event, now, tuning), card, ecrinEarned: earned.earned };
+  return { state: afterEvent(withCard, event, now, tuning), card, find: null, ecrinEarned: earned.earned };
+}
+
+/** Une trouvaille à la place de la perle : sa carte, et son effet (poussière d'or, écrin). Elle ne se fêle pas. */
+function recordFind(
+  state: PlayerState,
+  earned: { state: PlayerState; earned: boolean },
+  findId: string,
+  lustre: Lustre,
+  now: number,
+  tuning: Tuning,
+): { state: PlayerState; card: null; find: FindCard; ecrinEarned: boolean } {
+  const type = findById(findId);
+  const findCards = state.findCards ?? [];
+  const discovery = !findCards.some((c) => c.findId === findId);
+  const find: FindCard = { serial: state.nextSerial, findId, value: type.value, foundAt: now };
+  let next: PlayerState = { ...earned.state, nextSerial: state.nextSerial + 1, findCards: [...findCards, find] };
+  if (type.effect === 'dust') next = { ...next, dust: next.dust + tuning.findCoinDust };
+  if (type.effect === 'ecrin') next = { ...next, ecrins: next.ecrins + tuning.findKeyEcrins };
+  next = gainReputation(next, reputationFor({ kind: 'find', tier: type.tier, discovery }, tuning), tuning);
+  const event = { kind: 'oyster', pearlId: 'empty', lustre, cracked: false, findId } as const;
+  return { state: afterEvent(next, event, now, tuning), card: null, find, ecrinEarned: earned.earned };
 }
 
 /** Renvoie l'écrin en cours, ou en ouvre un nouveau s'il en reste (sinon currentEcrin reste null). */

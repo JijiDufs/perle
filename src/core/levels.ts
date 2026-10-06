@@ -101,6 +101,7 @@ export function levelReward(level: number, tuning: Tuning): LevelReward {
 /** Ce qui rapporte de la réputation. */
 export type ReputationEvent =
   | { kind: 'oyster'; pearlId: PearlId; lustre: Lustre; cracked: boolean; discovery: boolean }
+  | { kind: 'find'; tier: number; discovery: boolean }
   | { kind: 'ecrin'; perfect: boolean; discovery: boolean }
   | { kind: 'expertise'; certified: boolean };
 
@@ -111,6 +112,8 @@ export function reputationFor(event: ReputationEvent, tuning: Tuning): number {
       const lustre = event.cracked ? 0 : event.lustre === 'S' ? tuning.repLustreS : event.lustre === 'A' ? tuning.repLustreA : 0;
       return tuning.repOyster + tuning.repPerTier * pearlTier(event.pearlId) + lustre + (event.discovery ? tuning.repDiscovery : 0);
     }
+    case 'find':
+      return tuning.repOyster + tuning.repPerTier * event.tier + (event.discovery ? tuning.repDiscovery : 0);
     case 'ecrin':
       return tuning.repEcrin + (event.perfect ? tuning.repPerfect : 0) + (event.discovery ? tuning.repDiscovery : 0);
     case 'expertise':

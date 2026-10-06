@@ -40,7 +40,7 @@ export const INITIAL_STATS: PlayerStats = {
 };
 
 export type GameEvent =
-  | { kind: 'oyster'; pearlId: PearlId; lustre: Lustre; cracked: boolean }
+  | { kind: 'oyster'; pearlId: PearlId; lustre: Lustre; cracked: boolean; findId?: string }
   | { kind: 'ecrin'; perfect: boolean; variant: boolean }
   | { kind: 'melt' }
   | { kind: 'expertise'; excellent: boolean }
@@ -53,7 +53,8 @@ function updateStats(stats: PlayerStats, event: GameEvent): PlayerStats {
       const crackFreeStreak = event.cracked && !empty ? 0 : stats.crackFreeStreak + 1;
       return {
         ...stats,
-        emptyOysters: stats.emptyOysters + (empty ? 1 : 0),
+        // Une trouvaille n'est pas une huître vide.
+        emptyOysters: stats.emptyOysters + (empty && !event.findId ? 1 : 0),
         crackFreeStreak,
         bestCrackFreeStreak: Math.max(stats.bestCrackFreeStreak, crackFreeStreak),
         lustreS: stats.lustreS + (!empty && !event.cracked && event.lustre === 'S' ? 1 : 0),
@@ -102,8 +103,8 @@ export function unlockAchievements(state: PlayerState, now: number, tuning: Tuni
   let next = state;
   for (const achievement of ACHIEVEMENTS) {
     if (next.achievements[achievement.id] !== undefined || !isDone(achievement, next)) continue;
-    const reward = achievementReward(achievement.tier, tuning);
-    next = { ...next, achievements: { ...next.achievements, [achievement.id]: now }, dust: next.dust + reward.dust };
+    const reward = achievementReward(achievement, tuning);
+    next = { ...next, achievements: { ...next.achievements, [achievement.id]: now }, dust: next.dust + reward.dust, ecrins: next.ecrins + reward.ecrins };
     next = gainReputation(next, reward.reputation, tuning);
   }
   return next;

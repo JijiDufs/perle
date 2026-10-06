@@ -2,6 +2,7 @@
 // Textes et paliers : provisoires (AGENTS.md §6). Récompenses : src/tuning.ts.
 import type { Tuning } from '../tuning';
 import { PEARLS } from './catalog';
+import { albumProgress, type FindAlbumId } from './finds';
 import { JEWEL_RARITIES } from './jewels';
 import type { PlayerState } from './player';
 
@@ -16,6 +17,8 @@ export interface Achievement {
   secret?: boolean;
   /** Titre que l'on peut porter une fois le succès obtenu. */
   title?: string;
+  /** Album de trouvailles complété : donne aussi un écrin (cahier §10). */
+  album?: boolean;
   /** Avancement [fait, objectif]. */
   progress(state: PlayerState): [number, number];
 }
@@ -23,6 +26,8 @@ export interface Achievement {
 const has = (state: PlayerState, pearlId: string) => (state.cards.some((c) => c.pearlId === pearlId) ? 1 : 0);
 const hasJewel = (state: PlayerState, rarityId: string) => (state.jewelCards.some((c) => c.jewel.rarityId === rarityId) ? 1 : 0);
 const count = (n: number, goal: number): [number, number] => [Math.min(n, goal), goal];
+const hasFind = (state: PlayerState, findId: string) => ((state.findCards ?? []).some((c) => c.findId === findId) ? 1 : 0);
+const album = (state: PlayerState, id: FindAlbumId): [number, number] => albumProgress(state.findCards ?? [], id);
 
 export const ACHIEVEMENTS: readonly Achievement[] = [
   // La pêche
@@ -46,6 +51,12 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
       return count(findable.filter((p) => has(s, p.id)).length, findable.length);
     },
   },
+  // Les trouvailles
+  { id: 'premiere-trouvaille', name: 'Ce n’est pas une perle', description: 'Trouver ta première trouvaille.', tier: 'bronze', progress: (s) => count((s.findCards ?? []).length > 0 ? 1 : 0, 1) },
+  { id: 'album-port', name: 'Brocante des marées', description: 'Compléter l’album « Le bric-à-brac du port ».', tier: 'argent', album: true, title: 'Brocanteur des marées', progress: (s) => album(s, 'port') },
+  { id: 'album-clins', name: 'Ça me rappelle quelque chose', description: 'Compléter l’album « Clins d’œil ».', tier: 'or', album: true, title: 'Cinéphile des abysses', progress: (s) => album(s, 'clins') },
+  { id: 'album-tresors', name: 'Chasseur d’épaves', description: 'Compléter l’album « Trésors engloutis ».', tier: 'or', album: true, title: 'Chasseur d’épaves', progress: (s) => album(s, 'tresors') },
+  { id: 'grand-bateau', name: 'Il était une fois un grand bateau', description: 'Trouver le grand diamant bleu.', tier: 'or', secret: true, progress: (s) => count(hasFind(s, 'coeur-ocean'), 1) },
   // Le geste
   { id: 'lustre-s', name: 'Geste parfait', description: 'Obtenir un lustre S.', tier: 'bronze', progress: (s) => count(s.stats.lustreS, 1) },
   { id: 'lustre-s-10', name: 'Virtuose', description: 'Obtenir 10 lustres S.', tier: 'argent', title: 'Virtuose', progress: (s) => count(s.stats.lustreS, 10) },
@@ -89,9 +100,10 @@ export function isDone(achievement: Achievement, state: PlayerState): boolean {
   return done >= goal;
 }
 
-export function achievementReward(tier: AchievementTier, tuning: Tuning): { dust: number; reputation: number } {
+export function achievementReward(achievement: Pick<Achievement, 'tier' | 'album'>, tuning: Tuning): { dust: number; reputation: number; ecrins: number } {
+  const { tier } = achievement;
   const dust = tier === 'or' ? tuning.achievementDustGold : tier === 'argent' ? tuning.achievementDustSilver : tuning.achievementDustBronze;
-  return { dust, reputation: tuning.achievementReputation };
+  return { dust, reputation: tuning.achievementReputation, ecrins: achievement.album ? tuning.albumRewardEcrins : 0 };
 }
 
 /** Titres que le joueur peut porter (succès obtenus qui en donnent un). */
