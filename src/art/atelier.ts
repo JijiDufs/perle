@@ -2,7 +2,7 @@
 import { metalById, type Recipe } from '../core/atelier';
 import type { Jewel } from '../core/jewels';
 import { rgba } from './color';
-import { drawJewel } from './jewel';
+import { drawJewel, jewelYOffset } from './jewel';
 
 type Ctx = CanvasRenderingContext2D;
 
@@ -64,7 +64,7 @@ export function drawWorkbench(c: Ctx, w: number, h: number, scene: WorkbenchScen
     c.save();
     c.translate(w / 2, cy);
     c.scale(0.9 + 0.1 * age, 0.9 + 0.1 * age);
-    drawJewel(c, 0, 0, s * 1.25, scene.jewel);
+    drawJewel(c, 0, (jewelYOffset(scene.jewel) - 0.5) * 440 * s * 1.25, s * 1.25, scene.jewel);
     c.restore();
     return;
   }
@@ -85,7 +85,7 @@ export function drawWorkbench(c: Ctx, w: number, h: number, scene: WorkbenchScen
   const rightX = w * 0.75 - k * w * 0.25;
   c.save();
   c.globalAlpha = 0.95;
-  drawJewel(c, rightX, cy, s * 0.62, frame);
+  drawJewel(c, rightX, cy + (jewelYOffset(frame) - 0.5) * 440 * s * 0.62, s * 0.62, frame);
   c.restore();
 
   // À gauche : les perles, qui glissent vers la pliure.

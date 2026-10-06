@@ -1,7 +1,7 @@
 import { formatEuros, JEWEL_FRAMES, serialLabel } from '../../art/cardStyle';
 import { jewelCanvas } from '../../art/jewel';
 import { craftedJewel } from '../../art/atelier';
-import { metalById, RECIPES, type CraftedCard } from '../../core/atelier';
+import { craftedType, metalById, RECIPES, type CraftedCard } from '../../core/atelier';
 
 export { craftedJewel };
 
@@ -37,6 +37,6 @@ export function craftedCardElement(card: CraftedCard, size: 'large' | 'small'): 
     <p class="card-flag card-flag-gold">Fait main · ${VERDICT_LABEL[card.setting]}</p>
     ${size === 'large' ? '<p class="card-fine">Estimation fictive</p>' : ''}
   `;
-  el.querySelector('.card-art')!.append(jewelCanvas(craftedJewel({ name: card.name, type: card.type, metal: card.metal }, card.pearlColors), '#fff1d6', size === 'large' ? 190 : 100));
+  el.querySelector('.card-art')!.append(jewelCanvas(craftedJewel({ name: card.name, type: craftedType(card), metal: card.metal }, card.pearlColors), '#fff1d6', size === 'large' ? 190 : 100));
   return el;
 }

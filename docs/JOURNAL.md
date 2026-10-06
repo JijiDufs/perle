@@ -27,6 +27,13 @@ Perles uniques, bijoux variés, puis chasse aux bugs d'affichage et de mécaniqu
 - Carte des marées : onglet Maison allumé, plus de perles non trouvées dévoilées, note de développeur retirée.
 - Textes : « 0 jour d'affilée », comptoir de poussière d'or, bulle du premier écrin, écusson de l'écrin.
 
+**iPhone : barre d'état, Dynamic Island, barre d'accueil** (demande de Jules, pour la version installée)
+- Marges de sécurité centralisées dans `--safe-top/bottom/left/right` (sur `:root`, avec `--hud-h` et `--tab-h`, désormais visibles aussi des fenêtres ajoutées hors de `#app`).
+- Ajoutées là où elles manquaient : carte agrandie de la collection, fiches (hauteur max sous la barre d'état), montée de niveau et calendrier, lettre de Rose, probabilités de l'écrin.
+- Paysage sur téléphone : message « Pearl Inc. se joue en tenant le téléphone droit » (iOS ne bloque pas toujours la rotation d'une app installée).
+- Vérifié avec une Dynamic Island simulée (393 × 852, 59 px / 34 px) : Pêche, fiche de progression, carte agrandie, montée de niveau, lettre, atelier.
+- Au passage : la recette « Broche Baroque » était une bague et le « Pendentif Soleil » un collier (types ajoutés depuis) ; les créations suivent le type de leur recette (`craftedType`), la broche de l'atelier porte ses perles au cœur, et les icônes de l'atelier sont centrées.
+
 **À faire ensuite**
 - La Maison en maison de poupée 3/4 et le passage à Pearl Inc.
 - Doublons de trouvailles (fonte) ; décider du sort de la carte des marées.

@@ -1,6 +1,6 @@
 // Image verticale 1080×1920 (format story) d'une carte, pour la partager (cahier §10).
 // Une seule mise en page ; perles, bijoux et créations fournissent chacun une StorySpec.
-import { metalById, RECIPES, type CraftedCard } from '../core/atelier';
+import { craftedType, metalById, RECIPES, type CraftedCard } from '../core/atelier';
 import { pearlById } from '../core/catalog';
 import { GRADE_LABELS } from '../core/expertise';
 import { bottleMessage, findAlbum, findById, findRarity, type FindCard } from '../core/finds';
@@ -273,7 +273,7 @@ export function renderJewelStoryImage(card: JewelCard): Promise<Blob> {
 }
 
 export function renderCraftedStoryImage(card: CraftedCard): Promise<Blob> {
-  const jewel = craftedJewel({ name: card.name, type: card.type, metal: card.metal }, card.pearlColors);
+  const jewel = craftedJewel({ name: card.name, type: craftedType(card), metal: card.metal }, card.pearlColors);
   const recipe = RECIPES.find((r) => r.id === card.recipeId);
   return render({
     subtitle: `Fait main à l’atelier · ${serialLabel(card.serial)}`,

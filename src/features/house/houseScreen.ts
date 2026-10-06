@@ -1,5 +1,6 @@
 // La Maison (cahier §8) : la cabane de grand-mère Rose, qui se restaure lettre après lettre.
 import { drawHouse } from '../../art/house';
+import { craftedType } from '../../core/atelier';
 import { jewelCanvas } from '../../art/jewel';
 import { pearlCanvas } from '../../art/pearl';
 import { pearlById } from '../../core/catalog';
@@ -33,7 +34,7 @@ function showcase(ctx: AppContext): ShowcasePiece {
   const bestJewel = [...ctx.player.jewelCards].sort((a, b) => b.value - a.value)[0];
   if (crafted && (!bestJewel || crafted.value >= bestJewel.value)) {
     return {
-      art: jewelCanvas(craftedJewel({ name: crafted.name, type: crafted.type, metal: crafted.metal }, crafted.pearlColors), '#fff1d6', 160),
+      art: jewelCanvas(craftedJewel({ name: crafted.name, type: craftedType(crafted), metal: crafted.metal }, crafted.pearlColors), '#fff1d6', 160),
       title: crafted.name,
       detail: `Création maison · ${'★'.repeat(crafted.stars)}${'☆'.repeat(5 - crafted.stars)}`,
     };

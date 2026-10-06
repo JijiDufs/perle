@@ -1,7 +1,7 @@
 // L'Atelier (cahier §6), ouvert depuis la Maison : le carnet de recettes, puis l'établi où l'on sertit en pinçant.
 import { drawWorkbench } from '../../art/atelier';
 import { formatEuros } from '../../art/cardStyle';
-import { drawJewel } from '../../art/jewel';
+import { drawJewel, jewelYOffset } from '../../art/jewel';
 import { canCraft, craft, isRecipeUnlocked, metalById, pickPearls, RECIPES, type CraftedCard, type Recipe } from '../../core/atelier';
 import { pearlById } from '../../core/catalog';
 import { houseBrandName } from '../../core/house';
@@ -81,7 +81,8 @@ export function openAtelier(ctx: AppContext, onClose: () => void): void {
       art.style.width = art.style.height = '56px';
       const c = art.getContext('2d')!;
       c.translate(56, 56);
-      drawJewel(c, 0, recipe.type === 'collier' ? 14 : 0, 0.22, craftedJewel(recipe, colors));
+      const icon = craftedJewel(recipe, colors);
+      drawJewel(c, 0, (jewelYOffset(icon) - 0.5) * 112, 0.22, icon);
       li.querySelector('.recipe-art')!.append(art);
       list.append(li);
     }

@@ -162,6 +162,8 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 - Petites modifications ciblées : ne pas « nettoyer » ou reformater du code qui n'a rien à voir avec la tâche.
 - Commandes : `npm install`, `npm run dev` (ouvre aussi l'adresse réseau pour tester sur iPhone), `npm test`, `npm run build`, `npm start` (build + version de production sur le port 4173, avec le mode hors ligne), `npm run icons` (régénère les icônes).
 - Toute modification de `public/sw.js` qui change la façon de mettre en cache : incrémenter `CACHE_VERSION`.
+- **Barre d'état, Dynamic Island, barre d'accueil** (jeu installé sur l'écran d'accueil, iPhone) : rien d'interactif ni de texte dans ces zones. En CSS, toujours `var(--safe-top|bottom|left|right)`, `--hud-h` et `--tab-h` (définis sur `:root`), jamais `env(safe-area-inset-*)` directement : les variables se simulent dans le navigateur pour tester (ex. `--safe-top: 59px; --safe-bottom: 34px` pour un iPhone 15 Pro). Toute nouvelle fenêtre plein écran prévoit ces marges.
+- Transitions : pas de fondu entre deux contenus opaques (on lit les deux superposés). Les écrans glissent (`main.ts`), les panneaux plein écran montent depuis le bas.
 
 ## 5. Protocole de passe (entre associés et entre IA)
 

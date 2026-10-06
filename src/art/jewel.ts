@@ -671,7 +671,14 @@ export function drawJewel(c: Ctx, x: number, y: number, s: number, jewel: Jewel)
         if (jewel.gem) for (let j = 0; j < 3; j++) accent(0, -22 * s + j * 15 * s, 4.5 * s);
         c.restore();
       }
-      if (jewel.gem) mainGem(x, y, gemRadius(13, 12));
+      if (jewel.pearls) {
+        // Broche de l'atelier : ses perles au cœur de la fleur.
+        const count = Math.min(2, jewel.pearlColors?.length ?? 1);
+        if (count > 1) {
+          pearlDot(c, x - 13 * s, y + 2 * s, 17 * s, pearlAt(0));
+          pearlDot(c, x + 13 * s, y - 2 * s, 17 * s, pearlAt(1));
+        } else pearlDot(c, x, y, 22 * s, pearlAt(0));
+      } else if (jewel.gem) mainGem(x, y, gemRadius(13, 12));
       else dome(x, y, 18 * s);
     } else if (style === 'libellule') {
       // Deux paires d'ailes ajourées, puis le corps.

@@ -52,11 +52,11 @@ export const RECIPES: readonly Recipe[] = [
   { id: 'premiere-lueur', name: 'Bague « Première lueur »', type: 'bague', pearl: null, count: 1, metal: 'argent', level: 5, multiplier: 1.5, flavor: 'La première que Rose a montée. Elle tremblait un peu.' },
   { id: 'jumelles', name: 'Boucles « Jumelles »', type: 'boucles', pearl: 'rose', count: 2, metal: 'argent', level: 5, multiplier: 1.8, flavor: 'Deux perles rosées, presque pareilles. Presque.' },
   { id: 'maree-basse', name: 'Bracelet « Marée basse »', type: 'bracelet', pearl: 'white', count: 3, metal: 'argent', level: 6, multiplier: 2, flavor: 'Ce qu’on ramasse quand la mer se retire.' },
-  { id: 'baroque', name: 'Broche « Baroque »', type: 'bague', pearl: 'baroque', count: 2, metal: 'or', level: 7, multiplier: 2, flavor: 'Bosselée, de travers, et parfaite comme ça.' },
+  { id: 'baroque', name: 'Broche « Baroque »', type: 'broche', pearl: 'baroque', count: 2, metal: 'or', level: 7, multiplier: 2, flavor: 'Bosselée, de travers, et parfaite comme ça.' },
   { id: 'rivage', name: 'Collier « Rivage »', type: 'collier', pearl: 'white', count: 7, metal: 'or', level: 8, multiplier: 2.4, flavor: 'Sept perles blanches et un fermoir en or : la recette de toujours.' },
   { id: 'aube-rosee', name: 'Collier « Aube rosée »', type: 'collier', pearl: 'rose', count: 5, metal: 'or-rose', level: 9, multiplier: 2.4, flavor: 'Pour les matins où la mer est rose.' },
   { id: 'nuit-encre', name: 'Bague « Nuit d’encre »', type: 'bague', pearl: 'black', count: 1, metal: 'platine', level: 10, multiplier: 2.5, flavor: 'Les connaisseurs se taisent. Les autres aussi.' },
-  { id: 'soleil', name: 'Pendentif « Soleil »', type: 'collier', pearl: 'golden', count: 1, metal: 'or', level: 12, multiplier: 3, flavor: 'Il chauffe un peu la peau. Sûrement une impression.' },
+  { id: 'soleil', name: 'Pendentif « Soleil »', type: 'pendentif', pearl: 'golden', count: 1, metal: 'or', level: 12, multiplier: 3, flavor: 'Il chauffe un peu la peau. Sûrement une impression.' },
 ];
 
 /** Une création de l'atelier : une carte à part, signée par le joueur. */
@@ -114,6 +114,11 @@ export function pickPearls(state: PlayerState, recipe: Recipe): { cards: PearlCa
     lastCopy = true;
   }
   return { cards, missing: recipe.count - cards.length, lastCopy };
+}
+
+/** Type d'une création : celui de sa recette (les premières broches et pendentifs étaient rangés en bague et collier). */
+export function craftedType(card: Pick<CraftedCard, 'recipeId' | 'type'>): JewelType {
+  return RECIPES.find((r) => r.id === card.recipeId)?.type ?? card.type;
 }
 
 export function canCraft(state: PlayerState, recipe: Recipe, tuning: Tuning): boolean {
