@@ -373,7 +373,7 @@ export function drawEcrin3D(c: Ctx, view: EcrinView, style: EcrinStyle): EcrinAn
         c.textAlign = 'center';
         c.textBaseline = 'middle';
         c.font = '600 36px "Figtree", system-ui, sans-serif';
-        c.fillText('M A I S O N   R O S E', 0, 0);
+        c.fillText('P E A R L   I N C .', 0, 0);
       });
     }
     // L'intérieur du couvercle : capitonnage de velours (comme le plateau), avec le nom de la Maison en or.

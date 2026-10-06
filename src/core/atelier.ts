@@ -5,6 +5,7 @@ import type { Tuning } from '../tuning';
 import { pearlById, type PearlId } from './catalog';
 import type { JewelType } from './jewels';
 import { gainReputation, levelFromXp } from './levels';
+import { pearlTint, traitsOf } from './pearlTraits';
 import type { PearlCard, PlayerState } from './player';
 import { afterEvent } from './progression';
 import type { SettingResult } from './setting';
@@ -146,7 +147,7 @@ export function craft(
     name: recipe.name,
     type: recipe.type,
     metal: metal.id,
-    pearlColors: cards.map((c) => pearlById(c.pearlId).color),
+    pearlColors: cards.map((c) => pearlTint(pearlById(c.pearlId).color, traitsOf(c))),
     pearlIds: cards.map((c) => c.pearlId),
     stars,
     setting: setting.verdict,

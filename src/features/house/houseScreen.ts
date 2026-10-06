@@ -3,6 +3,7 @@ import { drawHouse } from '../../art/house';
 import { jewelCanvas } from '../../art/jewel';
 import { pearlCanvas } from '../../art/pearl';
 import { pearlById } from '../../core/catalog';
+import { traitsOf } from '../../core/pearlTraits';
 import { CHAPTERS, houseBrand, houseStageName, isChapterUnlocked, NEXT_CHAPTER_LEVEL, readChapter, restoredFeatures, unreadChapters, type Chapter, type HouseFeature } from '../../core/house';
 import { jewelRarity, jewelVariant, withVariant } from '../../core/jewels';
 import { levelFromXp, rankForLevel, xpToNext } from '../../core/levels';
@@ -46,7 +47,7 @@ function showcase(ctx: AppContext): ShowcasePiece {
   }
   const pearl = [...ctx.player.cards].sort((a, b) => b.value - a.value)[0];
   return pearl
-    ? { art: pearlCanvas(pearlById(pearl.pearlId), 160, pearl.cracked, 0.3), title: pearlById(pearl.pearlId).name, detail: `Perle n° ${String(pearl.serial).padStart(4, '0')} · ${pearl.sizeMm.toFixed(1)} mm` }
+    ? { art: pearlCanvas(pearlById(pearl.pearlId), 160, pearl.cracked, 0.3, traitsOf(pearl)), title: pearlById(pearl.pearlId).name, detail: `Perle n° ${String(pearl.serial).padStart(4, '0')} · ${pearl.sizeMm.toFixed(1)} mm` }
     : { art: null, title: 'Ta première trouvaille', detail: 'Elle attend sa place dans la vitrine.' };
 }
 

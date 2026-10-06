@@ -3,6 +3,7 @@
 import { dustForTier, type Tuning } from '../tuning';
 import { PEARLS, pearlById, pearlTier, type PearlId } from './catalog';
 import { JEWEL_RARITIES, jewelOfRarity, jewelRarity, type JewelRarityId } from './jewels';
+import { defaultTraits } from './pearlTraits';
 import { pearlValue, type JewelCard, type PearlCard, type PlayerState } from './player';
 import { afterEvent } from './progression';
 import type { Rng } from './rng';
@@ -72,7 +73,7 @@ export function meltCard(state: PlayerState, serial: number, tuning: Tuning, now
 
 /**
  * Doublons « ordinaires » à fondre en lot : pour chaque pièce, on garde l'exemplaire le plus précieux,
- * et on ne touche jamais aux bijoux à éclat parfait, variante ou certificat.
+ * et on ne touche jamais aux perles marquées ni aux bijoux à éclat parfait, variante ou certificat.
  */
 export function ordinaryDuplicates(state: PlayerState): number[] {
   const serials: number[] = [];
@@ -85,7 +86,8 @@ export function ordinaryDuplicates(state: PlayerState): number[] {
       for (const card of sorted.slice(1)) if (!protect(card)) serials.push(card.serial);
     }
   };
-  keepBest(state.cards, (c) => c.pearlId, () => false);
+  // Une perle marquée (jumelle, étoilée…) n'est jamais fondue en lot.
+  keepBest(state.cards, (c) => c.pearlId, (c) => !!c.traits?.mark);
   keepBest(state.jewelCards, (c) => c.jewel.rarityId, isSpecialJewel);
   return serials;
 }
@@ -124,7 +126,8 @@ export function buyPiece(
   if (piece.kind === 'pearl') {
     const [min, max] = pearlById(piece.id).sizeMm;
     const sizeMm = Math.round((min + rng() * (max - min)) * 10) / 10;
-    const card: PearlCard = { serial, pearlId: piece.id, sizeMm, value: pearlValue(piece.id, sizeMm, false), lustre: 'B', cracked: false, foundAt: now, fromDust: true };
+    const traits = defaultTraits(piece.id as Exclude<PearlId, 'empty'>);
+    const card: PearlCard = { serial, pearlId: piece.id, sizeMm, value: pearlValue(piece.id, sizeMm, false, traits), lustre: 'B', cracked: false, foundAt: now, fromDust: true, traits };
     return { state: { ...paid, cards: [...state.cards, card] }, card };
   }
   const jewel = jewelOfRarity(jewelRarity(piece.id), rng);

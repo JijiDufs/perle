@@ -4,7 +4,18 @@ import type { Tuning } from '../tuning';
 import type { Rng } from './rng';
 
 export type JewelRarityId = 'toc' | 'fantaisie' | 'argent' | 'or' | 'perles' | 'saphir' | 'emeraude' | 'rubis' | 'diamant' | 'legende';
-export type JewelType = 'bague' | 'collier' | 'bracelet' | 'boucles' | 'diademe';
+export type JewelType = 'bague' | 'collier' | 'bracelet' | 'boucles' | 'pendentif' | 'broche' | 'diademe';
+/** Taille de la pierre (cahier §7 : « chaque tirage combine une rareté, un type, un métal, un poids »). */
+export type GemCut = 'rond' | 'ovale' | 'poire' | 'coussin' | 'emeraude' | 'princesse' | 'coeur' | 'marquise';
+/** Modèle du bijou : change son dessin, son nom et un peu sa valeur. */
+export type JewelStyle =
+  | 'solitaire' | 'trilogie' | 'cocktail' | 'jonc' | 'chevaliere' | 'perle'
+  | 'riviere' | 'chaine' | 'rang' | 'sautoir'
+  | 'tennis' | 'gourmette'
+  | 'puces' | 'pendants' | 'creoles'
+  | 'goutte' | 'coeur' | 'medaille' | 'coquillage'
+  | 'fleur' | 'libellule' | 'etoile'
+  | 'classique';
 
 export interface JewelRarity {
   id: JewelRarityId;
@@ -49,9 +60,178 @@ const TOC_VARIANTS = [
   { name: 'Bague qui verdit', metal: '#9fa05a', gem: '#a9e8ff', metalName: 'Métal ?', candy: false, flavor: 'Ton doigt va changer de couleur. C’est normal.' },
 ];
 
-const TYPES: readonly JewelType[] = ['bague', 'collier', 'bracelet', 'boucles'];
-const TYPE_NAME: Record<JewelType, string> = { bague: 'Bague', collier: 'Collier', bracelet: 'Bracelet', boucles: "Boucles d'oreilles", diademe: 'Diadème' };
-const TYPE_MULTIPLIER: Record<JewelType, number> = { bague: 1, collier: 1.4, bracelet: 1.2, boucles: 1.1, diademe: 1 };
+const TYPE_NAME: Record<JewelType, string> = { bague: 'Bague', collier: 'Collier', bracelet: 'Bracelet', boucles: "Boucles d'oreilles", pendentif: 'Pendentif', broche: 'Broche', diademe: 'Diadème' };
+const TYPE_MULTIPLIER: Record<JewelType, number> = { bague: 1, collier: 1.4, bracelet: 1.2, boucles: 1.1, pendentif: 1.1, broche: 1.2, diademe: 1 };
+
+export const JEWEL_TYPE_LABELS: Readonly<Record<JewelType, string>> = TYPE_NAME;
+
+export const GEM_CUTS: Readonly<Record<GemCut, { label: string; value: number }>> = {
+  rond: { label: 'Brillant rond', value: 1 },
+  ovale: { label: 'Ovale', value: 1 },
+  poire: { label: 'Poire', value: 1.1 },
+  coussin: { label: 'Coussin', value: 1.05 },
+  emeraude: { label: 'Émeraude', value: 1.05 },
+  princesse: { label: 'Princesse', value: 1 },
+  coeur: { label: 'Cœur', value: 1.2 },
+  marquise: { label: 'Marquise', value: 1.1 },
+};
+
+export const JEWEL_STYLES: Readonly<Record<JewelStyle, { label: string; value: number }>> = {
+  solitaire: { label: 'Solitaire', value: 1 },
+  trilogie: { label: 'Trilogie', value: 1.3 },
+  cocktail: { label: 'Cocktail', value: 1.5 },
+  jonc: { label: 'Jonc', value: 0.9 },
+  chevaliere: { label: 'Chevalière', value: 1.1 },
+  perle: { label: 'Perle', value: 1 },
+  riviere: { label: 'Rivière', value: 1.6 },
+  chaine: { label: 'Chaîne', value: 0.8 },
+  rang: { label: 'Rang', value: 1 },
+  sautoir: { label: 'Sautoir', value: 1.3 },
+  tennis: { label: 'Tennis', value: 1.4 },
+  gourmette: { label: 'Gourmette', value: 1 },
+  puces: { label: 'Puces', value: 0.9 },
+  pendants: { label: 'Pendants', value: 1.1 },
+  creoles: { label: 'Créoles', value: 0.9 },
+  goutte: { label: 'Goutte', value: 1 },
+  coeur: { label: 'Cœur', value: 1.1 },
+  medaille: { label: 'Médaille', value: 0.8 },
+  coquillage: { label: 'Coquillage', value: 0.9 },
+  fleur: { label: 'Fleur', value: 1.1 },
+  libellule: { label: 'Libellule', value: 1.3 },
+  etoile: { label: 'Étoile de mer', value: 1.1 },
+  classique: { label: 'Classique', value: 1.8 },
+};
+
+type Weights<K extends string> = Partial<Record<K, number>>;
+
+/** Métaux possibles par rareté : [couleur, nom, poids]. Le métal de la rareté reste celui par défaut. */
+const METAL_OPTIONS: Partial<Record<JewelRarityId, readonly [string, string, number][]>> = {
+  fantaisie: [['#d9b56b', 'Laiton', 60], ['#cfd5db', 'Métal argenté', 40]],
+  argent: [['#d7dbe0', 'Argent 925', 80], ['#e8c27a', 'Vermeil', 20]],
+  or: [['#e3b54d', 'Or jaune', 55], ['#e9b19a', 'Or rose', 25], ['#e8eaee', 'Or blanc', 20]],
+  perles: [['#e3b54d', 'Or jaune', 50], ['#e8eaee', 'Or blanc', 30], ['#e9b19a', 'Or rose', 20]],
+  saphir: [['#e8eaee', 'Or blanc', 50], ['#eef0f3', 'Platine', 30], ['#e3b54d', 'Or jaune', 20]],
+  emeraude: [['#e3b54d', 'Or jaune', 55], ['#eef0f3', 'Platine', 25], ['#e8eaee', 'Or blanc', 20]],
+  rubis: [['#e9b19a', 'Or rose', 45], ['#e3b54d', 'Or jaune', 35], ['#eef0f3', 'Platine', 20]],
+  diamant: [['#eef0f3', 'Platine', 50], ['#e8eaee', 'Or blanc', 30], ['#e9b19a', 'Or rose', 20]],
+};
+
+/** Tailles possibles par pierre, avec leur poids. */
+const CUT_WEIGHTS: Partial<Record<JewelRarityId, Weights<GemCut>>> = {
+  fantaisie: { rond: 70, ovale: 15, coeur: 15 },
+  saphir: { ovale: 35, coussin: 25, rond: 20, poire: 10, marquise: 10 },
+  emeraude: { emeraude: 55, ovale: 15, poire: 15, coussin: 15 },
+  rubis: { poire: 25, coussin: 25, ovale: 20, rond: 15, coeur: 15 },
+  diamant: { rond: 35, princesse: 15, poire: 12, ovale: 10, marquise: 10, coeur: 8, emeraude: 5, coussin: 5 },
+};
+
+/** Ce qui orne le bijou : des pierres, des perles, ou le métal seul. */
+type Ornament = 'gem' | 'pearls' | 'metal';
+
+const TYPE_WEIGHTS: Record<Ornament, Weights<JewelType>> = {
+  gem: { bague: 26, collier: 16, bracelet: 14, boucles: 16, pendentif: 16, broche: 10 },
+  metal: { bague: 26, collier: 18, bracelet: 18, boucles: 16, pendentif: 14, broche: 8 },
+  pearls: { collier: 35, bracelet: 20, boucles: 25, pendentif: 20 },
+};
+
+const STYLE_WEIGHTS: Record<Ornament, Partial<Record<JewelType, Weights<JewelStyle>>>> = {
+  gem: {
+    bague: { solitaire: 45, trilogie: 30, cocktail: 25 },
+    collier: { solitaire: 55, riviere: 45 },
+    bracelet: { tennis: 60, jonc: 40 },
+    boucles: { puces: 45, pendants: 35, creoles: 20 },
+    pendentif: { goutte: 50, coeur: 50 },
+    broche: { fleur: 35, libellule: 35, etoile: 30 },
+    diademe: { classique: 100 },
+  },
+  metal: {
+    bague: { jonc: 55, chevaliere: 45 },
+    collier: { chaine: 100 },
+    bracelet: { jonc: 50, gourmette: 50 },
+    boucles: { creoles: 100 },
+    pendentif: { medaille: 50, coquillage: 50 },
+    broche: { fleur: 35, libellule: 30, etoile: 35 },
+  },
+  pearls: {
+    collier: { rang: 65, sautoir: 35 },
+    bracelet: { rang: 100 },
+    boucles: { puces: 50, pendants: 50 },
+    pendentif: { goutte: 100 },
+  },
+};
+
+/** Diadème possible à partir de cette rareté (poids parmi les types). */
+const DIADEM_MIN_TIER = 4;
+const DIADEM_WEIGHT = 2;
+
+/** Comment on nomme les pierres : une (« au saphir »), plusieurs avec (« aux saphirs »), plusieurs de (« de saphirs »). */
+const GEM_WORDS: Partial<Record<JewelRarityId, { one: string; with: string; of: string }>> = {
+  fantaisie: { one: 'en strass', with: 'en strass', of: 'de strass' },
+  saphir: { one: 'au saphir', with: 'aux saphirs', of: 'de saphirs' },
+  emeraude: { one: "à l'émeraude", with: 'aux émeraudes', of: "d'émeraudes" },
+  rubis: { one: 'au rubis', with: 'aux rubis', of: 'de rubis' },
+  diamant: { one: 'diamant', with: 'aux diamants', of: 'de diamants' },
+};
+
+function pickWeighted<K extends string>(weights: Weights<K>, rng: Rng): K {
+  const entries = Object.entries(weights) as [K, number][];
+  const total = entries.reduce((sum, [, w]) => sum + w, 0);
+  let roll = rng() * total;
+  for (const [key, weight] of entries) {
+    roll -= weight;
+    if (roll < 0) return key;
+  }
+  return entries[entries.length - 1][0];
+}
+
+/** Nom du bijou selon son modèle, ses pierres ou son métal. */
+function jewelName(type: JewelType, style: JewelStyle, rarity: JewelRarity, metalName: string): string {
+  const words = GEM_WORDS[rarity.id];
+  const metal = `en ${metalName.toLowerCase().replace(' 925', '')}`;
+  if (rarity.id === 'perles') {
+    const pearlNames: Partial<Record<JewelStyle, string>> = {
+      rang: type === 'bracelet' ? 'Bracelet de perles' : 'Collier de perles',
+      sautoir: 'Sautoir de perles',
+      puces: "Puces d'oreilles perle",
+      pendants: "Pendants d'oreilles perle",
+      goutte: 'Pendentif perle',
+    };
+    return pearlNames[style] ?? `${TYPE_NAME[type]} de perles`;
+  }
+  if (!words) {
+    const metalNames: Partial<Record<JewelStyle, string>> = {
+      jonc: type === 'bague' ? `Bague jonc ${metal}` : `Jonc ${metal}`,
+      chevaliere: `Chevalière ${metal}`,
+      chaine: `Chaîne ${metal}`,
+      gourmette: `Gourmette ${metal}`,
+      creoles: `Créoles ${metal}`,
+      medaille: `Médaille ${metal}`,
+      coquillage: `Pendentif coquillage ${metal}`,
+      fleur: `Broche fleur ${metal}`,
+      libellule: `Broche libellule ${metal}`,
+      etoile: `Broche étoile de mer ${metal}`,
+    };
+    return metalNames[style] ?? `${TYPE_NAME[type]} ${metal}`;
+  }
+  const gemNames: Partial<Record<JewelStyle, string>> = {
+    solitaire: type === 'bague' ? `Solitaire ${words.one}` : `Collier ${words.one}`,
+    trilogie: `Bague trilogie ${words.with}`,
+    cocktail: `Bague cocktail ${words.one}`,
+    riviere: `Rivière ${words.of}`,
+    tennis: `Bracelet tennis ${words.of}`,
+    jonc: `Jonc serti ${words.of}`,
+    puces: `Puces d'oreilles ${words.one}`,
+    pendants: `Pendants d'oreilles ${words.one}`,
+    creoles: `Créoles serties ${words.of}`,
+    goutte: `Pendentif goutte ${words.one}`,
+    coeur: `Pendentif cœur ${words.one}`,
+    fleur: `Broche fleur ${words.with}`,
+    libellule: `Broche libellule ${words.with}`,
+    etoile: `Broche étoile de mer ${words.with}`,
+    classique: `Diadème ${words.of}`,
+  };
+  return gemNames[style] ?? `${TYPE_NAME[type]} ${words.one}`;
+}
 
 /** Un bijou tiré, tel qu'il est dessiné et affiché. */
 export interface Jewel {
@@ -71,6 +251,10 @@ export interface Jewel {
   flavor: string;
   /** Couleurs des perles (bijoux de l'atelier) ; sinon perles blanches. */
   pearlColors?: string[];
+  /** Modèle (absent des bijoux d'avant les modèles : le dessin en déduit un). */
+  style?: JewelStyle;
+  /** Taille de la pierre (bijoux à pierre seulement). */
+  cut?: GemCut;
 }
 
 export function jewelRarity(id: JewelRarityId): JewelRarity {
@@ -114,36 +298,78 @@ export function rollJewel(state: JewelDrawState, rng: Rng, tuning: Tuning): { je
   };
 }
 
-/** Fabrique un bijou d'une rareté donnée (type, nom, carats, estimation). Sert au tirage et à la poussière d'or. */
+/** Types qu'un bijou de cette rareté peut avoir (carnet des variantes). */
+export function jewelTypesFor(rarityId: JewelRarityId): JewelType[] {
+  if (rarityId === 'toc') return ['bague'];
+  if (rarityId === 'legende') return ['diademe'];
+  const rarity = jewelRarity(rarityId);
+  const ornament: Ornament = rarityId === 'perles' ? 'pearls' : rarity.gem ? 'gem' : 'metal';
+  const types = Object.keys(TYPE_WEIGHTS[ornament]) as JewelType[];
+  return ornament === 'gem' && rarity.tier >= DIADEM_MIN_TIER ? [...types, 'diademe'] : types;
+}
+
+/** Un pendentif goutte porte une pierre taillée en poire, un pendentif cœur une pierre en cœur. */
+const FORCED_CUTS: Partial<Record<JewelStyle, GemCut>> = { goutte: 'poire', coeur: 'coeur' };
+
+/** Tailles qu'une pierre de cette rareté peut avoir, pendentifs compris (vide : pas de pierre taillée). */
+export function gemCutsFor(rarityId: JewelRarityId): GemCut[] {
+  const cuts = Object.keys(CUT_WEIGHTS[rarityId] ?? {}) as GemCut[];
+  if (!cuts.length) return cuts;
+  return [...new Set([...cuts, ...Object.values(FORCED_CUTS)])];
+}
+
+/** Les types de bijoux d'un écrin complet (cahier §10 : 6 types ; le diadème est à part). */
+export const MAIN_JEWEL_TYPES: readonly JewelType[] = ['bague', 'collier', 'bracelet', 'boucles', 'pendentif', 'broche'];
+
+/**
+ * Fabrique un bijou d'une rareté donnée : type, modèle, métal, taille de pierre, carats, nom et estimation.
+ * Sert au tirage et à la poussière d'or.
+ */
 export function jewelOfRarity(rarity: JewelRarity, rng: Rng): Jewel {
-  let type = pick(TYPES, rng);
-  let name: string;
-  let metal = rarity.metal;
-  let metalName = rarity.metalName;
-  let gem = rarity.gem;
-  let candy = false;
-  let flavor = rarity.flavor;
+  const carats = () => (rarity.carats ? Math.round((rarity.carats[0] + rng() * (rarity.carats[1] - rarity.carats[0])) * 100) / 100 : 0);
+  const estimate = (type: JewelType, style: JewelStyle | undefined, cut: GemCut | undefined, weight: number) => {
+    const base = rarity.value[0] + rng() * (rarity.value[1] - rarity.value[0]);
+    const styleFactor = style ? JEWEL_STYLES[style].value : 1;
+    const cutFactor = cut ? GEM_CUTS[cut].value : 1;
+    return roundValue(base * (weight ? Math.max(1, weight) : 1) * TYPE_MULTIPLIER[type] * styleFactor * cutFactor);
+  };
+
   if (rarity.id === 'toc') {
-    const variant = pick(TOC_VARIANTS, rng);
-    type = 'bague';
-    ({ name, metal, metalName, gem, candy, flavor } = variant);
-  } else if (rarity.id === 'perles') {
-    type = pick(['collier', 'bracelet', 'boucles'] as const, rng);
-    name = { collier: 'Collier de perles', bracelet: 'Bracelet de perles', boucles: "Boucles d'oreilles perles" }[type];
-  } else if (rarity.id === 'diamant') {
-    name = { bague: 'Solitaire diamant', collier: 'Rivière de diamants', bracelet: 'Bracelet de diamants', boucles: "Puces d'oreilles diamant", diademe: 'Diadème de diamants' }[type];
-  } else if (rarity.id === 'legende') {
-    type = 'diademe';
-    name = 'Diadème des Abysses';
-  } else {
-    name = `${TYPE_NAME[type]} ${rarity.suffix}`;
+    const variant = TOC_VARIANTS[Math.min(TOC_VARIANTS.length - 1, Math.floor(rng() * TOC_VARIANTS.length))];
+    const value = estimate('bague', undefined, undefined, 0);
+    return { rarityId: rarity.id, type: 'bague', name: variant.name, metal: variant.metal, metalName: variant.metalName, gem: variant.gem, candy: variant.candy, pearls: false, carats: 0, value, flavor: variant.flavor, style: 'solitaire' };
+  }
+  if (rarity.id === 'legende') {
+    const weight = carats();
+    return { rarityId: rarity.id, type: 'diademe', name: 'Diadème des Abysses', metal: rarity.metal, metalName: rarity.metalName, gem: rarity.gem, candy: false, pearls: false, carats: weight, value: estimate('diademe', undefined, undefined, weight), flavor: rarity.flavor, style: 'classique', cut: 'rond' };
   }
 
-  const carats = rarity.carats ? Math.round((rarity.carats[0] + rng() * (rarity.carats[1] - rarity.carats[0])) * 100) / 100 : 0;
-  const base = rarity.value[0] + rng() * (rarity.value[1] - rarity.value[0]);
-  const value = roundValue(base * (carats ? Math.max(1, carats) : 1) * TYPE_MULTIPLIER[type]);
-
-  return { rarityId: rarity.id, type, name, metal, metalName, gem, candy, pearls: rarity.id === 'perles', carats, value, flavor };
+  const ornament: Ornament = rarity.id === 'perles' ? 'pearls' : rarity.gem ? 'gem' : 'metal';
+  const typeWeights: Weights<JewelType> = { ...TYPE_WEIGHTS[ornament] };
+  if (ornament === 'gem' && rarity.tier >= DIADEM_MIN_TIER) typeWeights.diademe = DIADEM_WEIGHT;
+  const type = pickWeighted(typeWeights, rng);
+  const style = pickWeighted(STYLE_WEIGHTS[ornament][type]!, rng);
+  const options = METAL_OPTIONS[rarity.id] ?? [[rarity.metal, rarity.metalName, 1] as const];
+  const [metal, metalName] = options[Number(pickWeighted(Object.fromEntries(options.map(([, , weight], i) => [String(i), weight])), rng))];
+  const cutWeights = CUT_WEIGHTS[rarity.id];
+  const rolledCut = cutWeights ? pickWeighted(cutWeights, rng) : undefined;
+  const cut = rolledCut && (FORCED_CUTS[style] ?? rolledCut);
+  const weight = carats();
+  return {
+    rarityId: rarity.id,
+    type,
+    name: jewelName(type, style, rarity, metalName),
+    metal,
+    metalName,
+    gem: rarity.gem,
+    candy: false,
+    pearls: rarity.id === 'perles',
+    carats: weight,
+    value: estimate(type, style, cut, weight),
+    flavor: rarity.flavor,
+    style,
+    ...(cut ? { cut } : {}),
+  };
 }
 
 /** Variantes rares révélées par un éclat parfait (cahier §7). Couleurs : provisoires (AGENTS.md §6). */

@@ -4,11 +4,12 @@ import { metalById, RECIPES, type CraftedCard } from '../core/atelier';
 import { pearlById } from '../core/catalog';
 import { GRADE_LABELS } from '../core/expertise';
 import { bottleMessage, findAlbum, findById, findRarity, type FindCard } from '../core/finds';
-import { jewelRarity, jewelVariant, withVariant } from '../core/jewels';
+import { MARKS, traitsLabel, traitsOf } from '../core/pearlTraits';
+import { GEM_CUTS, jewelRarity, jewelVariant, withVariant } from '../core/jewels';
 import type { JewelCard, PearlCard } from '../core/player';
 import { CARD_FRAMES, formatCarats, formatEuros, JEWEL_FRAMES, SANS, SERIF, serialLabel } from './cardStyle';
 import { craftedJewel } from './atelier';
-import { drawJewel, drawSparkles } from './jewel';
+import { drawJewel, drawSparkles, jewelYOffset } from './jewel';
 import { drawFind } from './finds';
 import { drawGlow, drawPearl } from './pearl';
 
@@ -208,8 +209,9 @@ async function render(spec: StorySpec): Promise<Blob> {
 
 export function renderStoryImage(card: PearlCard): Promise<Blob> {
   const pearl = pearlById(card.pearlId);
+  const traits = traitsOf(card);
   return render({
-    subtitle: `Pêchée à La Crique · ${serialLabel(card.serial)}`,
+    subtitle: traits ? `${traitsLabel(traits)} · ${serialLabel(card.serial)}` : `Pêchée à La Crique · ${serialLabel(card.serial)}`,
     title: `${pearl.name}${card.cracked ? ' fêlée' : ''}`,
     rarity: pearl.rarity,
     frame: CARD_FRAMES[card.pearlId],
@@ -217,7 +219,7 @@ export function renderStoryImage(card: PearlCard): Promise<Blob> {
     artBackground: 'nacre',
     drawArt(c, x, y, w, h) {
       drawGlow(c, x + w / 2, y + h / 2, w * 0.55, pearl.glow, 0.55, false);
-      drawPearl(c, x + w / 2, y + h / 2, w * (card.pearlId === 'giant' ? 0.27 : 0.19), pearl, card.cracked);
+      drawPearl(c, x + w / 2, y + h / 2, w * (card.pearlId === 'giant' ? 0.27 : 0.19), pearl, card.cracked, traits);
     },
     stats: [
       ['Taille', `${card.sizeMm.toFixed(1)} mm`],
@@ -226,9 +228,12 @@ export function renderStoryImage(card: PearlCard): Promise<Blob> {
       ['N°', serialLabel(card.serial)],
     ],
     flavor: pearl.flavor,
-    flags: card.cracked ? [{ text: 'Fêlée : valeur divisée par deux', tone: 'danger' }] : [],
+    flags: [
+      ...(traits?.mark ? [{ text: `✦ Perle ${MARKS[traits.mark].label.toLowerCase()}`, tone: 'gold' as const }] : []),
+      ...(card.cracked ? [{ text: 'Fêlée : valeur divisée par deux', tone: 'danger' as const }] : []),
+    ],
     fine: null,
-    holo: false,
+    holo: !!traits?.mark,
   });
 }
 
@@ -238,7 +243,7 @@ export function renderJewelStoryImage(card: JewelCard): Promise<Blob> {
   const rarity = jewelRarity(jewel.rarityId);
   const glow = variant?.glow ?? rarity.glow;
   return render({
-    subtitle: variant ? `Variante rare · ${serialLabel(card.serial)}` : `Trouvé dans un écrin · ${serialLabel(card.serial)}`,
+    subtitle: `${variant ? 'Variante rare' : jewel.cut ? `Taille ${GEM_CUTS[jewel.cut].label.toLowerCase()}` : 'Trouvé dans un écrin'} · ${serialLabel(card.serial)}`,
     title: jewel.name,
     rarity: rarity.rarity,
     frame: variant?.frame ?? JEWEL_FRAMES[rarity.tier],
@@ -246,7 +251,7 @@ export function renderJewelStoryImage(card: JewelCard): Promise<Blob> {
     artBackground: 'velvet',
     drawArt(c, x, y, w, h) {
       const cxArt = x + w / 2;
-      const yOffset = jewel.type === 'collier' ? 0.62 : jewel.type === 'diademe' ? 0.52 : jewel.type === 'boucles' ? 0.56 : 0.5;
+      const yOffset = jewelYOffset(jewel);
       drawGlow(c, cxArt, y + h / 2, w * 0.6, glow, 0.45);
       drawJewel(c, cxArt, y + h * yOffset, (w / 520) * 1.05, jewel);
       if (glow) drawSparkles(c, cxArt, y + h / 2, Math.max(rarity.tier, variant ? 4 : 0), glow, 1.3, card.perfect ? 1 : 0.7, w / 600);
@@ -279,7 +284,7 @@ export function renderCraftedStoryImage(card: CraftedCard): Promise<Blob> {
     artBackground: 'velvet',
     drawArt(c, x, y, w, h) {
       const cxArt = x + w / 2;
-      const yOffset = jewel.type === 'collier' ? 0.62 : jewel.type === 'boucles' ? 0.56 : 0.5;
+      const yOffset = jewelYOffset(jewel);
       drawGlow(c, cxArt, y + h / 2, w * 0.6, '#fff1d6', 0.4);
       drawJewel(c, cxArt, y + h * yOffset, (w / 520) * 1.05, jewel);
       if (card.stars >= 4) drawSparkles(c, cxArt, y + h / 2, card.stars - 1, '#fff1d6', 1.3, 1, w / 600);

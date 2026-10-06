@@ -1447,3 +1447,13 @@ html, body {
 @keyframes find-pop { from { transform: scale(0.6) rotate(-4deg); opacity: 0; } to { transform: none; opacity: 1; } }
 .card-find .card-art-find { background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 70%); }
 .card-message { margin: 10px 0 0; padding: 10px 12px; border-radius: 6px; background: linear-gradient(135deg, #f6ead0, #e8d6ae); color: #4a3415; font-family: var(--serif, "Young Serif", Georgia, serif); font-size: 0.85rem; line-height: 1.35; box-shadow: inset 0 0 0 1px rgba(120, 80, 30, 0.25), 0 2px 6px rgba(0, 0, 0, 0.18); transform: rotate(-0.6deg); }
+
+/* ---------- Perles uniques ---------- */
+.card-traits { margin: -2px 0 6px; font-size: 0.78rem; font-weight: 600; opacity: 0.75; letter-spacing: 0.01em; }
+.variant-panel { display: grid; gap: 10px; margin: 4px 0 14px; padding: 12px 14px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); }
+.variant-group p { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 6px; font-size: 0.85rem; }
+.variant-group small { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.variant-chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 999px; font-size: 0.75rem; border: 1px dashed var(--line); color: var(--ink-soft); opacity: 0.6; }
+.variant-chip.found { opacity: 1; border-style: solid; border-color: var(--gold); color: inherit; background: rgba(232, 190, 90, 0.1); }
+.variant-chip i { width: 10px; height: 10px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25); }

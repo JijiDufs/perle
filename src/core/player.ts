@@ -5,6 +5,7 @@ import { INITIAL_LOGIN, type LoginState } from './daily';
 import { INITIAL_DRAW_STATE, type DrawState } from './draw';
 import type { ExpertiseRecord } from './expertise';
 import { findById, type FindCard } from './finds';
+import { traitsValueFactor, type PearlTraits } from './pearlTraits';
 import { rollSweetAngle } from './glint';
 import { INITIAL_JEWEL_DRAW, roundValue, rollJewel, rollRareVariant, type Jewel, type JewelDrawState, type JewelVariantId } from './jewels';
 import { gainReputation, reputationFor } from './levels';
@@ -28,6 +29,8 @@ export interface PearlCard {
   foundAt: number;
   /** Achetée avec la poussière d'or plutôt que pêchée. */
   fromDust?: boolean;
+  /** Forme, reflet et marque (absents des cartes d'avant les traits : traitsOf() donne ceux par défaut). */
+  traits?: PearlTraits;
 }
 
 /** Une carte de bijou, créée à chaque écrin ouvert. */
@@ -139,13 +142,13 @@ export function ensureOyster(state: PlayerState, rng: Rng, tuning: Tuning, now: 
   return { ...state, currentOyster: oyster, draw: drawState, stock };
 }
 
-/** Valeur d'une perle : base × taille relative, divisée par deux si fêlée. */
-export function pearlValue(pearlId: PearlId, sizeMm: number, cracked: boolean): number {
+/** Valeur d'une perle : base × taille relative × forme, reflet et marque, divisée par deux si fêlée. */
+export function pearlValue(pearlId: PearlId, sizeMm: number, cracked: boolean, traits?: PearlTraits): number {
   const pearl = pearlById(pearlId);
   if (pearl.baseValue === 0) return 0;
   const [min, max] = pearl.sizeMm;
   const sizeFactor = sizeMm / ((min + max) / 2);
-  return Math.round(pearl.baseValue * sizeFactor * (cracked ? 0.5 : 1));
+  return Math.round(pearl.baseValue * sizeFactor * (traits ? traitsValueFactor(traits) : 1) * (cracked ? 0.5 : 1));
 }
 
 /**
@@ -185,10 +188,11 @@ export function recordOpening(
     serial: state.nextSerial,
     pearlId: oyster.pearlId,
     sizeMm: oyster.sizeMm,
-    value: pearlValue(oyster.pearlId, oyster.sizeMm, result.cracked),
+    value: pearlValue(oyster.pearlId, oyster.sizeMm, result.cracked, oyster.traits),
     lustre: result.lustre,
     cracked: result.cracked,
     foundAt: now,
+    ...(oyster.traits ? { traits: oyster.traits } : {}),
   };
   const withCard = { ...base, nextSerial: state.nextSerial + 1, cards: [...state.cards, card] };
   return { state: afterEvent(withCard, event, now, tuning), card, find: null, ecrinEarned: earned.earned };

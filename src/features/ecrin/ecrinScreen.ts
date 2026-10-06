@@ -4,7 +4,7 @@
 import { smoothstep } from '../../art/color';
 import { LEATHERS } from '../../art/ecrin';
 import { drawEcrin3D, drawEcrinShadow } from '../../art/ecrin3d';
-import { drawJewel, drawSparkles, drawStar } from '../../art/jewel';
+import { drawJewel, drawSparkles, drawStar, jewelYOffset } from '../../art/jewel';
 import { drawGlow } from '../../art/pearl';
 import { buyEcrin } from '../../core/dust';
 import { GlintEngine, type GlintEvent } from '../../core/glint';
@@ -316,7 +316,8 @@ export function mountEcrinScreen(root: HTMLElement, ctx: AppContext): () => void
       sweep: rarity.tier >= 4 && engine.phase === 'closed' ? ((t * 0.5) % 1.6) - 0.3 : null,
       // Le bijou est couché à plat sur le plateau, vu de dessus (repère du plateau : 1 = largeur de l'écrin).
       drawJewel: () => {
-        if (shownJewel) drawJewel(c, 0, 0, 0.66 / 440, shownJewel);
+        // Centré sur le plateau, quel que soit le modèle.
+        if (shownJewel) drawJewel(c, 0, (jewelYOffset(shownJewel) - 0.5) * 0.66, 0.66 / 440, shownJewel);
       },
       drawEffects: (x, y, unit) => {
         if (!glow) return;

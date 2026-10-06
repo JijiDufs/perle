@@ -80,7 +80,7 @@ export function mountTuningScreen(root: HTMLElement, ctx: AppContext): () => voi
     } else if (target.dataset.action === 'sound') {
       ctx.setSettings({ ...ctx.settings, sound: (target as HTMLInputElement).checked });
     } else if (target.dataset.action === 'force' && target.value) {
-      ctx.setPlayer({ ...ctx.player, currentOyster: oysterWith(target.value as PearlId, ctx.rng) });
+      ctx.setPlayer({ ...ctx.player, currentOyster: oysterWith(target.value as PearlId, ctx.rng, ctx.tuning.pearlMarkChance) });
     }
   });
 

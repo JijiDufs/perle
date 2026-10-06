@@ -6,7 +6,9 @@ import { PEARLS } from '../../core/catalog';
 import { jewelRarityRank, rarityRank, sortCards, sortJewelCards, type CardSort } from '../../core/collection';
 import { albumProgress, FIND_ALBUMS, FINDS, findRarity, type FindCard } from '../../core/finds';
 import { findCanvas } from '../../art/finds';
-import { JEWEL_RARITIES, jewelVariant, withVariant } from '../../core/jewels';
+import { GEM_CUTS, gemCutsFor, JEWEL_RARITIES, JEWEL_TYPE_LABELS, jewelTypesFor, jewelVariant, withVariant, type JewelRarityId } from '../../core/jewels';
+import { MARKS, OVERTONES, overtonesOf, SHAPES, shapesOf, traitsOf, type PearlMark, type PearlTraits } from '../../core/pearlTraits';
+import type { PearlId } from '../../core/catalog';
 import type { JewelCard, PearlCard } from '../../core/player';
 import { track } from '../../platform/analytics';
 import type { AppContext } from '../context';
@@ -43,6 +45,13 @@ interface Shelf<C extends { serial: number }> {
   sort(cards: C[], sort: CardSort): C[];
   element(card: C, size: 'large' | 'small'): HTMLElement;
   zoomExtras(card: C, onChanged: () => void): HTMLElement[];
+  /** Carnet des variantes d'une case : ce qui a été trouvé (formes, reflets, types, tailles…). */
+  variants?(entryId: string): VariantGroup[];
+}
+
+interface VariantGroup {
+  title: string;
+  chips: { label: string; found: boolean; color?: string }[];
 }
 
 /** Boutons sous la carte agrandie, sur une ligne. */
@@ -69,6 +78,15 @@ function pearlShelf(ctx: AppContext): Shelf<PearlCard> {
     sort: sortCards,
     element: (card, size) => cardElement(card.pearlId, card, size),
     zoomExtras: (card, onChanged) => actions(pearlShareButton(card), meltButton(ctx, card, onChanged)),
+    variants: (id) => {
+      const pearlId = id as Exclude<PearlId, 'empty'>;
+      const mine = cards.filter((c) => c.pearlId === id).map(traitsOf).filter((t): t is PearlTraits => t !== null);
+      return [
+        { title: 'Formes', chips: shapesOf(pearlId).map((shape) => ({ label: SHAPES[shape].label, found: mine.some((t) => t.shape === shape) })) },
+        { title: 'Reflets', chips: overtonesOf(pearlId).map((tone) => ({ label: OVERTONES[tone].label, found: mine.some((t) => t.overtone === tone), color: OVERTONES[tone].color })) },
+        { title: 'Marques rares', chips: (Object.keys(MARKS) as PearlMark[]).map((mark) => ({ label: MARKS[mark].label, found: mine.some((t) => t.mark === mark) })) },
+      ];
+    },
   };
 }
 
@@ -99,6 +117,14 @@ function jewelShelf(ctx: AppContext, refresh: () => void): Shelf<JewelCard> {
     sort: sortJewelCards,
     element: jewelCardElement,
     zoomExtras: (card, onChanged) => [...actions(expertiseButton(ctx, card, refresh), jewelShareButton(card)), ...actions(meltButton(ctx, card, onChanged))],
+    variants: (id) => {
+      const mine = ofRarity(id);
+      const cuts = gemCutsFor(id as JewelRarityId);
+      return [
+        { title: 'Types', chips: jewelTypesFor(id as JewelRarityId).map((type) => ({ label: JEWEL_TYPE_LABELS[type], found: mine.some((c) => c.jewel.type === type) })) },
+        ...(cuts.length ? [{ title: 'Tailles', chips: cuts.map((cut) => ({ label: GEM_CUTS[cut].label, found: mine.some((c) => c.jewel.cut === cut) })) }] : []),
+      ];
+    },
   };
 }
 
@@ -208,6 +234,7 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
         </div>
       </div>
       <p class="filter-bar" hidden></p>
+      <section class="variant-panel" aria-label="Carnet des variantes" hidden></section>
       <section class="card-grid"></section>
       <div class="zoom-overlay" hidden></div>
     `;
@@ -261,6 +288,19 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
       const name = shelf.entries.find((e) => e.id === filter)?.name ?? '';
       filterBar.innerHTML = `${name} seulement · <button class="link" data-action="clear-filter">Tout afficher</button>`;
     }
+
+    const panel = root.querySelector<HTMLElement>('.variant-panel')!;
+    const groups = filter && shelf.variants ? shelf.variants(filter) : [];
+    panel.hidden = groups.length === 0;
+    panel.innerHTML = groups
+      .map((group) => {
+        const found = group.chips.filter((chip) => chip.found).length;
+        const chips = group.chips
+          .map((chip) => `<span class="variant-chip${chip.found ? ' found' : ''}">${chip.color ? `<i style="background:${chip.color}"></i>` : ''}${chip.label}</span>`)
+          .join('');
+        return `<div class="variant-group"><p><b>${group.title}</b><small>${found}/${group.chips.length}</small></p><div class="variant-chips">${chips}</div></div>`;
+      })
+      .join('');
 
     const grid = root.querySelector<HTMLElement>('.card-grid')!;
     if (shelf.cards.length === 0) {

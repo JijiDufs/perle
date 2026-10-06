@@ -3,7 +3,8 @@
 import type { Tuning } from '../tuning';
 import { PEARLS } from './catalog';
 import { albumProgress, type FindAlbumId } from './finds';
-import { JEWEL_RARITIES } from './jewels';
+import { GEM_CUTS, JEWEL_RARITIES, MAIN_JEWEL_TYPES, type GemCut } from './jewels';
+import { SHAPES, traitsOf, type PearlShape, type PearlTraits } from './pearlTraits';
 import type { PlayerState } from './player';
 
 export type AchievementTier = 'bronze' | 'argent' | 'or';
@@ -26,6 +27,7 @@ export interface Achievement {
 const has = (state: PlayerState, pearlId: string) => (state.cards.some((c) => c.pearlId === pearlId) ? 1 : 0);
 const hasJewel = (state: PlayerState, rarityId: string) => (state.jewelCards.some((c) => c.jewel.rarityId === rarityId) ? 1 : 0);
 const count = (n: number, goal: number): [number, number] => [Math.min(n, goal), goal];
+const pearlTraits = (state: PlayerState): PearlTraits[] => state.cards.map(traitsOf).filter((t): t is PearlTraits => t !== null);
 const hasFind = (state: PlayerState, findId: string) => ((state.findCards ?? []).some((c) => c.findId === findId) ? 1 : 0);
 const album = (state: PlayerState, id: FindAlbumId): [number, number] => albumProgress(state.findCards ?? [], id);
 
@@ -57,6 +59,20 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'album-clins', name: 'Ça me rappelle quelque chose', description: 'Compléter l’album « Clins d’œil ».', tier: 'or', album: true, title: 'Cinéphile des abysses', progress: (s) => album(s, 'clins') },
   { id: 'album-tresors', name: 'Chasseur d’épaves', description: 'Compléter l’album « Trésors engloutis ».', tier: 'or', album: true, title: 'Chasseur d’épaves', progress: (s) => album(s, 'tresors') },
   { id: 'grand-bateau', name: 'Il était une fois un grand bateau', description: 'Trouver le grand diamant bleu.', tier: 'or', secret: true, progress: (s) => count(hasFind(s, 'coeur-ocean'), 1) },
+  // Les perles uniques
+  { id: 'perle-jumelle', name: 'Deux pour le prix d’une', description: 'Trouver une perle jumelle.', tier: 'argent', progress: (s) => count(pearlTraits(s).some((t) => t.mark === 'jumelle') ? 1 : 0, 1) },
+  { id: 'perle-coeur', name: 'Coup de cœur', description: 'Trouver une perle en cœur.', tier: 'or', title: 'Cœur de nacre', progress: (s) => count(pearlTraits(s).some((t) => t.mark === 'coeur') ? 1 : 0, 1) },
+  { id: 'arc-en-ciel', name: 'Toutes les couleurs', description: 'Trouver une perle au reflet arc-en-ciel.', tier: 'argent', progress: (s) => count(pearlTraits(s).some((t) => t.overtone === 'arc-en-ciel') ? 1 : 0, 1) },
+  {
+    id: 'six-formes',
+    name: 'Six formes',
+    description: 'Trouver une perle de chaque forme.',
+    tier: 'argent',
+    progress: (s) => {
+      const shapes = Object.keys(SHAPES) as PearlShape[];
+      return count(shapes.filter((shape) => pearlTraits(s).some((t) => t.shape === shape)).length, shapes.length);
+    },
+  },
   // Le geste
   { id: 'lustre-s', name: 'Geste parfait', description: 'Obtenir un lustre S.', tier: 'bronze', progress: (s) => count(s.stats.lustreS, 1) },
   { id: 'lustre-s-10', name: 'Virtuose', description: 'Obtenir 10 lustres S.', tier: 'argent', title: 'Virtuose', progress: (s) => count(s.stats.lustreS, 10) },
@@ -77,6 +93,24 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     tier: 'or',
     title: 'Grand collectionneur',
     progress: (s) => count(JEWEL_RARITIES.filter((j) => hasJewel(s, j.id)).length, JEWEL_RARITIES.length),
+  },
+  {
+    id: 'types-bijoux',
+    name: 'Écrin bien rangé',
+    description: 'Posséder une bague, un collier, un bracelet, des boucles, un pendentif et une broche.',
+    tier: 'argent',
+    progress: (s) => count(MAIN_JEWEL_TYPES.filter((type) => s.jewelCards.some((c) => c.jewel.type === type)).length, MAIN_JEWEL_TYPES.length),
+  },
+  {
+    id: 'huit-tailles',
+    name: 'Huit tailles',
+    description: 'Posséder une pierre de chaque taille.',
+    tier: 'or',
+    title: 'Lapidaire',
+    progress: (s) => {
+      const cuts = Object.keys(GEM_CUTS) as GemCut[];
+      return count(cuts.filter((cut) => s.jewelCards.some((c) => c.jewel.cut === cut)).length, cuts.length);
+    },
   },
   // L'atelier
   { id: 'fait-main', name: 'Fait main', description: 'Fabriquer ton premier bijou à l’atelier.', tier: 'bronze', progress: (s) => count(s.stats.crafted ?? 0, 1) },

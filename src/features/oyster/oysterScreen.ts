@@ -8,6 +8,7 @@ import { drawGlow, drawPearl } from '../../art/pearl';
 import { drawFlesh, drawNacre, drawShellExterior, randomPhases, shellOutline, tracePath, type Phases } from '../../art/shell';
 import { pearlById, type PearlType } from '../../core/catalog';
 import { findById, findRevealTier, findTrembles, type FindCard, type FindType } from '../../core/finds';
+import type { PearlTraits } from '../../core/pearlTraits';
 import { OpeningEngine, type OpeningEvent } from '../../core/opening';
 import { ensureOyster, recordOpening, type PearlCard } from '../../core/player';
 import { currentQuests } from '../../core/progression';
@@ -99,6 +100,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
   let pearl: PearlType = pearlById('white');
   /** Trouvaille cachée à la place de la perle (pearl est alors l'huître vide). */
   let find: FindType | null = null;
+  let traits: PearlTraits | null = null;
   let sizeMm = 6;
   // Ce qui se voit de l'extérieur : la lumière, l'ampleur de la révélation, le tremblement.
   const glowColor = () => (find ? find.glow : pearl.glow);
@@ -273,6 +275,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     tide.hidden = true;
     pearl = pearlById(oyster.pearlId);
     find = oyster.findId ? findById(oyster.findId) : null;
+    traits = oyster.traits ?? null;
     sizeMm = oyster.sizeMm;
     phases = randomPhases(Math.random);
     step = ctx.player.oystersOpened;
@@ -349,7 +352,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     const pulse = busy ? 1 + 0.1 * suspense * Math.max(0, Math.sin(t * (6 + tier * 3))) : 1;
     prad *= pulse;
     if (find) drawFind(c, px, py, L * 0.2 * pulse, find, t);
-    else drawPearl(c, px, py, prad, pearl, engine.cracked);
+    else drawPearl(c, px, py, prad, pearl, engine.cracked, traits);
 
     // L'intérieur reste dans l'ombre tant que la coquille est peu ouverte.
     const dim = 1 - smoothstep(4, 140, angle);

@@ -142,6 +142,8 @@ export interface Tuning {
   findKeyEcrins: number;
   /** Écrins donnés par un album de trouvailles complété (cahier §10). */
   albumRewardEcrins: number;
+  /** Chance qu'une perle porte une marque rare (jumelle, étoilée, lunaire, en cœur). */
+  pearlMarkChance: number;
 }
 
 export const DEFAULT_TUNING: Readonly<Tuning> = {
@@ -229,6 +231,7 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   findCoinDust: 15,
   findKeyEcrins: 1,
   albumRewardEcrins: 1,
+  pearlMarkChance: 0.04,
 };
 
 /** Description des paramètres exposés dans l'écran Réglages. */

@@ -1,13 +1,15 @@
 import { CARD_FRAMES, serialLabel } from '../../art/cardStyle';
 import { pearlCanvas } from '../../art/pearl';
 import { pearlById, type PearlId } from '../../core/catalog';
+import { MARKS, traitsLabel, traitsOf } from '../../core/pearlTraits';
 import type { PearlCard } from '../../core/player';
 
 /** Carte à collectionner. `card` null = huître vide. */
 export function cardElement(pearlId: PearlId, card: PearlCard | null, size: 'large' | 'small'): HTMLElement {
   const pearl = pearlById(pearlId);
   const frame = CARD_FRAMES[pearlId];
-  const holo = pearl.revealTier >= 2 && card !== null && !card.cracked;
+  const traits = card ? traitsOf(card) : null;
+  const holo = (pearl.revealTier >= 2 || !!traits?.mark) && card !== null && !card.cracked;
   const el = document.createElement('article');
   el.className = `card card-${size}${frame.dark ? ' card-dark' : ''}${holo ? ' card-holo' : ''}`;
   el.style.setProperty('--frame-a', frame.colors[0]);
@@ -26,16 +28,18 @@ export function cardElement(pearlId: PearlId, card: PearlCard | null, size: 'lar
       <h3 class="card-title">${pearl.name}${card?.cracked ? ' fêlée' : ''}</h3>
       <span class="card-rarity">${pearl.rarity}</span>
     </header>
+    ${traits && size === 'large' ? `<p class="card-traits">${traitsLabel(traits)}</p>` : ''}
     <div class="card-art"></div>
     ${stats}
     ${size === 'large' ? `<p class="card-flavor">${pearl.flavor}</p>` : ''}
+    ${traits?.mark ? `<p class="card-flag card-flag-gold">✦ Perle ${MARKS[traits.mark].label.toLowerCase()}${size === 'large' ? ` : ${MARKS[traits.mark].description.toLowerCase().replace(/\.$/, '')}` : ''}</p>` : ''}
     ${card?.cracked ? '<p class="card-flag">Fêlée : valeur divisée par deux</p>' : ''}
     ${card?.fromDust && size === 'large' ? '<p class="card-flag card-flag-dust">✦ Obtenue avec la poussière d’or</p>' : ''}
   `;
   const art = el.querySelector('.card-art')!;
   if (card) {
     const px = size === 'large' ? 170 : 96;
-    art.append(pearlCanvas(pearl, px, card.cracked, pearlId === 'giant' ? 0.36 : 0.26));
+    art.append(pearlCanvas(pearl, px, card.cracked, pearlId === 'giant' ? 0.36 : 0.26, traits));
   } else {
     art.innerHTML = '<div class="card-empty-ring"></div>';
   }

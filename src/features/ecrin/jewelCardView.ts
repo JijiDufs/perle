@@ -1,7 +1,7 @@
 import { formatCarats, formatEuros, JEWEL_FRAMES, serialLabel } from '../../art/cardStyle';
 import { jewelCanvas } from '../../art/jewel';
 import { GRADE_LABELS } from '../../core/expertise';
-import { jewelRarity, jewelVariant, withVariant } from '../../core/jewels';
+import { GEM_CUTS, jewelRarity, jewelVariant, withVariant } from '../../core/jewels';
 import type { JewelCard } from '../../core/player';
 
 export function jewelCardElement(card: JewelCard, size: 'large' | 'small'): HTMLElement {
@@ -18,6 +18,7 @@ export function jewelCardElement(card: JewelCard, size: 'large' | 'small'): HTML
       <h3 class="card-title">${jewel.name}</h3>
       <span class="card-rarity">${rarity.rarity}</span>
     </header>
+    ${size === 'large' && jewel.cut ? `<p class="card-traits">Taille ${GEM_CUTS[jewel.cut].label.toLowerCase()}</p>` : ''}
     <div class="card-art card-art-velvet"></div>
     <dl class="card-stats">
       <div><dt>Métal</dt><dd>${jewel.metalName}</dd></div>
