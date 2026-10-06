@@ -8,6 +8,8 @@ import { drawFlesh, drawNacre, drawShellExterior, randomPhases, shellOutline, tr
 import { pearlById, type PearlType } from '../../core/catalog';
 import { OpeningEngine, type OpeningEvent } from '../../core/opening';
 import { ensureOyster, recordOpening, type PearlCard } from '../../core/player';
+import { currentQuests } from '../../core/progression';
+import { isClaimable, isComplete, dayKey, questText } from '../../core/quests';
 import { nextRefillIn, refreshStock } from '../../core/stock';
 import { isCrackProtected, isInTutorial } from '../../core/tutorial';
 import { isIos, isStandalone } from '../../platform/offline';
@@ -22,6 +24,7 @@ import type { AppContext } from '../context';
 import { visibleBand } from '../nav/insets';
 import { pearlShareButton } from '../share/shareButton';
 import { coachAfterReveal, coachDuringGesture } from './coach';
+import { openQuestsSheet } from '../progress/questsSheet';
 
 const DOWN = Math.PI / 2;
 /** Intensité du halo selon le niveau de révélation. */
@@ -37,6 +40,12 @@ const TEMPLATE = `
     <p>Installe Perle sur ton écran d'accueil : touche <strong>Partager</strong> <span aria-hidden="true">⬆︎</span> puis <strong>« Sur l'écran d'accueil »</strong>. Tu pourras jouer même sans réseau.</p>
     <button type="button">OK</button>
   </div>
+  <button type="button" class="daily-peek" aria-label="Voir les quêtes du jour" hidden>
+    <span class="daily-peek-top"><span>LE CAP DU JOUR</span><b class="daily-peek-count"></b></span>
+    <span class="daily-peek-title"></span>
+    <span class="daily-peek-track"><i></i></span>
+    <span class="daily-peek-foot"><span>3 quêtes · un écrin en bonus</span><span>Voir ›</span></span>
+  </button>
   <div class="tide" hidden>
     <h2>La marée remonte…</h2>
     <p class="tide-countdown" aria-live="polite"></p>
@@ -68,6 +77,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
   const coach = root.querySelector<HTMLElement>('.coach')!;
   const ghost = root.querySelector<HTMLElement>('.ghost-thumb')!;
   const installHint = root.querySelector<HTMLElement>('.install-hint')!;
+  const dailyPeek = root.querySelector<HTMLButtonElement>('.daily-peek')!;
   const tide = root.querySelector<HTMLElement>('.tide')!;
   const tideCountdown = root.querySelector<HTMLElement>('.tide-countdown')!;
   /** Stock vide : on attend la marée. */
@@ -98,6 +108,15 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
   let step = 0;
   let lastInteraction = performance.now();
   const timers: number[] = [];
+  let questPeekPlayer = ctx.player;
+  let questPeekDay = '';
+  let questPeekHidden: boolean | null = null;
+
+  for (const type of ['pointerdown', 'pointerup'] as const) dailyPeek.addEventListener(type, (event) => event.stopPropagation());
+  dailyPeek.addEventListener('click', (event) => {
+    event.stopPropagation();
+    openQuestsSheet(ctx);
+  });
 
   // ---------- Geste ----------
 
@@ -372,8 +391,48 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
     else tideCountdown.textContent = wait === null ? '' : formatDuration(wait);
   }
 
+  function renderQuestPeek(): void {
+    const hidden = waiting || busy || engine.phase !== 'closed' || isInTutorial(step);
+    if (hidden) {
+      if (questPeekHidden !== true) dailyPeek.hidden = true;
+      questPeekHidden = true;
+      return;
+    }
+    const now = Date.now();
+    const day = dayKey(now);
+    if (questPeekHidden === false && questPeekPlayer === ctx.player && questPeekDay === day) return;
+    const daily = currentQuests(ctx.player, now, ctx.tuning);
+    if (!daily) {
+      dailyPeek.hidden = true;
+      questPeekPlayer = ctx.player;
+      questPeekDay = day;
+      questPeekHidden = true;
+      return;
+    }
+    const claimable = daily.quests.find(isClaimable);
+    const next = claimable ?? daily.quests.find((quest) => !quest.claimed) ?? null;
+    const completed = daily.quests.filter((quest) => quest.claimed || isComplete(quest)).length;
+    const title = daily.quests.every((quest) => quest.claimed)
+      ? 'Toutes les récompenses sont récupérées'
+      : claimable
+        ? `Récompense prête · ${questText(claimable)}`
+        : next
+          ? questText(next)
+          : 'Tes trois quêtes sont terminées';
+    const progress = next ? Math.round((next.progress / next.goal) * 100) : 100;
+    dailyPeek.querySelector('.daily-peek-count')!.textContent = `${completed}/${daily.quests.length}`;
+    dailyPeek.querySelector('.daily-peek-title')!.textContent = title;
+    dailyPeek.querySelector<HTMLElement>('.daily-peek-track i')!.style.width = `${progress}%`;
+    dailyPeek.classList.toggle('ready', Boolean(claimable));
+    dailyPeek.hidden = false;
+    questPeekPlayer = ctx.player;
+    questPeekDay = day;
+    questPeekHidden = false;
+  }
+
   function renderDock(): void {
     renderStock();
+    renderQuestPeek();
     if (waiting) {
       message.textContent = '';
       coach.hidden = true;

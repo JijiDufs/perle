@@ -32,7 +32,32 @@ function polygon(c: Ctx, points: Point[]): void {
   c.closePath();
 }
 
-/** Pierre taillée (8 facettes) ou « bonbon » pour le toc. */
+function gemOutline(x: number, y: number, r: number, col: string): Point[] {
+  const color = col.toLowerCase();
+  if (color === '#13a36b') {
+    // Taille émeraude : table rectangulaire, coins étagés.
+    return [[-.55, -1], [.55, -1], [.84, -.7], [.84, .7], [.55, 1], [-.55, 1], [-.84, .7], [-.84, -.7]]
+      .map(([px, py]) => [x + px * r, y + py * r]);
+  }
+  if (color === '#1f4fd1' || color === '#7f8cff') {
+    // Saphir ovale : couronne plus haute que large.
+    return Array.from({ length: 12 }, (_, i) => {
+      const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
+      return [x + Math.cos(angle) * r * 0.76, y + Math.sin(angle) * r];
+    });
+  }
+  if (color === '#c8102e') {
+    // Rubis poire : pointe vers le bas, épaules rondes.
+    return [[0, -1], [.52, -.68], [.68, -.2], [.54, .34], [0, 1], [-.54, .34], [-.68, -.2], [-.52, -.68]]
+      .map(([px, py]) => [x + px * r, y + py * r]);
+  }
+  return Array.from({ length: 8 }, (_, i) => {
+    const angle = (i / 8) * Math.PI * 2 + Math.PI / 8;
+    return [x + Math.cos(angle) * r, y + Math.sin(angle) * r];
+  });
+}
+
+/** Pierre facettée, avec une taille qui évoque sa couleur, ou « bonbon » pour le toc. */
 export function drawGem(c: Ctx, x: number, y: number, r: number, col: string, candy = false): void {
   c.save();
   if (candy) {
@@ -52,14 +77,9 @@ export function drawGem(c: Ctx, x: number, y: number, r: number, col: string, ca
     c.restore();
     return;
   }
-  const n = 8;
-  const outer: Point[] = [];
-  const table: Point[] = [];
-  for (let i = 0; i < n; i++) {
-    const a = (i / n) * Math.PI * 2 + Math.PI / 8;
-    outer.push([x + Math.cos(a) * r, y + Math.sin(a) * r]);
-    table.push([x + Math.cos(a) * r * 0.55, y + Math.sin(a) * r * 0.55]);
-  }
+  const outer = gemOutline(x, y, r, col);
+  const table = gemOutline(x, y, r * 0.53, col);
+  const n = outer.length;
   const g = c.createRadialGradient(x - r * 0.2, y - r * 0.2, r * 0.1, x, y, r * 1.05);
   g.addColorStop(0, lighten(col, 0.4));
   g.addColorStop(0.6, col);
@@ -69,8 +89,17 @@ export function drawGem(c: Ctx, x: number, y: number, r: number, col: string, ca
   c.fill();
   for (let i = 0; i < n; i++) {
     polygon(c, [outer[i], outer[(i + 1) % n], table[(i + 1) % n], table[i]]);
-    c.fillStyle = i % 2 ? 'rgba(255,255,255,.18)' : 'rgba(0,0,0,.16)';
+    c.fillStyle = i % 3 === 0 ? 'rgba(255,255,255,.28)' : i % 2 ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.18)';
     c.fill();
+  }
+  // Lignes de taille au cœur : elles donnent un reflet net même sur les petites cartes.
+  c.strokeStyle = 'rgba(255,255,255,.24)';
+  c.lineWidth = Math.max(0.7, r * 0.025);
+  for (let i = 0; i < n; i += 2) {
+    c.beginPath();
+    c.moveTo(...outer[i]);
+    c.lineTo(...table[i]);
+    c.stroke();
   }
   polygon(c, table);
   c.globalAlpha = 0.7;
@@ -110,11 +139,17 @@ function pearlDot(c: Ctx, x: number, y: number, r: number, color = '#f2ece4'): v
 }
 
 function prongs(c: Ctx, x: number, y: number, r: number, col: string, s: number): void {
-  c.fillStyle = metalGradient(c, x - r, y - r, x + r, y + r, col);
+  const finish = metalGradient(c, x - r, y - r, x + r, y + r, col);
+  c.strokeStyle = finish;
+  c.lineWidth = Math.max(0.8, 3 * s);
+  c.beginPath();
+  c.arc(x, y, r * 1.08, 0, Math.PI * 2);
+  c.stroke();
+  c.fillStyle = finish;
   [0.25, 0.75, 1.25, 1.75].forEach((k) => {
     const a = k * Math.PI;
     c.beginPath();
-    c.arc(x + Math.cos(a) * r * 0.95, y + Math.sin(a) * r * 0.95, 4.5 * s, 0, Math.PI * 2);
+    c.arc(x + Math.cos(a) * r * 1.08, y + Math.sin(a) * r * 1.08, Math.max(1, 4.5 * s), 0, Math.PI * 2);
     c.fill();
   });
 }

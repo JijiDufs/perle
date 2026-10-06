@@ -3,9 +3,9 @@ import { drawHouse } from '../../art/house';
 import { jewelCanvas } from '../../art/jewel';
 import { pearlCanvas } from '../../art/pearl';
 import { pearlById } from '../../core/catalog';
-import { CHAPTERS, houseStageName, isChapterUnlocked, NEXT_CHAPTER_LEVEL, readChapter, restoredFeatures, type Chapter, type HouseFeature } from '../../core/house';
+import { CHAPTERS, houseStageName, isChapterUnlocked, NEXT_CHAPTER_LEVEL, readChapter, restoredFeatures, unreadChapters, type Chapter, type HouseFeature } from '../../core/house';
 import { jewelRarity, jewelVariant, withVariant } from '../../core/jewels';
-import { levelFromXp, rankForLevel } from '../../core/levels';
+import { levelFromXp, rankForLevel, xpToNext } from '../../core/levels';
 import { track } from '../../platform/analytics';
 import { chimeNotes } from '../../platform/audio';
 import { hapticBurst } from '../../platform/haptics';
@@ -17,20 +17,37 @@ import type { AppContext } from '../context';
 /** Durée de l'éclat quand un élément est restauré (ms). */
 const APPEAR_MS = 1600;
 
-/** La plus belle pièce du joueur, dessinée pour la vitrine. */
-function showcase(ctx: AppContext): HTMLCanvasElement | null {
+interface ShowcasePiece {
+  art: HTMLCanvasElement | null;
+  title: string;
+  detail: string;
+}
+
+/** La plus belle pièce du joueur, dessinée pour la vitrine et sa fiche. */
+function showcase(ctx: AppContext): ShowcasePiece {
   const crafted = [...ctx.player.craftedCards].sort((a, b) => b.value - a.value)[0];
   const bestJewel = [...ctx.player.jewelCards].sort((a, b) => b.value - a.value)[0];
   if (crafted && (!bestJewel || crafted.value >= bestJewel.value)) {
-    return jewelCanvas(craftedJewel({ name: crafted.name, type: crafted.type, metal: crafted.metal }, crafted.pearlColors), '#fff1d6', 160);
+    return {
+      art: jewelCanvas(craftedJewel({ name: crafted.name, type: crafted.type, metal: crafted.metal }, crafted.pearlColors), '#fff1d6', 160),
+      title: crafted.name,
+      detail: `Création maison · ${'★'.repeat(crafted.stars)}${'☆'.repeat(5 - crafted.stars)}`,
+    };
   }
   const jewel = [...ctx.player.jewelCards].sort((a, b) => b.value - a.value)[0];
   if (jewel) {
     const glow = jewel.variant ? jewelVariant(jewel.variant).glow : jewelRarity(jewel.jewel.rarityId).glow;
-    return jewelCanvas(withVariant(jewel.jewel, jewel.variant), glow, 160);
+    const variant = jewel.variant ? ` · ${jewelVariant(jewel.variant).label}` : '';
+    return {
+      art: jewelCanvas(withVariant(jewel.jewel, jewel.variant), glow, 160),
+      title: jewel.jewel.name,
+      detail: `${jewelRarity(jewel.jewel.rarityId).label}${variant} · n° ${String(jewel.serial).padStart(4, '0')}`,
+    };
   }
   const pearl = [...ctx.player.cards].sort((a, b) => b.value - a.value)[0];
-  return pearl ? pearlCanvas(pearlById(pearl.pearlId), 160, pearl.cracked, 0.3) : null;
+  return pearl
+    ? { art: pearlCanvas(pearlById(pearl.pearlId), 160, pearl.cracked, 0.3), title: pearlById(pearl.pearlId).name, detail: `Perle n° ${String(pearl.serial).padStart(4, '0')} · ${pearl.sizeMm.toFixed(1)} mm` }
+    : { art: null, title: 'Ta première trouvaille', detail: 'Elle attend sa place dans la vitrine.' };
 }
 
 export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void {
@@ -40,7 +57,9 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
       <canvas aria-label="La Maison de grand-mère Rose"></canvas>
       <div class="house-title"><p class="house-kicker"></p><h2></h2></div>
     </section>
+    <section class="house-return" aria-live="polite"></section>
     <section class="house-atelier"></section>
+    <section class="house-showcase" hidden></section>
     <section class="house-letters">
       <h3 class="section-title">Le carnet de grand-mère Rose</h3>
       <p class="muted house-intro">Chaque lettre lue redonne vie à un coin de la Maison.</p>
@@ -70,7 +89,7 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
       else appear = { feature: appearing.feature, progress };
     }
     // Pendant l'éclat, l'élément restauré apparaît déjà (il est dans l'état).
-    drawHouse(c, width, height, { restored: restoredFeatures(ctx.player), showcase: art, appearing: appear }, now);
+    drawHouse(c, width, height, { restored: restoredFeatures(ctx.player), showcase: art.art, appearing: appear }, now);
     frame = requestAnimationFrame(loop);
   }
 
@@ -78,6 +97,53 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
     const level = levelFromXp(ctx.player.reputation, ctx.tuning).level;
     root.querySelector('.house-kicker')!.textContent = `${rankForLevel(level).title} · niveau ${level}`;
     root.querySelector('.house-title h2')!.textContent = houseStageName(level);
+  }
+
+  function renderReturn(): void {
+    const target = root.querySelector<HTMLElement>('.house-return')!;
+    const level = levelFromXp(ctx.player.reputation, ctx.tuning).level;
+    const unread = unreadChapters(ctx.player, ctx.tuning);
+    const nextChapter = CHAPTERS.find((chapter) => !ctx.player.chaptersRead.includes(chapter.id));
+    const readCount = CHAPTERS.filter((chapter) => ctx.player.chaptersRead.includes(chapter.id)).length;
+    if (unread.length > 0) {
+      const chapter = unread[0];
+      target.innerHTML = `
+        <article class="house-goal house-goal-ready">
+          <div class="house-goal-copy"><p class="house-section-kicker">${unread.length > 1 ? `${unread.length} LETTRES À LIRE` : 'UNE LETTRE T’ATTEND'}</p>
+            <h3>${chapter.title}</h3><p>${chapter.restoresLabel} reprend vie dans la Maison.</p></div>
+          <button type="button" class="house-goal-action" data-chapter="${chapter.id}">Lire la lettre <span aria-hidden="true">↗</span></button>
+          <small class="house-goal-progress">Carnet de Rose · ${readCount}/${CHAPTERS.length} souvenirs</small>
+        </article>`;
+      return;
+    }
+
+    const targetLevel = nextChapter?.level ?? NEXT_CHAPTER_LEVEL;
+    const targetXp = Array.from({ length: Math.max(0, targetLevel - 1) }, (_, index) => xpToNext(index + 1, ctx.tuning)).reduce((sum, xp) => sum + xp, 0);
+    const progress = targetXp ? Math.min(100, Math.round((ctx.player.reputation / targetXp) * 100)) : 100;
+    const levelsLeft = Math.max(0, targetLevel - level);
+    target.innerHTML = `
+      <article class="house-goal">
+        <div class="house-goal-copy"><p class="house-section-kicker">${nextChapter ? `PROCHAIN SOUVENIR · NIVEAU ${targetLevel}` : `LA SUITE · NIVEAU ${NEXT_CHAPTER_LEVEL}`}</p>
+          <h3>${nextChapter?.title ?? 'La suite de l’histoire'}</h3>
+          <p>${nextChapter ? `${nextChapter.restoresLabel} attend la prochaine lettre.` : 'Rose a laissé une dernière piste dans le carnet.'}</p></div>
+        <div class="house-goal-meter" role="progressbar" aria-label="Progression vers la prochaine lettre" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><i style="width:${progress}%"></i></div>
+        <small class="house-goal-progress">${levelsLeft ? `${levelsLeft} niveau${levelsLeft > 1 ? 'x' : ''} avant le prochain souvenir` : 'La prochaine lettre est presque là'} · ${readCount}/${CHAPTERS.length} lus</small>
+      </article>`;
+  }
+
+  function renderShowcase(): void {
+    const section = root.querySelector<HTMLElement>('.house-showcase')!;
+    if (!restoredFeatures(ctx.player).has('vitrine')) {
+      section.hidden = true;
+      return;
+    }
+    section.hidden = false;
+    section.innerHTML = `
+      <div class="house-showcase-head"><p class="house-section-kicker">VITRINE DE LA MAISON</p><h3>Ta pièce maîtresse</h3>
+        <p class="house-showcase-name">${art.title}</p><p>${art.detail}</p></div>
+      <div class="house-showcase-piece" aria-label="${art.title}"></div>
+      <button type="button" class="house-showcase-link" data-action="collection">Voir dans la collection <span aria-hidden="true">→</span></button>`;
+    if (art.art) section.querySelector('.house-showcase-piece')!.append(art.art);
   }
 
   function renderLetters(): void {
@@ -135,6 +201,8 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
       chimeNotes('normal', 2);
       hapticBurst(3, 90);
       renderHeader();
+      renderReturn();
+      renderShowcase();
       renderLetters();
       window.setTimeout(() => ctx.showRewards(), APPEAR_MS);
     });
@@ -143,9 +211,15 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
   }
 
   root.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('[data-action="collection"]')) {
+      track('house_showcase_opened', {});
+      ctx.goTo('collection');
+      return;
+    }
     if ((event.target as HTMLElement).closest('[data-action="atelier"]')) {
       openAtelier(ctx, () => {
         art = showcase(ctx);
+        renderShowcase();
         renderAtelier();
         renderLetters();
         renderHeader();
@@ -161,7 +235,9 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
   observer.observe(canvas);
   resize();
   renderHeader();
+  renderReturn();
   renderAtelier();
+  renderShowcase();
   renderLetters();
   frame = requestAnimationFrame(loop);
   return () => {

@@ -137,6 +137,11 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
 
   function mount(): void {
     const shelf = currentShelf();
+    const discovered = shelf.entries.filter((entry) => entry.count > 0).length;
+    const missing = shelf.entries.length - discovered;
+    const percent = shelf.entries.length ? Math.round((discovered / shelf.entries.length) * 100) : 0;
+    const collectionTitle = kind === 'pearls' ? 'Carnet de la Crique' : kind === 'jewels' ? 'Galerie des écrins' : 'Carnet de l’atelier';
+    const returnLabel = kind === 'pearls' ? 'Retourner pêcher' : kind === 'jewels' ? 'Ouvrir un écrin' : 'Revenir à la Maison';
     root.innerHTML = `
       <div class="tabs kind-tabs" role="group" aria-label="Type de collection">
         <button data-kind="pearls">Perles</button>
@@ -151,9 +156,15 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
           <span class="dust-cta">Fondre · Acheter</span>
         </button>
       </header>
+      <section class="collection-journey" aria-label="Progression de la collection">
+        <div class="collection-journey-copy"><p class="collection-kicker">${collectionTitle}</p><b>${discovered} <span>/ ${shelf.entries.length}</span></b><small>${missing ? `${missing} découverte${missing > 1 ? 's' : ''} encore cachée${missing > 1 ? 's' : ''}` : 'Collection complète'}</small></div>
+        <div class="collection-journey-meter" role="progressbar" aria-label="Pièces de la collection découvertes" aria-valuemin="0" aria-valuemax="${shelf.entries.length}" aria-valuenow="${discovered}"><i style="width:${percent}%"></i></div>
+        <button type="button" class="collection-return" data-action="continue-loop">${returnLabel}<span aria-hidden="true">→</span></button>
+      </section>
+      <div class="collection-section-label"><span>Atlas des découvertes</span><small>Touche une pièce pour filtrer</small></div>
       <section class="encyclopedia" aria-label="Encyclopédie"></section>
       <div class="cards-toolbar">
-        <h3 class="section-title">Mes cartes <span class="cards-count"></span></h3>
+        <h3 class="section-title">Mes pièces <span class="cards-count"></span></h3>
         <div class="tabs sort-tabs" role="group" aria-label="Trier les cartes">
           ${SORTS.map((s) => `<button data-sort="${s.id}">${s.label}</button>`).join('')}
         </div>
@@ -277,6 +288,11 @@ export function mountCollectionScreen(root: HTMLElement, ctx: AppContext): () =>
           openCard(card.serial);
         },
       });
+      return;
+    } else if (target.closest('[data-action="continue-loop"]')) {
+      const screen = kind === 'pearls' ? 'oyster' : kind === 'jewels' ? 'ecrin' : 'house';
+      track('collection_continue_clicked', { kind, screen });
+      ctx.goTo(screen);
       return;
     } else if (target.closest('[data-action="clear-filter"]')) {
       filter = null;

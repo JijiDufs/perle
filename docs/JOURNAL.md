@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-06 · Codex · branche `jules/codex-retention-maison`
+
+Passe UX / rétention et rendu procédural des objets, en conservant la direction « lagon lumineux + luxe ».
+
+**Fait**
+- Pêche : aperçu de la prochaine quête du jour sous la barre de ressources, avec son avancement et un accès direct à la fiche des quêtes. L’aperçu se masque pendant le tutoriel, un geste ou une révélation.
+- Collection : progression unique Perles / Bijoux / Créations, atlas séparé des cartes possédées, et raccourci vers l’action correspondante.
+- Maison : prochaine lettre ou prochain niveau mis en avant, vitrine UI de la pièce maîtresse quand elle est restaurée ; façade enrichie en bois flotté, bardeaux irréguliers, reflets et détails plus doux.
+- Objets : formes et irisations plus différenciées pour les perles ; saphir, émeraude et rubis ont maintenant des tailles distinctes, avec un serti plus détaillé.
+- Nouveaux événements analytics pour mesurer l’usage des nouveaux raccourcis. Aucun changement aux règles, probabilités ou valeurs.
+
+**Fragile / à reprendre**
+- Rendu procédural à valider sur iPhone réel (notamment les performances du Canvas en continu et la lisibilité aux petites tailles).
+- Le contenu de la table de tirage reste celui de la V1 ; toute extension de catalogue demandera son équilibrage et une décision distincte.
+
+**Vérification**
+- `npm test` : 15 fichiers, 127 tests passés.
+- `npm run build` : TypeScript et build Vite réussis.
+
 ## 2026-10-05 (22) · Jules · Claude Code · branche `jules/refonte-visuelle`
 
 Refonte visuelle, 1re passe : décors détaillés et design général. Direction choisie par Jules : tout en code animé, « lagon lumineux + luxe ».

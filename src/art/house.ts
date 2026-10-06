@@ -32,10 +32,10 @@ interface Layout {
 }
 
 function layout(w: number, h: number): Layout {
-  const cx = w * 0.56;
+  const cx = w * 0.59;
   const ground = h * 0.74;
-  const wallH = Math.min(h * 0.3, w * 0.42);
-  const wallW = Math.min(w * 0.58, h * 0.8);
+  const wallH = Math.min(h * 0.33, w * 0.45);
+  const wallW = Math.min(w * 0.68, h * 0.82);
   const x0 = cx - wallW / 2;
   const x1 = cx + wallW / 2;
   const wallTop = ground - wallH;
@@ -153,12 +153,14 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
   const beam = (Math.sin(t / 900) + 1) / 2;
   glow(c, lhx, lhy - h * 0.072, w * (0.03 + 0.06 * beam), '#fff1c4', 0.35 + 0.5 * beam);
 
-  // Mer.
+  // Mer lumineuse : l'eau garde les bleus profonds de la Maison, avec un reflet lagon sous l'horizon.
   const sea = c.createLinearGradient(0, l.horizon, 0, h);
-  sea.addColorStop(0, '#20414a');
+  sea.addColorStop(0, '#28616a');
+  sea.addColorStop(0.28, '#173b4a');
   sea.addColorStop(1, '#06121a');
   c.fillStyle = sea;
   c.fillRect(0, l.horizon, w, h - l.horizon);
+  glow(c, w * 0.62, l.horizon + h * 0.08, w * 0.44, '#68d4c4', 0.09);
   c.strokeStyle = 'rgba(207, 230, 255, 0.12)';
   c.lineWidth = 1;
   for (let i = 0; i < 9; i++) {
@@ -172,6 +174,24 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
     }
     c.stroke();
   }
+  // Reflets en écaille et caustiques sous le ponton.
+  c.save();
+  c.globalAlpha = 0.25;
+  c.strokeStyle = '#9fe2d3';
+  c.lineWidth = 1;
+  for (let row = 0; row < 5; row++) {
+    const y = l.horizon + (h - l.horizon) * (0.18 + row * 0.15);
+    const span = w * (0.08 + row * 0.11);
+    const center = w * (0.57 + Math.sin(t / 2400 + row) * 0.08);
+    for (let col = -2; col <= 2; col++) {
+      const x = center + col * span * 0.44;
+      const r = span * 0.2;
+      c.beginPath();
+      c.arc(x, y, r, Math.PI * 1.08, Math.PI * 1.92);
+      c.stroke();
+    }
+  }
+  c.restore();
   // Reflet de la lune : une colonne de petits traits qui scintillent sur l'eau.
   glow(c, w * 0.18, l.horizon + (h - l.horizon) * 0.35, w * 0.12, '#cfe6ff', 0.08);
   for (let i = 0; i < 14; i++) {
@@ -182,16 +202,38 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
     c.fillRect(w * 0.18 - width / 2 + Math.sin(t / 700 + i) * 3, y, width, 1.5);
   }
 
-  // Ponton.
-  c.fillStyle = '#3a2c22';
-  c.fillRect(0, l.ground, w, h * 0.035);
-  c.fillStyle = '#2a1f18';
-  for (let x = 6; x < w; x += w / 9) c.fillRect(x, l.ground + h * 0.035, w * 0.018, h - l.ground);
-  c.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+  // Ponton : large platelage au premier plan, lames usées et reflets de marée.
+  const dockTop = l.ground;
+  const dockLip = dockTop + h * 0.035;
+  const dock = c.createLinearGradient(0, dockTop, 0, dockLip);
+  dock.addColorStop(0, '#725a43');
+  dock.addColorStop(0.22, '#48392f');
+  dock.addColorStop(1, '#201c1c');
+  c.fillStyle = dock;
+  c.fillRect(0, dockTop, w, h * 0.035);
+  c.strokeStyle = 'rgba(232, 202, 144, 0.24)';
+  c.lineWidth = 1;
+  for (let x = -w * 0.04; x < w * 1.04; x += w / 7) {
+    c.beginPath();
+    c.moveTo(x, dockTop + 2);
+    c.lineTo(x + w * 0.015, dockLip - 2);
+    c.stroke();
+  }
+  c.fillStyle = '#332720';
+  for (let x = 6; x < w; x += w / 9) {
+    c.beginPath();
+    c.moveTo(x, dockLip);
+    c.lineTo(x + w * 0.018, dockLip);
+    c.lineTo(x + w * 0.045, h);
+    c.lineTo(x - w * 0.018, h);
+    c.closePath();
+    c.fill();
+  }
+  c.strokeStyle = 'rgba(0, 0, 0, 0.36)';
   for (let x = 0; x < w; x += w / 22) {
     c.beginPath();
-    c.moveTo(x, l.ground);
-    c.lineTo(x, l.ground + h * 0.035);
+    c.moveTo(x, dockTop);
+    c.lineTo(x, dockLip);
     c.stroke();
   }
 
@@ -208,27 +250,142 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
     }
   }
 
-  // Murs en planches.
-  c.fillStyle = has('door') ? '#6a4f3b' : '#4a3b31';
+  // Ombre portée sur la mer, puis le côté de la cabane : la façade gagne en volume.
+  c.fillStyle = 'rgba(3, 8, 12, 0.38)';
+  c.beginPath();
+  c.moveTo(l.x0 - w * 0.04, l.ground + 2);
+  c.lineTo(l.x1 + w * 0.12, l.ground + 2);
+  c.lineTo(l.x1 + w * 0.2, l.ground + h * 0.025);
+  c.lineTo(l.x0 + w * 0.04, l.ground + h * 0.025);
+  c.closePath();
+  c.fill();
+
+  c.fillStyle = '#302c30';
+  c.beginPath();
+  c.moveTo(l.x1, l.wallTop + h * 0.035);
+  c.lineTo(l.x1 + w * 0.095, l.wallTop - h * 0.02);
+  c.lineTo(l.x1 + w * 0.095, l.ground);
+  c.lineTo(l.x1, l.ground);
+  c.closePath();
+  c.fill();
+
+  // Planches de bois flotté : veines verticales souples, quelques nœuds, sans quadrillage.
+  const wall = c.createLinearGradient(l.x0, l.wallTop, l.x1, l.ground);
+  wall.addColorStop(0, has('door') ? '#84674c' : '#655346');
+  wall.addColorStop(0.48, has('door') ? '#71563f' : '#51453c');
+  wall.addColorStop(1, '#342e2d');
+  c.fillStyle = wall;
   c.fillRect(l.x0, l.wallTop, l.x1 - l.x0, l.ground - l.wallTop);
-  c.strokeStyle = 'rgba(0, 0, 0, 0.28)';
-  c.lineWidth = 1.2;
-  for (let x = l.x0; x < l.x1; x += (l.x1 - l.x0) / 14) {
+  c.save();
+  c.beginPath();
+  c.rect(l.x0, l.wallTop, l.x1 - l.x0, l.ground - l.wallTop);
+  c.clip();
+  const plankCount = 9;
+  c.lineWidth = 1;
+  for (let i = 1; i < plankCount; i++) {
+    const x = l.x0 + (l.x1 - l.x0) * i / plankCount;
+    const bow = Math.sin(i * 2.1) * (l.x1 - l.x0) * 0.006;
+    c.strokeStyle = 'rgba(24, 20, 19, 0.23)';
     c.beginPath();
     c.moveTo(x, l.wallTop);
-    c.lineTo(x, l.ground);
+    c.quadraticCurveTo(x + bow, (l.wallTop + l.ground) / 2, x - bow * 0.5, l.ground);
     c.stroke();
   }
+  for (let i = 0; i < 24; i++) {
+    const plank = i % plankCount;
+    const x = l.x0 + (l.x1 - l.x0) * (plank + 0.18 + ((i * 17) % 61) / 100) / plankCount;
+    const y0 = l.wallTop + (0.08 + ((i * 29) % 73) / 100) * (l.ground - l.wallTop);
+    const length = (0.04 + ((i * 13) % 19) / 100) * (l.ground - l.wallTop);
+    c.strokeStyle = i % 3 === 0 ? 'rgba(246, 212, 162, 0.14)' : 'rgba(29, 23, 21, 0.12)';
+    c.beginPath();
+    c.moveTo(x, y0);
+    c.quadraticCurveTo(x + Math.sin(i) * 2, y0 + length * 0.5, x + Math.cos(i * 0.7) * 2, y0 + length);
+    c.stroke();
+  }
+  // Quelques nœuds discrets, chacun suivi d'un trait de fil du bois.
+  for (const [nx, ny, scale] of [[0.2, 0.34, 1], [0.82, 0.67, 0.72], [0.44, 0.82, 0.54]]) {
+    const x = l.x0 + (l.x1 - l.x0) * nx;
+    const y = l.wallTop + (l.ground - l.wallTop) * ny;
+    c.strokeStyle = 'rgba(35, 25, 21, 0.23)';
+    c.lineWidth = 1;
+    c.beginPath();
+    c.ellipse(x, y, (l.x1 - l.x0) * 0.012 * scale, (l.ground - l.wallTop) * 0.026 * scale, -0.14, 0, Math.PI * 2);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(x, y - (l.ground - l.wallTop) * 0.05 * scale);
+    c.quadraticCurveTo(x + 4 * scale, y, x, y + (l.ground - l.wallTop) * 0.05 * scale);
+    c.stroke();
+  }
+  c.restore();
+  // Poutres d'angle et moulure, lustrées par les années de sel.
+  const beamW = (l.x1 - l.x0) * 0.035;
+  const woodBeam = c.createLinearGradient(l.x0, 0, l.x0 + beamW, 0);
+  woodBeam.addColorStop(0, '#332d2b');
+  woodBeam.addColorStop(0.52, '#766049');
+  woodBeam.addColorStop(1, '#342d2a');
+  c.fillStyle = woodBeam;
+  c.fillRect(l.x0, l.wallTop, beamW, l.ground - l.wallTop);
+  c.fillRect(l.x1 - beamW, l.wallTop, beamW, l.ground - l.wallTop);
+  c.fillStyle = '#a78258';
+  c.fillRect(l.x0 - 2, l.ground - h * 0.018, l.x1 - l.x0 + 4, h * 0.018);
+  c.fillStyle = 'rgba(255, 230, 185, 0.24)';
+  c.fillRect(l.x0, l.ground - h * 0.018, l.x1 - l.x0, 1.2);
 
-  // Toit.
-  c.fillStyle = '#23222b';
+  // Toit de bardeaux, souligné d'un fin filet cuivré.
+  const roofPeak = l.wallTop - (l.ground - l.wallTop) * 0.62;
+  c.fillStyle = '#171f29';
+  c.beginPath();
+  c.moveTo(l.cx, roofPeak - h * 0.012);
+  c.lineTo(l.x1 + w * 0.13, l.wallTop - h * 0.015);
+  c.lineTo(l.x1 + w * 0.13, l.wallTop + h * 0.02);
+  c.lineTo(l.x1 + w * 0.05, l.wallTop + h * 0.025);
+  c.closePath();
+  c.fill();
+  const roof = c.createLinearGradient(0, roofPeak, 0, l.wallTop);
+  roof.addColorStop(0, '#40505b');
+  roof.addColorStop(0.45, '#293641');
+  roof.addColorStop(1, '#191f27');
+  c.fillStyle = roof;
   c.beginPath();
   c.moveTo(l.x0 - w * 0.05, l.wallTop + 2);
-  c.lineTo(l.cx, l.wallTop - (l.ground - l.wallTop) * 0.62);
+  c.lineTo(l.cx, roofPeak);
   c.lineTo(l.x1 + w * 0.05, l.wallTop + 2);
   c.closePath();
   c.fill();
-  c.strokeStyle = 'rgba(232, 241, 240, 0.08)';
+  c.save();
+  c.clip();
+  c.strokeStyle = 'rgba(224, 211, 184, 0.2)';
+  c.lineWidth = 1.2;
+  const roofHeight = l.wallTop - roofPeak;
+  for (let row = 1; row < 6; row++) {
+    const y = roofPeak + roofHeight * row / 6;
+    const half = (l.x1 - l.x0) * 0.5 * row / 6;
+    c.beginPath();
+    c.moveTo(l.cx - half - 8, y);
+    c.quadraticCurveTo(l.cx, y + h * 0.018, l.cx + half + 8, y);
+    c.stroke();
+  }
+  // Éclats épars sur les bardeaux, sans coutures qui se rejoignent en quadrillage.
+  c.strokeStyle = 'rgba(245, 225, 186, 0.14)';
+  c.lineWidth = 1;
+  for (let i = 0; i < 28; i++) {
+    const depth = 0.1 + ((i * 37) % 82) / 100;
+    const half = (l.x1 - l.x0) * 0.5 * depth;
+    const x = l.cx + (((i * 53) % 97) / 48 - 1) * half;
+    const y = roofPeak + roofHeight * depth;
+    c.beginPath();
+    c.moveTo(x, y);
+    c.quadraticCurveTo(x + 2, y + 1, x + 5, y - 1);
+    c.stroke();
+  }
+  c.restore();
+  c.strokeStyle = 'rgba(232, 198, 137, 0.5)';
+  c.lineWidth = 1.5;
+  c.stroke();
+  c.beginPath();
+  c.moveTo(l.x0 - w * 0.05, l.wallTop + 2);
+  c.lineTo(l.cx, roofPeak);
+  c.lineTo(l.x1 + w * 0.05, l.wallTop + 2);
   c.stroke();
 
   // Fenêtre : sale et sombre, ou éclairée avec le carnet (et l'établi).
@@ -321,16 +478,19 @@ export function drawHouse(c: Ctx, w: number, h: number, scene: HouseScene, t: nu
 
   // Enseigne.
   const { sign } = l;
-  c.fillStyle = has('sign') ? '#f2e6cf' : '#5d5a55';
+  const signPaint = c.createLinearGradient(0, sign.y, 0, sign.y + sign.h);
+  signPaint.addColorStop(0, has('sign') ? '#f5e6c8' : '#766c60');
+  signPaint.addColorStop(1, has('sign') ? '#d5bc8c' : '#49443f');
+  c.fillStyle = signPaint;
   c.fillRect(sign.x, sign.y, sign.w, sign.h);
   c.strokeStyle = has('sign') ? '#b88a2a' : '#3e3b37';
   c.lineWidth = 2;
   c.strokeRect(sign.x, sign.y, sign.w, sign.h);
   c.textAlign = 'center';
   c.textBaseline = 'middle';
-  c.font = `${Math.round(sign.h * 0.55)}px ${SERIF}`;
-  c.fillStyle = has('sign') ? '#7a5000' : 'rgba(30, 28, 26, 0.35)';
-  c.fillText(has('sign') ? 'Maison Rose' : 'M  i  o   R  s', sign.x + sign.w / 2, sign.y + sign.h / 2 + 1);
+  c.font = `${Math.round(sign.h * (has('sign') ? 0.48 : 0.4))}px ${SERIF}`;
+  c.fillStyle = has('sign') ? '#7a5000' : 'rgba(30, 28, 26, 0.52)';
+  c.fillText(has('sign') ? 'MAISON ROSE' : 'ROSE', sign.x + sign.w / 2, sign.y + sign.h / 2 + 1);
 
   // Vitrine sur le ponton : bâchée, ou éclairée avec la plus belle pièce.
   const { vitrine } = l;
