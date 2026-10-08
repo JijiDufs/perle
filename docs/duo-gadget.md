@@ -84,11 +84,29 @@ Expertise, achat de pièces manquantes avec la poussière d'or, poussière d'or 
 | **Classification par âge** | Questionnaire rempli honnêtement : récompenses aléatoires, sans argent réel. |
 | **Marques Apple** | Pas de « iPhone » ni « Duo » dans le nom ou l'icône. La description et la page peuvent dire que le jeu est conçu pour l'iPhone Duo, avec la mention de non-affiliation déjà présente sur la page. |
 
-**Interface (Human Interface Guidelines)**
-- **Zones sûres partout** : écran extérieur, écran intérieur, Dynamic Island, barre d'accueil ; passer d'un écran à l'autre sans perdre l'huître en cours.
+**Interface (Human Interface Guidelines, iOS)**
+- **Zones sûres partout** : Dynamic Island, barre d'accueil, et les zones réservées du Duo (ci-dessous).
 - **Accessibilité** : Dynamic Type sur tous les textes ; VoiceOver avec une **action « Ouvrir l'huître »** (un jeu tout en geste doit offrir une autre façon de jouer) ; « Réduire les animations » respecté ; haptique coupée si l'utilisateur l'a désactivée.
 - **Haptique** : Core Haptics quand l'appareil le permet, sinon les retours UIKit standard.
 - Pas de texte ni de bouton dans les zones système, comme déjà dans la webapp.
+
+**Spécifique à l'iPhone Duo** (lu le 2026-10-08 : [Designing for iPhone Duo](https://developer.apple.com/design/human-interface-guidelines/designing-for-iphone-duo) et [Preparing your app for iPhone Duo](https://developer.apple.com/documentation/technologyoverviews/preparing-your-app-for-iphone-duo))
+
+*Ce qu'Apple dit de l'appareil*
+- Deux écrans : l'**extérieur**, plus large et **moins haut** qu'un iPhone habituel (taille « compacte »), et l'**intérieur**, grand (taille « régulière »). Quand on ouvre ou ferme le téléphone, **l'app passe d'un écran à l'autre** et change de taille.
+- **Poses** : à moitié plié comme un livre, posé à plat, debout sur la tranche. On ne dessine pas une mise en page par pose : l'app s'adapte à la taille disponible.
+- **Zones réservées** : la caméra de l'écran extérieur (dans un coin, toujours là), la caméra de l'écran intérieur (seulement quand elle est active) et **le pli**, quand le téléphone est à moitié ouvert (il coupe l'écran intérieur en deux). On les lit avec `ReservedRegion` (SwiftUI).
+- **Barres sur le côté** : sur l'écran extérieur, et sur l'écran intérieur en paysage, les onglets, la barre d'outils et même la barre d'état passent **à la verticale, sur le bord**. C'est automatique avec les composants système.
+- **Jeux** : on peut verrouiller l'orientation, mais il faut **remplir l'écran dans chaque pose**. Changer de proportions plutôt que d'ajouter des bandes noires ; sinon, décorer les bandes. Garder la même taille de texte et de boutons quand l'écran change.
+- Il faut compiler avec **le dernier Xcode** : avec Xcode 26 ou plus ancien, l'app ne s'étend pas sous la barre d'état et la caméra du Duo.
+
+*Ce que ça change pour Pearl Inc.*
+- **Le pli de l'écran = la charnière de l'huître.** À moitié ouvert, l'écran intérieur est coupé en deux par le pli : le couvercle de l'huître sur une moitié, le fond (et la perle) sur l'autre, la charnière de l'huître exactement sur le pli (lu avec `ReservedRegion`). C'est déjà ce que fait le prototype de la page d'inscription. Aucun texte ni bouton sur le pli.
+- **Écran extérieur = l'huître fermée.** On l'y dessine en remplissant tout l'écran (lagon sous la barre latérale, avec l'extension de fond de SwiftUI), en évitant la caméra du coin. C'est là que se voit le skin (le flex, §6 bis).
+- **Onglets du système** (`TabView`) pour Pêche et Collection, **pas une barre maison** comme dans la webapp : ils passeront tout seuls sur le côté. Les boutons de barre ont un symbole **et** un titre.
+- **Rien ne se perd en passant d'un écran à l'autre** : l'huître en cours, l'angle, la carte affichée restent les mêmes. Pas de grand chamboulement de mise en page quand on plie : on déplace seulement ce qui est nécessaire.
+- **La carte de révélation** n'est jamais coupée par le pli : centrée sur une moitié quand le téléphone est à moitié ouvert, au centre quand il est grand ouvert. L'encyclopédie de la collection prend un **nombre pair de colonnes**, pour se couper proprement au pli.
+- **Tester toutes les poses** avec Device Hub dans Xcode (simulateur du Duo), puis sur un vrai Duo.
 
 ## 6. La perle de bienvenue
 
@@ -131,16 +149,21 @@ Ordres de grandeur : un joueur régulier fond environ 100 ✦ par jour une fois 
 
 **À ne pas faire dans la 1.0** : vendre de la poussière d'or contre de l'argent (cela reviendrait à payer pour compléter sa collection), des skins à durée limitée qui forcent l'achat, ou des offres « dernière chance ».
 
-## 7. La charnière : ce qu'il faut vérifier
+## 7. La charnière : ce qu'on sait, ce qu'il faut vérifier
 
-La page d'inscription fixe le comportement voulu : fermé, l'écran extérieur montre la coquille ; on ouvre, la lumière filtre ; ouvert, la carte se révèle ; on referme, l'huître suivante attend. Reste à savoir si iOS le permet. **À vérifier dès la sortie du SDK, puis sur un vrai Duo le 23 octobre :**
+La page d'inscription fixe le comportement voulu : fermé, l'écran extérieur montre la coquille ; on ouvre, la lumière filtre ; ouvert, la carte se révèle ; on referme, l'huître suivante attend.
 
-1. **L'API existe-t-elle, et dans quelle version d'iOS ?** Le cahier parle d'iOS 27.1.
-2. **Que donne-t-elle ?** Un angle continu (idéal) ou seulement « plié / déplié » ? À quelle fréquence ? La zone fragile dépend de la vitesse : il faut au moins 30 mesures par seconde.
-3. **Quel écran est allumé pendant l'ouverture ?** Si l'écran intérieur reste éteint jusqu'au bout, il faut tenir l'huître sur l'écran extérieur pendant le geste, puis faire passer la révélation à l'écran intérieur. **C'est la grande question d'UX.** Si l'angle n'est pas lisible pendant la pliure, il faudra un plan B (par exemple : déplier, puis finir l'ouverture au pouce).
-4. **Plage d'angles réelle** (0–180° ?) et sens de la mesure.
+**Ce que la documentation d'Apple confirme (2026-10-08)**
+- **L'API existe** : [`DeviceHinge`](https://developer.apple.com/documentation/swiftui/devicehinge) en SwiftUI, **iOS 27.1+, encore en bêta**. Elle donne un **angle continu** (`angle`) et un **état** (`status`, calculé par le système d'après l'angle et l'orientation), reçus avec le modificateur `.onHingeChange`. Sur un téléphone sans charnière, il n'y a pas de charnière : on bascule sur le pouce.
+- **Le Xcode installé (26.3, SDK iOS 26.2) ne la contient pas.** Il faut la version d'Xcode qui fournit le SDK iOS 27.1 (bêta pour l'instant). On construit tout le reste avec le pouce en attendant.
 
-Architecture : la charnière est **une source de geste de plus** (invariant n° 2), qui produit des `OpeningSample { angle, time }`. Le moteur ne sait pas d'où vient le geste. Si la charnière est absente, on bascule automatiquement sur le pouce (cahier §3).
+**Encore à vérifier, dans le simulateur du Duo puis sur un vrai Duo**
+1. **Fréquence des mises à jour de l'angle.** La zone fragile dépend de la vitesse : il faut au moins 30 mesures par seconde, sinon lisser ou adapter le seuil de vitesse (`tuning`).
+2. **À quel angle l'app passe de l'écran extérieur à l'écran intérieur**, et si elle reçoit l'angle pendant ce passage. **C'est la grande question d'UX.** Si le début de l'ouverture n'est pas lisible, plan B : la résistance et le « pop » se jouent sur les premiers degrés lisibles, ou l'on finit au pouce.
+3. **Plage d'angles réelle** (0–180° ?), sens de la mesure, et valeurs possibles de `status`.
+4. Comportement quand l'utilisateur **pose le téléphone à moitié ouvert** : l'huître doit rester entrouverte (comme quand on relâche le pouce pendant `opening`).
+
+Architecture : la charnière est **une source de geste de plus** (invariant n° 2). `HingeSource` transforme chaque `DeviceHinge.angle` en `OpeningSample { angle, time }` ; le moteur ne sait pas d'où vient le geste. Sans charnière, on bascule automatiquement sur le pouce (cahier §3).
 
 ## 8. Architecture
 
@@ -201,7 +224,7 @@ La mesure d'usage reste centralisée dans un seul fichier (`Platform/Analytics`)
 
 ## 11. Ce qu'il faut avant de commencer
 
-- [ ] **Xcode** (App Store, gratuit). Pour l'instant, seuls les outils en ligne de commande sont installés sur ce Mac.
+- [x] **Xcode** installé (26.3). Il faudra la version qui fournit iOS 27.1 (bêta) pour la charnière et le plein écran sur le Duo.
 - [ ] **Compte Apple Developer** (99 $/an) : au nom de qui ? Une personne, ou la société MJHstudio (il faut alors un numéro D-U-N-S, compter plusieurs jours). Cela décide du nom du vendeur affiché sur l'App Store.
 - [ ] **Contrat « Apps payantes »** dans App Store Connect, avec les informations bancaires et fiscales : obligatoire pour vendre des skins, et la validation prend du temps. À faire dès que le compte existe.
 - [ ] **Réserver le nom « Pearl Inc. »** sur App Store Connect dès que le compte existe, et vérifier qu'il ne pose pas de problème de marque.

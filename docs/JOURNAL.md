@@ -4,6 +4,19 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite 4) · Jules · Claude Code · branche `jules/duo-gadget`
+
+Lecture des règles d'Apple pour l'iPhone Duo.
+
+**Fait**
+- `docs/duo-gadget.md` §5 : règles de « Designing for iPhone Duo » et « Preparing your app for iPhone Duo » (deux écrans, poses, zones réservées dont le pli, barres sur le côté, jeux qui remplissent l'écran dans chaque pose) et ce qu'elles changent pour Pearl Inc. (le pli = la charnière de l'huître, onglets du système, rien ne se perd entre les écrans).
+- §7 : **l'API de la charnière existe** (`DeviceHinge` en SwiftUI, angle continu + état, `.onHingeChange`, iOS 27.1 bêta). Absente du SDK iOS 26.2 de Xcode 26.3, installé sur le Mac.
+
+**À faire**
+- Installer la version d'Xcode qui fournit iOS 27.1 ; mesurer la fréquence de l'angle et le passage d'un écran à l'autre (simulateur du Duo, Device Hub).
+
+---
+
 ## 2026-10-08 (suite 3) · Jules · Claude Code · branche `jules/duo-gadget`
 
 Image d'aperçu des liens et skins d'huître.
