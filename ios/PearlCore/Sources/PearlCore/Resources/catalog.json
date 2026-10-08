@@ -849,6 +849,177 @@
       }
     ]
   },
+  "raritySymbols": [
+    "—",
+    "◆",
+    "◆◆",
+    "◆◆◆",
+    "★",
+    "★★"
+  ],
+  "economy": {
+    "oysterDustPrice": 20,
+    "goldCoinDust": 5,
+    "missionsPerDay": 3,
+    "missionRewardDust": 5,
+    "missionBonusDust": 10,
+    "boughtPearlLustre": "B",
+    "sellDustByTier": [
+      0,
+      1,
+      2,
+      5,
+      15,
+      40
+    ],
+    "missingPearlPriceByTier": [
+      null,
+      5,
+      10,
+      25,
+      null,
+      null
+    ],
+    "rareMissionTier": 2,
+    "missions": [
+      {
+        "kind": "open",
+        "goals": [
+          5,
+          8
+        ]
+      },
+      {
+        "kind": "lustreA",
+        "goals": [
+          2,
+          3
+        ]
+      },
+      {
+        "kind": "lustreS",
+        "goals": [
+          1
+        ]
+      },
+      {
+        "kind": "rare",
+        "goals": [
+          1
+        ]
+      },
+      {
+        "kind": "noCrack",
+        "goals": [
+          3,
+          5
+        ]
+      },
+      {
+        "kind": "sell",
+        "goals": [
+          1,
+          3
+        ]
+      },
+      {
+        "kind": "share",
+        "goals": [
+          1
+        ]
+      }
+    ],
+    "skins": [
+      {
+        "id": "lagon",
+        "name": "Huître du lagon",
+        "description": "Celle de grand-mère Rose. Rugueuse, fidèle, increvable.",
+        "style": "oyster",
+        "dustPrice": null,
+        "productId": null,
+        "grant": "start",
+        "shellLight": "#8C806C",
+        "shellDark": "#4A4237",
+        "nacreLight": "#FBF7F2",
+        "nacreShade": "#D6CCE6",
+        "rim": null
+      },
+      {
+        "id": "benitier",
+        "name": "Bénitier",
+        "description": "Le coquillage géant des lagons chauds. Il se referme sans prévenir.",
+        "style": "clam",
+        "dustPrice": 2000,
+        "productId": "app.pearlinc.skin.benitier",
+        "grant": null,
+        "shellLight": "#F1EBDD",
+        "shellDark": "#B9AE97",
+        "nacreLight": "#7FE3D6",
+        "nacreShade": "#1E6F86",
+        "rim": null
+      },
+      {
+        "id": "premiere-maree",
+        "name": "Première marée",
+        "description": "Pour celles et ceux qui étaient là avant tout le monde.",
+        "style": "oyster",
+        "dustPrice": null,
+        "productId": null,
+        "grant": "signup",
+        "shellLight": "#E9DDC3",
+        "shellDark": "#A8977A",
+        "nacreLight": "#FFFFFF",
+        "nacreShade": "#CFE6EE",
+        "rim": "#D9E2EA"
+      },
+      {
+        "id": "or",
+        "name": "Huître d’or",
+        "description": "Or martelé, nacre champagne. Elle ne passe pas inaperçue, c’est le but.",
+        "style": "gold",
+        "dustPrice": null,
+        "productId": "app.pearlinc.skin.or",
+        "grant": null,
+        "shellLight": "#F6D77A",
+        "shellDark": "#A8771F",
+        "nacreLight": "#FFF6DF",
+        "nacreShade": "#E7CF9F",
+        "rim": "#FFE9A8"
+      }
+    ],
+    "consumables": [
+      {
+        "id": "app.pearlinc.oysters.10",
+        "name": "Marée haute",
+        "oysters": 10,
+        "dust": 0
+      },
+      {
+        "id": "app.pearlinc.oysters.30",
+        "name": "Grande marée",
+        "oysters": 30,
+        "dust": 0
+      },
+      {
+        "id": "app.pearlinc.dust.400",
+        "name": "Bourse de poussière d’or",
+        "oysters": 0,
+        "dust": 400
+      },
+      {
+        "id": "app.pearlinc.dust.1200",
+        "name": "Coffret de poussière d’or",
+        "oysters": 0,
+        "dust": 1200
+      },
+      {
+        "id": "app.pearlinc.dust.3000",
+        "name": "Malle de poussière d’or",
+        "oysters": 0,
+        "dust": 3000
+      }
+    ]
+  },
   "markWeights": [
     {
       "id": "jumelle",

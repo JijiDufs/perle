@@ -257,7 +257,8 @@ ios/
     Sources/PearlCore/
       Resources/catalog.json   Perles, trouvailles, traits, réglages : EXPORTÉS depuis le TypeScript
       Random, Tuning, Catalog, Oyster (tirage, garantie, traits), Opening (moteur + lustre),
-      ThumbMapping (pouce → angle), Player (cartes, valeurs, numéros de série)
+      ThumbMapping (pouce → angle), Player (cartes, valeurs, comptoir, achats en poussière, skins),
+      Stock (huîtres et recharge), Missions (missions du jour), Economy (barèmes, skins, produits)
     Tests/PearlCoreTests/
       Resources/parity.json    Cas de référence produits par le TypeScript
       ParityTests              Le Swift doit donner exactement les mêmes résultats
@@ -266,12 +267,13 @@ ios/
     Input/ThumbSource   Pouce vers le haut → OpeningSample (HingeSource viendra avec iOS 27.1)
     Art/                Lagon, coquille, nacre, perle, halo : dessinés par code
     Platform/           Haptique, sauvegarde
-    Features/           Pêche, carte de révélation, collection
+    Features/           Pêche (barre de ressources, marée basse), carte, missions, collection (comptoir), boutique (skins)
 ```
 
-- **Une seule source de vérité** : catalogues et réglages restent dans `src/` (TypeScript). `npm run ios:export` régénère `catalog.json` et `parity.json`. Le test `tests/ios-export.test.ts` échoue si on oublie, et `swift test` (dans `ios/PearlCore`) vérifie que le Swift suit.
+- **Une seule source de vérité** : catalogues et réglages restent dans `src/` (TypeScript) ; l'économie de l'app est dans `src/core/appEconomy.ts`. `npm run ios:export` régénère `catalog.json` et `parity.json`. Le test `tests/ios-export.test.ts` échoue si on oublie, et `swift test` (dans `ios/PearlCore`) vérifie que le Swift suit.
 - **Mêmes invariants que la webapp** : Core pur, une seule interface de geste, aucun nombre magique, hasard et temps injectés, perle tirée à la création de l'huître et sauvegardée.
 - Pas de dépendance externe.
+- **Planche des skins** : `sh scripts/make-skin-sheet.sh` dessine `docs/skins.png` avec le code de dessin de l'app, sur le Mac (pas besoin du simulateur).
 
 ## 9. Mesurer la traction
 

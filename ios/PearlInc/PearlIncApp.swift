@@ -23,6 +23,9 @@ struct RootView: View {
             Tab("Collection", systemImage: "square.grid.2x2.fill") {
                 CollectionView()
             }
+            Tab("Boutique", systemImage: "sparkles") {
+                ShopView()
+            }
         }
         .tint(Palette.gold)
     }

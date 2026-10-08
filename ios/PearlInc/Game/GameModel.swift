@@ -18,6 +18,7 @@ final class GameModel {
 
     let catalog = Catalog.shared
     var tuning: Tuning { catalog.tuning }
+    var economy: Economy { catalog.economy }
 
     private(set) var player: PlayerState
     private(set) var stage: Stage = .playing
@@ -25,6 +26,8 @@ final class GameModel {
     private(set) var cracked = false
     private(set) var inFragileZone = false
     private(set) var tooFast = false
+    /// Dernier gain de poussière d'or, pour faire rebondir le compteur.
+    private(set) var dustBump = 0
 
     @ObservationIgnored private var engine: OpeningEngine
     @ObservationIgnored private let thumb = ThumbSource()
@@ -34,11 +37,11 @@ final class GameModel {
 
     init() {
         let catalog = Catalog.shared
-        player = Storage.load() ?? PlayerState.new(systemRng(), catalog.tuning)
+        player = Storage.load() ?? PlayerState.new(systemRng(), catalog.tuning, now: Clock.nowMs)
         engine = OpeningEngine(tuning: catalog.tuning)
         thumb.onSample = { [weak self] sample, distance in self?.handle(sample, distance: distance) }
         thumb.onRelease = { [weak self] in self?.handleRelease() }
-        Storage.save(player)
+        refresh()
     }
 
     // MARK: - Ce que voit le joueur
@@ -51,12 +54,38 @@ final class GameModel {
     var glowHex: String? { find?.glow ?? pearl.glow }
     var trembles: Bool { find.map { $0.tier >= 4 } ?? pearl.trembles }
     var revealTier: Int { find.map { min(3, $0.tier - 1) } ?? pearl.revealTier }
+    var equippedSkin: AppSkin { economy.skin(player.equippedSkin) ?? economy.skins[0] }
+
+    func oystersAvailable(at date: Date) -> Int {
+        player.oystersAvailable(now: date.timeIntervalSince1970 * 1000, tuning: tuning)
+    }
+
+    /// Secondes avant la prochaine huître, nil si le stock est plein.
+    func nextOysterIn(at date: Date) -> TimeInterval? {
+        nextRefillIn(player.stock, now: date.timeIntervalSince1970 * 1000, tuning).map { $0 / 1000 }
+    }
+
+    /// Le stock est vide : la marée remonte.
+    func isTideOut(at date: Date) -> Bool {
+        stage == .playing && engine.phase == .closed && oystersAvailable(at: date) == 0
+    }
+
+    // MARK: - Temps qui passe
+
+    /// Recharge le stock et renouvelle les missions (au lancement, au retour dans l'app, chaque minute).
+    func refresh() {
+        player.refresh(now: Clock.nowMs, day: Clock.dayKey(), tuning: tuning)
+        Storage.save(player)
+    }
 
     // MARK: - Gestes
 
     func drag(translation: Double) {
         guard stage == .playing else { return }
-        if engine.phase == .closed { haptics.prepare() }
+        if engine.phase == .closed {
+            guard player.oystersAvailable(now: Clock.nowMs, tuning: tuning) > 0 else { return }
+            haptics.prepare()
+        }
         thumb.drag(translation: translation, tuning: tuning)
     }
 
@@ -67,7 +96,7 @@ final class GameModel {
 
     /// VoiceOver : ouverture lente et régulière, sans fêlure.
     func openForAccessibility() {
-        guard stage == .playing else { return }
+        guard stage == .playing, player.oystersAvailable(now: Clock.nowMs, tuning: tuning) > 0 else { return }
         thumb.openSlowly(tuning: tuning, durationMs: 2600)
     }
 
@@ -83,6 +112,50 @@ final class GameModel {
         tooFast = false
         stage = .playing
     }
+
+    // MARK: - Comptoir, boutique, missions
+
+    func sell(_ card: PearlCard) {
+        if let gained = player.sell(serial: card.serial) { gainedDust(gained) }
+    }
+
+    func sellAllDuplicates() {
+        gainedDust(player.sellAllDuplicates())
+    }
+
+    func buyOyster() {
+        if player.buyOyster() { haptics.pop(); save() }
+    }
+
+    func buyMissingPearl(_ pearlId: String) {
+        if player.buyMissingPearl(pearlId, now: Clock.nowMs) != nil { haptics.reveal(tier: 1); save() }
+    }
+
+    func buySkin(_ skinId: String) {
+        if player.buySkin(skinId) { _ = player.equip(skinId); haptics.reveal(tier: 2); save() }
+    }
+
+    func equip(_ skinId: String) {
+        if player.equip(skinId) { haptics.tick(); save() }
+    }
+
+    func claimMission(at index: Int) {
+        if let gained = player.claimMission(at: index) { gainedDust(gained) }
+    }
+
+    func recordShare() {
+        player.recordShare()
+        save()
+    }
+
+    private func gainedDust(_ amount: Int) {
+        guard amount > 0 else { return }
+        dustBump += 1
+        haptics.tick()
+        save()
+    }
+
+    private func save() { Storage.save(player) }
 
     // MARK: - Moteur
 
@@ -125,8 +198,10 @@ final class GameModel {
     private func startReveal(lustre: Lustre, cracked: Bool) {
         stage = .suspense
         let tier = revealTier
-        let reveal = player.reveal(lustre: lustre, cracked: cracked, now: Date().timeIntervalSince1970 * 1000, rng: rng, tuning: tuning)
-        Storage.save(player)
+        player.refresh(now: Clock.nowMs, day: Clock.dayKey(), tuning: tuning)
+        let reveal = player.reveal(lustre: lustre, cracked: cracked, now: Clock.nowMs, rng: rng, tuning: tuning)
+        if case .find(_, let dust) = reveal, dust > 0 { dustBump += 1 }
+        save()
         let suspense = tuning.revealSuspenseMs(tier: tier)
         Task { [weak self] in
             var elapsed = 0.0

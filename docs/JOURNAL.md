@@ -4,6 +4,27 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite 7) · Jules · Claude Code · branche `jules/ios-app`
+
+Économie de l'app iOS codée : stock, poussière d'or, comptoir, missions du jour, skins.
+
+**Fait**
+- `src/core/appEconomy.ts` (nouveau catalogue, app iOS seulement) : barème de revente (◆ 1 … ★★ 40 ✦), prix des perles manquantes (◆ à ◆◆◆ seulement), huître à 20 ✦, missions du jour, 4 skins (huître du lagon, bénitier, première marée, huître d'or) avec leurs couleurs, produits de la boutique. Exporté vers `catalog.json`. `tests/app-economy.test.ts` vérifie l'équilibre (≈ 2,5 ✦ par huître, bénitier en 2 à 5 semaines, ★ non achetables, huître d'or en achat seulement).
+- `ios/PearlCore` : `Stock` (miroir de `stock.ts`), `Missions` (3 par jour, graine = la date), `Economy`, et `Player` : stock consommé à l'ouverture, revente (jamais le dernier exemplaire ; « tout revendre » garde le plus bel exemplaire et les perles marquées), achats en poussière (huître, perle manquante, skin), skins possédés et équipé, missions et bonus, pièce d'or engloutie = 5 ✦. Les anciennes sauvegardes se chargent avec des valeurs de départ. **20 tests Swift.**
+- App : barre du haut (huîtres + minuteur, poussière qui rebondit, missions avec pastille), écran « La marée remonte… » avec une huître à 20 ✦, fiche des missions, comptoir dans la collection (revente en lot ou à l'appui long, achat des perles manquantes), onglet **Boutique** (skins avec aperçu, équiper / acheter en poussière ; achats Apple désactivés), bouton Partager sur la carte (texte ; compte pour la mission).
+- Dessin des skins (`Art/OysterArt.swift`, `Art/SkinLook.swift`) : silhouette et matière par skin, lumière de la perle intacte. Bénitier : grands plis en éventail, bord ondulé, manteau bleu-vert tacheté qui dépasse. Huître d'or : or martelé, reflet, éclats qui scintillent.
+- `scripts/make-skin-sheet.sh` → `docs/skins.png` : planche des 4 skins, fermés et ouverts, dessinée sur le Mac avec le code de l'app.
+
+**À faire**
+- StoreKit 2 (skins, recharges, poussière), calendrier de connexion, tutoriel, image story, Core Haptics, Game Center, iCloud.
+- Lancer l'app dans le simulateur (plateforme iOS à installer dans Xcode).
+
+**Fragile**
+- Le changement de jour des missions suit l'heure du téléphone (comme la webapp).
+- La mission « Partager » compte le toucher du bouton, pas le partage effectif (iOS ne dit pas si le partage a abouti).
+
+---
+
 ## 2026-10-08 (suite 6) · Jules · Claude Code · branche `jules/ios-app`
 
 Équilibre de la poussière d'or et missions du jour (app iOS), sans code.

@@ -69,6 +69,8 @@ public struct Catalog: Codable, Sendable {
     public let shapeWeights: [String: [Weighted]]
     public let overtoneWeights: [String: [Weighted]]
     public let markWeights: [Weighted]
+    public let raritySymbols: [String]
+    public let economy: Economy
 
     /// Le catalogue livré avec l'app.
     public static let shared: Catalog = {

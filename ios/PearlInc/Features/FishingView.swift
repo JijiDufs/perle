@@ -5,6 +5,8 @@ import PearlCore
 struct FishingView: View {
     @Environment(GameModel.self) private var game
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var showMissions = false
 
     var body: some View {
         ZStack {
@@ -30,11 +32,21 @@ struct FishingView: View {
             .accessibilityAction(named: "Ouvrir l'huître") { game.openForAccessibility() }
 
             VStack {
+                ResourceBar(showMissions: $showMissions)
+                    .padding(.horizontal)
+                    .padding(.top, 8)
                 Spacer()
                 StatusPill(text: statusText, warning: game.tooFast)
                     .padding(.bottom, 24)
+                    .allowsHitTesting(false)
             }
-            .allowsHitTesting(false)
+
+            TimelineView(.periodic(from: .now, by: 1)) { timeline in
+                if game.isTideOut(at: timeline.date) {
+                    TideOutView(date: timeline.date)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
 
             if case .card(let reveal) = game.stage {
                 RevealCardView(reveal: reveal)
@@ -43,6 +55,15 @@ struct FishingView: View {
             }
         }
         .animation(.spring(duration: 0.45, bounce: 0.35), value: game.stage)
+        .sheet(isPresented: $showMissions) { MissionsView() }
+        .onChange(of: scenePhase) { _, phase in if phase == .active { game.refresh() } }
+        .task {
+            // Recharge du stock et changement de jour, même si l'app reste ouverte.
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(60))
+                game.refresh()
+            }
+        }
     }
 
     private var statusText: String {
@@ -50,6 +71,7 @@ struct FishingView: View {
         if game.cracked { return "Fêlée…" }
         if game.tooFast { return "Trop vite !" }
         if game.inFragileZone { return "Zone fragile : doucement" }
+        if game.angle == 0 && game.isTideOut(at: Date()) { return " " }
         if game.angle == 0 { return "Glisse vers le haut pour ouvrir" }
         return " "
     }
@@ -65,7 +87,8 @@ struct FishingView: View {
             cracked: game.cracked,
             trembles: game.trembles && !reduceMotion,
             revealed: game.stage != .playing,
-            time: time
+            time: time,
+            look: SkinLook(game.equippedSkin)
         )
     }
 }

@@ -6,7 +6,9 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { APP_CONSUMABLES, APP_ECONOMY, APP_MISSING_PEARL_PRICE_BY_TIER, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS } from '../src/core/catalog';
+import { RARITY_SYMBOLS } from '../src/core/jewels';
 import { INITIAL_DRAW_STATE } from '../src/core/draw';
 import { FIND_TIER_WEIGHTS, FINDS, FIND_ALBUMS, BOTTLE_MESSAGES } from '../src/core/finds';
 import { OpeningEngine, type OpeningSample } from '../src/core/opening';
@@ -42,6 +44,16 @@ function catalog() {
     marks: MARKS,
     shapeWeights: perPearl(SHAPE_WEIGHTS),
     overtoneWeights: perPearl(OVERTONE_WEIGHTS),
+    raritySymbols: RARITY_SYMBOLS,
+    economy: {
+      ...APP_ECONOMY,
+      sellDustByTier: APP_SELL_DUST_BY_TIER,
+      missingPearlPriceByTier: APP_MISSING_PEARL_PRICE_BY_TIER,
+      rareMissionTier: APP_RARE_MISSION_TIER,
+      missions: APP_MISSIONS,
+      skins: APP_SKINS,
+      consumables: APP_CONSUMABLES,
+    },
     markWeights: pairs(Object.fromEntries(Object.entries(MARKS).map(([id, mark]) => [id, mark.weight]))),
   };
 }

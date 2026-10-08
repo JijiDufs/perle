@@ -100,14 +100,14 @@ private let tuning = Catalog.shared.tuning
 
 @Test func ouvrirCreeLaCarteEtTireLaSuivante() {
     let rng = seededRng(7)
-    var player = PlayerState.new(rng, tuning)
+    var player = PlayerState.new(rng, tuning, now: 0)
     let first = player.oyster
     let reveal = player.reveal(lustre: .A, cracked: false, now: 0, rng: rng, tuning: tuning)
     #expect(player.nextSerial == 2)
     #expect(player.oystersOpened == 1)
     switch reveal {
     case .pearl(let card): #expect(card.pearlId == first.pearlId && card.serial == 1)
-    case .find(let card): #expect(card.findId == first.findId)
+    case .find(let card, _): #expect(card.findId == first.findId)
     case .empty: #expect(first.pearlId == "empty")
     }
 }

@@ -7,10 +7,6 @@ enum Palette {
     static let lagoonTop = Color(hex: "#1B8FA6")
     static let lagoonMid = Color(hex: "#3FB7B9")
     static let sand = Color(hex: "#D9C9A0")
-    static let shellDark = Color(hex: "#4A4237")
-    static let shellLight = Color(hex: "#8C806C")
-    static let nacreLight = Color(hex: "#FBF7F2")
-    static let nacreShade = Color(hex: "#D6CCE6")
     static let flesh = Color(hex: "#E8DCC4")
 }
 

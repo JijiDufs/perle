@@ -82,6 +82,7 @@ src/
     dust.ts         Poussière d'or : fonte des doublons, achat d'une pièce manquante ou d'un écrin
     finds.ts        Trouvailles : objets à la place de la perle, albums, tirage, messages des bouteilles
     pearlTraits.ts  Ce qui rend chaque perle unique : forme, reflet, marque rare
+    appEconomy.ts   Économie de l'app iOS seulement : barème de revente, missions du jour, skins, produits de la boutique
   input/            Sources du geste → produisent des OpeningSample
     thumb.ts        Pouce vers le haut (iPhone classique)
     pinch.ts        Pincer deux doigts (sertissage), ou un doigt vers le bas
@@ -94,7 +95,7 @@ public/
   sw.js             Service worker : mode hors ligne (build de production uniquement)
   icons/            Icônes générées par scripts/make-icons.py (ne pas éditer à la main)
   manifest.webmanifest
-scripts/            Outils (génération des icônes, macOS)
+scripts/            Outils (génération des icônes, aperçu des liens, planche des skins `make-skin-sheet.sh` → docs/skins.png ; macOS)
 site/               Page d'inscription pearl-inc.app (HTML autonome, prototype de 5 huîtres) : hors de la build Vite
 ios/                App iOS native (SwiftUI) : PearlCore (Swift Package, logique pure, miroir de src/core) + PearlInc (l'app).
                     Catalogues et réglages exportés depuis src/ par `npm run ios:export` (voir docs/duo-gadget.md §8)
@@ -104,7 +105,7 @@ ios/                App iOS native (SwiftUI) : PearlCore (Swift Package, logique
 
 1. **Core est pur.** Rien dans `src/core/` ne touche au DOM, à `window`, `document`, `navigator` ou `localStorage`, et rien n'y importe `platform/`, `features/` ou `input/`. Un test vérifie automatiquement cette règle (`tests/core-purity.test.ts`).
 2. **Une seule interface de geste.** Toute source de geste (pouce, charnière, autre) produit des `OpeningSample { angle: number /* degrés, 0…180 */, time: number /* ms */ }`. Le moteur calcule lui-même la vitesse. Aucune vue ne décide d'une règle de jeu.
-3. **Aucun nombre magique.** Probabilités, seuils, angles, vitesses, durées : uniquement dans `src/tuning.ts` ou les catalogues du Core (`catalog.ts`, `jewels.ts`, `finds.ts`, `pearlTraits.ts`). Les valeurs viennent du cahier des charges ; si on s'en écarte, on le note dans §6.
+3. **Aucun nombre magique.** Probabilités, seuils, angles, vitesses, durées : uniquement dans `src/tuning.ts` ou les catalogues du Core (`catalog.ts`, `jewels.ts`, `finds.ts`, `pearlTraits.ts`, `appEconomy.ts`). Les valeurs viennent du cahier des charges ; si on s'en écarte, on le note dans §6.
 4. **Hasard injectable.** Le tirage reçoit un générateur aléatoire en paramètre (graine fixe dans les tests). Le temps (`now`) est aussi passé en paramètre.
 5. **La perle est tirée à la création de l'huître** et sauvegardée avec l'état du joueur : recharger la page ne relance pas le tirage.
 6. **`npm test` et `npm run build` passent avant chaque passe** (et `swift test` dans `ios/PearlCore` si on touche à l'app iOS ou aux catalogues). Pas de test cassé laissé à l'associé. Après un changement de catalogue ou de réglage : `npm run ios:export`.

@@ -10,6 +10,14 @@ struct RevealCardView: View {
     var body: some View {
         VStack(spacing: 14) {
             content
+            if let message = shareMessage {
+                ShareLink(item: message) {
+                    Label("Partager", systemImage: "square.and.arrow.up")
+                }
+                .buttonStyle(.bordered)
+                .tint(Palette.gold)
+                .simultaneousGesture(TapGesture().onEnded { game.recordShare() })
+            }
             Text("Touche la carte pour l'huître suivante")
                 .font(.footnote)
                 .foregroundStyle(.white.opacity(0.7))
@@ -44,7 +52,7 @@ struct RevealCardView: View {
             }
             Text(pearl.flavor).font(.callout.italic()).multilineTextAlignment(.center).foregroundStyle(.white.opacity(0.85))
             Text(serialLabel(card.serial)).font(.caption.monospaced()).foregroundStyle(.white.opacity(0.6))
-        case .find(let card):
+        case .find(let card, let dust):
             let find = game.catalog.find(card.findId)
             PearlDot(color: Color(hex: find.glow), glow: Color(hex: find.glow), size: 70)
             Text("Trouvaille !").font(.caption.weight(.semibold)).foregroundStyle(Palette.gold)
@@ -52,12 +60,26 @@ struct RevealCardView: View {
             Text(String(repeating: "◆", count: min(find.tier, 3)) + (find.tier > 3 ? String(repeating: "★", count: find.tier - 3) : ""))
                 .foregroundStyle(Palette.gold)
             Text(find.flavor).font(.callout.italic()).multilineTextAlignment(.center).foregroundStyle(.white.opacity(0.85))
+            if dust > 0 { Text("+ \(dust) ✦").font(.headline).foregroundStyle(Palette.gold) }
             Text(serialLabel(card.serial)).font(.caption.monospaced()).foregroundStyle(.white.opacity(0.6))
         case .empty(let serial):
             let pearl = game.catalog.pearl("empty")
             Text(pearl.name).font(.title2.weight(.bold))
             Text(pearl.flavor).font(.callout.italic()).multilineTextAlignment(.center).foregroundStyle(.white.opacity(0.85))
             Text(serialLabel(serial)).font(.caption.monospaced()).foregroundStyle(.white.opacity(0.6))
+        }
+    }
+
+    /// Texte partagé (l'image story viendra ensuite).
+    private var shareMessage: String? {
+        switch reveal {
+        case .pearl(let card):
+            let pearl = game.catalog.pearl(card.pearlId)
+            return "J’ai trouvé une \(pearl.name.lowercased()) \(pearl.rarity) dans Pearl Inc. (\(serialLabel(card.serial))) 🦪 pearl-inc.app"
+        case .find(let card, _):
+            return "Il y avait « \(game.catalog.find(card.findId).name) » dans mon huître. Pearl Inc. 🦪 pearl-inc.app"
+        case .empty:
+            return nil
         }
     }
 
