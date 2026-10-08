@@ -50,6 +50,8 @@ Ce que promet la page d'inscription, ni plus ni moins :
 | Premières minutes | Huîtres écrites à l'avance (rosée garantie en 1re), main fantôme | `core/tutorial.ts` |
 | Stock d'huîtres | 10 max, 1 toutes les 20 min : la raison de revenir | `core/stock.ts` |
 | **Perle de bienvenue** | Promise aux premiers inscrits (page d'inscription) : voir §6 | nouveau |
+| **Poussière d'or** | Les doublons se fondent en poussière d'or (on garde toujours un exemplaire) ; elle achète des skins | `core/dust.ts` |
+| **Skins d'huître** | Coquilles à collectionner, avec la poussière d'or ou en achat ; l'**huître d'or** pour le flex, en achat seulement : voir §6 bis | nouveau |
 | Partage | Image story 1080×1920 via la feuille de partage iOS | `art/storyImage.ts` |
 | Décor | Lagon turquoise animé, coquille et nacre dessinées par code | `art/lagoon.ts`, `art/shell.ts`, `art/pearl.ts` |
 | Langues | Français et anglais (la campagne et la page sont bilingues) | nouveau (la webapp est en français seulement) |
@@ -67,7 +69,7 @@ Le moteur est le même, la charnière et le pouce aussi (§7). Pour l'écrin, on
 
 ### Exclu de la 1.0
 
-Expertise, poussière d'or, atelier, Maison, niveaux, succès, quêtes, trouvailles, achats intégrés, pubs, compte, classement, bandeau « BÊTA ».
+Expertise, achat de pièces manquantes avec la poussière d'or, poussière d'or vendue contre de l'argent, atelier, Maison, niveaux, succès, quêtes, trouvailles, pubs, abonnement, compte, classement, bandeau « BÊTA ».
 
 ## 5. Règles Apple à respecter
 
@@ -76,7 +78,8 @@ Expertise, poussière d'or, atelier, Maison, niveaux, succès, quêtes, trouvail
 | **4.2 Fonctionnalités minimales** (risque n° 1 pour un petit jeu) | Jeu complet : 8 raretés, collection, garantie, lustre, partage, rejouabilité quotidienne. Ne pas descendre en dessous. |
 | **2.2 Pas de bêta sur l'App Store** | Pas de bandeau « BÊTA » ; les tests se font sur TestFlight. |
 | **2.1 Complétude** | Aucun écran « à venir », aucun bouton mort, aucune mention des fonctions futures. |
-| **3.1.1 Probabilités** | Rien de payant dans la 1.0. On affiche quand même les probabilités : c'est une promesse de la campagne (« toujours »). |
+| **3.1.1 Achats intégrés** | Les skins payants passent **obligatoirement** par les achats intégrés d'Apple (StoreKit 2) : achats « non consommables », bouton « Restaurer les achats », prix affichés par StoreKit (jamais écrits en dur), aucun lien vers un paiement extérieur. Le partage familial peut être activé. |
+| **3.1.1 Probabilités** | On n'achète jamais de hasard : chaque skin est un achat direct, connu d'avance. Les probabilités des perles restent affichées : c'est une promesse de la campagne (« toujours »). |
 | **5.1 Vie privée** | Pas de compte, pas de suivi publicitaire, donc pas de fenêtre ATT. Étiquette de confidentialité de l'App Store remplie ; manifeste de confidentialité (`PrivacyInfo.xcprivacy`). |
 | **Classification par âge** | Questionnaire rempli honnêtement : récompenses aléatoires, sans argent réel. |
 | **Marques Apple** | Pas de « iPhone » ni « Duo » dans le nom ou l'icône. La description et la page peuvent dire que le jeu est conçu pour l'iPhone Duo, avec la mention de non-affiliation déjà présente sur la page. |
@@ -95,6 +98,38 @@ La page promet que « les premiers inscrits auront une perle de bienvenue ». Sa
 - l'app vérifie le code **sans serveur**, puis offre une perle cosmétique exclusive (« Perle de la première marée ») qui n'entre ni dans les probabilités ni dans la garantie.
 
 **À décider** : quelle perle exactement, un code commun ou un code par inscrit, et la date limite. Les codes d'offre d'Apple ne servent qu'aux achats intégrés, ils ne conviennent pas ici.
+
+## 6 bis. Les skins d'huître
+
+**L'idée.** On change l'apparence de sa coquille, et l'huître la plus chère sert au **flex**. Sur le Duo, le flex est réel : téléphone fermé, l'écran extérieur montre la coquille, donc tout le monde autour voit ton huître d'or posée sur la table.
+
+**Règles du jeu (non négociables)**
+- **Purement cosmétique.** Un skin ne change ni les probabilités, ni la garantie, ni la zone fragile, ni le lustre, ni la valeur des perles.
+- **Le signal reste lisible.** Le skin habille l'extérieur de la coquille et la nacre. La lumière qui filtre garde la couleur de la perle (noire si l'huître est vide), et les plus rares tremblent toujours.
+- **Visible partout où l'on montre son jeu** : écran extérieur du Duo, image story partagée, mention « Coquille : … » sur la carte.
+- Un skin s'applique à toutes les huîtres ; on en change quand on veut dans la collection.
+
+**Catalogue de départ (proposition, prix à valider)**
+
+| Skin | Comment l'obtenir | Ce qu'il change |
+|---|---|---|
+| Huître du lagon | Offerte (celle de départ) | — |
+| Nacre de lune | 300 ✦ ou 1,99 € | Coquille gris perle, nacre bleutée |
+| Corail | 300 ✦ ou 1,99 € | Coquille rose corail, petites algues rouges |
+| Tahiti | 500 ✦ ou 2,99 € | Coquille noire, nacre vert paon |
+| **Première marée** | Exclusive aux inscrits (lien de l'e-mail de lancement, §6) | Coquille sable et écume, liseré argent ; ne sera plus jamais disponible |
+| **Huître d'or** | **9,99 €, achat seulement** | Coquille d'or martelé, nacre champagne, reflets qui suivent l'angle, son et vibration dédiés au « pop », badge « Or » sur les cartes |
+
+Ordres de grandeur : un joueur régulier fond environ 100 ✦ par jour une fois les doublons arrivés. Un skin à 300 ✦ demande donc 3 à 4 jours de jeu, et l'achat direct est là pour les impatients.
+
+**Pourquoi l'huître d'or seulement en achat.** Le flex tient à sa rareté et à son prix. Et chaque achat est la preuve la plus forte de traction : des gens paient pour ce geste.
+
+**Technique**
+- Un skin = des paramètres de dessin (couleurs, matière, reflets) dans un catalogue du Core (`Skins`), dessinés par le code de la coquille. Pas d'images.
+- Ce que le joueur possède est sauvegardé comme le reste. Les achats sont vérifiés par StoreKit 2 au lancement (transactions signées par Apple, sans serveur), et restaurés sur un nouveau téléphone.
+- Le prix de la poussière d'or et la liste des skins vivent dans le Core (aucun nombre magique). Les prix en euros sont configurés dans App Store Connect.
+
+**À ne pas faire dans la 1.0** : vendre de la poussière d'or contre de l'argent (cela reviendrait à payer pour compléter sa collection), des skins à durée limitée qui forcent l'achat, ou des offres « dernière chance ».
 
 ## 7. La charnière : ce qu'il faut vérifier
 
@@ -144,6 +179,9 @@ ios/
 | Huîtres ouvertes par jour et par joueur | mesure d'usage | ≥ 8 |
 | Part des perles ◆◆◆ et plus partagées | mesure d'usage | ≥ 10 % |
 | Part des joueurs sur Duo | mesure d'usage | à observer |
+| Joueurs qui achètent au moins un skin | App Store Connect | ≥ 2 % |
+| Part des huîtres d'or parmi les achats | App Store Connect | à observer (le flex marche-t-il ?) |
+| Skins obtenus avec la poussière d'or | mesure d'usage | à observer (la boucle des doublons tourne-t-elle ?) |
 | Fêlures et lustre S (équilibrage) | mesure d'usage | à observer |
 
 La mesure d'usage reste centralisée dans un seul fichier (`Platform/Analytics`), comme `track()` dans la webapp. **Outil à choisir** : c'est une nouvelle dépendance, donc une décision en §6.
@@ -154,17 +192,18 @@ La mesure d'usage reste centralisée dans un seul fichier (`Platform/Analytics`)
 |---|---|
 | **12 – 22 oct.** (pendant la campagne) | Xcode, compte Apple Developer, nom réservé sur App Store Connect ; projet créé ; PearlCore porté avec les tests de parité ; ouverture au pouce jouable sans décor ; lecture de la documentation de la charnière |
 | 23 – 25 oct. | Essais sur un vrai Duo (§7) ; **décision du 25** ; périmètre ajusté |
-| 26 oct. – 6 nov. | Décor, révélation, haptique, sons, carte, collection, premières minutes, stock, partage, perle de bienvenue, anglais, accessibilité |
+| 26 oct. – 6 nov. | Décor, révélation, haptique, sons, carte, collection, premières minutes, stock, partage, perle de bienvenue, poussière d'or et skins (achats testés dans le bac à sable d'Apple), anglais, accessibilité |
 | 6 – 12 nov. | TestFlight (quelques inscrits volontaires) ; corrections ; fiche App Store (captures, vidéo du geste, textes FR/EN) ; dossier pour l'équipe éditoriale de l'App Store |
 | ≈ 13 nov. | **Soumission** ; examen d'Apple (souvent 1 à 2 jours, sans garantie) |
 | ≈ 17 – 20 nov. | **Sortie** ; e-mail aux inscrits avec la perle de bienvenue |
 
-**Si on prend du retard**, on coupe dans cet ordre : perles uniques, anglais (en mise à jour), stock d'huîtres. On ne coupe ni le geste, ni l'haptique, ni la carte, ni le partage, ni la perle de bienvenue (c'est une promesse faite aux inscrits).
+**Si on prend du retard**, on coupe dans cet ordre : perles uniques, skins Nacre de lune / Corail / Tahiti (on garde l'huître d'or et la Première marée), anglais (en mise à jour), stock d'huîtres. On ne coupe ni le geste, ni l'haptique, ni la carte, ni le partage, ni la perle de bienvenue (c'est une promesse faite aux inscrits).
 
 ## 11. Ce qu'il faut avant de commencer
 
 - [ ] **Xcode** (App Store, gratuit). Pour l'instant, seuls les outils en ligne de commande sont installés sur ce Mac.
 - [ ] **Compte Apple Developer** (99 $/an) : au nom de qui ? Une personne, ou la société MJHstudio (il faut alors un numéro D-U-N-S, compter plusieurs jours). Cela décide du nom du vendeur affiché sur l'App Store.
+- [ ] **Contrat « Apps payantes »** dans App Store Connect, avec les informations bancaires et fiscales : obligatoire pour vendre des skins, et la validation prend du temps. À faire dès que le compte existe.
 - [ ] **Réserver le nom « Pearl Inc. »** sur App Store Connect dès que le compte existe, et vérifier qu'il ne pose pas de problème de marque.
 - [ ] Un iPhone récent pour tester l'haptique ; un Duo dès sa sortie.
-- [ ] **Accord entre associés** sur : SwiftUI, une seule app qui grandit, sortie en novembre plutôt que le 23 octobre, perle de bienvenue, seuils de traction. Ensuite, inscription en §6 de AGENTS.md.
+- [ ] **Accord entre associés** sur : SwiftUI, une seule app qui grandit, sortie en novembre plutôt que le 23 octobre, perle de bienvenue, skins et prix (la boutique payante est encore marquée « hors V1 » dans AGENTS.md §2), seuils de traction. Ensuite, inscription en §6 de AGENTS.md.

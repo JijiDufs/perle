@@ -4,6 +4,23 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite 3) · Jules · Claude Code · branche `jules/duo-gadget`
+
+Image d'aperçu des liens et skins d'huître.
+
+**Fait**
+- `site/og.jpg` (1200×630) : lagon, huître ouverte, perle dorée qui brille, « Pearl Inc. », « iPhone Duo », « pearl-inc.app ». Pas de phrase traduite, pour servir aux posts FR et EN. Dessinée avec le code de la page, par `sh scripts/make-og.sh` (Chrome sans fenêtre, `scripts/og-image.js`).
+- `site/index.html` : balises Open Graph et Twitter (titre, description, image), adresse canonique `https://pearl-inc.app/`.
+- `docs/duo-gadget.md` : poussière d'or et **skins d'huître** dans le périmètre (§6 bis) : cosmétique pur, signal de lumière intact, visible sur l'écran extérieur du Duo et dans les partages ; 3 skins gagnables ou achetables, « Première marée » pour les inscrits, **huître d'or à 9,99 € en achat seulement**. Règles Apple des achats intégrés, indicateurs et calendrier mis à jour. **Proposition, à valider entre associés.**
+
+**À faire**
+- Après l'achat du domaine : vérifier l'aperçu avec les outils de LinkedIn (Post Inspector) et de X. Si le domaine change, changer les adresses absolues dans `site/index.html`.
+
+**Fragile**
+- `make-og.sh` lit le code de dessin dans le `<script>` qui suit three.js : si la page change de structure, adapter la commande `awk`.
+
+---
+
 ## 2026-10-08 (suite 2) · Jules · Claude Code · branche `jules/duo-gadget`
 
 Page d'inscription prête pour la mise en ligne.
