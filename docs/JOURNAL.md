@@ -4,6 +4,23 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite) · Jules · Claude Code · branche `jules/duo-gadget`
+
+Périmètre du premier jeu App Store (« gadget » Duo), sans code.
+
+**Fait**
+- `docs/duo-gadget.md` : app SwiftUI native appelée **Pearl Inc.**, réduite au geste d'ouverture (huître, 8 perles, carte, collection, stock, partage, perle de bienvenue), qui grandira par mises à jour. Calée sur la page d'inscription et le plan de campagne X / LinkedIn (12 – 25 oct., décision huître / écrin le 25). Règles Apple à respecter, questions sur l'API de la charnière, architecture `ios/` (Core Swift pur, réglages partagés en JSON, tests de parité avec le TypeScript), indicateurs de traction, calendrier proposé (sortie vers mi-novembre plutôt que le 23 octobre).
+- Lien vers ce document dans AGENTS.md §1.
+
+**À faire**
+- Valider le périmètre entre associés, puis inscrire les décisions en §6 (SwiftUI, une seule app, date de sortie, perle de bienvenue).
+- Installer Xcode, ouvrir le compte Apple Developer, réserver le nom.
+
+**Fragile**
+- Tout repose sur l'API de la charnière, encore inconnue (§7 du document) : la vérifier avant de promettre une date.
+
+---
+
 ## 2026-10-08 · Jules · Claude Code · branche `jules/pearl-inc`
 
 La Maison redessinée en maison de poupée (choix de Jules), qui grandit jusqu'à Pearl Inc.

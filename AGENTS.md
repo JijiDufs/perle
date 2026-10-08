@@ -14,6 +14,7 @@ Les deux appareils jouent **exactement le même jeu** : seule la source du geste
 
 - Cahier des charges complet : [docs/cahier-des-charges.md](docs/cahier-des-charges.md) (vision long terme, **pas** le périmètre actuel).
 - Journal des passes entre associés : [docs/JOURNAL.md](docs/JOURNAL.md).
+- Premier jeu App Store pour l'iPhone Duo (proposition, à valider) : [docs/duo-gadget.md](docs/duo-gadget.md).
 
 ## 2. Périmètre actuel : V1 « squelette »
 
