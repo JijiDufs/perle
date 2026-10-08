@@ -806,7 +806,7 @@ Promise.all([document.fonts.load('700 40px "Inter"'),document.fonts.load('500 30
 (function(){
   // Liens des formulaires Tally (un par langue) pour les inscriptions au lancement. À renseigner (ex. https://tally.so/r/abcdef).
   // Sans lien anglais, le formulaire français sert pour les deux langues.
-  const TALLY_URLS={fr:'',en:''};
+  const TALLY_URLS={fr:'https://tally.so/r/J9N7AJ',en:'https://tally.so/r/Me9oLY'};
   const tallyUrl=()=>TALLY_URLS[window.PearlI18n.lang]||TALLY_URLS.fr;
   // Champs cachés du formulaire : provenance de la campagne, langue, bouton cliqué (voir docs/tally-formulaire.md).
   const page=new URLSearchParams(location.search);

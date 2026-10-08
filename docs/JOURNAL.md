@@ -4,6 +4,22 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite 10) · Jules · Claude Code · branche `jules/ios-app`
+
+Formulaires d'inscription Tally créés, publiés et branchés sur la page pearl-inc.app.
+
+**Fait**
+- Tally FR https://tally.so/r/J9N7AJ et EN https://tally.so/r/Me9oLY : e-mail (obligatoire), téléphone (iPhone Duo / autre iPhone / Android, facultatif), consentement (obligatoire), résumé de confidentialité (contact laplateformemjh@gmail.com), champs cachés `utm_source`, `utm_campaign`, `lang`, `bouton`, page de remerciement. Couleurs et police du site, icône du site en logo.
+- `site/index.html` : `TALLY_URLS` renseigné ; chaque visiteur va vers le formulaire de sa langue (FR / EN).
+- `docs/tally-formulaire.md` à jour (liens, 3 options de téléphone, contact).
+
+**À faire**
+- Dans Tally (Settings) : activer la notification par e-mail à chaque inscription.
+- Vérifier que Tally héberge bien les données dans l'UE (texte de confidentialité).
+- Envoyer une inscription test de chaque langue une fois le site en ligne, puis la supprimer.
+
+---
+
 ## 2026-10-08 (suite 9) · Jules · Claude Code · branche `jules/ios-app`
 
 Ouverture du bénitier en 3D ; forme stable de chaque huître pendant la révélation.
