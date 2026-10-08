@@ -77,18 +77,23 @@ struct FishingView: View {
     }
 
     private func art(time: Double) -> OysterArt {
-        let pearl = game.pearl
-        let isEmpty = pearl.id == "empty" && game.find == nil
+        let oyster = game.player.oyster
+        let look: PearlLook? = if let find = game.find { PearlLook(find: find) }
+            else if oyster.pearlId == "empty" { nil }
+            else { PearlLook(game.pearl, traits: oyster.traits, catalog: game.catalog) }
         return OysterArt(
             angle: game.stage == .playing ? game.angle : 180,
-            pearlColor: isEmpty ? nil : Color(hex: game.find?.glow ?? pearl.color),
-            glowColor: game.glowHex.map { Color(hex: $0) },
-            pearlRadiusRatio: 0.025 + max(game.player.oyster.sizeMm, 6) * 0.0028,
+            pearl: look,
+            glowColor: game.glowHex,
+            sizeMm: oyster.sizeMm,
+            isFind: game.find != nil,
+            revealTier: game.revealTier,
             cracked: game.cracked,
             trembles: game.trembles && !reduceMotion,
             revealed: game.stage != .playing,
             time: time,
-            look: SkinLook(game.equippedSkin)
+            look: SkinLook(skinId: game.player.equippedSkin),
+            shapeSeed: game.player.nextSerial
         )
     }
 }

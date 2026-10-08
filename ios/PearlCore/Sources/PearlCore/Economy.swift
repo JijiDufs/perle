@@ -5,7 +5,7 @@ public struct AppSkin: Codable, Sendable, Identifiable, Equatable {
     public let id: String
     public let name: String
     public let description: String
-    /// « oyster », « clam » (bénitier) ou « gold ».
+    /// Silhouette : « oyster » ou « clam » (bénitier). Les couleurs vivent avec le dessin de l'app.
     public let style: String
     /// Prix en poussière d'or ; nil = pas à vendre en poussière.
     public let dustPrice: Int?
@@ -13,11 +13,6 @@ public struct AppSkin: Codable, Sendable, Identifiable, Equatable {
     public let productId: String?
     /// « start » (offert au départ), « signup » (réservé aux inscrits) ou nil.
     public let grant: String?
-    public let shellLight: String
-    public let shellDark: String
-    public let nacreLight: String
-    public let nacreShade: String
-    public let rim: String?
 }
 
 public struct AppConsumable: Codable, Sendable, Identifiable, Equatable {

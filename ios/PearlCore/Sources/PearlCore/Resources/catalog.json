@@ -937,12 +937,7 @@
         "style": "oyster",
         "dustPrice": null,
         "productId": null,
-        "grant": "start",
-        "shellLight": "#8C806C",
-        "shellDark": "#4A4237",
-        "nacreLight": "#FBF7F2",
-        "nacreShade": "#D6CCE6",
-        "rim": null
+        "grant": "start"
       },
       {
         "id": "benitier",
@@ -951,12 +946,7 @@
         "style": "clam",
         "dustPrice": 2000,
         "productId": "app.pearlinc.skin.benitier",
-        "grant": null,
-        "shellLight": "#F1EBDD",
-        "shellDark": "#B9AE97",
-        "nacreLight": "#7FE3D6",
-        "nacreShade": "#1E6F86",
-        "rim": null
+        "grant": null
       },
       {
         "id": "premiere-maree",
@@ -965,26 +955,16 @@
         "style": "oyster",
         "dustPrice": null,
         "productId": null,
-        "grant": "signup",
-        "shellLight": "#E9DDC3",
-        "shellDark": "#A8977A",
-        "nacreLight": "#FFFFFF",
-        "nacreShade": "#CFE6EE",
-        "rim": "#D9E2EA"
+        "grant": "signup"
       },
       {
         "id": "or",
         "name": "Huître d’or",
         "description": "Or martelé, nacre champagne. Elle ne passe pas inaperçue, c’est le but.",
-        "style": "gold",
+        "style": "oyster",
         "dustPrice": null,
         "productId": "app.pearlinc.skin.or",
-        "grant": null,
-        "shellLight": "#F6D77A",
-        "shellDark": "#A8771F",
-        "nacreLight": "#FFF6DF",
-        "nacreShade": "#E7CF9F",
-        "rim": "#FFE9A8"
+        "grant": null
       }
     ],
     "consumables": [

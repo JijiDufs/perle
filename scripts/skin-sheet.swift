@@ -7,19 +7,9 @@ struct SkinEntry: Decodable {
     let id: String
     let name: String
     let description: String
-    let style: String
     let dustPrice: Int?
     let productId: String?
     let grant: String?
-    let shellLight: String
-    let shellDark: String
-    let nacreLight: String
-    let nacreShade: String
-    let rim: String?
-
-    var look: SkinLook {
-        SkinLook(style: style, shellLight: shellLight, shellDark: shellDark, nacreLight: nacreLight, nacreShade: nacreShade, rim: rim)
-    }
 
     /// Comment l'obtenir. Les prix en euros sont ceux proposés dans docs/duo-gadget.md §6 ter
     /// (dans l'app, ils viendront de StoreKit).
@@ -37,6 +27,10 @@ struct Catalog: Decodable {
     let economy: Economy
 }
 
+/// Une perle rosée, presque ronde, reflet rose : pour montrer l'intérieur.
+let rosePearl = PearlLook(id: "rose", color: "#F2C4CC", glow: "#ffb3c6", shape: "presque-ronde",
+                          overtone: "rose", overtoneColor: "#ffc2d2", mark: nil, seed: 0.4)
+
 struct Cell: View {
     let skin: SkinEntry
     let open: Bool
@@ -45,20 +39,11 @@ struct Cell: View {
         ZStack {
             LinearGradient(colors: [Palette.lagoonTop, Palette.lagoonMid, Palette.sand], startPoint: .top, endPoint: .bottom)
             Canvas { context, size in
-                // Ouverte, le couvercle se rabat au-dessus de la charnière : on recule un peu pour le voir.
-                var context = context
-                if open {
-                    context.translateBy(x: size.width / 2, y: size.height / 2 + 72)
-                    context.scaleBy(x: 0.72, y: 0.72)
-                    context.translateBy(x: -size.width / 2, y: -size.height / 2)
-                }
                 OysterArt(
-                    angle: open ? 180 : 0,
-                    pearlColor: open ? Color(hex: "#F2C4CC") : nil,
-                    glowColor: open ? Color(hex: "#ffb3c6") : nil,
-                    pearlRadiusRatio: 0.025 + 10 * 0.0028,
+                    angle: open ? 180 : 0, pearl: rosePearl, glowColor: rosePearl.glow, sizeMm: 7.5,
                     cracked: false, trembles: false, revealed: open, time: 0.9,
-                    look: skin.look, maxWidth: 220
+                    look: SkinLook(skinId: skin.id), shapeSeed: 7,
+                    length: open ? min(size.width * 0.36, size.height * 0.3) : min(size.width * 0.42, size.height * 0.5)
                 ).draw(&context, size: size)
             }
         }

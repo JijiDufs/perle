@@ -4,6 +4,22 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite 8) · Jules · Claude Code · branche `jules/ios-app`
+
+Les huîtres de l'app iOS reprennent la direction artistique de la webapp ; bénitier refait d'après une photo.
+
+**Fait**
+- Retour de Jules : les huîtres iOS ne ressemblaient pas à celles du jeu web. Le dessin de la webapp est porté en Swift, à l'identique : `Art/ShellArt.swift` (contour, bandes de croissance en relief avec ombre portée, stries, taches, algues, balanes, reflet ; nacre irisée ; chair, depuis `src/art/shell.ts`), `Art/PearlArt.swift` (perle selon ses traits : forme, reflet, marques, fêlure ; halo, depuis `src/art/pearl.ts`), `Art/OysterArt.swift` (scène composée comme `oysterScreen.ts` : pénombre, halo, couvercle qui s'assombrit en se redressant, lumière qui filtre).
+- Skins = variantes du même dessin (`ShellPalette`) : huître du lagon (couleurs exactes de la webapp), Première marée (sable, écume, liseré argent), huître d'or (bandes dorées, nacre champagne, éclats). **Bénitier** (`Art/ClamArt.swift`), d'après la photo de Jules : deux valves crème aux larges plis écailleux, jointure en zigzag aux lèvres blanches, manteau sombre irisé (bleu-vert, taches) entre les valves ; la valve du haut se soulève comme le couvercle de l'huître (le geste ne change pas), la perle se pose sur le manteau.
+- Les couleurs des skins vivent avec le dessin (`Art/SkinLook.swift`) ; le catalogue (`appEconomy.ts`) ne garde que l'identifiant et la silhouette (`oyster` / `clam`).
+- `docs/skins.png` régénérée.
+
+**À faire**
+- Porter aussi le lagon de la webapp (`art/lagoon.ts` : rayons, sable, caustiques, algues) : le fond iOS est encore un simple dégradé.
+- Vérifier la fluidité sur iPhone : la webapp garde l'extérieur de la coquille en cache (image), l'app le redessine à chaque image.
+
+---
+
 ## 2026-10-08 (suite 7) · Jules · Claude Code · branche `jules/ios-app`
 
 Économie de l'app iOS codée : stock, poussière d'or, comptoir, missions du jour, skins.

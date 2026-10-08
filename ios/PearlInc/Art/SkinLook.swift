@@ -1,38 +1,22 @@
 import SwiftUI
 
-/// L'habit d'une coquille : silhouette et couleurs d'un skin (catalogue : src/core/appEconomy.ts).
-/// Purement cosmétique : la lumière qui filtre reste celle de la perle.
-struct SkinLook {
-    enum Style {
-        /// Huître : contour festonné, stries de croissance.
-        case oyster
-        /// Bénitier : grosses côtes en éventail, bord ondulé, manteau bleu-vert tacheté.
-        case clam
-        /// Or martelé : huître dorée, martelage, éclats qui scintillent.
-        case gold
-    }
+/// L'habit d'une coquille (un skin). Purement cosmétique : la lumière qui filtre reste celle de la perle.
+/// Les couleurs vivent ici, avec le dessin (comme src/art/shell.ts) ; le catalogue ne connaît que l'identifiant.
+enum SkinLook {
+    /// Une huître (même dessin que la webapp), aux couleurs du skin.
+    case oyster(ShellPalette, rim: Color?, sparkles: Bool)
+    /// Le bénitier.
+    case clam
 
-    var style: Style
-    var shellLight: Color
-    var shellDark: Color
-    var nacreLight: Color
-    var nacreShade: Color
-    var rim: Color?
-
-    init(style: String, shellLight: String, shellDark: String, nacreLight: String, nacreShade: String, rim: String?) {
-        switch style {
-        case "clam": self.style = .clam
-        case "gold": self.style = .gold
-        default: self.style = .oyster
+    init(skinId: String) {
+        switch skinId {
+        case "benitier": self = .clam
+        case "premiere-maree": self = .oyster(.firstTide, rim: rgba(222, 232, 240, 0.9), sparkles: false)
+        case "or": self = .oyster(.gold, rim: rgba(255, 236, 170, 0.8), sparkles: true)
+        default: self = .lagoon
         }
-        self.shellLight = Color(hex: shellLight)
-        self.shellDark = Color(hex: shellDark)
-        self.nacreLight = Color(hex: nacreLight)
-        self.nacreShade = Color(hex: nacreShade)
-        self.rim = rim.map { Color(hex: $0) }
     }
 
     /// L'huître du lagon, celle de départ.
-    static let lagoon = SkinLook(style: "oyster", shellLight: "#8C806C", shellDark: "#4A4237",
-                                 nacreLight: "#FBF7F2", nacreShade: "#D6CCE6", rim: nil)
+    static let lagoon = SkinLook.oyster(.lagoon, rim: nil, sparkles: false)
 }

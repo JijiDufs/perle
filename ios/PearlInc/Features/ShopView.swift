@@ -63,11 +63,11 @@ private struct SkinCard: View {
         let owned = game.player.ownedSkins.contains(skin.id)
         let equipped = game.player.equippedSkin == skin.id
         VStack(spacing: 10) {
-            TimelineView(.animation(paused: reduceMotion || skin.style != "gold")) { timeline in
+            TimelineView(.animation(paused: reduceMotion || skin.id != "or")) { timeline in
                 Canvas { context, size in
-                    OysterArt(angle: 0, pearlColor: nil, glowColor: nil, pearlRadiusRatio: 0.05, cracked: false,
-                              trembles: false, revealed: false, time: timeline.date.timeIntervalSinceReferenceDate,
-                              look: SkinLook(skin), maxWidth: 120).draw(&context, size: size)
+                    OysterArt(angle: 0, pearl: nil, glowColor: nil, sizeMm: 0, cracked: false, trembles: false, revealed: false,
+                              time: timeline.date.timeIntervalSinceReferenceDate, look: SkinLook(skinId: skin.id),
+                              length: min(size.width * 0.42, size.height * 0.62)).draw(&context, size: size)
                 }
             }
             .frame(height: 120)
