@@ -4,6 +4,29 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 · Jules · Claude Code · branche `jules/pearl-inc`
+
+La Maison redessinée en maison de poupée (choix de Jules), qui grandit jusqu'à Pearl Inc.
+
+**Fait**
+- `art/house.ts` réécrit : vue en coupe de trois quarts (projection oblique : un pas vers le fond décale à droite et vers le haut), sur pilotis au bout du ponton, la nuit. Pièces avec mur du fond, mur de gauche et sol (papier peint, lambris, parquet ou marbre), meubles en volume (faces avant, dessus, côté), coupes des murs et planchers, côté droit en bardage, toit à pignon avec l'enseigne, cheminée qui fume, lanterne qui vacille et se reflète dans l'eau.
+- Lettres → pièces : la porte (mur de gauche de la boutique, clouée de planches avant), la lanterne, l'enseigne (« R SE » délavée → Maison Rose → Pearl Inc.), la fenêtre et le carnet (bureau de Rose, avec son portrait et une bougie), l'établi (atelier, panneau à outils), la vitrine (avec ta plus belle pièce sous verre), la boîte (grenier, elle pulse). Avant sa lettre, une pièce dort : pénombre, draps sur les meubles, toiles d'araignée.
+- `houseStage(level)` (Core) = rang du joueur. Étapes : 0 cabane délavée, toit troué ; 1 l'étage ; 2 la boutique repeinte, jardinières, le chat ; 3 Pearl Inc. (façade claire et dorée, salon avec lustre et présentoirs, fanion, voiliers au mouillage) ; 4 l'aile du musée (socles, cloches de verre, tableaux, toit-terrasse) ; 5 la tour au dôme doré.
+- Le décor fixe est dessiné une fois (cache par taille et par état) ; seuls les étoiles, l'eau, la fumée et les lumières s'animent.
+- Écran : la scène occupe toute la largeur sous le titre.
+
+**À faire ensuite**
+- Toucher une pièce pour l'afficher en grand, avec son histoire (et plus tard ce qu'elle débloque).
+- Décider du sort de la carte des marées (Codex) ; fonte des trouvailles en double ; fonctions à débloquer (Lagon, commandes, vitrine qui vend).
+
+**Fragile / à surveiller**
+- Les pièces des étapes 3 à 5 (salon, musée, tour) sont du décor : rien à y faire pour l'instant.
+- Lisibilité des petits détails sur iPhone SE (la Maison est dessinée à environ 110 px par pièce).
+
+**Vérification**
+- `npm test` : 17 fichiers, 148 tests passés (`houseStage`). `npm run build` : OK.
+- Les six étapes rendues à part dans le navigateur, et l'écran Maison au format 375 × 812 sur la partie de Jules (lecture seule : le calendrier du jour a été masqué le temps de la capture, puis la page rechargée, rien n'a été récupéré).
+
 ## 2026-10-06 (suite) · Jules · Claude Code · branche `jules/pearl-inc`
 
 Perles uniques, bijoux variés, puis chasse aux bugs d'affichage et de mécanique (demande de Jules : « tout ce qui rend le jeu cheap »).

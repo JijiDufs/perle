@@ -1,11 +1,11 @@
 // La Maison (cahier §8) : la cabane de grand-mère Rose, qui se restaure lettre après lettre.
-import { drawHouse } from '../../art/house';
+import { drawHouse, HOUSE_SKY_TOP } from '../../art/house';
 import { craftedType } from '../../core/atelier';
 import { jewelCanvas } from '../../art/jewel';
 import { pearlCanvas } from '../../art/pearl';
 import { pearlById } from '../../core/catalog';
 import { traitsOf } from '../../core/pearlTraits';
-import { CHAPTERS, houseBrand, houseStageName, isChapterUnlocked, NEXT_CHAPTER_LEVEL, readChapter, restoredFeatures, unreadChapters, type Chapter, type HouseFeature } from '../../core/house';
+import { CHAPTERS, houseBrand, houseStage, houseStageName, isChapterUnlocked, NEXT_CHAPTER_LEVEL, readChapter, restoredFeatures, unreadChapters, type Chapter, type HouseFeature } from '../../core/house';
 import { jewelRarity, jewelVariant, withVariant } from '../../core/jewels';
 import { levelFromXp, rankForLevel, xpToNext } from '../../core/levels';
 import { track } from '../../platform/analytics';
@@ -15,9 +15,6 @@ import { isAtelierUnlocked } from '../../core/atelier';
 import { openAtelier } from '../atelier/atelierScreen';
 import { craftedJewel } from '../atelier/craftedView';
 import type { AppContext } from '../context';
-
-/** Couleur du haut du ciel de la Maison (art/house.ts), peinte au-dessus de la scène, derrière le titre. */
-const SKY_TOP = '#081422';
 
 /** Durée de l'éclat quand un élément est restauré (ms). */
 const APPEAR_MS = 1600;
@@ -99,15 +96,16 @@ export function mountHouseScreen(root: HTMLElement, ctx: AppContext): () => void
       else appear = { feature: appearing.feature, progress };
     }
     // Pendant l'éclat, l'élément restauré apparaît déjà (il est dans l'état).
-    const brand = houseBrand(levelFromXp(ctx.player.reputation, ctx.tuning).level);
+    const level = levelFromXp(ctx.player.reputation, ctx.tuning).level;
     // La scène commence sous le titre : il ne recouvre jamais le toit. Au-dessus, le haut du ciel.
     const title = root.querySelector<HTMLElement>('.house-title')!;
     const top = Math.min(height * 0.4, title.offsetTop + title.offsetHeight + 4);
-    c.fillStyle = SKY_TOP;
+    c.fillStyle = HOUSE_SKY_TOP;
     c.fillRect(0, 0, width, top + 1);
     c.save();
     c.translate(0, top);
-    drawHouse(c, width, height - top, { restored: restoredFeatures(ctx.player), brand, showcase: art.art, appearing: appear }, now);
+    const scene = { restored: restoredFeatures(ctx.player), brand: houseBrand(level), stage: houseStage(level), showcase: art.art, appearing: appear };
+    drawHouse(c, width, height - top, scene, now);
     c.restore();
     frame = requestAnimationFrame(loop);
   }

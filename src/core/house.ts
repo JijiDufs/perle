@@ -1,7 +1,7 @@
 // La Maison (cahier §8) : le fil narratif. Les lettres de grand-mère Rose se débloquent avec les niveaux ;
 // chaque lettre lue restaure un morceau de la Maison. Textes et prénom : provisoires (AGENTS.md §6).
 import type { Tuning } from '../tuning';
-import { gainReputation, levelFromXp, RANKS } from './levels';
+import { gainReputation, levelFromXp, rankForLevel, RANKS } from './levels';
 import type { PlayerState } from './player';
 import { isInTutorial } from './tutorial';
 
@@ -155,6 +155,14 @@ export function houseBrand(level: number): HouseBrand {
 /** Nom de la Maison tel qu'on l'écrit dans les textes. */
 export function houseBrandName(level: number): string {
   return houseBrand(level) === 'pearl-inc' ? 'Pearl Inc.' : 'Maison Rose';
+}
+
+/**
+ * Étape de la Maison, celle du rang du joueur : 0 cabane (Pêcheur), 1 l'étage (Perlier), 2 la boutique repeinte (Artisan),
+ * 3 Pearl Inc. et son salon (Joaillier), 4 l'aile du musée (Maître joaillier), 5 la tour (Maison de haute joaillerie).
+ */
+export function houseStage(level: number): number {
+  return RANKS.indexOf(rankForLevel(level));
 }
 
 /** Nom de la Maison selon le rang (de la cabane à la boutique de luxe, cahier §8). */
