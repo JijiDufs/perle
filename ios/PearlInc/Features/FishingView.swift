@@ -93,7 +93,7 @@ struct FishingView: View {
             revealed: game.stage != .playing,
             time: time,
             look: SkinLook(skinId: game.player.equippedSkin),
-            shapeSeed: game.player.nextSerial
+            shapeSeed: game.shapeSeed
         )
     }
 }

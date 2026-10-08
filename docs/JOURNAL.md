@@ -4,6 +4,21 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite 9) · Jules · Claude Code · branche `jules/ios-app`
+
+Ouverture du bénitier en 3D ; forme stable de chaque huître pendant la révélation.
+
+**Fait**
+- Retour de Jules : le bénitier ouvert était bizarre (valve retournée en « ailes », puis valve écrasée à plat). La valve du haut est maintenant **modélisée en 3D** (`ClamArt.drawLidMesh`) : un dôme à gros plis, maillé (48 × 14 facettes), éclairé du haut à gauche, dessiné du plus loin au plus proche. Elle bascule en arrière en restant attachée le long du bord de la coquille, jusqu'à 72° : on voit son relief, puis le manteau et la perle. Fermée, c'est toujours le dessin 2D que Jules aime (fondu vers la 3D sur les premiers degrés).
+- Variété du bénitier : largeur, nombre (2,5 ou 3,5) et profondeur des ondulations tirés des phases, comme les bosses et la dentelure de l'huître.
+- Correction : la forme de l'huître changeait au moment de la révélation (la graine suivait le numéro de série, qui avance à l'ouverture). `GameModel.shapeSeed` ne change plus qu'à l'huître suivante.
+- `docs/skins.png` : ajout de « Chaque huître est unique » (4 tirages de l'huître et du bénitier) et des étapes de l'ouverture du bénitier (0° à 180°).
+
+**Fragile**
+- Le maillage 3D du bénitier (≈ 670 facettes triées à chaque image) : à surveiller sur iPhone avec le reste du dessin.
+
+---
+
 ## 2026-10-08 (suite 8) · Jules · Claude Code · branche `jules/ios-app`
 
 Les huîtres de l'app iOS reprennent la direction artistique de la webapp ; bénitier refait d'après une photo.

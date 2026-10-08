@@ -28,6 +28,9 @@ final class GameModel {
     private(set) var tooFast = false
     /// Dernier gain de poussière d'or, pour faire rebondir le compteur.
     private(set) var dustBump = 0
+    /// Graine de la forme de l'huître posée (bosses, dentelure, taches) : elle ne change pas
+    /// pendant la révélation, seulement quand l'huître suivante arrive.
+    private(set) var shapeSeed = 0
 
     @ObservationIgnored private var engine: OpeningEngine
     @ObservationIgnored private let thumb = ThumbSource()
@@ -41,6 +44,7 @@ final class GameModel {
         engine = OpeningEngine(tuning: catalog.tuning)
         thumb.onSample = { [weak self] sample, distance in self?.handle(sample, distance: distance) }
         thumb.onRelease = { [weak self] in self?.handleRelease() }
+        shapeSeed = player.nextSerial
         refresh()
     }
 
@@ -110,6 +114,7 @@ final class GameModel {
         cracked = false
         inFragileZone = false
         tooFast = false
+        shapeSeed = player.nextSerial
         stage = .playing
     }
 

@@ -34,21 +34,27 @@ let rosePearl = PearlLook(id: "rose", color: "#F2C4CC", glow: "#ffb3c6", shape: 
 struct Cell: View {
     let skin: SkinEntry
     let open: Bool
+    var seed = 7
+    var side: CGFloat = 300
+    /// Angle d'ouverture imposé (étapes de l'ouverture) ; nil : fermée ou grande ouverte.
+    var angle: Double?
 
     var body: some View {
         ZStack {
             LinearGradient(colors: [Palette.lagoonTop, Palette.lagoonMid, Palette.sand], startPoint: .top, endPoint: .bottom)
             Canvas { context, size in
+                let stepAngle = angle ?? (open ? 180 : 0)
                 OysterArt(
-                    angle: open ? 180 : 0, pearl: rosePearl, glowColor: rosePearl.glow, sizeMm: 7.5,
-                    cracked: false, trembles: false, revealed: open, time: 0.9,
-                    look: SkinLook(skinId: skin.id), shapeSeed: 7,
-                    length: open ? min(size.width * 0.36, size.height * 0.3) : min(size.width * 0.42, size.height * 0.5)
+                    angle: stepAngle, pearl: rosePearl, glowColor: rosePearl.glow, sizeMm: 7.5,
+                    cracked: false, trembles: false, revealed: stepAngle >= 140, time: 0.9,
+                    look: SkinLook(skinId: skin.id), shapeSeed: seed,
+                    length: angle != nil ? min(size.width * 0.4, size.height * 0.4)
+                        : open ? min(size.width * 0.36, size.height * 0.3) : min(size.width * 0.42, size.height * 0.5)
                 ).draw(&context, size: size)
             }
         }
-        .frame(width: 300, height: 300)
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .frame(width: side, height: side)
+        .clipShape(RoundedRectangle(cornerRadius: side * 0.07, style: .continuous))
     }
 }
 
@@ -76,6 +82,30 @@ struct Sheet: View {
                 }
             }
             Text("En haut : fermée, posée sur le lagon. En bas : ouverte, avec une perle rosée.")
+                .font(.system(size: 16)).foregroundStyle(.white.opacity(0.5))
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Chaque huître est unique").font(.system(size: 26, weight: .bold))
+                Text("À chaque huître, la coquille change un peu : bosses, dentelure, taches, algues et balanes ; pour le bénitier, la largeur et les ondulations.")
+                    .font(.system(size: 17)).foregroundStyle(.white.opacity(0.75))
+                HStack(spacing: 16) {
+                    ForEach([3, 11, 25, 40], id: \.self) { seed in Cell(skin: skins[0], open: false, seed: seed, side: 141) }
+                    ForEach([3, 11, 25, 40], id: \.self) { seed in Cell(skin: skins[1], open: false, seed: seed, side: 141) }
+                }
+            }
+            VStack(alignment: .leading, spacing: 12) {
+                Text("L’ouverture du bénitier").font(.system(size: 26, weight: .bold))
+                Text("La valve du haut, modélisée en 3D, bascule en arrière : on voit son relief, puis le manteau et la perle.")
+                    .font(.system(size: 17)).foregroundStyle(.white.opacity(0.75))
+                HStack(spacing: 16) {
+                    ForEach([0.0, 30, 60, 100, 140, 180], id: \.self) { step in
+                        VStack(spacing: 6) {
+                            Cell(skin: skins[1], open: false, side: 192, angle: step)
+                            Text("\(Int(step))°").font(.system(size: 15, weight: .semibold)).foregroundStyle(.white.opacity(0.6))
+                        }
+                    }
+                }
+            }
+            Text(" ")
                 .font(.system(size: 16)).foregroundStyle(.white.opacity(0.5))
         }
         .padding(48)

@@ -61,7 +61,7 @@ struct OysterArt {
         case .clam:
             ClamArt.drawBase(&c, hx, hy, L, ph, t)
             pearlCenter = ClamArt.pearlCenter(hx, hy, L)
-            interior = ClamArt.interior(hx, hy, L)
+            interior = ClamArt.interior(hx, hy, L, ph)
         }
 
         let flicker = isFind ? 0.8 + 0.2 * sin(t * 9) * sin(t * 2.3) : pearl?.id == "cursed" ? 0.75 + 0.25 * sin(t * 6) : 1
