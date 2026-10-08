@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="description" content="Pearl Inc. : le jeu où l'huître s'ouvre avec ton iPhone Duo. Essaie le prototype.">
+<title>Pearl Inc. pour iPhone Duo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg-soft:#f5f5f7; --ink:#1d1d1f; --soft:#6e6e73; --faint:#86868b; --line:rgba(0,0,0,.08);
+  --accent:#0071e3; --accent-ink:#ffffff; --warn:#c4402f; --pill:rgba(255,255,255,.86);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+/* Le site reste clair, comme une page produit : on garde la même palette en mode sombre. */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#ffffff;--bg-soft:#f5f5f7;--ink:#1d1d1f;--soft:#6e6e73;}}
+:root[data-theme="dark"]{--bg:#ffffff;--bg-soft:#f5f5f7;--ink:#1d1d1f;--soft:#6e6e73;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Inter",-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:var(--accent)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:720px;margin:0 auto;padding:0 24px}
+
+/* En-tête */
+.hero{text-align:center;padding:56px 0 24px}
+.icon{display:block;width:112px;height:112px;margin:0 auto 22px;filter:drop-shadow(0 12px 22px rgba(10,60,70,.22)) drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+.hero h1{margin:0;font-size:clamp(44px,7vw,72px);font-weight:700;letter-spacing:-0.035em;line-height:1}
+.tag{margin:14px auto 0;font-size:clamp(19px,2.4vw,24px);font-weight:500;letter-spacing:-0.015em;max-width:24ch}
+.status{margin:22px 0 0;font-size:15px;color:var(--soft)}
+.status strong{color:var(--ink);font-weight:600}
+.ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:12px 22px;font-size:16px;font-weight:600;text-decoration:none;border:0;letter-spacing:-0.01em}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{background:#0077ed}
+.btn-ghost{background:transparent;color:var(--accent);padding-left:6px;padding-right:6px}
+.btn-ghost:hover{text-decoration:underline}
+
+/* Démo */
+.demo{position:relative;height:min(88svh,860px);min-height:560px;margin:8px 0 0;overflow:hidden;background:var(--bg)}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.demo-label{position:absolute;left:0;right:0;top:14px;text-align:center;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:0;pointer-events:none}
+.dtop{position:absolute;top:40px;left:0;right:0;display:flex;justify-content:center;pointer-events:none}
+.dtop>*{pointer-events:auto}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--pill);border:0;border-radius:999px;padding:7px 14px 7px 11px;font-size:13px;font-weight:500;
+  box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 24px rgba(0,0,0,.07);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
+.pill .dot{width:11px;height:11px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.pill svg{width:9px;height:9px;opacity:.6}
+.sound{position:absolute;top:38px;right:20px;width:34px;height:34px;border-radius:50%;border:0;background:var(--pill);box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 24px rgba(0,0,0,.07);display:grid;place-items:center}
+.sound svg{width:16px;height:16px}
+.sound.off .waves{display:none}
+.hint{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:13px;color:var(--faint);margin:0;transition:opacity .6s;pointer-events:none}
+.hint.gone{opacity:0}
+#arc{position:absolute;left:0;top:0;width:120px;height:70px;pointer-events:none;opacity:0;transition:opacity .3s}
+#arc.show{opacity:1}
+#arc .track{fill:none;stroke:#c7c7cc;stroke-width:1.2;stroke-dasharray:2 4}
+#arc .fill{fill:none;stroke:#1d1d1f;stroke-width:1.4;stroke-linecap:round}
+#arc text{font:500 12px "Inter",-apple-system,system-ui,sans-serif;fill:var(--faint);text-anchor:middle}
+#state{position:absolute;left:0;top:0;font-size:13px;font-weight:500;white-space:nowrap;pointer-events:none;margin:0}
+#state.warn{color:var(--warn)}
+
+/* Barre du haut */
+.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.78);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.nav-in{max-width:1000px;margin:0 auto;padding:0 22px;height:48px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:600;font-size:15px;letter-spacing:-0.01em}
+.nav-r{display:flex;align-items:center;gap:12px}
+.lang{display:inline-flex;background:rgba(0,0,0,.06);border-radius:999px;padding:2px}
+.lang button{border:0;background:transparent;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:600;color:var(--soft);letter-spacing:.02em}
+.lang button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.nav-cta{font-size:13px;font-weight:500;text-decoration:none;background:var(--accent);color:#fff;border-radius:999px;padding:5px 12px}
+/* Essai */
+.trial{position:absolute;left:0;right:0;top:84px;text-align:center;font-size:12px;color:var(--faint);margin:0;pointer-events:none}
+.trial-end{position:absolute;inset:0;display:grid;place-items:center;padding:24px;background:rgba(255,255,255,.5);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);z-index:3;animation:fade .5s ease both}
+.trial-end[hidden]{display:none}
+.te-card{max-width:440px;text-align:center;background:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.9);border-radius:28px;padding:34px 30px 28px;box-shadow:0 20px 60px rgba(0,0,0,.12)}
+.te-kicker{margin:0;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.te-card h2{margin:8px 0 10px;font-size:40px;font-weight:700;letter-spacing:-0.035em;line-height:1.05}
+.te-text{margin:0 0 22px;color:var(--soft);font-size:16px}
+.te-small{margin:12px 0 0;font-size:12px;color:var(--faint)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+/* Sections */
+section.block{padding:72px 0}
+.block h2{margin:0 0 14px;font-size:clamp(30px,4vw,40px);font-weight:700;letter-spacing:-0.03em;line-height:1.1}
+.lead{font-size:19px;color:var(--soft);margin:0 0 14px;letter-spacing:-0.01em}
+.lead strong{color:var(--ink);font-weight:600}
+hr{border:0;border-top:1px solid var(--line);margin:0}
+.steps{list-style:none;padding:0;margin:34px 0 0;display:grid;gap:28px}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start}
+.num{width:44px;height:44px;border-radius:50%;background:var(--bg-soft);display:grid;place-items:center;font-weight:600;font-size:16px}
+.steps h3{margin:2px 0 4px;font-size:19px;font-weight:600;letter-spacing:-0.015em}
+.steps p{margin:0;color:var(--soft)}
+.soft{background:var(--bg-soft)}
+#pearls{list-style:none;padding:0;margin:30px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:18px 12px}
+#pearls li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}
+.p-name{font-size:14px;font-weight:600;letter-spacing:-0.01em}
+.p-meta{font-size:12px;color:var(--faint)}
+.duo-table{width:100%;border-collapse:collapse;margin-top:26px;font-size:15px}
+.duo-table th,.duo-table td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.duo-table th{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.notify{text-align:center}
+.notify .lead{max-width:34ch;margin-left:auto;margin-right:auto}
+.notify-note{font-size:13px;color:var(--faint);margin:14px 0 0;min-height:1.4em}
+footer{padding:36px 0 calc(env(safe-area-inset-bottom,0px) + 40px);font-size:12px;color:var(--faint);text-align:center}
+footer p{margin:4px 0}
+@media (max-width:600px){#pearls{grid-template-columns:repeat(2,1fr)}.hero{padding-top:52px}.duo-table{font-size:14px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hint,#arc{transition:none}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><span class="brand">Pearl Inc.</span><div class="nav-r"><div class="lang" role="group" aria-label="Langue / Language"><button type="button" data-lang="fr" aria-pressed="true" lang="fr">FR</button><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><a class="nav-cta" data-tally data-i18n="navCta" href="#notify">Préviens-moi</a></div></div></nav>
+<header class="hero wrap">
+  <svg class="icon" viewBox="0 0 120 120" role="img" data-i18n-aria="iconAria" aria-label="Icône de l'app Pearl Inc.">
+    <defs>
+      <clipPath id="sq"><path d="M120.00 60.00 L119.95 80.16 L119.79 86.57 L119.54 91.21 L119.17 94.94 L118.71 98.11 L118.13 100.86 L117.44 103.29 L116.65 105.47 L115.73 107.43 L114.69 109.20 L113.53 110.79 L112.23 112.23 L110.79 113.53 L109.20 114.69 L107.43 115.73 L105.47 116.65 L103.29 117.44 L100.86 118.13 L98.11 118.71 L94.94 119.17 L91.21 119.54 L86.57 119.79 L80.16 119.95 L60.00 120.00 L39.84 119.95 L33.43 119.79 L28.79 119.54 L25.06 119.17 L21.89 118.71 L19.14 118.13 L16.71 117.44 L14.53 116.65 L12.57 115.73 L10.80 114.69 L9.21 113.53 L7.77 112.23 L6.47 110.79 L5.31 109.20 L4.27 107.43 L3.35 105.47 L2.56 103.29 L1.87 100.86 L1.29 98.11 L0.83 94.94 L0.46 91.21 L0.21 86.57 L0.05 80.16 L0.00 60.00 L0.05 39.84 L0.21 33.43 L0.46 28.79 L0.83 25.06 L1.29 21.89 L1.87 19.14 L2.56 16.71 L3.35 14.53 L4.27 12.57 L5.31 10.80 L6.47 9.21 L7.77 7.77 L9.21 6.47 L10.80 5.31 L12.57 4.27 L14.53 3.35 L16.71 2.56 L19.14 1.87 L21.89 1.29 L25.06 0.83 L28.79 0.46 L33.43 0.21 L39.84 0.05 L60.00 0.00 L80.16 0.05 L86.57 0.21 L91.21 0.46 L94.94 0.83 L98.11 1.29 L100.86 1.87 L103.29 2.56 L105.47 3.35 L107.43 4.27 L109.20 5.31 L110.79 6.47 L112.23 7.77 L113.53 9.21 L114.69 10.80 L115.73 12.57 L116.65 14.53 L117.44 16.71 L118.13 19.14 L118.71 21.89 L119.17 25.06 L119.54 28.79 L119.79 33.43 L119.95 39.84Z"/></clipPath>
+      <linearGradient id="ig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3cc4cc"/><stop offset=".5" stop-color="#0f6f7d"/><stop offset=".78" stop-color="#3f8f8a"/><stop offset="1" stop-color="#d8c49b"/></linearGradient>
+      <radialGradient id="pg" cx=".36" cy=".32" r=".75"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#f3f0ea"/><stop offset="1" stop-color="#9c958d"/></radialGradient>
+      <radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6e0" stop-opacity=".95"/><stop offset="1" stop-color="#fff6e0" stop-opacity="0"/></radialGradient>
+      <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <linearGradient id="ray" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    </defs>
+    <g clip-path="url(#sq)">
+      <rect width="120" height="120" fill="url(#ig)"/>
+      <path d="M18 0h14L70 120H52z" fill="url(#ray)"/><path d="M62 0h9l30 120H88z" fill="url(#ray)" opacity=".7"/>
+      <circle cx="60" cy="64" r="40" fill="url(#glow)"/>
+      <circle cx="60" cy="64" r="21" fill="url(#pg)"/>
+      <ellipse cx="52.5" cy="55.5" rx="6.2" ry="3.6" transform="rotate(-35 52.5 55.5)" fill="#fff" opacity=".92"/>
+      <rect width="120" height="60" fill="url(#gloss)"/>
+    </g>
+    <path d="M120.00 60.00 L119.95 80.16 L119.79 86.57 L119.54 91.21 L119.17 94.94 L118.71 98.11 L118.13 100.86 L117.44 103.29 L116.65 105.47 L115.73 107.43 L114.69 109.20 L113.53 110.79 L112.23 112.23 L110.79 113.53 L109.20 114.69 L107.43 115.73 L105.47 116.65 L103.29 117.44 L100.86 118.13 L98.11 118.71 L94.94 119.17 L91.21 119.54 L86.57 119.79 L80.16 119.95 L60.00 120.00 L39.84 119.95 L33.43 119.79 L28.79 119.54 L25.06 119.17 L21.89 118.71 L19.14 118.13 L16.71 117.44 L14.53 116.65 L12.57 115.73 L10.80 114.69 L9.21 113.53 L7.77 112.23 L6.47 110.79 L5.31 109.20 L4.27 107.43 L3.35 105.47 L2.56 103.29 L1.87 100.86 L1.29 98.11 L0.83 94.94 L0.46 91.21 L0.21 86.57 L0.05 80.16 L0.00 60.00 L0.05 39.84 L0.21 33.43 L0.46 28.79 L0.83 25.06 L1.29 21.89 L1.87 19.14 L2.56 16.71 L3.35 14.53 L4.27 12.57 L5.31 10.80 L6.47 9.21 L7.77 7.77 L9.21 6.47 L10.80 5.31 L12.57 4.27 L14.53 3.35 L16.71 2.56 L19.14 1.87 L21.89 1.29 L25.06 0.83 L28.79 0.46 L33.43 0.21 L39.84 0.05 L60.00 0.00 L80.16 0.05 L86.57 0.21 L91.21 0.46 L94.94 0.83 L98.11 1.29 L100.86 1.87 L103.29 2.56 L105.47 3.35 L107.43 4.27 L109.20 5.31 L110.79 6.47 L112.23 7.77 L113.53 9.21 L114.69 10.80 L115.73 12.57 L116.65 14.53 L117.44 16.71 L118.13 19.14 L118.71 21.89 L119.17 25.06 L119.54 28.79 L119.79 33.43 L119.95 39.84Z" fill="none" stroke="rgba(0,0,0,.12)" stroke-width=".8"/>
+  </svg>
+  <h1>Pearl Inc.</h1>
+  <p class="tag" data-i18n-html="tag">L’huître s’ouvre avec ton iPhone&nbsp;Duo.</p>
+  <p class="status" data-i18n-html="status"><strong>Bientôt sur l’App Store</strong> · Jouable aussi sur tous les iPhone · Essaie-le juste en dessous</p>
+  <div class="ctas">
+    <a class="btn btn-primary" data-tally data-i18n="notifyBtn" href="#notify">Préviens-moi de la sortie</a>
+  </div>
+</header>
+
+<section class="demo" id="demo" data-i18n-aria="demoAria" aria-label="Prototype interactif">
+  <canvas id="scene" tabindex="0" data-i18n-aria="canvasAria" aria-label="iPhone Duo en 3D avec l'app Pearl Inc. Fais glisser l'iPhone vers la gauche, ou maintiens la flèche gauche, pour l'ouvrir."></canvas>
+  <p class="demo-label" data-i18n="demoLabel">Prototype interactif</p>
+  <div class="dtop"><button class="pill" id="colorBtn" data-i18n-aria="colorAria" aria-label="Changer le coloris"><span class="dot" id="swatch"></span><span>iPhone Duo · <span id="colorName">Star White</span></span><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  <button class="sound" id="soundBtn" aria-pressed="true" data-i18n-aria="soundOff" aria-label="Couper le son"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6h2.5L8 3v10L4.5 10H2z" fill="currentColor"/><g class="waves" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M10.5 5.5a3.5 3.5 0 0 1 0 5"/><path d="M12.3 3.7a6 6 0 0 1 0 8.6"/></g></svg></button>
+  <svg id="arc" viewBox="0 0 120 70" aria-hidden="true"><path class="track" d="M106 10 A46 46 0 0 1 14 10"/><path class="fill" id="arcFill" d=""/><text x="60" y="68" id="arcLabel">0°</text></svg>
+  <p id="state" aria-live="polite"></p>
+  <p class="trial" id="trial"></p>
+  <div class="trial-end" id="trialEnd" hidden>
+    <div class="te-card" role="dialog" aria-labelledby="teTitle">
+      <p class="te-kicker" data-i18n="teKicker">Fin de l’essai</p>
+      <h2 id="teTitle" data-i18n-html="teTitle">Convaincu&nbsp;?</h2>
+      <p class="te-text" data-i18n="teText">Tu as ouvert tes 5 huîtres d’essai. Le jeu complet arrive bientôt sur l’App Store, avec bien plus de fonctionnalités.</p>
+      <a class="btn btn-primary" data-tally data-i18n="notifyBtn" href="#notify">Préviens-moi de la sortie</a>
+      <p class="te-small" data-i18n="teSmall">Juste un e-mail, le jour du lancement.</p>
+    </div>
+  </div>
+  <p class="hint" id="hint" data-i18n="hint">Fais glisser l’iPhone vers la gauche pour l’ouvrir</p>
+</section>
+
+<hr>
+<section class="block wrap" id="overview">
+  <h2 data-i18n="ovTitle">Une huître. Un geste. Une perle.</h2>
+  <p class="lead" data-i18n-html="ovLead">Pearl Inc. est un jeu de collection où chaque huître s’ouvre <strong>avec la charnière de ton iPhone&nbsp;Duo</strong>. Doucement, la lumière filtre. Trop vite, la perle se fêle. Referme le téléphone, et la suivante t’attend.</p>
+  <ol class="steps">
+    <li><span class="num">1</span><div><h3 data-i18n="s1t">Fermé, l’huître t’attend</h3><p data-i18n="s1p">L’écran extérieur devient la coquille, posée sur le lagon. Les plus rares tremblent déjà.</p></div></li>
+    <li><span class="num">2</span><div><h3 data-i18n="s2t">Entrouvre, la lumière filtre</h3><p data-i18n="s2p">Sa couleur trahit la perle avant même de la voir. Une huître vide reste noire.</p></div></li>
+    <li><span class="num">3</span><div><h3 data-i18n="s3t">Doucement dans la zone fragile</h3><p data-i18n="s3p">Entre 20° et 110°, une ouverture trop rapide fêle la perle. La régularité du geste donne son lustre.</p></div></li>
+    <li><span class="num">4</span><div><h3 data-i18n="s4t">Ouvert, la carte se révèle</h3><p data-i18n="s4p">Taille, lustre, valeur, numéro de série unique : chaque perle rejoint ta collection.</p></div></li>
+  </ol>
+</section>
+
+<section class="block soft" id="collection">
+  <div class="wrap">
+    <h2 data-i18n="colTitle">Huit perles à collectionner.</h2>
+    <p class="lead" data-i18n="colLead">De la perle blanche à la perle maudite, chaque huître est un tirage. Les probabilités sont affichées dans le jeu, toujours.</p>
+    <ul id="pearls" aria-label="Les perles"></ul>
+  </div>
+</section>
+
+<section class="block wrap" id="everyiphone">
+  <h2 data-i18n="evTitle">Pensé pour le Duo. Jouable partout.</h2>
+  <p class="lead" data-i18n="evLead">Sur iPhone Duo, la charnière fait tout. Sur les autres iPhone, le même jeu se joue du pouce.</p>
+  <table class="duo-table">
+    <thead><tr><th scope="col" data-i18n="thGesture">Geste</th><th scope="col">iPhone Duo</th><th scope="col" data-i18n="thOther">Autres iPhone</th></tr></thead>
+    <tbody>
+      <tr><td data-i18n="r1a">Ouvrir l’huître</td><td data-i18n="r1b">Ouvrir le téléphone</td><td data-i18n="r1c">Glisser le pouce vers le haut</td></tr>
+      <tr><td data-i18n="r2a">Résistance</td><td data-i18n="r2b">Aimants et vibration</td><td data-i18n="r2c">Glissé freiné et vibration</td></tr>
+      <tr><td data-i18n="r3a">Huître suivante</td><td data-i18n="r3b">Refermer le téléphone</td><td data-i18n="r3c">Toucher la carte</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr>
+<section class="block wrap notify" id="notify">
+  <h2 data-i18n="nTitle">Sois là pour la première huître.</h2>
+  <p class="lead" data-i18n="nLead">Laisse ton adresse : on te prévient le jour du lancement, et les premiers inscrits auront une perle de bienvenue.</p>
+  <a class="btn btn-primary" data-tally data-i18n="notifyBtn" href="#notify">Préviens-moi de la sortie</a>
+  <p class="notify-note" id="notifyNote" aria-live="polite"></p>
+</section>
+
+<footer class="wrap">
+  <p data-i18n="foot0">Une création du studio MJHstudio.</p>
+  <p data-i18n="foot1">© 2026 Pearl Inc. Tous droits réservés.</p>
+  <p data-i18n="foot2">iPhone et iPhone Duo sont des marques d’Apple Inc. Pearl Inc. n’est pas affilié à Apple.</p>
+</footer>
+<script>
+/* Langue de la page (FR / EN) : la page et le prototype suivent toujours la même langue. */
+(function(){
+"use strict";
+const D={
+fr:{
+  title:'Pearl Inc. pour iPhone Duo',
+  metaDesc:'Pearl Inc. : le jeu où l\u2019huître s\u2019ouvre avec ton iPhone Duo. Essaie le prototype.',
+  navCta:'Préviens-moi', iconAria:'Icône de l\u2019app Pearl Inc.',
+  tag:'L\u2019huître s\u2019ouvre avec ton iPhone&nbsp;Duo.',
+  status:'<strong>Bientôt sur l\u2019App Store</strong> · Jouable aussi sur tous les iPhone · Essaie-le juste en dessous',
+  notifyBtn:'Préviens-moi de la sortie',
+  demoAria:'Prototype interactif', demoLabel:'Prototype interactif',
+  canvasAria:'iPhone Duo en 3D avec l\u2019app Pearl Inc. Fais glisser l\u2019iPhone vers la gauche, ou maintiens la flèche gauche, pour l\u2019ouvrir.',
+  colorAria:'Changer le coloris', soundOff:'Couper le son', soundOn:'Activer le son',
+  teKicker:'Fin de l\u2019essai', teTitle:'Convaincu&nbsp;?',
+  teText:'Tu as ouvert tes 5 huîtres d\u2019essai. Le jeu complet arrive bientôt sur l\u2019App Store, avec bien plus de fonctionnalités.',
+  teSmall:'Juste un e-mail, le jour du lancement.',
+  hint:'Fais glisser l\u2019iPhone vers la gauche pour l\u2019ouvrir',
+  hintTouch:'Glisse vers la gauche, ou garde le doigt appuyé, pour ouvrir',
+  ovTitle:'Une huître. Un geste. Une perle.',
+  ovLead:'Pearl Inc. est un jeu de collection où chaque huître s\u2019ouvre <strong>avec la charnière de ton iPhone&nbsp;Duo</strong>. Doucement, la lumière filtre. Trop vite, la perle se fêle. Referme le téléphone, et la suivante t\u2019attend.',
+  s1t:'Fermé, l\u2019huître t\u2019attend', s1p:'L\u2019écran extérieur devient la coquille, posée sur le lagon. Les plus rares tremblent déjà.',
+  s2t:'Entrouvre, la lumière filtre', s2p:'Sa couleur trahit la perle avant même de la voir. Une huître vide reste noire.',
+  s3t:'Doucement dans la zone fragile', s3p:'Entre 20° et 110°, une ouverture trop rapide fêle la perle. La régularité du geste donne son lustre.',
+  s4t:'Ouvert, la carte se révèle', s4p:'Taille, lustre, valeur, numéro de série unique : chaque perle rejoint ta collection.',
+  colTitle:'Huit perles à collectionner.',
+  colLead:'De la perle blanche à la perle maudite, chaque huître est un tirage. Les probabilités sont affichées dans le jeu, toujours.',
+  evTitle:'Pensé pour le Duo. Jouable partout.',
+  evLead:'Sur iPhone Duo, la charnière fait tout. Sur les autres iPhone, le même jeu se joue du pouce.',
+  thGesture:'Geste', thOther:'Autres iPhone',
+  r1a:'Ouvrir l\u2019huître', r1b:'Ouvrir le téléphone', r1c:'Glisser le pouce vers le haut',
+  r2a:'Résistance', r2b:'Aimants et vibration', r2c:'Glissé freiné et vibration',
+  r3a:'Huître suivante', r3b:'Refermer le téléphone', r3c:'Toucher la carte',
+  nTitle:'Sois là pour la première huître.',
+  nLead:'Laisse ton adresse : on te prévient le jour du lancement, et les premiers inscrits auront une perle de bienvenue.',
+  signupSoon:'Les inscriptions ouvrent très bientôt.',
+  foot0:'Une création du studio MJHstudio.',
+  foot1:'© 2026 Pearl Inc. Tous droits réservés.',
+  foot2:'iPhone et iPhone Duo sont des marques d\u2019Apple Inc. Pearl Inc. n\u2019est pas affilié à Apple.',
+  // Prototype
+  stGently:'Ouvre doucement…', stCrack:'Crac. La perle est fêlée.', stFast:'Trop vite !', stFragile:'Zone fragile', stMore:'Encore un peu…',
+  stNext:'Referme l\u2019iPhone pour la suivante',
+  closeIphone:'Referme l\u2019iPhone', toEndTrial:'pour terminer l\u2019essai', toNextOyster:'pour ouvrir l\u2019huître suivante',
+  myCollection:'Ma collection', odds:'PROBABILITÉS PAR HUÎTRE', back:'Retour à l\u2019huître', close:'Fermer',
+  cSize:'Taille', cLustre:'Lustre', cValue:'Valeur', cNo:'N°', cCracked:'Fêlée : valeur divisée par deux',
+  cvSoon:'À très vite', cvTrembles:'Elle tremble…', cvOpenMe:'Ouvre-moi', cvFullGame:'Le jeu complet arrive bientôt',
+  cvLast:'Dernière : ', cvOpenGently:'Ouvre l\u2019iPhone, doucement',
+  pearls:{
+    empty:['Huître vide','Rien. Elle te regarde, tu la regardes.'],
+    white:['Perle blanche','La classique. Ronde, sage, impeccable.'],
+    rose:['Perle rosée','Un reflet rose qu\u2019on ne voit qu\u2019à la bonne lumière.'],
+    baroque:['Perle baroque','Bosselée et unique. Personne n\u2019en a une pareille.'],
+    black:['Perle noire','Reflets aubergine et vert paon. Les connaisseurs se taisent.'],
+    golden:['Perle dorée','Elle chauffe un peu la paume. Sûrement une impression.'],
+    giant:['Perle géante','L\u2019huître n\u2019a pas fermé l\u2019œil depuis des années.'],
+    cursed:['Perle maudite','Elle était là avant l\u2019huître.']
+  }
+},
+en:{
+  title:'Pearl Inc. for iPhone Duo',
+  metaDesc:'Pearl Inc.: the game where the oyster opens with your iPhone Duo. Try the prototype.',
+  navCta:'Notify me', iconAria:'Pearl Inc. app icon',
+  tag:'The oyster opens with your iPhone&nbsp;Duo.',
+  status:'<strong>Coming soon to the App Store</strong> · Also playable on every iPhone · Try it right below',
+  notifyBtn:'Notify me at launch',
+  demoAria:'Interactive prototype', demoLabel:'Interactive prototype',
+  canvasAria:'3D iPhone Duo running the Pearl Inc. app. Drag the iPhone to the left, or hold the left arrow key, to open it.',
+  colorAria:'Change color', soundOff:'Mute', soundOn:'Unmute',
+  teKicker:'End of trial', teTitle:'Convinced?',
+  teText:'You\u2019ve opened your 5 trial oysters. The full game is coming soon to the App Store, with many more features.',
+  teSmall:'Just one email, on launch day.',
+  hint:'Drag the iPhone to the left to open it',
+  hintTouch:'Swipe left, or press and hold, to open',
+  ovTitle:'One oyster. One gesture. One pearl.',
+  ovLead:'Pearl Inc. is a collecting game where every oyster opens <strong>with the hinge of your iPhone&nbsp;Duo</strong>. Gently, and light seeps in. Too fast, and the pearl cracks. Close the phone, and the next one is waiting.',
+  s1t:'Closed, the oyster waits', s1p:'The outer screen becomes the shell, resting in the lagoon. The rarest ones are already trembling.',
+  s2t:'Ease it open, light seeps in', s2p:'Its glow gives the pearl away before you even see it. An empty oyster stays dark.',
+  s3t:'Gently through the fragile zone', s3p:'Between 20° and 110°, opening too fast cracks the pearl. A steady gesture gives it its lustre.',
+  s4t:'Open, the card is revealed', s4p:'Size, lustre, value, unique serial number: every pearl joins your collection.',
+  colTitle:'Eight pearls to collect.',
+  colLead:'From the white pearl to the cursed pearl, every oyster is a draw. The odds are always shown in the game.',
+  evTitle:'Made for the Duo. Playable everywhere.',
+  evLead:'On iPhone Duo, the hinge does it all. On other iPhones, the same game is played with your thumb.',
+  thGesture:'Gesture', thOther:'Other iPhones',
+  r1a:'Open the oyster', r1b:'Open the phone', r1c:'Swipe your thumb up',
+  r2a:'Resistance', r2b:'Magnets and haptics', r2c:'Damped swipe and haptics',
+  r3a:'Next oyster', r3b:'Close the phone', r3c:'Tap the card',
+  nTitle:'Be there for the first oyster.',
+  nLead:'Leave your email: we\u2019ll let you know on launch day, and early sign-ups get a welcome pearl.',
+  signupSoon:'Sign-ups open very soon.',
+  foot0:'Created by MJHstudio.',
+  foot1:'© 2026 Pearl Inc. All rights reserved.',
+  foot2:'iPhone and iPhone Duo are trademarks of Apple Inc. Pearl Inc. is not affiliated with Apple.',
+  stGently:'Open gently…', stCrack:'Crack. The pearl is cracked.', stFast:'Too fast!', stFragile:'Fragile zone', stMore:'A little more…',
+  stNext:'Close the iPhone for the next one',
+  closeIphone:'Close the iPhone', toEndTrial:'to end the trial', toNextOyster:'to open the next oyster',
+  myCollection:'My collection', odds:'ODDS PER OYSTER', back:'Back to the oyster', close:'Close',
+  cSize:'Size', cLustre:'Lustre', cValue:'Value', cNo:'No.', cCracked:'Cracked: value halved',
+  cvSoon:'See you soon', cvTrembles:'It\u2019s trembling…', cvOpenMe:'Open me', cvFullGame:'The full game is coming soon',
+  cvLast:'Last: ', cvOpenGently:'Open the iPhone, gently',
+  pearls:{
+    empty:['Empty oyster','Nothing. It stares at you, you stare at it.'],
+    white:['White pearl','The classic. Round, well-behaved, flawless.'],
+    rose:['Pink pearl','A pink sheen you only see in the right light.'],
+    baroque:['Baroque pearl','Lumpy and one of a kind. Nobody has one like it.'],
+    black:['Black pearl','Aubergine and peacock-green glints. Connoisseurs fall silent.'],
+    golden:['Golden pearl','It warms your palm a little. Surely just your imagination.'],
+    giant:['Giant pearl','The oyster hasn\u2019t slept a wink in years.'],
+    cursed:['Cursed pearl','It was here before the oyster.']
+  }
+}};
+const KEY='pearl-lang';
+function pick(){
+  try{const q=new URLSearchParams(location.search).get('lang');if(q==='fr'||q==='en')return q;}catch(e){}
+  try{const s=localStorage.getItem(KEY);if(s==='fr'||s==='en')return s;}catch(e){}
+  const n=(navigator.languages&&navigator.languages[0])||navigator.language||'fr';
+  return /^fr\b/i.test(n)?'fr':'en';
+}
+let lang=pick();const subs=[];
+const t=k=>(D[lang][k]!==undefined?D[lang][k]:D.fr[k]);
+function apply(){
+  document.documentElement.lang=lang;document.title=t('title');
+  const md=document.querySelector('meta[name="description"]');if(md)md.setAttribute('content',t('metaDesc'));
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t(el.dataset.i18nHtml);});
+  document.querySelectorAll('[data-i18n-aria]').forEach(el=>{el.setAttribute('aria-label',t(el.dataset.i18nAria));});
+  document.querySelectorAll('.lang [data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
+}
+function set(l){if(l===lang||!D[l])return;lang=l;try{localStorage.setItem(KEY,l);}catch(e){}apply();subs.forEach(f=>{try{f(l);}catch(e){}});}
+const fr=()=>lang==='fr';
+window.PearlI18n={
+  get lang(){return lang;}, t, set, onChange:f=>subs.push(f),
+  pearlName:p=>(D[lang].pearls[p.id]||[p.name])[0],
+  pearlFlavor:p=>(D[lang].pearls[p.id]||[0,p.flavor])[1],
+  crackedName:p=>{const n=(D[lang].pearls[p.id]||[p.name])[0];return fr()?n+' fêlée':'Cracked '+n.charAt(0).toLowerCase()+n.slice(1);},
+  dec:(v,d)=>{const s=v.toFixed(d);return fr()?s.replace('.',','):s;},
+  pct:p=>{const s=String(+(p*100).toFixed(1));return fr()?s.replace('.',',')+'\u00a0%':s+'%';},
+  trialLeft:n=>fr()?'Essai gratuit · '+n+(n>1?' huîtres restantes':' huître restante'):'Free trial · '+n+(n>1?' oysters left':' oyster left'),
+  found:(f,n)=>fr()?f+' sur '+n+' découvertes':f+' of '+n+' discovered',
+  treasure:(v,n)=>fr()?'Trésor : '+v+' points  ·  '+n+(n>1?' huîtres ouvertes':' huître ouverte'):'Treasure: '+v+' points  ·  '+n+(n===1?' oyster opened':' oysters opened')
+};
+function init(){apply();document.querySelectorAll('.lang [data-lang]').forEach(b=>b.addEventListener('click',()=>set(b.dataset.lang)));}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+"use strict";(()=>{var ne=Object.defineProperty;var ae=(t,e,r)=>e in t?ne(t,e,{enumerable:!0,configurable:!0,writable:!0,value:r}):t[e]=r;var S=(t,e,r)=>ae(t,typeof e!="symbol"?e+"":e,r);function G(t){let e=t.replace("#","");return[parseInt(e.slice(0,2),16),parseInt(e.slice(2,4),16),parseInt(e.slice(4,6),16)]}function T(t,e){let[r,n,a]=G(t);return`rgba(${r},${n},${a},${e})`}function D(t,e){return`rgb(${G(t).map(r=>Math.round(r*(1-e))).join(",")})`}var ie=(t,e,r)=>Math.min(r,Math.max(e,t));function N(t,e,r){let n=ie((r-t)/(e-t),0,1);return n*n*(3-2*n)}var k=Math.PI*2;function F(t){let e=t;return()=>(e=e*16807%2147483647)/2147483647}function V(t,e){let r=document.createElement("canvas");return r.width=Math.max(1,Math.round(t)),r.height=Math.max(1,Math.round(e)),[r,r.getContext("2d")]}function se(t){let[e,r]=V(t,t),n=r.createImageData(t,t),a=k/t;for(let s=0;s<t;s++)for(let l=0;l<t;l++){let i=Math.sin(l*a*3+1.7*Math.sin(s*a*2))+Math.sin(s*a*3+1.9*Math.sin(l*a*2+1)),o=Math.sin((l+s)*a*2+1.3*Math.sin((l-s)*a*1)),p=Math.max(0,1-Math.abs(i)*1.6)**3+.6*Math.max(0,1-Math.abs(o)*2.2)**4,c=(s*t+l)*4;n.data[c]=220,n.data[c+1]=255,n.data[c+2]=245,n.data[c+3]=Math.min(255,p*200)}return r.putImageData(n,0,0),e}var L=class{constructor(){S(this,"base",null);S(this,"vignette",null);S(this,"key","");S(this,"tile",se(192));S(this,"caustics",null);S(this,"bubbles",[]);S(this,"motes",[]);S(this,"horizon",0);S(this,"w",0);S(this,"h",0)}draw(e,r,n,a,s){let l=Math.round(s.y-s.size*.32),i=`${Math.round(r)}x${Math.round(n)}@${l}`;i!==this.key&&this.build(r,n,l,i),e.drawImage(this.base,0,0,r,n),this.drawSurface(e,a),this.drawRays(e,a),this.drawCaustics(e,a),this.drawSeaweed(e,a),this.drawFish(e,a),this.drawParticles(e,a);let o=e.createRadialGradient(s.x,s.y+s.size*.62,0,s.x,s.y+s.size*.62,s.size*1.05);o.addColorStop(0,"rgba(0, 30, 35, 0.42)"),o.addColorStop(1,"rgba(0, 30, 35, 0)"),e.save(),e.translate(0,s.y+s.size*.62),e.scale(1,.42),e.translate(0,-(s.y+s.size*.62)),e.fillStyle=o,e.fillRect(s.x-s.size*1.1,s.y-s.size*.6,s.size*2.2,s.size*2.6),e.restore()}drawOverlay(e,r,n){this.vignette&&e.drawImage(this.vignette,0,0,r,n)}build(e,r,n,a){this.key=a,this.w=e,this.h=r,this.horizon=n;let s=Math.min(window.devicePixelRatio||1,2),[l,i]=V(e*s,r*s);i.scale(s,s);let o=F(11),p=i.createLinearGradient(0,0,0,n);p.addColorStop(0,"#7fe3dc"),p.addColorStop(.18,"#2fb7bd"),p.addColorStop(.62,"#11808c"),p.addColorStop(1,"#0b5f6c"),i.fillStyle=p,i.fillRect(0,0,e,n+2);for(let[g,h]of[[.16,"#0f6c78"],[.07,"#0d6170"]]){i.fillStyle=h,i.beginPath(),i.moveTo(0,n);let v=0;for(;v<e;){let b=18+o()*46,x=n*g*(.4+o()*.9);i.quadraticCurveTo(v+b/2,n-x,v+b,n-x*.25*o()),v+=b}i.lineTo(e,n+4),i.lineTo(0,n+4),i.closePath(),i.fill();for(let b=0;b<4;b++){let x=o()*e,w=n-n*g*.6;i.strokeStyle=h,i.lineWidth=2;for(let O=-3;O<=3;O++)i.beginPath(),i.moveTo(x,w+6),i.quadraticCurveTo(x+O*4,w-8,x+O*7,w-16-o()*10),i.stroke()}}let c=i.createLinearGradient(0,n,0,r);c.addColorStop(0,"#2c8f8e"),c.addColorStop(.18,"#6fb3a0"),c.addColorStop(.55,"#c9c39a"),c.addColorStop(1,"#a8a07a"),i.fillStyle=c,i.fillRect(0,n,e,r-n),i.lineWidth=1.2;for(let g=2;g<26;g++){let h=g/26,v=n+(r-n)*h*h+4;i.strokeStyle=`rgba(255, 250, 225, ${.06+.1*h})`,i.beginPath();for(let b=-10;b<=e+10;b+=12){let x=v+Math.sin(b/(14+30*h)+g*1.3)*(1+3*h);b===-10?i.moveTo(b,x):i.lineTo(b,x)}i.stroke(),i.strokeStyle=`rgba(40, 70, 60, ${.05+.08*h})`,i.beginPath();for(let b=-10;b<=e+10;b+=12){let x=v+2+Math.sin(b/(14+30*h)+g*1.3)*(1+3*h);b===-10?i.moveTo(b,x):i.lineTo(b,x)}i.stroke()}for(let g=0;g<26;g++){let h=.15+o()*.85,v=n+(r-n)*h,b=o()*e,x=(1.5+o()*4)*(.5+h);i.fillStyle=o()>.5?`rgba(120, 110, 90, ${.35+h*.3})`:`rgba(240, 225, 200, ${.3+h*.4})`,i.beginPath(),i.ellipse(b,v,x*1.4,x*.8,o(),0,k),i.fill()}for(let[g,h,v]of[[e*.12,n+(r-n)*.78,13],[e*.88,n+(r-n)*.55,9]]){i.save(),i.translate(g,h),i.scale(1,.6),i.fillStyle="#e07a52",i.beginPath();for(let b=0;b<10;b++){let x=b/10*k-Math.PI/2,w=b%2?v*.42:v;i.lineTo(Math.cos(x)*w,Math.sin(x)*w)}i.closePath(),i.fill(),i.restore()}let d=i.createLinearGradient(0,n-n*.22,0,n+(r-n)*.22);d.addColorStop(0,"rgba(18, 120, 132, 0)"),d.addColorStop(.5,"rgba(24, 128, 138, 0.85)"),d.addColorStop(1,"rgba(40, 140, 140, 0)"),i.fillStyle=d,i.fillRect(0,n-n*.22,e,n*.22+(r-n)*.22),this.base=l;let[u,f]=V(e,r),y=f.createRadialGradient(e/2,r*.5,Math.min(e,r)*.35,e/2,r*.5,Math.max(e,r)*.8);y.addColorStop(0,"rgba(0, 20, 30, 0)"),y.addColorStop(1,"rgba(0, 20, 30, 0.55)"),f.fillStyle=y,f.fillRect(0,0,e,r),this.vignette=u,this.caustics=V(e/2,(r-n)/2);let m=F(5);this.bubbles=Array.from({length:14},()=>({x:m()*e,y:n+m()*(r-n),r:1.5+m()*3.5,speed:18+m()*30,phase:m()*k})),this.motes=Array.from({length:34},()=>({x:m()*e,y:m()*r,r:.6+m()*1.4,drift:4+m()*10,phase:m()*k}))}drawSurface(e,r){let{w:n}=this,a=this.horizon*.14;e.save(),e.globalCompositeOperation="lighter";for(let s=0;s<3;s++){e.strokeStyle=`rgba(230, 255, 250, ${.1-s*.025})`,e.lineWidth=2,e.beginPath();for(let l=-10;l<=n+10;l+=10){let i=a*(.25+s*.3)+Math.sin(l/38+r*(.9+s*.3)+s)*3+Math.sin(l/13-r*1.7)*1.2;l===-10?e.moveTo(l,i):e.lineTo(l,i)}e.stroke()}e.restore()}drawRays(e,r){let{w:n,horizon:a}=this,s=a+(this.h-a)*.45;e.save(),e.globalCompositeOperation="lighter";for(let l=0;l<6;l++){let i=Math.sin(r*.25+l*1.9)*n*.04,o=n*(.02+l*.19)+i,p=n*(.035+.02*Math.sin(l*3.1)),c=n*(.12+.05*Math.sin(l*2.3)),d=n*.16,u=.08+.05*Math.sin(r*.6+l*2.1),f=e.createLinearGradient(0,0,0,s);f.addColorStop(0,`rgba(255, 255, 225, ${u})`),f.addColorStop(.6,`rgba(220, 255, 240, ${u*.45})`),f.addColorStop(1,"rgba(220, 255, 240, 0)"),e.fillStyle=f,e.beginPath(),e.moveTo(o,0),e.lineTo(o+p,0),e.lineTo(o+p+d+c,s),e.lineTo(o+d-c*.2,s),e.closePath(),e.fill()}e.restore()}drawCaustics(e,r){if(!this.caustics)return;let[n,a]=this.caustics,s=n.width,l=n.height;a.clearRect(0,0,s,l);for(let[o,p,c,d]of[[6,1,1,.75],[5,-1,1.3,.55]]){let u=a.createPattern(this.tile,"repeat");u.setTransform(new DOMMatrix().translateSelf(r*o*p,r*o*.6).scaleSelf(c*.55,c*.3)),a.globalAlpha=d,a.fillStyle=u,a.fillRect(0,0,s,l)}a.globalAlpha=1,a.globalCompositeOperation="destination-in";let i=a.createLinearGradient(0,0,0,l);i.addColorStop(0,"rgba(0,0,0,0)"),i.addColorStop(.25,"rgba(0,0,0,0.6)"),i.addColorStop(1,"rgba(0,0,0,1)"),a.fillStyle=i,a.fillRect(0,0,s,l),a.globalCompositeOperation="source-over",e.save(),e.globalCompositeOperation="lighter",e.globalAlpha=.32,e.drawImage(n,0,this.horizon,this.w,this.h-this.horizon),e.restore()}drawSeaweed(e,r){let{w:n,h:a,horizon:s}=this,l=[[n*.04,a*.42,0,"#2f9a6a"],[n*.1,a*.3,1.3,"#3fb37a"],[n*.93,a*.36,2.1,"#2f9a6a"],[n*.985,a*.26,.7,"#46b985"],[n*.2,a*.14,3.1,"#5ac08a"]];for(let[i,o,p,c]of l){let d=Math.min(a,s+(a-s)*.95);e.save(),e.fillStyle=c,e.globalAlpha=.85,e.beginPath();let u=8,f=[],y=[];for(let m=0;m<=u;m++){let g=m/u,h=Math.sin(r*1.1+p+g*2.4)*14*g*g,v=i+h,b=d-o*g,x=7*(1-g*.85);f.push([v-x,b]),y.push([v+x,b])}e.moveTo(...f[0]);for(let m of f)e.lineTo(...m);for(let m of y.reverse())e.lineTo(...m);e.closePath(),e.fill(),e.strokeStyle=T("#d8ffd0",.18),e.lineWidth=1,e.beginPath();for(let m=0;m<=u;m++){let g=m/u,h=i+Math.sin(r*1.1+p+g*2.4)*14*g*g,v=d-o*g;m===0?e.moveTo(h,v):e.lineTo(h,v)}e.stroke(),e.restore()}}drawFish(e,r){let a=r%22;if(a>11)return;let s=Math.floor(r/22),l=s%2===0,i=a/11,{w:o,horizon:p}=this,c=l?-60+i*(o+120):o+60-i*(o+120),d=p*(.42+.18*Math.sin(s*1.7));e.save(),e.fillStyle="rgba(8, 70, 80, 0.55)";for(let u=0;u<6;u++){let f=c+(l?-1:1)*(u%3)*16+Math.sin(r*2+u)*3,y=d+Math.floor(u/3)*12+u%3*5+Math.sin(r*3+u*1.3)*2;e.save(),e.translate(f,y),l||e.scale(-1,1),e.beginPath(),e.ellipse(0,0,7,2.6,0,0,k),e.moveTo(-6,0),e.lineTo(-11,-3.2+Math.sin(r*12+u)*.8),e.lineTo(-11,3.2+Math.sin(r*12+u)*.8),e.closePath(),e.fill(),e.restore()}e.restore()}drawParticles(e,r){let{w:n,h:a,horizon:s}=this;e.save();for(let l of this.motes){let i=(l.x+Math.sin(r*.3+l.phase)*l.drift+r*3)%n,o=(l.y-r*l.drift*.6+a*4)%a;e.fillStyle=`rgba(235, 255, 245, ${.25+.25*Math.sin(r+l.phase)})`,e.beginPath(),e.arc(i,o,l.r,0,k),e.fill()}for(let l of this.bubbles){let i=a-s*.2,o=s+(a-s)*.9-((r*l.speed+l.phase*100)%i+i)%i,p=l.x+Math.sin(r*2+l.phase)*4,c=Math.min(1,Math.max(0,o/(s*.5)));e.strokeStyle=`rgba(240, 255, 255, ${.55*c})`,e.lineWidth=1,e.beginPath(),e.arc(p,o,l.r,0,k),e.stroke(),e.fillStyle=`rgba(255, 255, 255, ${.6*c})`,e.beginPath(),e.arc(p-l.r*.35,o-l.r*.35,l.r*.3,0,k),e.fill()}e.restore()}};function j(t){return[t()*6.3,t()*6.3,t()*6.3]}function R(t,e,r,n,a,s){let l=[],o=Math.cos(r),p=Math.sin(r);for(let c=0;c<=110;c++){let d=-1.42+2.84*c/110,u=n*Math.pow(Math.cos(d),.55)*(1+.06*Math.sin(d*3+a[0])+.04*Math.sin(d*7+a[1]));s&&(u*=1+s*Math.sin(d*38+a[2])*Math.pow(Math.cos(d),.3));let f=Math.cos(d)*u,y=Math.sin(d)*u*1.05;l.push([t+f*o-y*p,e+f*p+y*o])}return l}function P(t,e){t.beginPath(),t.moveTo(e[0][0],e[0][1]);for(let r=1;r<e.length;r++)t.lineTo(e[r][0],e[r][1]);t.closePath()}var le=[["#5a4a3c","#2a211b"],["#7b6853","#3e3229"],["#4a3f36","#221b17"],["#988267","#4f4236"],["#6a5a4b","#30271f"],["#ad9878","#5d4e3e"],["#5d5246","#2d261f"]],C=new Map;function oe(t){let e=Math.floor((t[0]*1e3+t[1]*100+t[2]*10)%2147483646)+1;return()=>(e=e*16807%2147483647)/2147483647}function ue(t,e,r,n){let a=oe(n),s=Math.cos(e),l=Math.sin(e),i=-r*.25,o=r*.15;le.forEach(([c,d],u)=>{let f=R(0,0,e,r*(1-u*.085),[n[0]+u*.2,n[1],n[2]+u],.045-u*.004);t.save(),t.translate(r*.006,r*.014),P(t,f),t.fillStyle="rgba(10, 6, 4, 0.35)",t.fill(),t.restore(),P(t,f);let y=t.createRadialGradient(i,o,r*.05,i,o,r*1.25);y.addColorStop(0,c),y.addColorStop(1,d),t.fillStyle=y,t.fill(),t.lineWidth=Math.max(1,r*.006),t.strokeStyle=`rgba(255, 238, 210, ${.16+u*.015})`,t.stroke()}),t.save(),P(t,R(0,0,e,r,n,.045)),t.clip();for(let c=0;c<22;c++){let d=-1.3+2.6*c/21+(a()-.5)*.05,u=Math.cos(d)*r*1.1,f=Math.sin(d)*r*1.1,y=u*s-f*l,m=u*l+f*s;t.strokeStyle="rgba(20, 12, 8, 0.16)",t.lineWidth=r*.008,t.beginPath(),t.moveTo(0,0),t.lineTo(y,m),t.stroke(),t.strokeStyle="rgba(255, 240, 220, 0.07)",t.lineWidth=r*.005,t.beginPath(),t.moveTo(r*.008,0),t.lineTo(y+r*.01,m),t.stroke()}for(let c=0;c<3;c++){let d=-1+a()*2,u=r*(.6+a()*.3),f=Math.cos(d)*u*s-Math.sin(d)*u*l,y=Math.cos(d)*u*l+Math.sin(d)*u*s,m=t.createRadialGradient(f,y,0,f,y,r*.22);m.addColorStop(0,"rgba(90, 140, 90, 0.32)"),m.addColorStop(1,"rgba(90, 140, 90, 0)"),t.fillStyle=m,t.fillRect(f-r*.25,y-r*.25,r*.5,r*.5)}for(let c=0;c<70;c++){let d=-1.35+a()*2.7,u=r*Math.sqrt(a())*.98,f=Math.cos(d)*u*s-Math.sin(d)*u*l,y=Math.cos(d)*u*l+Math.sin(d)*u*s;t.fillStyle=a()>.5?`rgba(255, 245, 225, ${.06+a()*.1})`:`rgba(15, 8, 5, ${.1+a()*.15})`,t.beginPath(),t.arc(f,y,r*(.004+a()*.01),0,Math.PI*2),t.fill()}for(let c=0;c<3;c++){let d=-1.1+a()*2.2,u=r*(.45+a()*.45),f=Math.cos(d)*u*s-Math.sin(d)*u*l,y=Math.cos(d)*u*l+Math.sin(d)*u*s,m=r*(.016+a()*.014);t.save(),t.translate(f,y),t.rotate(a()*Math.PI);let g=t.createRadialGradient(-m*.3,-m*.3,m*.1,0,0,m);g.addColorStop(0,"rgba(225, 214, 192, 0.9)"),g.addColorStop(1,"rgba(120, 108, 92, 0.85)"),t.fillStyle=g,t.beginPath();for(let h=0;h<12;h++){let v=h/12*Math.PI*2,b=m*(h%2?.86:1);t.lineTo(Math.cos(v)*b,Math.sin(v)*b*.85)}t.closePath(),t.fill(),t.strokeStyle="rgba(70, 58, 48, 0.6)",t.lineWidth=Math.max(.8,m*.18),t.beginPath(),t.moveTo(-m*.35,0),t.lineTo(m*.35,0),t.stroke(),t.restore()}let p=t.createRadialGradient(i,o,0,i,o,r*.7);p.addColorStop(0,"rgba(255, 250, 235, 0.16)"),p.addColorStop(1,"rgba(255, 250, 235, 0)"),t.fillStyle=p,t.fillRect(-r*1.2,-r*.2,r*2.4,r*1.5),t.restore()}function J(t,e,r,n,a,s){let l=Math.min(typeof window>"u"?1:window.devicePixelRatio||1,2),i=`${Math.round(a)}|${n.toFixed(3)}|${s.join(",")}|${l}`,o=C.get(i);if(!o){let p=R(0,0,n,a,s,.05),c=p.map(h=>h[0]),d=p.map(h=>h[1]),u=a*.06,f=Math.min(...c,0)-u,y=Math.min(...d,0)-u,m=document.createElement("canvas");m.width=Math.ceil((Math.max(...c,0)+u-f)*l),m.height=Math.ceil((Math.max(...d,0)+u-y)*l);let g=m.getContext("2d");g.scale(l,l),g.translate(-f,-y),ue(g,n,a,s),o={canvas:m,ox:-f,oy:-y,scale:l},C.size>8&&C.delete(C.keys().next().value),C.set(i,o)}t.drawImage(o.canvas,e-o.ox,r-o.oy,o.canvas.width/o.scale,o.canvas.height/o.scale)}function q(t,e,r,n,a,s,l){t.save(),P(t,R(e,r,n,a,s,0)),t.clip();let i=e+Math.cos(n)*a*.5,o=r+Math.sin(n)*a*.5,p=t.createRadialGradient(i,o,a*.05,i,o,a*.85);if(p.addColorStop(0,"#fdfaff"),p.addColorStop(.5,"#e7ddf2"),p.addColorStop(1,"#a99fbd"),t.fillStyle=p,t.fillRect(i-a,o-a,a*2,a*2),"createConicGradient"in t){let c=t.createConicGradient(l*.15+s[0],i,o),d=["#ffd1e8","#c9f2ff","#fff2c4","#d9ccff","#c4ffe9","#ffd1e8"];d.forEach((u,f)=>c.addColorStop(f/(d.length-1),u)),t.globalAlpha=.32,t.fillStyle=c,t.fillRect(i-a,o-a,a*2,a*2),t.globalAlpha=1}for(let c=0;c<6;c++)t.beginPath(),t.ellipse(e,r,a*(.35+c*.11),a*(.3+c*.1),n,-1.2,1.2),t.strokeStyle="rgba(255,255,255,.12)",t.lineWidth=a*.01,t.stroke();t.restore()}function $(t,e,r,n,a,s){let l=e+Math.cos(n)*a*.5,i=r+Math.sin(n)*a*.5,o=a*.34,p=a*.37;t.save(),t.translate(l,i),t.rotate(n),t.beginPath();for(let d=0;d<=140;d++){let u=d/140*Math.PI*2,f=1+.022*Math.sin(u*24+s[2])+.035*Math.sin(u*5);t.lineTo(Math.cos(u)*o*f,Math.sin(u)*p*f)}t.closePath();let c=t.createRadialGradient(-o*.2,-p*.2,o*.1,0,0,o*1.1);c.addColorStop(0,"#f4e8d2"),c.addColorStop(.7,"#d8c3a0"),c.addColorStop(1,"#a88f6d"),t.fillStyle=c,t.fill(),t.lineWidth=a*.01,t.strokeStyle="rgba(98,80,64,.55)",t.stroke();for(let d=1;d<4;d++)t.beginPath(),t.ellipse(-o*.1,0,o*(.45+d*.14),p*(.5+d*.13),0,-1.1,1.1),t.strokeStyle="rgba(120,95,70,.22)",t.lineWidth=a*.007,t.stroke();t.restore()}function _(t,e,r,n,a,s){if(!a.glow){t.fillStyle="rgba(110,92,74,.7)",t.beginPath(),t.arc(e+n*.4,r+n*.2,n*.13,0,Math.PI*2),t.fill();return}t.save();let l=t.createRadialGradient(e+n*.2,r+n*.3,n*.2,e+n*.2,r+n*.3,n*1.35);if(l.addColorStop(0,"rgba(60,40,30,.45)"),l.addColorStop(1,"rgba(60,40,30,0)"),t.fillStyle=l,t.fillRect(e-n*2,r-n*2,n*4,n*4),t.beginPath(),a.shape==="baroque"){for(let o=0;o<=48;o++){let p=o/48*Math.PI*2,c=1+.12*Math.sin(p*3+1)+.07*Math.sin(p*5+2);t.lineTo(e+Math.cos(p)*n*c,r+Math.sin(p)*n*c*1.08)}t.closePath()}else t.arc(e,r,n,0,Math.PI*2);let i=t.createRadialGradient(e-n*.35,r-n*.4,n*.05,e,r,n*1.08);i.addColorStop(0,"#ffffff"),i.addColorStop(.28,a.color),i.addColorStop(1,D(a.color,.5)),t.fillStyle=i,t.fill(),t.globalAlpha=.35,t.strokeStyle=a.glow,t.lineWidth=n*.08,t.stroke(),t.globalAlpha=1,t.beginPath(),t.ellipse(e-n*.35,r-n*.42,n*.22,n*.13,-.6,0,Math.PI*2),t.fillStyle="rgba(255,255,255,.85)",t.fill(),s&&(t.beginPath(),t.moveTo(e-n*.1,r-n*.9),t.lineTo(e+n*.12,r-n*.3),t.lineTo(e-n*.08,r+n*.1),t.lineTo(e+n*.2,r+n*.7),t.moveTo(e+n*.12,r-n*.3),t.lineTo(e+n*.55,r-n*.15),t.strokeStyle="rgba(40,24,20,.85)",t.lineWidth=n*.05,t.stroke()),t.restore()}function U(t,e,r,n,a,s,l=!0){if(!a||s<=.001)return;t.save(),t.globalCompositeOperation=l?"lighter":"screen";let i=t.createRadialGradient(e,r,0,e,r,n);i.addColorStop(0,T(a,s)),i.addColorStop(.4,T(a,s*.35)),i.addColorStop(1,T(a,0)),t.fillStyle=i,t.fillRect(e-n,r-n,n*2,n*2),t.restore()}var W=["\u2014","\u25C6","\u25C6\u25C6","\u25C6\u25C6\u25C6","\u2605","\u2605\u2605"],M=t=>({...t,rarity:W[t.tier]}),ce=[M({id:"toc",label:"Toc",tier:0,probability:.14,glow:null,metal:"#ff8fc4",metalName:"Plastique",gem:"#ff3d8b",suffix:"",carats:null,value:[.5,3],flavor:""}),M({id:"fantaisie",label:"Fantaisie",tier:1,probability:.24,glow:"#ffffff",metal:"#d9b56b",metalName:"Laiton",gem:"#eef6ff",suffix:"en strass",carats:null,value:[15,60],flavor:"\xC7a brille comme un vrai. De loin, la nuit."}),M({id:"argent",label:"Argent",tier:1,probability:.2,glow:"#e6f0ff",metal:"#d7dbe0",metalName:"Argent 925",gem:null,suffix:"en argent",carats:null,value:[60,250],flavor:"Sobre, \xE9l\xE9gant, offert sans arri\xE8re-pens\xE9e."}),M({id:"or",label:"Or",tier:2,probability:.14,glow:"#ffd27a",metal:"#e3b54d",metalName:"Or 18 ct",gem:null,suffix:"en or",carats:null,value:[400,1500],flavor:"Le poids rassurant de l'or 18 carats."}),M({id:"perles",label:"Perles",tier:2,probability:.09,glow:"#fff1d6",metal:"#e3b54d",metalName:"Or 18 ct",gem:null,suffix:"",carats:null,value:[600,2500],flavor:"Chaque perle sort d'une hu\xEEtre. Quelqu'un en a beaucoup ouvert."}),M({id:"saphir",label:"Saphir",tier:3,probability:.07,glow:"#5d86ff",metal:"#e8eaee",metalName:"Or blanc",gem:"#1f4fd1",suffix:"au saphir",carats:[.8,3.5],value:[1200,2200],flavor:"Un bleu de nuit profonde, taill\xE9 pour durer."}),M({id:"emeraude",label:"\xC9meraude",tier:3,probability:.05,glow:"#4dffb0",metal:"#e3b54d",metalName:"Or jaune",gem:"#13a36b",suffix:"\xE0 l'\xE9meraude",carats:[.8,3],value:[1800,3e3],flavor:"Verte comme une promesse, et aussi fragile."}),M({id:"rubis",label:"Rubis",tier:4,probability:.04,glow:"#ff4060",metal:"#e9b19a",metalName:"Or rose",gem:"#c8102e",suffix:"au rubis",carats:[.8,3],value:[3e3,5e3],flavor:"La pierre des d\xE9clarations qu'on ne retire pas."}),M({id:"diamant",label:"Diamant",tier:4,probability:.025,glow:"#bfefff",metal:"#eef0f3",metalName:"Platine",gem:"#f2fbff",suffix:"",carats:[.5,3],value:[6e3,11e3],flavor:"Pour toujours. Ou au moins jusqu'au prochain \xE9crin."}),M({id:"legende",label:"L\xE9gende",tier:5,probability:.005,glow:"#9ffcff",metal:"#eef0f3",metalName:"Platine",gem:"#7df3ff",suffix:"",carats:[40,45],value:[6e3,7e3],flavor:"Aucun registre ne dit d'o\xF9 il vient."})];var Q={sinceStarOrBetter:0};var A=[{id:"empty",name:"Hu\xEEtre vide",rarity:"\u2014",probability:.12,color:"#5b6b6b",glow:null,shape:"round",flavor:"Rien. Elle te regarde, tu la regardes.",baseValue:0,sizeMm:[0,0],trembles:!1,goldenOrBetter:!1,revealTier:0},{id:"white",name:"Perle blanche",rarity:"\u25C6",probability:.4,color:"#F3F0EA",glow:"#fff1d6",shape:"round",flavor:"La classique. Ronde, sage, impeccable.",baseValue:10,sizeMm:[5,7.5],trembles:!1,goldenOrBetter:!1,revealTier:0},{id:"rose",name:"Perle ros\xE9e",rarity:"\u25C6",probability:.22,color:"#F2C4CC",glow:"#ffb3c6",shape:"round",flavor:"Un reflet rose qu'on ne voit qu'\xE0 la bonne lumi\xE8re.",baseValue:18,sizeMm:[6,8.5],trembles:!1,goldenOrBetter:!1,revealTier:0},{id:"baroque",name:"Perle baroque",rarity:"\u25C6\u25C6",probability:.12,color:"#C9C4D8",glow:"#c9bcff",shape:"baroque",flavor:"Bossel\xE9e et unique. Personne n'en a une pareille.",baseValue:30,sizeMm:[7,11],trembles:!1,goldenOrBetter:!1,revealTier:1},{id:"black",name:"Perle noire",rarity:"\u25C6\u25C6\u25C6",probability:.08,color:"#33374a",glow:"#7f8cff",shape:"round",flavor:"Reflets aubergine et vert paon. Les connaisseurs se taisent.",baseValue:60,sizeMm:[9,13],trembles:!1,goldenOrBetter:!1,revealTier:2},{id:"golden",name:"Perle dor\xE9e",rarity:"\u2605",probability:.045,color:"#E2B04A",glow:"#ffc845",shape:"round",flavor:"Elle chauffe un peu la paume. S\xFBrement une impression.",baseValue:120,sizeMm:[10,14],trembles:!0,goldenOrBetter:!0,revealTier:3},{id:"giant",name:"Perle g\xE9ante",rarity:"\u2605\u2605",probability:.012,color:"#F6F2FF",glow:"#aef4ff",shape:"round",flavor:"L'hu\xEEtre n'a pas ferm\xE9 l'\u0153il depuis des ann\xE9es.",baseValue:300,sizeMm:[18,26],trembles:!0,goldenOrBetter:!0,revealTier:3},{id:"cursed",name:"Perle maudite",rarity:"\u2605\u2605",probability:.003,color:"#3a0f2a",glow:"#ff2f72",shape:"round",flavor:"Elle \xE9tait l\xE0 avant l'hu\xEEtre.",baseValue:666,sizeMm:[13,13],trembles:!0,goldenOrBetter:!0,revealTier:3}];function E(t){let e=A.find(r=>r.id===t);if(!e)throw new Error(`Perle inconnue : ${t}`);return e}function H(t,e){if(t.length<e.lustreMinSamples)return"C";let r=t.reduce((s,l)=>s+l,0)/t.length;if(r<=0)return"C";let n=t.reduce((s,l)=>s+(l-r)**2,0)/t.length,a=Math.sqrt(n)/r;return a<=e.lustreMaxVariationS?"S":a<=e.lustreMaxVariationA?"A":a<=e.lustreMaxVariationB?"B":"C"}var I=class{constructor(e,r=!1){this.tuning=e;this.crackProtected=r;S(this,"phase","closed");S(this,"angle",0);S(this,"velocity",0);S(this,"cracked",!1);S(this,"lustre",null);S(this,"window",[]);S(this,"openingVelocities",[])}get inFragileZone(){return this.angle>=this.tuning.fragileMinAngle&&this.angle<=this.tuning.fragileMaxAngle}push(e){if(this.phase==="revealed")return[];let r=[],n=this.tuning,a=this.phase==="opening"?Math.max(e.angle,n.popAngle):e.angle;return this.angle=Math.min(Math.max(a,0),180),this.updateVelocity({angle:this.angle,time:e.time}),this.phase==="closed"&&this.angle>0&&(this.phase="resisting"),this.phase==="resisting"&&this.angle>=n.popAngle?(this.phase="opening",r.push({type:"pop"}),this.window=[{angle:this.angle,time:e.time}],this.velocity=0,r):(this.phase==="opening"&&(this.window.length>=2&&this.inFragileZone&&this.openingVelocities.push(this.velocity),!this.crackProtected&&!this.cracked&&this.inFragileZone&&this.velocity>n.maxSafeVelocity&&(this.cracked=!0,r.push({type:"crack"})),this.angle>=n.revealAngle&&(this.phase="revealed",this.lustre=H(this.openingVelocities,n),r.push({type:"reveal",lustre:this.lustre,cracked:this.cracked}))),r)}release(){this.phase==="resisting"&&(this.phase="closed",this.angle=0),this.velocity=0,this.window=[]}updateVelocity(e){this.window.push(e);let r=e.time-this.tuning.velocityWindowMs;for(;this.window.length>2&&this.window[0].time<r;)this.window.shift();let n=this.window[0],a=(e.time-n.time)/1e3;this.velocity=a>0?(e.angle-n.angle)/a:0}};var B={popAngle:15,resistanceDistance:70,resistanceAngleRatio:.25,fullOpenDistance:260,resistanceTickDistance:18,fragileMinAngle:20,fragileMaxAngle:110,maxSafeVelocity:380,velocityWindowMs:60,revealAngle:140,autoOpenFromAngle:115,lustreMaxVariationS:.25,lustreMaxVariationA:.45,lustreMaxVariationB:.7,lustreMinSamples:4,revealSuspenseTier0Ms:250,revealSuspenseTier1Ms:700,revealSuspenseTier2Ms:1200,revealSuspenseTier3Ms:2e3,pityThreshold:25,oysterStockMax:10,oysterRechargeMinutes:20,glintMinAngle:55,glintMaxAngle:115,glintTolerance:6,glintSparkleRange:28,glintHoldMs:900,glintMaxVelocity:45,glintPerfectMultiplier:1.5,glintRareVariantChance:.12,glintRareVariantMultiplier:2,ecrinPityThreshold:20,oystersPerEcrin:8,expertiseDurationMs:2e4,expertiseHitRadius:.09,expertiseDwellMs:350,expertiseGoodRatio:.6666666666666666,expertiseBonusExcellent:.25,expertiseBonusGood:.12,dustTier0:1,dustTier1:2,dustTier2:5,dustTier3:12,dustTier4:40,dustTier5:120,dustBuyMultiplier:5,dustEcrinPrice:60,repOyster:10,repPerTier:5,repLustreS:10,repLustreA:5,repDiscovery:30,repEcrin:25,repPerfect:15,repExpertise:20,levelBaseXp:60,levelGrowthXp:15,levelGrowthPower:1.5,maxLevel:100,levelRewardOysters:3,levelRewardDust:15,levelEcrinEvery:3,achievementDustBronze:10,achievementDustSilver:30,achievementDustGold:80,achievementReputation:40,questsPerDay:3,questRewardDust:10,questRewardReputation:30,chapterRewardDust:20,chapterRewardReputation:20,dailyRewardReputation:15,atelierLevel:5,settingStartAt:.08,settingCompleteAt:.95,settingIdealMinMs:350,settingIdealMaxMs:1e3,settingMaxVariation:1.2,settingPerfectScore:.85,settingPinchDistance:140,repCraft:30};function Y(t,e){return[t.revealSuspenseTier0Ms,t.revealSuspenseTier1Ms,t.revealSuspenseTier2Ms,t.revealSuspenseTier3Ms][e]}var z={emptyOysters:0,crackFreeStreak:0,bestCrackFreeStreak:0,lustreS:0,perfectGlints:0,variants:0,melted:0,excellentCertificates:0,crafted:0,perfectSettings:0,fiveStars:0};var K={lastClaimDay:null,calendarIndex:0,streak:0,bestStreak:0,jokerUsedDay:null};var Z={sinceGoldenOrBetter:0};var Gt={draw:Z,currentOyster:null,nextSerial:1,oystersOpened:0,cards:[],stock:{count:B.oysterStockMax,lastRefillAt:0},ecrins:0,oystersSinceEcrin:0,jewelDraw:Q,currentEcrin:null,jewelCards:[],dust:0,reputation:0,rewardedLevel:1,stats:z,achievements:{},title:null,quests:null,chaptersRead:[],login:K,craftedCards:[]};function ee(t,e,r){let n=E(t);if(n.baseValue===0)return 0;let[a,s]=n.sizeMm,l=e/((a+s)/2);return Math.round(n.baseValue*l*(r?.5:1))}var te={empty:{colors:["#c9cfcf","#7d8889"],dark:!1},white:{colors:["#f1edf4","#bdb5c9"],dark:!1},rose:{colors:["#f1edf4","#bdb5c9"],dark:!1},baroque:{colors:["#e6defa","#a698cf"],dark:!1},black:{colors:["#5b5f86","#1d2033"],dark:!0},golden:{colors:["#f7dc8c","#b07d1c"],dark:!1},giant:{colors:["#ffd6f0","#7fd6ff"],dark:!1},cursed:{colors:["#5a1238","#12030b"],dark:!0}};function re(t){return`#${String(t).padStart(6,"0")}`}window.PerleArt={Lagoon:L,drawShellExterior:J,drawNacre:q,drawFlesh:$,shellOutline:R,tracePath:P,randomPhases:j,drawPearl:_,drawGlow:U,smoothstep:N,rgba:T,shade:D,PEARLS:A,pearlById:E,OpeningEngine:I,DEFAULT_TUNING:B,revealSuspenseMs:Y,pearlValue:ee,CARD_FRAMES:te,serialLabel:re};})();
+
+</script>
+<script>
+(function(){
+"use strict";
+const A=window.PerleArt, TUN=A.DEFAULT_TUNING;
+const $=id=>document.getElementById(id);
+const I=window.PearlI18n,t_=k=>I.t(k),pn=p=>I.pearlName(p),pf=p=>I.pearlFlavor(p);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), smooth=A.smoothstep;
+const SERIF='"Inter", -apple-system, "SF Pro Display", system-ui, sans-serif', SANS='"Inter", -apple-system, "SF Pro Text", system-ui, sans-serif';
+
+/* ---------- Audio ---------- */
+let actx=null,muted=false;
+function ensureAudio(){if(!actx){try{actx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(actx&&actx.state==='suspended')actx.resume();}
+function noise(dur,freq,gain){if(!actx||muted)return;const len=Math.max(1,Math.floor(actx.sampleRate*dur)),b=actx.createBuffer(1,len,actx.sampleRate),d=b.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);const s=actx.createBufferSource();s.buffer=b;const f=actx.createBiquadFilter();f.type='bandpass';f.frequency.value=freq;f.Q.value=2.5;
+  const g=actx.createGain();g.gain.value=gain;s.connect(f);f.connect(g);g.connect(actx.destination);s.start();}
+function chime(p){if(!actx||muted)return;const tier=p.revealTier;const notes=p.id==='cursed'?[220,233,311,207]:!p.glow?[330,262]:[523,659,784,988,1175,1568].slice(0,2+tier+ (tier>=3?1:0));
+  notes.forEach((fq,i)=>{const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+i*0.09;o.type=p.id==='cursed'?'sawtooth':'sine';o.frequency.value=fq;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(p.id==='cursed'?0.05:0.11,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.9);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+1);});}
+$('soundBtn').addEventListener('click',e=>{muted=!muted;e.currentTarget.setAttribute('aria-pressed',String(!muted));e.currentTarget.setAttribute('aria-label',t_(muted?'soundOn':'soundOff'));e.currentTarget.classList.toggle('off',muted);});
+
+/* ---------- Écrans (dessin de l'app Pearl Inc.) ---------- */
+const IW=1420,IH=1010,HW=IW/2,CW=560,CH=809;
+const inner=document.createElement('canvas');inner.width=IW;inner.height=IH;const ic=inner.getContext('2d');
+const cover=document.createElement('canvas');cover.width=CW;cover.height=CH;const cc=cover.getContext('2d');
+const lagoonIn=new A.Lagoon(),lagoonCover=new A.Lagoon();
+
+/* ---------- État de jeu ---------- */
+let pearl=null,sizeMm=6,phases=A.randomPhases(Math.random),engine=null,stickyCrack=false,mode='armed';
+const TRIAL=5,TKEY='perle-trial-v1';let trialUsed=0;try{trialUsed=+(localStorage.getItem(TKEY)||0);}catch(e){}
+function renderTrial(){const left=Math.max(0,TRIAL-trialUsed);document.getElementById('trial').textContent=left?I.trialLeft(left):'';}
+/* « Préviens-moi de la sortie » sur la fin d'essai : 5 nouvelles huîtres. */
+function restartTrial(){trialUsed=0;try{localStorage.setItem(TKEY,'0');}catch(e){}renderTrial();
+  document.getElementById('trialEnd').hidden=true;hTarget=h=prevH=0;newOyster();lastPearl=null;
+  const hi=document.getElementById('hint');hi.classList.remove('gone');canvas.focus({preventScroll:true});}
+document.querySelector('#trialEnd [data-tally]').addEventListener('click',e=>{
+  if(e.currentTarget.target!=='_blank')e.preventDefault(); // sans formulaire, on reste sur le prototype
+  restartTrial();});
+function endTrial(){mode='ended';hTarget=0;document.getElementById('trialEnd').hidden=false;document.getElementById('hint').classList.add('gone');}
+const KEY='perle-pub-v1';let coll={},treasure=0;
+try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);coll=d.coll||{};treasure=d.treasure||0;}}catch(e){}
+const saveColl=()=>{try{localStorage.setItem(KEY,JSON.stringify({coll,treasure}));}catch(e){}};
+let colOpen=false,colSel=null;
+let reveal=null,revealAt=0,suspenseMs=0,cardT=0,flashAt=0,popShakeUntil=0,serial=0,pity=0,opened=0,lastPearl=null;
+function roll(){
+  let pool=A.PEARLS; if(pity>=TUN.pityThreshold-1)pool=pool.filter(p=>p.goldenOrBetter);
+  let x=Math.random()*pool.reduce((a,p)=>a+p.probability,0);
+  for(const p of pool){if((x-=p.probability)<=0)return p;} return pool[pool.length-1];
+}
+function newOyster(){colOpen=false;colSel=null;
+  pearl=roll();sizeMm=pearl.sizeMm[0]+Math.random()*(pearl.sizeMm[1]-pearl.sizeMm[0]);
+  phases=A.randomPhases(Math.random);engine=new A.OpeningEngine(TUN);stickyCrack=false;mode='armed';reveal=null;cardT=0;flashAt=0;
+}
+function onReveal(lustre,cracked){
+  mode='revealed';opened++;serial++;trialUsed++;try{localStorage.setItem(TKEY,String(trialUsed));}catch(e){}renderTrial();pity=pearl.goldenOrBetter?0:pity+1;
+  const crackedPearl=cracked&&pearl.glow!==null;
+  reveal={lustre,cracked:crackedPearl,value:A.pearlValue(pearl.id,sizeMm,crackedPearl),serial,size:sizeMm,show:false};
+  const e=coll[pearl.id]||{n:0};e.n++;
+  const rec={lustre:reveal.lustre,cracked:crackedPearl,value:reveal.value,serial,size:sizeMm};
+  if(!e.best||rec.value>e.best.value||(!pearl.glow&&!e.best))e.best=rec;coll[pearl.id]=e;treasure+=reveal.value;saveColl();
+  revealAt=performance.now();suspenseMs=reduce?150:A.revealSuspenseMs(TUN,pearl.revealTier);
+  noise(0.4,600,0.12);
+  setTimeout(()=>{if(!reveal)return;if(pearl.revealTier===3&&!reduce)flashAt=performance.now();chime(pearl);reveal.show=true;cardT=0;lastPearl=pearl;},suspenseMs);
+}
+
+/* ---------- Verre dépoli (glassmorphism) ---------- */
+const mid=document.createElement('canvas');mid.width=Math.round(IW/4);mid.height=Math.round(IH/4);const mc=mid.getContext('2d');
+const blurC=document.createElement('canvas');blurC.width=Math.round(IW/14);blurC.height=Math.round(IH/14);const bc=blurC.getContext('2d');
+mc.imageSmoothingQuality='high';bc.imageSmoothingQuality='high';
+/** Copie floutée de l'écran tel qu'il est dessiné à cet instant (réduction en deux temps). */
+const FILTER_OK=(()=>{try{const x=document.createElement('canvas').getContext('2d');if(!('filter' in x))return false;x.filter='blur(2px)';return x.filter==='blur(2px)';}catch(e){return false;}})();
+/** Copie floutée d'une toile dans une plus petite (filtre natif, sinon double réduction). */
+function blurInto(dctx,dst,src,px,tinyCanvas,tinyCtx){
+  dctx.clearRect(0,0,dst.width,dst.height);
+  if(FILTER_OK){const m=px*2;dctx.filter='blur('+px+'px)';dctx.drawImage(src,-m,-m,dst.width+2*m,dst.height+2*m);dctx.filter='none';}
+  else{tinyCtx.clearRect(0,0,tinyCanvas.width,tinyCanvas.height);tinyCtx.drawImage(src,0,0,tinyCanvas.width,tinyCanvas.height);dctx.imageSmoothingEnabled=true;dctx.drawImage(tinyCanvas,0,0,dst.width,dst.height);}
+}
+function snapshot(){blurInto(mc,mid,inner,7,blurC,bc);}
+/** Panneau de verre : arrière-plan flouté, voile clair, reflet en haut, liseré lumineux. */
+function glassPanel(c,x,y,w,hh,r,tint){
+  c.save();c.shadowColor='rgba(0,0,0,.22)';c.shadowBlur=28;c.shadowOffsetY=8;rr(c,x,y,w,hh,r);c.fillStyle='rgba(255,255,255,.04)';c.fill();c.restore();
+  c.save();rr(c,x,y,w,hh,r);c.clip();c.imageSmoothingEnabled=true;c.drawImage(mid,0,0,IW,IH);
+  c.fillStyle=tint||'rgba(255,255,255,.2)';c.fillRect(x,y,w,hh);
+  const g=c.createLinearGradient(x,y,x,y+hh);g.addColorStop(0,'rgba(255,255,255,.32)');g.addColorStop(.45,'rgba(255,255,255,.04)');g.addColorStop(1,'rgba(255,255,255,.1)');c.fillStyle=g;c.fillRect(x,y,w,hh);c.restore();
+  c.save();rr(c,x+1,y+1,w-2,hh-2,r-1);c.lineWidth=2;const e=c.createLinearGradient(x,y,x+w,y+hh);e.addColorStop(0,'rgba(255,255,255,.75)');e.addColorStop(.5,'rgba(255,255,255,.18)');e.addColorStop(1,'rgba(255,255,255,.45)');c.strokeStyle=e;c.stroke();c.restore();
+}
+/** Pastille de verre avec un texte, centrée en (cx, cy). */
+function glassPill(c,cx,cy,text,warn){c.font='600 32px '+SANS;const w=c.measureText(text).width+76,hh=74;glassPanel(c,cx-w/2,cy-hh/2,w,hh,hh/2,warn?'rgba(255,120,100,.28)':null);
+  c.textAlign='center';c.fillStyle='#fff';c.shadowColor='rgba(0,0,0,.25)';c.shadowBlur=6;c.fillText(text,cx,cy+11);c.shadowBlur=0;}
+function stateText(){
+  if(engine.phase==='closed'||engine.phase==='resisting')return [t_('stGently'),false];
+  if((engine.cracked||stickyCrack)&&pearl.glow)return [t_('stCrack'),true];
+  if(engine.inFragileZone&&engine.velocity>TUN.maxSafeVelocity*0.6)return [t_('stFast'),true];
+  if(engine.inFragileZone)return [t_('stFragile'),false];
+  return [t_('stMore'),false];
+}
+
+/* ---------- Carte (style de l'app) ---------- */
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function wrap(c,txt,x,y,maxW,lh){const words=txt.split(' ');let line='';for(const w of words){const t=line?line+' '+w:w;if(c.measureText(t).width>maxW&&line){c.fillText(line,x,y);line=w;y+=lh;}else line=t;}if(line)c.fillText(line,x,y);}
+function drawCard(c,cx,cy,s,t,p,r){
+  const fr=A.CARD_FRAMES[p.id],dark=fr.dark,ch=690*s,cw=ch*63/88,x=cx-cw/2,y=cy-ch/2;
+  c.save();c.shadowColor='rgba(0,0,0,.45)';c.shadowBlur=44*s;c.shadowOffsetY=18*s;
+  rr(c,x,y,cw,ch,30*s);const g=c.createLinearGradient(x,y,x+cw,y+ch);g.addColorStop(0,fr.colors[0]);g.addColorStop(1,fr.colors[1]);c.fillStyle=g;c.fill();
+  c.shadowColor='transparent';c.save();rr(c,x,y,cw,ch,30*s);c.clip();
+  const ink=dark?'#eef0ff':'#1b2326';c.fillStyle=ink;c.textBaseline='alphabetic';
+  c.textAlign='left';c.font='600 '+(42*s)+'px '+SERIF;c.fillText(r.cracked?I.crackedName(p):pn(p),x+28*s,y+66*s,cw-150*s);
+  c.textAlign='right';c.font='600 '+(30*s)+'px '+SANS;c.fillText(p.rarity,x+cw-28*s,y+64*s);
+  const ax=x+22*s,ay=y+90*s,aw=cw-44*s,ah=ch*0.5;
+  rr(c,ax,ay,aw,ah,20*s);const ag=c.createRadialGradient(ax+aw/2,ay+ah*0.55,10,ax+aw/2,ay+ah*0.55,aw*0.75);
+  if(dark){ag.addColorStop(0,'#3b3f5c');ag.addColorStop(1,'#14161f');}else{ag.addColorStop(0,'#fdfaff');ag.addColorStop(0.5,'#e3daf0');ag.addColorStop(1,'#b2a8c4');}
+  c.fillStyle=ag;c.fill();
+  if(p.glow){A.drawGlow(c,ax+aw/2,ay+ah/2,aw*0.5,p.glow,0.55);A.drawPearl(c,ax+aw/2,ay+ah/2,aw*(p.id==='giant'?0.2:0.15),p,r.cracked);}
+  else{c.setLineDash([10*s,10*s]);c.lineWidth=3*s;c.strokeStyle='rgba(30,40,40,.35)';c.beginPath();c.arc(ax+aw/2,ay+ah/2,aw*0.17,0,7);c.stroke();c.setLineDash([]);}
+  if(p.glow){const sy=ay+ah+22*s,cols=[[t_('cSize'),I.dec(r.size,1)+' mm'],[t_('cLustre'),r.lustre],[t_('cValue'),String(r.value)],[t_('cNo'),A.serialLabel(r.serial)]];
+    const bw=(aw-30*s)/4;cols.forEach((k,i)=>{const bx=ax+i*(bw+10*s);c.textAlign='left';c.fillStyle=ink;c.globalAlpha=.7;c.font='500 '+(20*s)+'px '+SANS;c.fillText(k[0],bx,sy+22*s);
+      c.globalAlpha=1;c.font='700 '+(27*s)+'px '+SANS;c.fillText(k[1],bx,sy+56*s,bw);});
+    c.font=(24*s)+'px '+SANS;c.globalAlpha=.88;wrap(c,pf(p),ax,sy+108*s,aw,33*s);c.globalAlpha=1;
+    if(r.cracked){c.fillStyle=dark?'#ffb3a6':'#8a2a1e';c.font='700 '+(23*s)+'px '+SANS;c.fillText(t_('cCracked'),ax,y+ch-30*s);}}
+  else{c.textAlign='center';c.fillStyle=ink;c.font=(26*s)+'px '+SANS;wrap(c,pf(p),cx,ay+ah+80*s,aw,34*s);}
+  if(p.revealTier>=2&&!r.cracked&&p.glow){const q=((t*0.35)%1.6)-0.3,hg=c.createLinearGradient(x,y,x+cw,y+ch),st=v=>clamp(v,0,1);
+    hg.addColorStop(st(q-0.15),'rgba(255,255,255,0)');hg.addColorStop(st(q-0.05),'rgba(255,120,200,.45)');hg.addColorStop(st(q),'rgba(120,240,255,.5)');hg.addColorStop(st(q+0.06),'rgba(255,240,120,.45)');hg.addColorStop(st(q+0.16),'rgba(255,255,255,0)');
+    c.globalCompositeOperation='overlay';c.fillStyle=hg;c.fillRect(x,y,cw,ch);c.globalCompositeOperation='source-over';}
+  c.restore();c.restore();
+}
+
+function drawInner(t,now){
+  const c=ic,L=HW*0.86,ax=HW,ay=IH/2;
+  let jx=0,jy=0;
+  if(pearl.trembles&&mode==='armed'&&engine.phase==='closed'&&t%2.4<0.45&&!reduce){jx=(Math.random()-.5)*6;jy=(Math.random()-.5)*4;}
+  if(now<popShakeUntil)jy+=(Math.random()-.5)*5;
+  lagoonIn.draw(c,IW,IH,t,{x:ax,y:ay,size:L*0.75});
+  const hx=ax+jx,hy=ay+jy;
+  // Valve gauche (couvercle) et valve droite (fond), charnière de l'huître = pli de l'écran.
+  A.drawShellExterior(c,hx,hy,Math.PI,L*0.98,phases);
+  A.drawNacre(c,hx,hy,Math.PI,L*0.98*0.88,phases,t);
+  A.drawShellExterior(c,hx,hy,0,L,phases);
+  A.drawNacre(c,hx,hy,0,L*0.88,phases,t);
+  A.drawFlesh(c,hx,hy,0,L,phases);
+  const px=hx+L*0.5,py=hy;let prad=L*(0.05+sizeMm*0.0055);
+  const busy=mode==='revealed';
+  const suspense=busy?smooth(0,Math.max(suspenseMs,1),now-revealAt):0;
+  const pulse=pearl.id==='cursed'?0.75+0.25*Math.sin(t*6):1;
+  if(busy&&!reveal.show)prad*=1+0.1*suspense*Math.max(0,Math.sin(t*(6+pearl.revealTier*3)));
+  const cracked=engine.cracked||stickyCrack;
+  A.drawPearl(c,px,py,prad,pearl,cracked);
+  const dim=busy?0:1-smooth(4,140,h);
+  if(dim>0.001){c.save();c.fillStyle='rgba(0,6,8,'+(dim*0.94)+')';
+    A.tracePath(c,A.shellOutline(hx,hy,0,L*0.88,phases,0));c.fill();A.tracePath(c,A.shellOutline(hx,hy,Math.PI,L*0.98*0.88,phases,0));c.fill();c.restore();}
+  const strength=[0.55,0.7,0.85,1][pearl.revealTier]*pulse*(cracked?0.35:1);
+  A.drawGlow(c,px,py,prad*(4+pearl.revealTier*0.8),pearl.glow,(busy?1:smooth(1,25,h))*strength,false);
+  lagoonIn.drawOverlay(c,IW,IH);
+  if(busy&&!reveal.show)A.drawGlow(c,px,py,L*(1.4+pearl.revealTier*0.5),pearl.glow,suspense*0.5*pulse,false);
+  // Verre dépoli pendant l'ouverture : le couvercle reste givré tant qu'il n'est pas bien ouvert, comme sur le Duo.
+  const frost=0; // coquille nette pendant l'ouverture
+  if(frost>0.01){snapshot();c.save();c.beginPath();c.rect(0,0,HW,IH);c.clip();c.globalAlpha=frost;c.imageSmoothingEnabled=true;c.drawImage(mid,0,0,IW,IH);
+    c.fillStyle='rgba(235,248,255,.16)';c.fillRect(0,0,HW,IH);const sh=c.createLinearGradient(0,0,HW,0);sh.addColorStop(0,'rgba(255,255,255,.18)');sh.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=sh;c.fillRect(0,0,HW,IH);c.restore();}
+  if(busy&&reveal.show&&colOpen){drawCollection(c,t);}
+  else if(busy&&reveal.show){
+    c.fillStyle='rgba(2,20,26,.3)';c.fillRect(0,0,IW,IH);
+    cardT=Math.min(1,cardT+frameDt*1.7);const e=1+2.2*Math.pow(cardT-1,3)+1.2*Math.pow(cardT-1,2);
+    drawCard(c,HW*1.5,IH/2,Math.max(0.01,e),t,pearl,reveal);
+    snapshot();
+    glassPanel(c,HW/2-270,IH*0.33,540,170,44);
+    c.textAlign='center';c.fillStyle='#fff';c.font='700 46px '+SERIF;c.fillText(t_('closeIphone'),HW/2,IH*0.33+76);
+    c.font='500 28px '+SANS;c.fillStyle='rgba(255,255,255,.85)';c.fillText(t_(trialUsed>=TRIAL?'toEndTrial':'toNextOyster'),HW/2,IH*0.33+122);
+    btn(c,COL_BTN,t_('myCollection'));
+  }else if(mode==='armed'&&h>0.8){
+    if(frost<=0.01)snapshot();
+    const [txt,warn]=stateText();glassPill(c,HW*1.56,IH-110,txt,warn);
+  }
+  const flash=flashAt?1-smooth(0,500,now-flashAt):0;
+  if(flash>0){c.fillStyle='rgba(255,250,235,'+(flash*0.7)+')';c.fillRect(0,0,IW,IH);}
+  innerTex.needsUpdate=true;
+}
+const cBlur=document.createElement('canvas');cBlur.width=Math.round(CW/16);cBlur.height=Math.round(CH/16);const cbs=cBlur.getContext('2d');
+const cMid=document.createElement('canvas');cMid.width=Math.round(CW/3);cMid.height=Math.round(CH/3);const cms=cMid.getContext('2d');
+function drawCover(t,off){
+  const c=cc;
+  if(off){c.fillStyle='#000';c.fillRect(0,0,CW,CH);coverTex.needsUpdate=true;return;}
+  const L=CW*0.86,ay=CH*0.42;
+  lagoonCover.draw(c,CW,CH,t,{x:CW*0.45,y:ay,size:L*0.6});
+  let jx=0;if(pearl.trembles&&!reduce&&t%2.4<0.45)jx=(Math.random()-.5)*8;
+  A.drawShellExterior(c,-CW*0.06+jx,ay,0,L*1.04,phases);
+  lagoonCover.drawOverlay(c,CW,CH);
+  // barre d'état + caméra frontale
+  const d=new Date();c.fillStyle='rgba(255,255,255,.95)';c.font='600 26px '+SANS;c.textAlign='left';
+  c.fillText(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'),34,56);
+  c.fillStyle='#000';c.beginPath();c.arc(CW-50,48,17,0,7);c.fill();c.strokeStyle='rgba(255,255,255,.12)';c.lineWidth=2;c.stroke();
+  c.textAlign='center';c.shadowColor='rgba(0,30,40,.45)';c.shadowBlur=18;c.fillStyle='#fff';c.font='700 56px '+SERIF;
+  c.fillText(t_(mode==='ended'?'cvSoon':pearl.trembles?'cvTrembles':'cvOpenMe'),CW/2,CH*0.84);c.shadowBlur=0;
+  c.font='500 24px '+SANS;c.fillStyle='rgba(255,255,255,.85)';c.fillText(mode==='ended'?t_('cvFullGame'):lastPearl?t_('cvLast')+pn(lastPearl):t_('cvOpenGently'),CW/2,CH*0.84+42);
+  // Verre dépoli : dès que l'iPhone s'entrouvre, l'écran extérieur se givre.
+  const cf=0.4*smooth(80,150,h);
+  if(cf>0.01){blurInto(cms,cMid,cover,3,cBlur,cbs);c.save();c.globalAlpha=cf;c.imageSmoothingEnabled=true;c.drawImage(cMid,0,0,CW,CH);c.fillStyle='rgba(235,248,255,.08)';c.fillRect(0,0,CW,CH);c.restore();}
+  coverTex.needsUpdate=true;
+}
+
+/* ---------- Collection (sur l'écran intérieur) ---------- */
+const COL_BTN={x:HW/2-170,y:IH*0.6,w:340,h:68},BACK_BTN={x:HW/2-200,y:IH-120,w:400,h:68},CLOSE_BTN={x:HW*1.5-120,y:IH-104,w:240,h:66};
+const CELL={x0:HW+28,y0:28,gx:20,gy:16};CELL.w=(HW-56-CELL.gx)/2;CELL.h=(IH-56-3*CELL.gy)/4;
+const cellRect=i=>({x:CELL.x0+(i%2)*(CELL.w+CELL.gx),y:CELL.y0+Math.floor(i/2)*(CELL.h+CELL.gy),w:CELL.w,h:CELL.h});
+const inRect=(q,b,pad)=>q.x>=b.x-pad&&q.x<=b.x+b.w+pad&&q.y>=b.y-pad&&q.y<=b.y+b.h+pad;
+function btn(c,b,label){glassPanel(c,b.x,b.y,b.w,b.h,b.h/2);c.textAlign='center';c.fillStyle='#fff';c.font='600 30px '+SANS;c.shadowColor='rgba(0,0,0,.25)';c.shadowBlur=6;c.fillText(label,b.x+b.w/2,b.y+b.h/2+11);c.shadowBlur=0;}
+function drawCollection(c,t){
+  c.fillStyle='rgba(2,18,24,.9)';c.fillRect(0,0,IW,IH);
+  const found=A.PEARLS.filter(p=>coll[p.id]&&coll[p.id].n>0).length,total=Object.values(coll).reduce((a,e)=>a+e.n,0);
+  c.textAlign='center';c.fillStyle='#fff';c.font='700 62px '+SERIF;c.fillText(t_('myCollection'),HW/2,124);
+  c.font='600 30px '+SANS;c.fillStyle='rgba(255,255,255,.9)';c.fillText(I.found(found,A.PEARLS.length),HW/2,182);
+  c.font='26px '+SANS;c.fillStyle='rgba(255,255,255,.65)';c.fillText(I.treasure(treasure,total),HW/2,224);
+  c.textAlign='left';c.font='600 22px '+SANS;c.fillStyle='rgba(174,244,255,.75)';c.fillText(t_('odds'),70,296);
+  A.PEARLS.forEach((p,i)=>{const y=346+i*56;c.font='27px '+SANS;c.fillStyle='rgba(255,255,255,.9)';c.textAlign='left';c.fillText(pn(p)+'  '+p.rarity,70,y);
+    c.textAlign='right';c.fillText(I.pct(p.probability),HW-70,y);c.fillStyle='rgba(255,255,255,.12)';c.fillRect(70,y+18,HW-140,1);});
+  snapshot();btn(c,BACK_BTN,t_('back'));
+  A.PEARLS.forEach((p,i)=>{const r=cellRect(i),e=coll[p.id],known=e&&e.n>0;
+    rr(c,r.x,r.y,r.w,r.h,22);c.fillStyle=known?'rgba(255,255,255,.1)':'rgba(255,255,255,.04)';c.fill();c.lineWidth=2;c.strokeStyle=known?'rgba(174,244,255,.4)':'rgba(255,255,255,.1)';c.stroke();
+    const mx=r.x+r.w/2,my=r.y+r.h*0.42;
+    if(known&&p.glow){A.drawGlow(c,mx,my,r.h*0.5,p.glow,0.45);A.drawPearl(c,mx,my,p.id==='giant'?54:40,p,false);}
+    else if(known){c.setLineDash([8,8]);c.lineWidth=3;c.strokeStyle='rgba(255,255,255,.35)';c.beginPath();c.arc(mx,my,36,0,7);c.stroke();c.setLineDash([]);}
+    else{c.textAlign='center';c.fillStyle='rgba(255,255,255,.22)';c.font='600 76px '+SERIF;c.fillText('?',mx,my+26);}
+    c.textAlign='left';c.font='600 24px '+SANS;c.fillStyle=known?'rgba(255,255,255,.95)':'rgba(255,255,255,.4)';c.fillText(known?pn(p):'???',r.x+18,r.y+r.h-20,r.w-90);
+    c.textAlign='right';c.fillStyle='rgba(174,244,255,.85)';c.fillText(known?'×'+e.n:p.rarity,r.x+r.w-18,r.y+r.h-20);});
+  if(colSel){const p=A.pearlById(colSel),e=coll[colSel];c.fillStyle='rgba(0,0,0,.6)';c.fillRect(HW,0,HW,IH);
+    drawCard(c,HW*1.5,IH/2-30,0.94,t,p,e.best);snapshot();btn(c,CLOSE_BTN,t_('close'));}
+}
+
+/* ---------- Three.js ---------- */
+const canvas=$('scene');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;renderer.setClearColor(0xffffff,0);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(20,1,0.5,600);
+{ // Studio blanc : grands panneaux lumineux et bandes sombres pour dessiner le métal poli.
+  const env=new THREE.Scene();
+  const sg=new THREE.SphereGeometry(80,48,24),col=[],p=sg.attributes.position,cl=new THREE.Color();
+  for(let i=0;i<p.count;i++){const y=p.getY(i)/80;const v=0.72+0.28*Math.max(0,y);cl.setRGB(v,v,v*1.01);col.push(cl.r,cl.g,cl.b);}
+  sg.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+  env.add(new THREE.Mesh(sg,new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.BackSide})));
+  const panel=(w,h,x,y,z,k)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:new THREE.Color(k,k,k),side:THREE.DoubleSide}));m.position.set(x,y,z);m.lookAt(0,0,0);env.add(m);};
+  panel(60,18,0,60,20,4);panel(16,70,-62,0,10,3);panel(16,70,62,0,-10,2.4);panel(70,12,0,-30,60,1.6);
+  panel(8,90,-30,0,-60,0.02);panel(8,90,34,0,55,0.03);panel(90,6,0,-55,-20,0.02);
+  const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(env,0.015).texture;
+}
+scene.add(new THREE.HemisphereLight(0xffffff,0xdedede,0.55));
+const keyL=new THREE.DirectionalLight(0xffffff,0.75);keyL.position.set(-12,20,24);scene.add(keyL);
+
+const HALF_W=8.23,PH=11.78,T=0.52,HY=PH/2,B=0.11;
+function rrShape(x0,y0,x1,y1,r){const s=new THREE.Shape();s.moveTo(x0+r[0],y0);s.lineTo(x1-r[1],y0);s.quadraticCurveTo(x1,y0,x1,y0+r[1]);s.lineTo(x1,y1-r[2]);
+  s.quadraticCurveTo(x1,y1,x1-r[2],y1);s.lineTo(x0+r[3],y1);s.quadraticCurveTo(x0,y1,x0,y1-r[3]);s.lineTo(x0,y0+r[0]);s.quadraticCurveTo(x0,y0,x0+r[0],y0);return s;}
+function setUV(g,fu,fv){const p=g.attributes.position,uv=g.attributes.uv;for(let i=0;i<p.count;i++)uv.setXY(i,fu(p.getX(i)),fv(p.getY(i)));uv.needsUpdate=true;}
+const COLORS={'Star White':{frame:0xdcdad4,back:0xefede8,hinge:0xcfccc5,sw:'#e7e4de'},'Night Sky':{frame:0x283149,back:0x1a2236,hinge:0x2c3550,sw:'#283149'}};
+const frameMat=new THREE.MeshStandardMaterial({metalness:1,roughness:0.1});
+const backMat=new THREE.MeshPhysicalMaterial({metalness:0.1,roughness:0.42,clearcoat:0.6,clearcoatRoughness:0.35});
+const hingeMat=new THREE.MeshStandardMaterial({metalness:1,roughness:0.14});
+const glass=new THREE.MeshPhysicalMaterial({color:0x050506,metalness:0.2,roughness:0.06,clearcoat:1,clearcoatRoughness:0.04});
+const lensMat=new THREE.MeshPhysicalMaterial({color:0x08090c,metalness:0.6,roughness:0.04,clearcoat:1});
+const ringMat=new THREE.MeshStandardMaterial({color:0xb9bcc2,metalness:1,roughness:0.15});
+let colorName='Star White';
+function applyColor(n){const c=COLORS[n];frameMat.color.set(c.frame);backMat.color.set(c.back);hingeMat.color.set(c.hinge);$('colorName').textContent=n;$('swatch').style.background=c.sw;}
+applyColor(colorName);
+$('colorBtn').addEventListener('click',()=>{colorName=colorName==='Star White'?'Night Sky':'Star White';applyColor(colorName);});
+
+const phone=new THREE.Group();scene.add(phone);
+const rightHalf=new THREE.Group();phone.add(rightHalf);
+const pivot=new THREE.Group();phone.add(pivot);
+const leftHalf=new THREE.Group();pivot.add(leftHalf);
+function bodyGeo(x0,x1,roundRight){const R=1.12,r0=0.24;const sh=rrShape(x0+B,-HY+B,x1-B,HY-B,roundRight?[r0-0.1,R-B,R-B,r0-0.1]:[R-B,r0-0.1,r0-0.1,R-B]);
+  const g=new THREE.ExtrudeGeometry(sh,{depth:T-2*B,bevelEnabled:true,bevelThickness:B,bevelSize:B,bevelSegments:8,curveSegments:40});g.translate(0,0,-T+B);return g;}
+rightHalf.add(new THREE.Mesh(bodyGeo(0,HALF_W,true),frameMat));
+leftHalf.add(new THREE.Mesh(bodyGeo(-HALF_W,0,false),frameMat));
+const innerTex=new THREE.CanvasTexture(inner);innerTex.encoding=THREE.sRGBEncoding;innerTex.anisotropy=8;
+const coverTex=new THREE.CanvasTexture(cover);coverTex.encoding=THREE.sRGBEncoding;coverTex.anisotropy=8;
+const innerMat=new THREE.MeshBasicMaterial({map:innerTex,toneMapped:false});
+const coverMat=new THREE.MeshBasicMaterial({map:coverTex,toneMapped:false});
+let coverMesh=null;const SW=HALF_W-0.13,SH=PH-0.26,ER=1.0;
+{
+  const gR=new THREE.ShapeGeometry(rrShape(0,-HY+0.05,HALF_W-0.05,HY-0.05,[0,1.07,1.07,0]),24);gR.translate(0,0,0.003);rightHalf.add(new THREE.Mesh(gR,glass));
+  const gL=new THREE.ShapeGeometry(rrShape(-HALF_W+0.05,-HY+0.05,0,HY-0.05,[1.07,0,0,1.07]),24);gL.translate(0,0,0.003);leftHalf.add(new THREE.Mesh(gL,glass));
+  const fu=x=>(x+SW)/(2*SW),fv=y=>(y+SH/2)/SH;
+  const sR=new THREE.ShapeGeometry(rrShape(0,-SH/2,SW,SH/2,[0,ER,ER,0]),32);setUV(sR,fu,fv);sR.translate(0,0,0.006);rightHalf.add(new THREE.Mesh(sR,innerMat));
+  const sL=new THREE.ShapeGeometry(rrShape(-SW,-SH/2,0,SH/2,[ER,0,0,ER]),32);setUV(sL,fu,fv);sL.translate(0,0,0.006);leftHalf.add(new THREE.Mesh(sL,innerMat));
+  const bR=new THREE.ShapeGeometry(rrShape(-HALF_W+0.05,-HY+0.05,-0.05,HY-0.05,[1.07,0.18,0.18,1.07]),24);bR.rotateY(Math.PI);bR.translate(0,0,-T-0.003);rightHalf.add(new THREE.Mesh(bR,backMat));
+  const bL=new THREE.ShapeGeometry(rrShape(0.05,-HY+0.05,HALF_W-0.05,HY-0.05,[0.18,1.07,1.07,0.18]),24);bL.rotateY(Math.PI);bL.translate(0,0,-T-0.003);leftHalf.add(new THREE.Mesh(bL,glass));
+  const CWd=HALF_W-0.26,cg=new THREE.ShapeGeometry(rrShape(0,-SH/2,CWd,SH/2,[0.25,ER,ER,0.25]),32);
+  setUV(cg,x=>x/CWd,fv);cg.rotateY(Math.PI);cg.translate(-0.13,0,-T-0.006);coverMesh=new THREE.Mesh(cg,coverMat);leftHalf.add(coverMesh);
+  const pl=new THREE.ExtrudeGeometry(rrShape(-7.75,3.05,-2.2,5.45,[1.05,1.05,1.05,1.05]),{depth:0.05,bevelEnabled:true,bevelThickness:0.04,bevelSize:0.04,bevelSegments:4,curveSegments:24});
+  pl.rotateY(Math.PI);pl.translate(0,0,-T-0.01);rightHalf.add(new THREE.Mesh(pl,backMat));
+  const lens=(x,y,r)=>{const ring=new THREE.Mesh(new THREE.CylinderGeometry(r*1.14,r*1.14,0.1,48),ringMat);ring.rotation.x=Math.PI/2;ring.position.set(x,y,-T-0.13);rightHalf.add(ring);
+    const g=new THREE.Mesh(new THREE.CylinderGeometry(r,r,0.12,48),lensMat);g.rotation.x=Math.PI/2;g.position.set(x,y,-T-0.15);rightHalf.add(g);};
+  lens(6.4,4.25,0.64);lens(4.6,4.25,0.64);
+  const fl=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,0.08,24),new THREE.MeshStandardMaterial({color:0xf4efdc,roughness:0.35}));fl.rotation.x=Math.PI/2;fl.position.set(3.1,4.25,-T-0.11);rightHalf.add(fl);
+  const btn=(w,h,d,x,y,mat)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat||frameMat);m.position.set(x,y,-T/2);rightHalf.add(m);};
+  btn(1.1,0.1,0.24,2.4,HY+0.03);btn(1.1,0.1,0.24,3.75,HY+0.03);btn(0.1,1.5,0.26,HALF_W+0.03,2.0);btn(0.08,0.9,0.24,HALF_W+0.03,-1.6,glass);
+}
+const spine=new THREE.Mesh(new THREE.CylinderGeometry(1,1,PH-0.55,48),hingeMat);phone.add(spine);
+const phoneMeshes=[];phone.traverse(o=>{if(o.isMesh)phoneMeshes.push(o);});
+
+/* ---------- Interaction ---------- */
+let h=0,hTarget=0,prevH=0,vel=0,keyDir=0,popped=false,lastTick=0,frameDt=1/60;
+let yaw=0,pitch=0.04,radius=60;const target=new THREE.Vector3(),tmp=new THREE.Vector3();
+const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
+function resize(){const w=canvas.clientWidth,hh=canvas.clientHeight;renderer.setSize(w,hh,false);camera.aspect=w/Math.max(1,hh);camera.updateProjectionMatrix();}
+addEventListener('resize',resize);new ResizeObserver(resize).observe(canvas);
+let onScreen=true;new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;}).observe(canvas);
+function hit(e){const b=canvas.getBoundingClientRect();ndc.set(((e.clientX-b.left)/b.width)*2-1,-((e.clientY-b.top)/b.height)*2+1);ray.setFromCamera(ndc,camera);return ray.intersectObjects(phoneMeshes,false).length>0;}
+let drag=null,lx=0,ly=0;
+let downX=0,downY=0,downT=0,moved=0,touchHold=0,holdUsed=false,holdTimer=0;
+/** Appui long au doigt : l'iPhone s'ouvre (ou se referme après la révélation) tout seul, à vitesse sûre. */
+function holdDir(){if(mode==='armed')return 1;if(mode==='revealed'&&reveal&&reveal.show&&!colOpen)return -1;return 0;}
+canvas.addEventListener('pointerdown',e=>{ensureAudio();drag=(e.pointerType==='touch'||hit(e))?'hinge':'orbit';holdUsed=false;touchHold=0;clearTimeout(holdTimer);
+  if(e.pointerType==='touch')holdTimer=setTimeout(()=>{if(drag&&moved<8){touchHold=holdDir();holdUsed=touchHold!==0;}},220); // au doigt : jamais de rotation, tout glissé horizontal ouvre l'iPhone
+  lx=e.clientX;ly=e.clientY;downX=lx;downY=ly;downT=performance.now();moved=0;try{canvas.setPointerCapture(e.pointerId);}catch(_){}canvas.style.cursor=drag==='hinge'?'grabbing':'grabbing';$('hint').classList.add('gone');});
+canvas.addEventListener('pointermove',e=>{
+  if(!drag){canvas.style.cursor=tapTarget(screenPoint(e))?'pointer':hit(e)?'grab':'default';return;}
+  moved=Math.max(moved,Math.hypot(e.clientX-downX,e.clientY-downY));if(moved>=8){clearTimeout(holdTimer);touchHold=0;}
+  const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;
+  if(drag==='hinge'&&mode!=='ended'){
+    // Au doigt, une ouverture complète tient dans un peu plus d'une demi-largeur de prototype.
+    const base=e.pointerType==='touch'?150/(0.55*Math.max(280,canvas.clientWidth)):0.5;
+    const g=hTarget<12?base*(e.pointerType==='touch'?0.55:0.32):base;hTarget=clamp(hTarget-dx*g,0,180);}
+  else{yaw=clamp(yaw-dx*0.006,-1.4,1.4);pitch=clamp(pitch+dy*0.004,-0.35,0.6);}
+});
+function screenPoint(e){const b=canvas.getBoundingClientRect();ndc.set(((e.clientX-b.left)/b.width)*2-1,-((e.clientY-b.top)/b.height)*2+1);ray.setFromCamera(ndc,camera);
+  const hs=ray.intersectObjects(phoneMeshes,false);if(!hs.length||hs[0].object.material!==innerMat||!hs[0].uv)return null;return {x:hs[0].uv.x*IW,y:(1-hs[0].uv.y)*IH};}
+function tapTarget(q){
+  if(!q||mode!=='revealed'||!reveal||!reveal.show||h<90)return null;
+  if(!colOpen)return inRect(q,COL_BTN,16)?'colOpen':null;
+  if(colSel)return inRect(q,CLOSE_BTN,20)?'cardClose':null;
+  if(inRect(q,BACK_BTN,16))return 'back';
+  for(let i=0;i<A.PEARLS.length;i++){const e=coll[A.PEARLS[i].id];if(e&&e.n>0&&inRect(q,cellRect(i),0))return 'cell:'+A.PEARLS[i].id;}
+  return null;
+}
+function handleTap(e){const k=tapTarget(screenPoint(e));if(!k)return;noise(0.05,1800,0.3);
+  if(k==='colOpen'){colOpen=true;colSel=null;}else if(k==='back'){colOpen=false;colSel=null;cardT=0;}else if(k==='cardClose')colSel=null;else if(k.startsWith('cell:'))colSel=k.slice(5);}
+const end=(e)=>{clearTimeout(holdTimer);touchHold=0;if(drag==='hinge'&&e&&e.type==='pointerup'&&!holdUsed&&moved<8&&performance.now()-downT<500)handleTap(e);if(drag==='hinge'&&hTarget<6)hTarget=0;drag=null;canvas.style.cursor='default';};
+canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',e=>{clearTimeout(holdTimer);touchHold=0;drag=null;canvas.style.cursor='default';if(hTarget<6)hTarget=0;});
+canvas.addEventListener('dblclick',e=>{if(!hit(e)){yaw=0;pitch=0.04;}});
+canvas.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ensureAudio();keyDir=1;e.preventDefault();$('hint').classList.add('gone');}else if(e.key==='ArrowRight'||e.key==='ArrowDown'){keyDir=-1;e.preventDefault();}});
+canvas.addEventListener('keyup',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){keyDir=0;if(hTarget<6)hTarget=0;}});
+
+/* ---------- Indicateur d'angle ---------- */
+const arcEl=$('arc'),arcFill=$('arcFill'),arcLabel=$('arcLabel'),stateEl=$('state');
+const R_ARC=46;
+function arcPath(deg){const a=Math.PI*Math.min(180,deg)/180;const x=60+R_ARC*Math.cos(a),y=10+R_ARC*Math.sin(a);return deg<0.5?'':'M'+(60+R_ARC)+' 10 A'+R_ARC+' '+R_ARC+' 0 0 1 '+x.toFixed(2)+' '+y.toFixed(2);}
+
+/* ---------- Boucle ---------- */
+let last=performance.now();const t0=last;let coverClock=1;const Y=new THREE.Vector3(0,1,0);
+function frame(now){
+  const dt=Math.min(0.05,(now-last)/1000);last=now;frameDt=dt;const t=(now-t0)/1000;
+  if(keyDir)hTarget=clamp(hTarget+keyDir*(hTarget<12?25:70)*dt,0,180);
+  if(touchHold&&mode!=='ended'){if(touchHold!==holdDir())touchHold=0;else hTarget=clamp(hTarget+touchHold*(touchHold>0?(hTarget<12?40:80):140)*dt,0,180);}
+  h+=(hTarget-h)*(1-Math.exp(-dt*16));if(Math.abs(hTarget-h)<0.01)h=hTarget;
+  const dv=(h-prevH)/Math.max(dt,1e-4);
+  if(prevH>1.2&&h<=1.2){noise(0.07,1500,1.0);}
+  if(!popped&&h>=12){popped=true;}
+  if(h<9)popped=false;
+  if(h<12&&h>0.6&&Math.abs(h-lastTick)>1.7&&dv>0){noise(0.03,2600,0.18);lastTick=h;}
+  prevH=h;vel+=(Math.max(0,dv)-vel)*0.3;
+
+  // Moteur d'ouverture de l'app Pearl Inc., piloté par l'angle de charnière.
+  if(mode==='armed'){
+    for(const ev of engine.push({angle:h,time:now})){
+      if(ev.type==='pop'){noise(0.09,1400,0.6);popShakeUntil=now+160;}
+      else if(ev.type==='crack'){if(pearl.glow)noise(0.15,3200,0.5);stickyCrack=true;}
+      else if(ev.type==='reveal'){onReveal(ev.lustre,ev.cracked||stickyCrack);}
+    }
+    if(h<0.6&&engine.phase!=='closed'){const c=engine.cracked||stickyCrack;engine=new A.OpeningEngine(TUN);stickyCrack=c;}
+  }else if(mode!=='ended'&&h<1.5&&reveal&&reveal.show){if(trialUsed>=TRIAL)endTrial();else newOyster();}
+
+  pivot.rotation.y=Math.PI-THREE.MathUtils.degToRad(h);
+  const k=smooth(0,90,h),spx=THREE.MathUtils.lerp(0.3,0.26,k),spz=THREE.MathUtils.lerp(0.5,0.26,k);spine.scale.set(spx,1,spz);spine.position.set(0,0,-spz*smooth(0,35,h));
+
+  if(h>0.8)drawInner(t,now);
+  coverClock+=dt;
+  if(coverClock>(h<35?1/30:1/12)){drawCover(t,false);coverClock=0;}
+
+  // Caméra : vue de face, recadrée sur l'appareil.
+  const hr=THREE.MathUtils.degToRad(h),cx=4.115*(1+Math.cos(hr))/2,cz=4.115*Math.sin(hr)/2;
+  tmp.set(cx,0,cz);phone.localToWorld(tmp);
+  target.lerp(new THREE.Vector3(tmp.x,0.15,tmp.z*0.6),1-Math.exp(-dt*4));
+  const fit=(hw,hh)=>{const v=THREE.MathUtils.degToRad(camera.fov)/2,hf=Math.atan(Math.tan(v)*camera.aspect);return Math.max(hh/Math.tan(v),hw/Math.tan(hf))*1.04;};
+  const want=THREE.MathUtils.lerp(fit(5.2,10.4),fit(9.6,10.4),smooth(0,150,h));
+  radius+=(want-radius)*(1-Math.exp(-dt*3));
+  camera.position.set(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch)).multiplyScalar(radius).add(target);
+  camera.lookAt(target);
+
+  // Arc d'angle sous la charnière
+  tmp.set(0,-HY-0.2,0);phone.localToWorld(tmp);tmp.project(camera);
+  const sx=(tmp.x*0.5+0.5)*canvas.clientWidth,sy=(-tmp.y*0.5+0.5)*canvas.clientHeight;
+  arcEl.style.transform='translate('+(sx-60).toFixed(1)+'px,'+(sy+6).toFixed(1)+'px)';
+  arcEl.classList.toggle('show',h>0.8);
+  arcFill.setAttribute('d',arcPath(h));arcLabel.textContent=Math.round(h)+'°';
+  let st='',warn=false;
+  if(mode==='ended')st='';
+  else if(mode==='revealed')st=reveal&&reveal.show?t_('stNext'):'';
+  else if(engine.phase==='closed')st=h>0.8?t_('stGently'):'';
+  else if(engine.phase==='resisting')st=t_('stGently');
+  else if((engine.cracked||stickyCrack)&&pearl.glow){st=t_('stCrack');warn=true;}
+  else if(engine.inFragileZone&&engine.velocity>TUN.maxSafeVelocity*0.6){st=t_('stFast');warn=true;}
+  else if(engine.inFragileZone)st=t_('stFragile');
+  else st=t_('stMore');
+  if(stateEl.textContent!==st)stateEl.textContent=st;stateEl.classList.toggle('warn',warn);
+  stateEl.style.transform='translate('+(sx).toFixed(1)+'px,'+(sy+70).toFixed(1)+'px) translateX(-50%)';
+
+  if(onScreen)renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
+function drawStrip(){
+  const host=document.getElementById('pearls');if(!host)return;host.textContent='';const dpr=Math.min(devicePixelRatio||1,2);
+  A.PEARLS.forEach(p=>{const li=document.createElement('li');const cv=document.createElement('canvas');const S=88;cv.width=cv.height=S*dpr;cv.style.width=cv.style.height=S+'px';
+    const c=cv.getContext('2d');c.scale(dpr,dpr);
+    if(p.glow){A.drawGlow(c,S/2,S/2,S*0.5,p.glow,0.5,false);A.drawPearl(c,S/2,S/2,p.id==='giant'?S*0.26:S*0.2,p,false);}
+    else{c.setLineDash([4,4]);c.lineWidth=1.5;c.strokeStyle='rgba(0,0,0,.25)';c.beginPath();c.arc(S/2,S/2,S*0.18,0,7);c.stroke();}
+    const name=document.createElement('span');name.className='p-name';name.textContent=pn(p);
+    const meta=document.createElement('span');meta.className='p-meta';meta.textContent=p.rarity+'  ·  '+I.pct(p.probability);
+    li.append(cv,name,meta);host.append(li);});
+}
+function setHint(){$('hint').textContent=t_(matchMedia('(pointer: coarse)').matches?'hintTouch':'hint');}
+I.onChange(()=>{setHint();drawStrip();renderTrial();$('soundBtn').setAttribute('aria-label',t_(muted?'soundOn':'soundOff'));if(pearl)drawCover((performance.now()-t0)/1000,false);});
+function start(){setHint();drawStrip();renderTrial();resize();newOyster();drawInner(0,performance.now());drawCover(0,false);
+  const q=parseFloat(new URLSearchParams(location.search).get('h'));if(q>0){hTarget=h=prevH=clamp(q,0,180);}
+  if(trialUsed>=TRIAL){hTarget=h=prevH=0;endTrial();}
+  requestAnimationFrame(frame);}
+Promise.all([document.fonts.load('700 40px "Inter"'),document.fonts.load('500 30px "Inter"'),document.fonts.load('600 16px "Inter"')]).catch(()=>{}).then(start);
+})();
+
+(function(){
+  // Liens des formulaires Tally (un par langue) pour les inscriptions au lancement. À renseigner (ex. https://tally.so/r/abcdef).
+  // Sans lien anglais, le formulaire français sert pour les deux langues.
+  const TALLY_URLS={fr:'',en:''};
+  const tallyUrl=()=>TALLY_URLS[window.PearlI18n.lang]||TALLY_URLS.fr;
+  // Champs cachés du formulaire : provenance de la campagne, langue, bouton cliqué (voir docs/tally-formulaire.md).
+  const page=new URLSearchParams(location.search);
+  const tallyLink=button=>{
+    const u=new URL(tallyUrl());
+    ['utm_source','utm_campaign'].forEach(k=>u.searchParams.set(k,page.get(k)||'direct'));
+    u.searchParams.set('lang',window.PearlI18n.lang);
+    u.searchParams.set('bouton',button);
+    return u.href;
+  };
+  document.querySelectorAll('[data-tally]').forEach(a=>{
+    if(tallyUrl()){
+      const button=a.closest('#trialEnd')?'fin-essai':a.closest('#notify')?'bas-de-page':a.closest('.nav')?'menu':'haut-de-page';
+      a.href=tallyLink(button);a.target='_blank';a.rel='noopener';
+      a.addEventListener('click',()=>{a.href=tallyLink(button);}); // suit la langue choisie
+    }
+    else if(!a.closest('#notify'))a.href='#notify';
+    else a.addEventListener('click',e=>{e.preventDefault();document.getElementById('notifyNote').textContent=window.PearlI18n.t('signupSoon');});
+  });
+})();
+</script>
+</body>
+</html>

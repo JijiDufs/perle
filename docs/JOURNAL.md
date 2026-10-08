@@ -4,6 +4,26 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite 2) · Jules · Claude Code · branche `jules/duo-gadget`
+
+Page d'inscription prête pour la mise en ligne.
+
+**Fait**
+- `site/index.html` : la page « Pearl Inc. pour iPhone Duo » (fournie par Jules) entre dans le dépôt. Branchement Tally : un lien par langue (`TALLY_URLS`), et la page transmet au formulaire `utm_source`, `utm_campaign`, `lang` et le bouton cliqué (`fin-essai`, `haut-de-page`, `bas-de-page`, `menu`). Vérifié dans le navigateur (provenance, changement de langue, aucune erreur).
+- `docs/tally-formulaire.md` : contenu du formulaire FR / EN, champs cachés, texte de confidentialité (RGPD), réglages, relevés, liens de campagne.
+- `.claude/launch.json` : serveur `site` (port 4280) pour prévisualiser la page.
+- AGENTS.md : dossier `site/` et décision de mise en ligne (§6).
+
+**À faire**
+- Jules : créer les formulaires Tally, coller les liens ; acheter le domaine ; projet Vercel avec **Root Directory = `site`**.
+- Image d'aperçu de lien (Open Graph, 1200×630) : la page n'en a pas, les posts LinkedIn et X seront sans visuel.
+- Page de l'écrin pour la semaine 2.
+
+**Fragile**
+- Sans liens Tally, les boutons affichent « Les inscriptions ouvrent très bientôt ».
+
+---
+
 ## 2026-10-08 (suite) · Jules · Claude Code · branche `jules/duo-gadget`
 
 Périmètre du premier jeu App Store (« gadget » Duo), sans code.

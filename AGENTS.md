@@ -95,6 +95,7 @@ public/
   icons/            Icônes générées par scripts/make-icons.py (ne pas éditer à la main)
   manifest.webmanifest
 scripts/            Outils (génération des icônes, macOS)
+site/               Page d'inscription pearl-inc.app (HTML autonome, prototype de 5 huîtres) : hors de la build Vite
 ```
 
 ### Les invariants — ne jamais casser
@@ -225,6 +226,7 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-06 | **Transitions** : les écrans glissent latéralement dans le sens des onglets (l'ancien part pendant que le nouveau arrive), les panneaux plein écran (atelier, expertise) montent depuis le bas. Plus de fondu : il superposait deux écrans | Retour de Jules : « le fondu enchaîné est un peu buggé » |
 | 2026-10-06 | **Jauge de réglage masquée par défaut** (angle, vitesse) : outil du prototype, réactivable dans les réglages. Le message sous la coquille donne déjà « Zone fragile » et « Trop vite ! » | Chasse aux détails qui font « cheap » (retour de Jules) |
 | 2026-10-08 | **La Maison en maison de poupée** (vue en coupe de trois quarts, dessinée par code) : boutique (porte, vitrine) et atelier (établi) au rez-de-chaussée, bureau de Rose (fenêtre, carnet) et grenier (la boîte) à l'étage ; une pièce dort (pénombre, draps, toiles d'araignée) jusqu'à sa lettre. **Elle grandit avec le rang** (`houseStage`) : l'étage à Perlier, la boutique repeinte à Artisan, le salon Pearl Inc. à Joaillier, l'aile du musée à Maître joaillier, la tour à Maison de haute joaillerie. Les pièces au-delà des lettres (salon, musée) sont du décor : elles n'ouvrent aucune fonction pour l'instant | Choix de Jules : « maison de poupée en 3/4 » qui grandit jusqu'à Pearl Inc. ; cahier §8 (« chaque chapitre débloque une pièce de la Maison ») |
+| 2026-10-08 | **Mise en ligne de la page d'inscription** (`site/`) sur Vercel, domaine **pearl-inc.app**, pour la campagne X / LinkedIn du 12 au 25 octobre. Inscriptions par Tally, seulement après les 5 huîtres d'essai (ou sur demande). Remplace « pas de mise en ligne pour l'instant » pour cette page ; le jeu (webapp) reste en local | Choix de Jules : teaser du lancement et mesure de l'intérêt avant de construire l'app (voir `docs/duo-gadget.md`, `docs/tally-formulaire.md`) |
 
 ## 7. Limites connues du prototype web
 
