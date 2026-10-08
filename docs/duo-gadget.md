@@ -54,7 +54,8 @@ Ce que promet la page d'inscription, ni plus ni moins :
 | **Poussière d'or** | On **revend ses perles en double** contre de la poussière d'or (on garde toujours un exemplaire de chaque sorte) ; elle achète des skins, des huîtres et les pièces manquantes de la collection | `core/dust.ts` |
 | **Skins d'huître** | Le **bénitier** (poussière d'or ou achat) et l'**huître d'or** pour le flex (achat seulement) : voir §6 bis | nouveau |
 | **Boutique** | Recharger ses huîtres, acheter de la poussière d'or, acheter un skin : voir §6 ter | nouveau |
-| **Calendrier de connexion** | 7 jours (huîtres, poussière d'or, le bénitier en cadeau le 30e jour de série) ; série avec un joker par semaine | `core/daily.ts` |
+| **Missions du jour** | 3 petites missions par jour (mêmes pour tous, renouvelées à minuit), un peu de poussière d'or chacune : voir §6 quater | `core/quests.ts` |
+| **Calendrier de connexion** | 7 jours (huîtres, un peu de poussière d'or) ; série avec un joker par semaine | `core/daily.ts` |
 | **Classement Game Center** | « Huîtres ouvertes » et « Plus belle perle » : le classement demandé par Mathys, sans serveur ni compte à nous | nouveau |
 | **Sauvegarde iCloud** | La collection suit le joueur sur un nouveau téléphone (les achats de skins se restaurent de toute façon) | nouveau |
 | **Notifications** | Une seule, désactivable : « Tes huîtres sont revenues » quand le stock est plein | nouveau |
@@ -139,11 +140,13 @@ La page promet que « les premiers inscrits auront une perle de bienvenue ». Sa
 | Skin | Comment l'obtenir | Ce qu'il change |
 |---|---|---|
 | Huître du lagon | Offerte (celle de départ) | — |
-| **Bénitier** | 600 ✦ ou 2,99 € ; offert au 30e jour de série | Le coquillage géant : valves ondulées à grosses côtes, bord en zigzag, manteau bleu-vert irisé à l'intérieur, plus grand à l'écran |
+| **Bénitier** | 2 000 ✦ (environ 3 semaines de jeu régulier) ou 2,99 € | Le coquillage géant : valves ondulées à grosses côtes, bord en zigzag, manteau bleu-vert irisé à l'intérieur, plus grand à l'écran |
 | **Première marée** | Exclusive aux inscrits (lien de l'e-mail de lancement, §6) | Coquille sable et écume, liseré argent ; ne sera plus jamais disponible |
 | **Huître d'or** (*golden oyster*) | **9,99 €, achat seulement** | Coquille d'or martelé, nacre champagne, reflets qui suivent l'angle, son et vibration dédiés au « pop », badge « Or » sur les cartes |
 
 D'autres skins (nacre de lune, corail, Tahiti…) arriveront par mises à jour : chaque nouveau skin est une raison de revenir.
+
+Le calcul du prix est au §6 quater.
 
 **Pourquoi l'huître d'or seulement en achat.** Le flex tient à sa rareté et à son prix. Et chaque achat est la preuve la plus forte de traction : des gens paient pour ce geste.
 
@@ -162,22 +165,72 @@ Choix de Jules (2026-10-08) : on peut **recharger ses huîtres** et **acheter de
 |---|---|---|---|
 | Marée haute | consommable | 0,99 € | Le stock d'huîtres rempli (10) |
 | Grande marée | consommable | 2,99 € | 30 huîtres (au-delà du maximum) |
-| Bourse de poussière d'or | consommable | 1,99 € | 500 ✦ |
-| Coffret de poussière d'or | consommable | 4,99 € | 1 500 ✦ |
-| Malle de poussière d'or | consommable | 9,99 € | 4 000 ✦ |
-| Bénitier | non consommable | 2,99 € | Le skin (aussi 600 ✦) |
+| Bourse de poussière d'or | consommable | 1,99 € | 400 ✦ |
+| Coffret de poussière d'or | consommable | 4,99 € | 1 200 ✦ |
+| Malle de poussière d'or | consommable | 9,99 € | 3 000 ✦ |
+| Bénitier | non consommable | 2,99 € | Le skin (aussi 2 000 ✦) |
 | Huître d'or | non consommable | 9,99 € | Le skin, seulement en achat |
 
-**Revente des perles.** Le comptoir de la collection rachète les perles en double contre de la poussière d'or, au barème actuel (— 1, ◆ 2, ◆◆ 5, ◆◆◆ 12, ★ 40, ★★ 120 ✦). On ne revend jamais le dernier exemplaire d'une sorte, ni une perle à marque rare en lot (décisions déjà prises, AGENTS.md §6). « Tout revendre » garde le plus bel exemplaire de chaque sorte.
+**Revente des perles.** Le comptoir de la collection rachète les perles en double contre de la poussière d'or, au barème de l'app (§6 quater). On ne revend jamais le dernier exemplaire d'une sorte, ni une perle à marque rare en lot (décisions déjà prises, AGENTS.md §6). « Tout revendre » garde le plus bel exemplaire de chaque sorte.
 
 **Points d'attention (à trancher entre associés)**
 - **Acheter des huîtres, c'est payer pour du hasard** : Apple l'autorise si **les probabilités sont affichées avant l'achat** (règle 3.1.1). On les montre déjà ; il faut les rappeler sur l'écran d'achat.
 - **Belgique (et peut-être Pays-Bas)** : les objets aléatoires payants y sont traités comme des jeux d'argent. Proposition : masquer les recharges d'huîtres pour la boutique de l'App Store belge (`Storefront.countryCode`), ou ne pas publier en Belgique au début. **À vérifier avec un juriste avant la sortie.**
-- **Payer pour compléter sa collection** : avec de la poussière achetée, une perle maudite manquante (600 ✦) coûte environ 4 €. Ça enlève du prestige aux perles rares. Proposition : la poussière achète les pièces manquantes **jusqu'à ◆◆◆ seulement** ; les ★ et ★★ restent à pêcher (la garantie après 25 huîtres est là pour ça).
+- **Payer pour compléter sa collection** : sans garde-fou, une perle maudite manquante s'achèterait avec quelques euros de poussière. Ça enlève du prestige aux perles rares. Proposition : la poussière achète les pièces manquantes **jusqu'à ◆◆◆ seulement** ; les ★ et ★★ restent à pêcher (la garantie après 25 huîtres est là pour ça).
 - **Monnaie virtuelle (règles européennes de protection des consommateurs)** : montrer clairement ce que coûte un objet et ce qu'il donne, pas d'urgence artificielle, pas de vente ciblée vers les enfants. À relire avant la sortie.
 - **Les achats consommables ne se restaurent pas** chez Apple : la poussière et les huîtres achetées vivent dans la sauvegarde (d'où la sauvegarde iCloud). Les skins, eux, se restaurent.
 - Les huîtres achetées et données au-delà du maximum ne bloquent pas la recharge gratuite : elle reprend quand on repasse sous 10.
 
+
+## 6 quater. L'équilibre de la poussière d'or
+
+**Le principe (choix de Jules, 2026-10-08)** : la poussière d'or se gagne **lentement**. On peut avoir le bénitier sans payer, mais il faut environ trois semaines de jeu régulier ; payer 2,99 € doit être la solution évidente pour qui le veut tout de suite. L'huître d'or reste à l'achat seulement.
+
+**Barème de l'app** (plus bas que celui de la webapp, qui reste un prototype) :
+
+| Source | Poussière d'or |
+|---|---|
+| Revendre un doublon — / ◆ / ◆◆ / ◆◆◆ / ★ / ★★ | 0 / 1 / 2 / 5 / 15 / 40 ✦ |
+| Trouvaille « pièce d'or engloutie » | 5 ✦ |
+| Chaque mission du jour | 5 ✦ |
+| Les trois missions du jour terminées | + 10 ✦ |
+| Calendrier de connexion | 10 à 25 ✦ certains jours (les autres : des huîtres) |
+
+**Ce que ça donne par jour** (une fois les doublons arrivés : environ 2,5 ✦ par huître revendue en moyenne)
+
+| Joueur | Huîtres par jour | Revente | Missions + calendrier | Total | Bénitier (2 000 ✦) |
+|---|---|---|---|---|---|
+| Occasionnel | 15 | ≈ 35 ✦ | ≈ 30 ✦ | ≈ 65 ✦ | ≈ 1 mois |
+| Régulier | 30 | ≈ 70 ✦ | ≈ 35 ✦ | ≈ 105 ✦ | ≈ 3 semaines |
+| Acharné (stock gratuit au maximum) | 72 | ≈ 165 ✦ | ≈ 35 ✦ | ≈ 200 ✦ | ≈ 10 jours |
+
+Les premiers jours, il y a peu de doublons (on garde toujours le premier exemplaire), donc encore moins de poussière.
+
+**Ce que la poussière achète**
+
+| Article | Prix |
+|---|---|
+| Une huître (quand le stock est vide) | 20 ✦ |
+| Une perle manquante ◆ / ◆◆ / ◆◆◆ | 5 / 10 / 25 ✦ (les ★ et ★★ restent à pêcher) |
+| Bénitier | 2 000 ✦ |
+
+**Cohérence avec la boutique** : 2 000 ✦ en poussière achetée coûtent plus de 4,99 €, alors que le bénitier coûte 2,99 € en direct. Celui qui paie achète donc le skin, pas la poussière. Et 10 huîtres valent 200 ✦ ou 0,99 € : les deux prix se tiennent.
+
+**Missions du jour** (3 tirées chaque jour parmi la liste, mêmes pour tous, graine = la date, comme dans la webapp)
+
+| Mission | Objectif |
+|---|---|
+| Ouvrir des huîtres | 5 ou 8 |
+| Obtenir un lustre A ou S | 2 ou 3 |
+| Obtenir un lustre S | 1 |
+| Trouver une perle ◆◆ ou plus rare | 1 |
+| Ouvrir des huîtres d'affilée sans fêlure | 3 ou 5 |
+| Revendre des doublons au comptoir | 1 ou 3 |
+| Partager une carte | 1 |
+
+Elles se font en une ou deux sessions avec le stock gratuit : elles donnent une raison de revenir chaque jour, pas une corvée.
+
+**Tous ces montants sont des points de départ.** On les ajustera avec les vrais chiffres de la bêta TestFlight (poussière gagnée par jour, part des joueurs qui achètent le bénitier). Ils vivront dans les réglages, en un seul endroit, et pas dans le code des écrans.
 
 ## 7. La charnière : ce qu'on sait, ce qu'il faut vérifier
 
@@ -236,6 +289,8 @@ ios/
 | Joueurs qui achètent au moins un skin | App Store Connect | ≥ 2 % |
 | Part des huîtres d'or parmi les achats | App Store Connect | à observer (le flex marche-t-il ?) |
 | Skins obtenus avec la poussière d'or | mesure d'usage | à observer (la boucle des doublons tourne-t-elle ?) |
+| Poussière gagnée par jour et par joueur | mesure d'usage | ≈ 60 à 110 ✦ (sinon, réajuster le barème) |
+| Missions du jour terminées (les trois) | mesure d'usage | ≥ 40 % des joueurs du jour |
 | Fêlures et lustre S (équilibrage) | mesure d'usage | à observer |
 
 La mesure d'usage reste centralisée dans un seul fichier (`Platform/Analytics`), comme `track()` dans la webapp. **Outil à choisir** : c'est une nouvelle dépendance, donc une décision en §6.

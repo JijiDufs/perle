@@ -4,6 +4,19 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite 6) · Jules · Claude Code · branche `jules/ios-app`
+
+Équilibre de la poussière d'or et missions du jour (app iOS), sans code.
+
+**Fait**
+- `docs/duo-gadget.md` §6 quater : barème de revente de l'app (◆ 1, ◆◆ 2, ◆◆◆ 5, ★ 15, ★★ 40 ✦), missions du jour (3 par jour, 5 ✦ chacune, + 10 ✦ les trois), calcul par profil de joueur (≈ 65 à 200 ✦ par jour), bénitier à 2 000 ✦ ou 2,99 €, packs de poussière revus (400 / 1 200 / 3 000 ✦), prix en poussière (huître 20 ✦, pièces ◆ à ◆◆◆). Le bénitier n'est plus offert par le calendrier.
+- AGENTS.md §6 : décision.
+
+**À faire**
+- Coder ce barème dans un catalogue (exporté vers l'app, pas dans les écrans), puis le stock, le comptoir, les missions et la boutique.
+
+---
+
 ## 2026-10-08 (suite 5) · Jules · Claude Code · branche `jules/ios-app`
 
 Création de l'app iOS, et périmètre de la 1.0 App Store.
