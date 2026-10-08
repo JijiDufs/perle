@@ -50,8 +50,15 @@ Ce que promet la page d'inscription, ni plus ni moins :
 | Premières minutes | Huîtres écrites à l'avance (rosée garantie en 1re), main fantôme | `core/tutorial.ts` |
 | Stock d'huîtres | 10 max, 1 toutes les 20 min : la raison de revenir | `core/stock.ts` |
 | **Perle de bienvenue** | Promise aux premiers inscrits (page d'inscription) : voir §6 | nouveau |
-| **Poussière d'or** | Les doublons se fondent en poussière d'or (on garde toujours un exemplaire) ; elle achète des skins | `core/dust.ts` |
-| **Skins d'huître** | Coquilles à collectionner, avec la poussière d'or ou en achat ; l'**huître d'or** pour le flex, en achat seulement : voir §6 bis | nouveau |
+| **Trouvailles (easter eggs)** | 5 % des huîtres cachent un objet à la place de la perle : 25 objets en 3 albums (bric-à-brac du port, clins d'œil à la pop culture sans nom d'œuvre ni de marque, trésors engloutis) | `core/finds.ts` |
+| **Poussière d'or** | On **revend ses perles en double** contre de la poussière d'or (on garde toujours un exemplaire de chaque sorte) ; elle achète des skins, des huîtres et les pièces manquantes de la collection | `core/dust.ts` |
+| **Skins d'huître** | Le **bénitier** (poussière d'or ou achat) et l'**huître d'or** pour le flex (achat seulement) : voir §6 bis | nouveau |
+| **Boutique** | Recharger ses huîtres, acheter de la poussière d'or, acheter un skin : voir §6 ter | nouveau |
+| **Calendrier de connexion** | 7 jours (huîtres, poussière d'or, le bénitier en cadeau le 30e jour de série) ; série avec un joker par semaine | `core/daily.ts` |
+| **Classement Game Center** | « Huîtres ouvertes » et « Plus belle perle » : le classement demandé par Mathys, sans serveur ni compte à nous | nouveau |
+| **Sauvegarde iCloud** | La collection suit le joueur sur un nouveau téléphone (les achats de skins se restaurent de toute façon) | nouveau |
+| **Notifications** | Une seule, désactivable : « Tes huîtres sont revenues » quand le stock est plein | nouveau |
+| **Réglages** | Son, haptique, notifications, restaurer les achats, probabilités, confidentialité, conditions | nouveau |
 | Partage | Image story 1080×1920 via la feuille de partage iOS | `art/storyImage.ts` |
 | Décor | Lagon turquoise animé, coquille et nacre dessinées par code | `art/lagoon.ts`, `art/shell.ts`, `art/pearl.ts` |
 | Langues | Français et anglais (la campagne et la page sont bilingues) | nouveau (la webapp est en français seulement) |
@@ -69,7 +76,7 @@ Le moteur est le même, la charnière et le pouce aussi (§7). Pour l'écrin, on
 
 ### Exclu de la 1.0
 
-Expertise, achat de pièces manquantes avec la poussière d'or, poussière d'or vendue contre de l'argent, atelier, Maison, niveaux, succès, quêtes, trouvailles, pubs, abonnement, compte, classement, bandeau « BÊTA ».
+Écrins, expertise, atelier, Maison, niveaux, succès, quêtes du jour, pubs, abonnement, compte, bandeau « BÊTA ».
 
 ## 5. Règles Apple à respecter
 
@@ -132,13 +139,11 @@ La page promet que « les premiers inscrits auront une perle de bienvenue ». Sa
 | Skin | Comment l'obtenir | Ce qu'il change |
 |---|---|---|
 | Huître du lagon | Offerte (celle de départ) | — |
-| Nacre de lune | 300 ✦ ou 1,99 € | Coquille gris perle, nacre bleutée |
-| Corail | 300 ✦ ou 1,99 € | Coquille rose corail, petites algues rouges |
-| Tahiti | 500 ✦ ou 2,99 € | Coquille noire, nacre vert paon |
+| **Bénitier** | 600 ✦ ou 2,99 € ; offert au 30e jour de série | Le coquillage géant : valves ondulées à grosses côtes, bord en zigzag, manteau bleu-vert irisé à l'intérieur, plus grand à l'écran |
 | **Première marée** | Exclusive aux inscrits (lien de l'e-mail de lancement, §6) | Coquille sable et écume, liseré argent ; ne sera plus jamais disponible |
-| **Huître d'or** | **9,99 €, achat seulement** | Coquille d'or martelé, nacre champagne, reflets qui suivent l'angle, son et vibration dédiés au « pop », badge « Or » sur les cartes |
+| **Huître d'or** (*golden oyster*) | **9,99 €, achat seulement** | Coquille d'or martelé, nacre champagne, reflets qui suivent l'angle, son et vibration dédiés au « pop », badge « Or » sur les cartes |
 
-Ordres de grandeur : un joueur régulier fond environ 100 ✦ par jour une fois les doublons arrivés. Un skin à 300 ✦ demande donc 3 à 4 jours de jeu, et l'achat direct est là pour les impatients.
+D'autres skins (nacre de lune, corail, Tahiti…) arriveront par mises à jour : chaque nouveau skin est une raison de revenir.
 
 **Pourquoi l'huître d'or seulement en achat.** Le flex tient à sa rareté et à son prix. Et chaque achat est la preuve la plus forte de traction : des gens paient pour ce geste.
 
@@ -147,7 +152,32 @@ Ordres de grandeur : un joueur régulier fond environ 100 ✦ par jour une fois 
 - Ce que le joueur possède est sauvegardé comme le reste. Les achats sont vérifiés par StoreKit 2 au lancement (transactions signées par Apple, sans serveur), et restaurés sur un nouveau téléphone.
 - Le prix de la poussière d'or et la liste des skins vivent dans le Core (aucun nombre magique). Les prix en euros sont configurés dans App Store Connect.
 
-**À ne pas faire dans la 1.0** : vendre de la poussière d'or contre de l'argent (cela reviendrait à payer pour compléter sa collection), des skins à durée limitée qui forcent l'achat, ou des offres « dernière chance ».
+**À ne pas faire dans la 1.0** : des skins à durée limitée qui forcent l'achat, ou des offres « dernière chance ».
+
+## 6 ter. La boutique (achats intégrés)
+
+Choix de Jules (2026-10-08) : on peut **recharger ses huîtres** et **acheter de la poussière d'or** avec de l'argent réel, en plus des skins. Tout passe par les achats intégrés d'Apple (StoreKit 2).
+
+| Produit | Type Apple | Prix proposé | Ce qu'il donne |
+|---|---|---|---|
+| Marée haute | consommable | 0,99 € | Le stock d'huîtres rempli (10) |
+| Grande marée | consommable | 2,99 € | 30 huîtres (au-delà du maximum) |
+| Bourse de poussière d'or | consommable | 1,99 € | 500 ✦ |
+| Coffret de poussière d'or | consommable | 4,99 € | 1 500 ✦ |
+| Malle de poussière d'or | consommable | 9,99 € | 4 000 ✦ |
+| Bénitier | non consommable | 2,99 € | Le skin (aussi 600 ✦) |
+| Huître d'or | non consommable | 9,99 € | Le skin, seulement en achat |
+
+**Revente des perles.** Le comptoir de la collection rachète les perles en double contre de la poussière d'or, au barème actuel (— 1, ◆ 2, ◆◆ 5, ◆◆◆ 12, ★ 40, ★★ 120 ✦). On ne revend jamais le dernier exemplaire d'une sorte, ni une perle à marque rare en lot (décisions déjà prises, AGENTS.md §6). « Tout revendre » garde le plus bel exemplaire de chaque sorte.
+
+**Points d'attention (à trancher entre associés)**
+- **Acheter des huîtres, c'est payer pour du hasard** : Apple l'autorise si **les probabilités sont affichées avant l'achat** (règle 3.1.1). On les montre déjà ; il faut les rappeler sur l'écran d'achat.
+- **Belgique (et peut-être Pays-Bas)** : les objets aléatoires payants y sont traités comme des jeux d'argent. Proposition : masquer les recharges d'huîtres pour la boutique de l'App Store belge (`Storefront.countryCode`), ou ne pas publier en Belgique au début. **À vérifier avec un juriste avant la sortie.**
+- **Payer pour compléter sa collection** : avec de la poussière achetée, une perle maudite manquante (600 ✦) coûte environ 4 €. Ça enlève du prestige aux perles rares. Proposition : la poussière achète les pièces manquantes **jusqu'à ◆◆◆ seulement** ; les ★ et ★★ restent à pêcher (la garantie après 25 huîtres est là pour ça).
+- **Monnaie virtuelle (règles européennes de protection des consommateurs)** : montrer clairement ce que coûte un objet et ce qu'il donne, pas d'urgence artificielle, pas de vente ciblée vers les enfants. À relire avant la sortie.
+- **Les achats consommables ne se restaurent pas** chez Apple : la poussière et les huîtres achetées vivent dans la sauvegarde (d'où la sauvegarde iCloud). Les skins, eux, se restaurent.
+- Les huîtres achetées et données au-delà du maximum ne bloquent pas la recharge gratuite : elle reprend quand on repasse sous 10.
+
 
 ## 7. La charnière : ce qu'on sait, ce qu'il faut vérifier
 
@@ -165,29 +195,30 @@ La page d'inscription fixe le comportement voulu : fermé, l'écran extérieur m
 
 Architecture : la charnière est **une source de geste de plus** (invariant n° 2). `HingeSource` transforme chaque `DeviceHinge.angle` en `OpeningSample { angle, time }` ; le moteur ne sait pas d'où vient le geste. Sans charnière, on bascule automatiquement sur le pouce (cahier §3).
 
-## 8. Architecture
+## 8. Architecture (en place depuis le 2026-10-08, branche `jules/ios-app`)
 
 ```
 ios/
-  PearlInc.xcodeproj
-  PearlCore/          Swift Package, logique PURE (miroir de src/core) : aucun UIKit/SwiftUI
-    Catalog, Random, Draw, Oyster, Opening, Lustre, Collection, Tutorial, Stock, PearlTraits
-    (si besoin : Glint, Jewels pour l'écrin)
-    Tuning            lit tuning.json (les mêmes valeurs que src/tuning.ts)
-  PearlInc/
-    Input/            GestureSource : ThumbSource, HingeSource → OpeningSample
-    Art/              Lagon, coquille, nacre, perle, image story (SwiftUI Canvas)
-    Platform/         Haptique (Core Haptics), sons, sauvegarde, partage, mesure d'usage
-    Features/         Pêche, Carte, Collection, Premières minutes
-    Localizable       Français, anglais
-  PearlCoreTests/
+  PearlInc.xcodeproj    Projet Xcode (iOS 18+, iPhone). Ouvrir ce fichier dans Xcode.
+  PearlCore/            Swift Package : logique PURE, miroir de src/core (aucun UIKit / SwiftUI)
+    Sources/PearlCore/
+      Resources/catalog.json   Perles, trouvailles, traits, réglages : EXPORTÉS depuis le TypeScript
+      Random, Tuning, Catalog, Oyster (tirage, garantie, traits), Opening (moteur + lustre),
+      ThumbMapping (pouce → angle), Player (cartes, valeurs, numéros de série)
+    Tests/PearlCoreTests/
+      Resources/parity.json    Cas de référence produits par le TypeScript
+      ParityTests              Le Swift doit donner exactement les mêmes résultats
+  PearlInc/             L'app SwiftUI
+    Game/GameModel      Relie moteur, geste, haptique, sauvegarde (aucune règle)
+    Input/ThumbSource   Pouce vers le haut → OpeningSample (HingeSource viendra avec iOS 27.1)
+    Art/                Lagon, coquille, nacre, perle, halo : dessinés par code
+    Platform/           Haptique, sauvegarde
+    Features/           Pêche, carte de révélation, collection
 ```
 
+- **Une seule source de vérité** : catalogues et réglages restent dans `src/` (TypeScript). `npm run ios:export` régénère `catalog.json` et `parity.json`. Le test `tests/ios-export.test.ts` échoue si on oublie, et `swift test` (dans `ios/PearlCore`) vérifie que le Swift suit.
 - **Mêmes invariants que la webapp** : Core pur, une seule interface de geste, aucun nombre magique, hasard et temps injectés, perle tirée à la création de l'huître et sauvegardée.
-- **Réglages partagés** : un script exporte `src/tuning.ts` et les catalogues en JSON. Les deux versions lisent les mêmes valeurs ; on règle à un seul endroit.
-- **Tests de parité** : les tests TypeScript génèrent des cas de référence (même graine → même perle, même suite d'angles → même lustre et même fêlure). Les tests Swift doivent donner exactement les mêmes résultats.
-- **À porter** : environ 600 lignes de Core et 1 300 lignes de dessin pour l'huître. C'est raisonnable.
-- Pas de dépendance externe au départ.
+- Pas de dépendance externe.
 
 ## 9. Mesurer la traction
 
@@ -220,7 +251,7 @@ La mesure d'usage reste centralisée dans un seul fichier (`Platform/Analytics`)
 | ≈ 13 nov. | **Soumission** ; examen d'Apple (souvent 1 à 2 jours, sans garantie) |
 | ≈ 17 – 20 nov. | **Sortie** ; e-mail aux inscrits avec la perle de bienvenue |
 
-**Si on prend du retard**, on coupe dans cet ordre : perles uniques, skins Nacre de lune / Corail / Tahiti (on garde l'huître d'or et la Première marée), anglais (en mise à jour), stock d'huîtres. On ne coupe ni le geste, ni l'haptique, ni la carte, ni le partage, ni la perle de bienvenue (c'est une promesse faite aux inscrits).
+**Si on prend du retard**, on coupe dans cet ordre : classement Game Center, calendrier de connexion, perles uniques, anglais (en mise à jour), bénitier en poussière d'or (on garde l'achat). On ne coupe ni le geste, ni l'haptique, ni la carte, ni le partage, ni la perle de bienvenue (c'est une promesse faite aux inscrits).
 
 ## 11. Ce qu'il faut avant de commencer
 

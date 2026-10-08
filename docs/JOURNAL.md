@@ -4,6 +4,27 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-08 (suite 5) · Jules · Claude Code · branche `jules/ios-app`
+
+Création de l'app iOS, et périmètre de la 1.0 App Store.
+
+**Fait**
+- `ios/PearlCore` (Swift Package, logique pure) : générateur à graine, réglages, catalogue, tirage avec garantie et trouvailles, traits des perles, moteur d'ouverture et lustre, conversion pouce → angle, état du joueur, valeur des cartes. **8 tests Swift passent** et donnent exactement les mêmes résultats que le TypeScript (400 huîtres, ouvertures, fêlures, lustre, valeurs).
+- `tests/ios-export.test.ts` + `npm run ios:export` : exporte `catalog.json` (catalogues et réglages) et `parity.json` (cas de référence) ; le test échoue si l'export est périmé. `SHAPE_WEIGHTS` et `OVERTONE_WEIGHTS` sont maintenant exportés par `core/pearlTraits.ts` (aucun changement de comportement).
+- `ios/PearlInc.xcodeproj` + `ios/PearlInc` (SwiftUI, iOS 18+) : Pêche (lagon, huître dessinée par code, couvercle qui se soulève, lumière de la couleur de la perle, tremblement des rares, fêlure), geste du pouce avec résistance, « pop », ouverture automatique en fin de course, haptique, suspense selon la rareté, carte de révélation (perle, trouvaille ou huître vide), collection (encyclopédie en 2 colonnes, trouvailles, dernières perles), sauvegarde, action VoiceOver « Ouvrir l'huître ». Onglets du système (Duo). **La build passe** pour le simulateur.
+- `docs/duo-gadget.md` : périmètre choisi par Jules (trouvailles, poussière d'or et revente, skins bénitier et huître d'or, boutique : recharges, poussière, skins), ajouts proposés (calendrier, Game Center, iCloud, notification, réglages), points d'attention de la boutique (probabilités avant achat, Belgique, pièces ★, consommables), architecture réelle.
+- AGENTS.md : dossier `ios/`, commandes, deux décisions (§6).
+
+**À faire**
+- Installer la plateforme iOS dans Xcode (Settings → Components) pour lancer l'app dans le simulateur, et choisir l'identifiant définitif de l'app (`app.pearlinc.PearlInc` provisoire, il ne pourra plus changer une fois sur l'App Store).
+- Prochaines passes : stock d'huîtres, poussière d'or et comptoir, skins, boutique StoreKit 2, tutoriel, partage, Core Haptics, décor plus riche, anglais, puis la charnière avec Xcode / iOS 27.1.
+
+**Fragile**
+- Le projet Xcode a été écrit à la main (format Xcode 16+ à dossiers synchronisés) : tout fichier ajouté dans `ios/PearlInc/` est pris automatiquement, sans toucher au projet.
+- Après tout changement de catalogue ou de réglage dans `src/` : `npm run ios:export`, sinon `npm test` échoue.
+
+---
+
 ## 2026-10-08 (suite 4) · Jules · Claude Code · branche `jules/duo-gadget`
 
 Lecture des règles d'Apple pour l'iPhone Duo.
