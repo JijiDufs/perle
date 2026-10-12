@@ -214,7 +214,7 @@ footer p{margin:4px 0}
 <hr>
 <section class="block wrap notify" id="notify">
   <h2 data-i18n="nTitle">Sois là pour la première huître.</h2>
-  <p class="lead" data-i18n="nLead">Laisse ton adresse : on te prévient le jour du lancement, et les premiers inscrits auront une perle de bienvenue.</p>
+  <p class="lead" data-i18n="nLead">Laisse ton adresse : on te prévient le jour du lancement, et les premiers inscrits recevront un skin d’huître exclusif.</p>
   <a class="btn btn-primary" data-tally data-i18n="notifyBtn" href="#notify">Préviens-moi de la sortie</a>
   <p class="notify-note" id="notifyNote" aria-live="polite"></p>
 </section>
@@ -259,7 +259,7 @@ fr:{
   r2a:'Résistance', r2b:'Aimants et vibration', r2c:'Glissé freiné et vibration',
   r3a:'Huître suivante', r3b:'Refermer le téléphone', r3c:'Toucher la carte',
   nTitle:'Sois là pour la première huître.',
-  nLead:'Laisse ton adresse : on te prévient le jour du lancement, et les premiers inscrits auront une perle de bienvenue.',
+  nLead:'Laisse ton adresse : on te prévient le jour du lancement, et les premiers inscrits recevront un skin d’huître exclusif.',
   signupSoon:'Les inscriptions ouvrent très bientôt.',
   foot0:'Une création du studio MJHstudio.',
   foot1:'© 2026 Pearl Inc. Tous droits réservés.',
@@ -313,7 +313,7 @@ en:{
   r2a:'Resistance', r2b:'Magnets and haptics', r2c:'Damped swipe and haptics',
   r3a:'Next oyster', r3b:'Close the phone', r3c:'Tap the card',
   nTitle:'Be there for the first oyster.',
-  nLead:'Leave your email: we\u2019ll let you know on launch day, and early sign-ups get a welcome pearl.',
+  nLead:'Leave your email: we\u2019ll let you know on launch day, and early sign-ups get an exclusive oyster skin.',
   signupSoon:'Sign-ups open very soon.',
   foot0:'Created by MJHstudio.',
   foot1:'© 2026 Pearl Inc. All rights reserved.',
@@ -804,9 +804,10 @@ Promise.all([document.fonts.load('700 40px "Inter"'),document.fonts.load('500 30
 })();
 
 (function(){
-  // Liens des formulaires Tally (un par langue) pour les inscriptions au lancement. À renseigner (ex. https://tally.so/r/abcdef).
+  // Liens des formulaires Tally (un par langue) pour les inscriptions au lancement.
+  // FR : « Sois là pour la première huître. » · EN : « Be there for the first oyster. »
   // Sans lien anglais, le formulaire français sert pour les deux langues.
-  const TALLY_URLS={fr:'',en:''};
+  const TALLY_URLS={fr:'https://tally.so/r/J9N7AJ',en:'https://tally.so/r/Me9oLY'};
   const tallyUrl=()=>TALLY_URLS[window.PearlI18n.lang]||TALLY_URLS.fr;
   // Champs cachés du formulaire : provenance de la campagne, langue, bouton cliqué (voir docs/tally-formulaire.md).
   const page=new URLSearchParams(location.search);
