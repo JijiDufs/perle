@@ -4,6 +4,19 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 5) · Jules · Claude Code · branche `jules/ios-app`
+
+Icône de l'app partout (app iOS, site, fichier à télécharger) ; le prototype du site montre mieux qu'on ouvre l'iPhone.
+
+**Fait**
+- `scripts/make-app-icon.sh` (+ `scripts/app-icon.swift`) : l'icône du site (la perle dans le lagon) redessinée fidèlement et exportée en une fois : icône de l'app iOS 1024 px carrée et opaque (`ios/PearlInc/Assets.xcassets/AppIcon.appiconset`, réglage `ASSETCATALOG_COMPILER_APPICON_NAME`), `docs/icone/` (carrée, et arrondie sur fond transparent, pour les réseaux), `site/favicon.svg` (le SVG de la page), `favicon-32/64.png`, `favicon.ico`, `apple-touch-icon.png`, liens dans le `<head>`.
+- Prototype (`site/index.html`) : tant que personne n'y a touché, l'iPhone s'entrouvre seul (26°) toutes les ~4 s puis se referme (rien n'est révélé ni compté dans l'essai) ; l'aide devient une pastille de verre placée sous l'iPhone, avec une flèche ← qui pousse dans le sens du geste. L'arc d'angle et le message d'état restent cachés pendant ces entrouvertures. « Réduire les animations » : ni entrouverture, ni flèche animée. Vérifié dans Safari (simulateur iPhone 17 Pro).
+
+**À faire**
+- Mettre le site en ligne (rien n'est publié tant que ce n'est pas déployé sur Vercel).
+
+---
+
 ## 2026-10-13 (suite 4) · Jules · Claude Code · branche `jules/ios-app`
 
 La doc suit la nouvelle promesse de la page : les inscrits recevront le **skin Première marée** (plus de « perle de bienvenue »).

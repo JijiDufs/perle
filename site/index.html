@@ -8,6 +8,10 @@
 <title>Pearl Inc. pour iPhone Duo</title>
 <!-- Aperçu des liens (X, LinkedIn, iMessage…). Image : sh scripts/make-og.sh. Adresses absolues : à changer si le domaine change. -->
 <link rel="canonical" href="https://pearl-inc.app/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/favicon-64.png" sizes="64x64" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Pearl Inc.">
 <meta property="og:url" content="https://pearl-inc.app/">
@@ -71,8 +75,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .sound{position:absolute;top:38px;right:20px;width:34px;height:34px;border-radius:50%;border:0;background:var(--pill);box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 24px rgba(0,0,0,.07);display:grid;place-items:center}
 .sound svg{width:16px;height:16px}
 .sound.off .waves{display:none}
-.hint{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:13px;color:var(--faint);margin:0;transition:opacity .6s;pointer-events:none}
+.hint{position:absolute;left:0;top:0;margin:0;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 32px);padding:10px 18px 10px 14px;border-radius:999px;background:var(--pill);
+  box-shadow:0 1px 2px rgba(0,0,0,.06),0 8px 28px rgba(0,0,0,.1);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  font-size:15px;font-weight:600;line-height:1.3;color:var(--ink);text-align:left;transition:opacity .6s;pointer-events:none;will-change:transform}
 .hint.gone{opacity:0}
+.hint .nudge{flex:none;font-size:20px;line-height:1;color:var(--accent);animation:nudge 1.4s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(-8px)}}
 #arc{position:absolute;left:0;top:0;width:120px;height:70px;pointer-events:none;opacity:0;transition:opacity .3s}
 #arc.show{opacity:1}
 #arc .track{fill:none;stroke:#c7c7cc;stroke-width:1.2;stroke-dasharray:2 4}
@@ -125,7 +133,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 footer{padding:36px 0 calc(env(safe-area-inset-bottom,0px) + 40px);font-size:12px;color:var(--faint);text-align:center}
 footer p{margin:4px 0}
 @media (max-width:600px){#pearls{grid-template-columns:repeat(2,1fr)}.hero{padding-top:52px}.duo-table{font-size:14px}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hint,#arc{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hint,#arc{transition:none}.hint .nudge{animation:none}}
 </style>
 </head>
 <body>
@@ -175,7 +183,7 @@ footer p{margin:4px 0}
       <p class="te-small" data-i18n="teSmall">Juste un e-mail, le jour du lancement.</p>
     </div>
   </div>
-  <p class="hint" id="hint" data-i18n="hint">Fais glisser l’iPhone vers la gauche pour l’ouvrir</p>
+  <p class="hint" id="hint"><span class="nudge" aria-hidden="true">←</span><span id="hintText" data-i18n="hint">Fais glisser l’iPhone vers la gauche pour l’ouvrir</span></p>
 </section>
 
 <hr>
@@ -683,12 +691,14 @@ addEventListener('resize',resize);new ResizeObserver(resize).observe(canvas);
 let onScreen=true;new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;}).observe(canvas);
 function hit(e){const b=canvas.getBoundingClientRect();ndc.set(((e.clientX-b.left)/b.width)*2-1,-((e.clientY-b.top)/b.height)*2+1);ray.setFromCamera(ndc,camera);return ray.intersectObjects(phoneMeshes,false).length>0;}
 let drag=null,lx=0,ly=0;
+/** Tant que personne n'a touché l'iPhone, il s'entrouvre un peu tout seul, à intervalles réguliers : on voit qu'il s'ouvre. */
+let touched=false;const PEEK={delay:1.2,period:4.2,dur:1.8,angle:26};
 let downX=0,downY=0,downT=0,moved=0,touchHold=0,holdUsed=false,holdTimer=0;
 /** Appui long au doigt : l'iPhone s'ouvre (ou se referme après la révélation) tout seul, à vitesse sûre. */
 function holdDir(){if(mode==='armed')return 1;if(mode==='revealed'&&reveal&&reveal.show&&!colOpen)return -1;return 0;}
 canvas.addEventListener('pointerdown',e=>{ensureAudio();drag=(e.pointerType==='touch'||hit(e))?'hinge':'orbit';holdUsed=false;touchHold=0;clearTimeout(holdTimer);
   if(e.pointerType==='touch')holdTimer=setTimeout(()=>{if(drag&&moved<8){touchHold=holdDir();holdUsed=touchHold!==0;}},220); // au doigt : jamais de rotation, tout glissé horizontal ouvre l'iPhone
-  lx=e.clientX;ly=e.clientY;downX=lx;downY=ly;downT=performance.now();moved=0;try{canvas.setPointerCapture(e.pointerId);}catch(_){}canvas.style.cursor=drag==='hinge'?'grabbing':'grabbing';$('hint').classList.add('gone');});
+  lx=e.clientX;ly=e.clientY;downX=lx;downY=ly;downT=performance.now();moved=0;try{canvas.setPointerCapture(e.pointerId);}catch(_){}canvas.style.cursor=drag==='hinge'?'grabbing':'grabbing';touched=true;$('hint').classList.add('gone');});
 canvas.addEventListener('pointermove',e=>{
   if(!drag){canvas.style.cursor=tapTarget(screenPoint(e))?'pointer':hit(e)?'grab':'default';return;}
   moved=Math.max(moved,Math.hypot(e.clientX-downX,e.clientY-downY));if(moved>=8){clearTimeout(holdTimer);touchHold=0;}
@@ -714,11 +724,11 @@ function handleTap(e){const k=tapTarget(screenPoint(e));if(!k)return;noise(0.05,
 const end=(e)=>{clearTimeout(holdTimer);touchHold=0;if(drag==='hinge'&&e&&e.type==='pointerup'&&!holdUsed&&moved<8&&performance.now()-downT<500)handleTap(e);if(drag==='hinge'&&hTarget<6)hTarget=0;drag=null;canvas.style.cursor='default';};
 canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',e=>{clearTimeout(holdTimer);touchHold=0;drag=null;canvas.style.cursor='default';if(hTarget<6)hTarget=0;});
 canvas.addEventListener('dblclick',e=>{if(!hit(e)){yaw=0;pitch=0.04;}});
-canvas.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ensureAudio();keyDir=1;e.preventDefault();$('hint').classList.add('gone');}else if(e.key==='ArrowRight'||e.key==='ArrowDown'){keyDir=-1;e.preventDefault();}});
+canvas.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ensureAudio();keyDir=1;e.preventDefault();touched=true;$('hint').classList.add('gone');}else if(e.key==='ArrowRight'||e.key==='ArrowDown'){keyDir=-1;e.preventDefault();}});
 canvas.addEventListener('keyup',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){keyDir=0;if(hTarget<6)hTarget=0;}});
 
 /* ---------- Indicateur d'angle ---------- */
-const arcEl=$('arc'),arcFill=$('arcFill'),arcLabel=$('arcLabel'),stateEl=$('state');
+const arcEl=$('arc'),arcFill=$('arcFill'),arcLabel=$('arcLabel'),stateEl=$('state'),hintEl=$('hint');
 const R_ARC=46;
 function arcPath(deg){const a=Math.PI*Math.min(180,deg)/180;const x=60+R_ARC*Math.cos(a),y=10+R_ARC*Math.sin(a);return deg<0.5?'':'M'+(60+R_ARC)+' 10 A'+R_ARC+' '+R_ARC+' 0 0 1 '+x.toFixed(2)+' '+y.toFixed(2);}
 
@@ -726,6 +736,9 @@ function arcPath(deg){const a=Math.PI*Math.min(180,deg)/180;const x=60+R_ARC*Mat
 let last=performance.now();const t0=last;let coverClock=1;const Y=new THREE.Vector3(0,1,0);
 function frame(now){
   const dt=Math.min(0.05,(now-last)/1000);last=now;frameDt=dt;const t=(now-t0)/1000;
+  if(!touched&&!reduce&&mode==='armed'&&!drag&&!keyDir&&!touchHold){
+    // L'huître se referme aussitôt (moteur remis à zéro sous 0,6°) : rien n'est révélé ni compté dans l'essai.
+    const p=(t-PEEK.delay)%PEEK.period;hTarget=t>PEEK.delay&&p<PEEK.dur?PEEK.angle*Math.sin(Math.PI*p/PEEK.dur):0;}
   if(keyDir)hTarget=clamp(hTarget+keyDir*(hTarget<12?25:70)*dt,0,180);
   if(touchHold&&mode!=='ended'){if(touchHold!==holdDir())touchHold=0;else hTarget=clamp(hTarget+touchHold*(touchHold>0?(hTarget<12?40:80):140)*dt,0,180);}
   h+=(hTarget-h)*(1-Math.exp(-dt*16));if(Math.abs(hTarget-h)<0.01)h=hTarget;
@@ -767,11 +780,12 @@ function frame(now){
   tmp.set(0,-HY-0.2,0);phone.localToWorld(tmp);tmp.project(camera);
   const sx=(tmp.x*0.5+0.5)*canvas.clientWidth,sy=(-tmp.y*0.5+0.5)*canvas.clientHeight;
   arcEl.style.transform='translate('+(sx-60).toFixed(1)+'px,'+(sy+6).toFixed(1)+'px)';
-  arcEl.classList.toggle('show',h>0.8);
+  arcEl.classList.toggle('show',h>0.8&&touched);
   arcFill.setAttribute('d',arcPath(h));arcLabel.textContent=Math.round(h)+'°';
   let st='',warn=false;
   if(mode==='ended')st='';
   else if(mode==='revealed')st=reveal&&reveal.show?t_('stNext'):'';
+  else if(!touched)st='';
   else if(engine.phase==='closed')st=h>0.8?t_('stGently'):'';
   else if(engine.phase==='resisting')st=t_('stGently');
   else if((engine.cracked||stickyCrack)&&pearl.glow){st=t_('stCrack');warn=true;}
@@ -780,6 +794,11 @@ function frame(now){
   else st=t_('stMore');
   if(stateEl.textContent!==st)stateEl.textContent=st;stateEl.classList.toggle('warn',warn);
   stateEl.style.transform='translate('+(sx).toFixed(1)+'px,'+(sy+70).toFixed(1)+'px) translateX(-50%)';
+  if(!touched){
+    // La pastille d'aide, juste sous l'iPhone fermé.
+    tmp.set(4.115*(1+Math.cos(hr))/2,-HY-0.2,0);phone.localToWorld(tmp);tmp.project(camera);
+    const px=(tmp.x*0.5+0.5)*canvas.clientWidth,py=(-tmp.y*0.5+0.5)*canvas.clientHeight;
+    hintEl.style.transform='translate('+px.toFixed(1)+'px,'+(py+22).toFixed(1)+'px) translateX(-50%)';}
 
   if(onScreen)renderer.render(scene,camera);
   requestAnimationFrame(frame);
@@ -794,7 +813,7 @@ function drawStrip(){
     const meta=document.createElement('span');meta.className='p-meta';meta.textContent=p.rarity+'  ·  '+I.pct(p.probability);
     li.append(cv,name,meta);host.append(li);});
 }
-function setHint(){$('hint').textContent=t_(matchMedia('(pointer: coarse)').matches?'hintTouch':'hint');}
+function setHint(){$('hintText').textContent=t_(matchMedia('(pointer: coarse)').matches?'hintTouch':'hint');}
 I.onChange(()=>{setHint();drawStrip();renderTrial();$('soundBtn').setAttribute('aria-label',t_(muted?'soundOn':'soundOff'));if(pearl)drawCover((performance.now()-t0)/1000,false);});
 function start(){setHint();drawStrip();renderTrial();resize();newOyster();drawInner(0,performance.now());drawCover(0,false);
   const q=parseFloat(new URLSearchParams(location.search).get('h'));if(q>0){hTarget=h=prevH=clamp(q,0,180);}
