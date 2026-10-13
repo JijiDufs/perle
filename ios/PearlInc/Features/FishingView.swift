@@ -7,6 +7,7 @@ struct FishingView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     @State private var showMissions = false
+    @State private var showSettings = false
 
     var body: some View {
         ZStack {
@@ -35,7 +36,7 @@ struct FishingView: View {
             .accessibilityAction(named: "Ouvrir l'huître") { game.openForAccessibility() }
 
             VStack {
-                ResourceBar(showMissions: $showMissions)
+                ResourceBar(showMissions: $showMissions, showSettings: $showSettings)
                     .padding(.horizontal)
                     .padding(.top, 8)
                 Spacer()
@@ -62,6 +63,7 @@ struct FishingView: View {
         }
         .animation(.spring(duration: 0.45, bounce: 0.35), value: game.stage)
         .sheet(isPresented: $showMissions) { MissionsView() }
+        .sheet(isPresented: $showSettings) { SettingsView() }
         .onChange(of: scenePhase) { _, phase in if phase == .active { game.refresh() } }
         .task {
             // Recharge du stock et changement de jour, même si l'app reste ouverte.

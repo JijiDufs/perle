@@ -48,6 +48,11 @@ final class Store {
         await syncEntitlements()
     }
 
+    /// Relit les skins déjà achetés (sans fenêtre Apple), par exemple après une partie remise à zéro.
+    func refreshEntitlements() {
+        Task { await syncEntitlements() }
+    }
+
     private func syncEntitlements() async {
         for await result in Transaction.currentEntitlements {
             if case .verified(let transaction) = result, transaction.revocationDate == nil {

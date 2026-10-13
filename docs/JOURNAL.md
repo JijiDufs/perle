@@ -4,6 +4,76 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 9) · Jules · Claude Code · branche `jules/ios-app`
+
+Site : pages légales réduites à ce que fait vraiment pearl-inc.app aujourd'hui (prototype + inscription), en attendant l'app.
+
+**Fait**
+- Confidentialité du site (`/confidentialite/`, `/en/privacy/`) réécrite en version courte : prototype sans collecte, inscription Tally (données, finalités, effacement 6 mois après la sortie, consentement), hébergement, droits et CNIL.
+- Les pages propres à l'app (confidentialité complète, conditions d'utilisation, aide) sortent du site et sont gardées dans `docs/pages-app/` (même arborescence) : à remettre dans `site/` à la soumission App Store, avec les infos de l'éditeur. Liens du pied de page de l'accueil : Confidentialité · Mentions légales.
+- Éditeur : MJHstudio n'existe pas encore ; ce sera la micro-entreprise de Mathys (EI), avec un nom commercial éventuel. Champs jaunes adaptés.
+
+- Éditeur rempli partout (site et `docs/pages-app/`) : **Mathys Hosin EI**, sans nom commercial, 212 rue de Solférino, 59800 Lille (code postal du répertoire SIRENE), SIREN 994 477 008, RNE (activité 70.22Z, section M), TVA non applicable (art. 293 B du CGI). Seul le médiateur reste à compléter, dans les conditions de l'app.
+
+**À faire**
+- Activité de la micro de Mathys (70.22Z, conseil) : ajouter l'édition de jeux (58.21Z) avant de vendre des achats intégrés.
+- Avant la soumission : remettre `docs/pages-app/` dans `site/`, éditeur = Mathys EI (et médiateur) ; l'app pointe déjà vers `/support/`, `/conditions/`, `/confidentialite/`.
+
+**Fragile**
+- Tant que `docs/pages-app/` n'est pas remis en ligne, les liens Aide et Conditions des Réglages de l'app mènent à une page introuvable (sans conséquence avant la sortie).
+
+---
+
+## 2026-10-13 (suite 8) · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : suppression du compte et écran Réglages (exigences d'Apple).
+
+**Fait**
+- Supabase : fonction `public.delete_account()` (migration `supabase/migrations/20261013200000_delete_account.sql`, appliquée au projet) : supprime **seulement le compte de l'appelant** ; profils, sauvegardes, skins et droits partent en cascade. Exécutable par les joueurs connectés, pas par les visiteurs anonymes. Testé côté serveur (refus sans connexion, rien d'effacé pour un compte inexistant). L'avertissement de Supabase sur cette fonction est voulu.
+- App : écran **Réglages** (roue dentée dans la barre du haut de la Pêche) : compte (type, e-mail, identifiant à copier pour le support), se déconnecter (avertissement sans compte), **supprimer mon compte** (confirmation, puis partie remise à zéro et skins achetés relus auprès d'Apple), vibrations (réglage respecté par `Haptics`), probabilités, restaurer les achats, aide, écrire au support (identifiant dans l'objet), confidentialité, conditions, mentions légales, version.
+- Pages du site et guide juridique mis à jour (suppression dans l'app).
+
+**À faire**
+- **Connexion avec Apple** : à la suppression, révoquer aussi le jeton Apple (API REST d'Apple, clé côté serveur : fonction Supabase Edge), une fois le fournisseur Apple configuré.
+- Tester la suppression de bout en bout avec un vrai compte de test (TestFlight).
+
+**Fragile**
+- Si une nouvelle table liée aux joueurs est ajoutée, elle doit référencer `profiles` (ou `auth.users`) avec `ON DELETE CASCADE`, sinon la suppression échouera ou laissera des données.
+
+---
+
+## 2026-10-13 (suite 7) · Jules · Claude Code · branche `jules/ios-app`
+
+Juridique pour l'App Store : pages publiques, manifeste de confidentialité, guide des questionnaires d'Apple.
+
+**Fait**
+- Pages du site, FR et EN, au style de l'accueil (`site/legal.css`) : confidentialité (`/confidentialite/`, `/en/privacy/`), conditions d'utilisation (`/conditions/`, `/en/terms/`), aide et contact avec FAQ (`/support/`, `/en/support/`), mentions légales (`/mentions-legales/`, `/en/legal-notice/`). Liens en bas de l'accueil. Éditeur : entreprise individuelle (MJHstudio), contact laplateformemjh@gmail.com. Supabase vérifié : région eu-west-1 (Irlande).
+- App iOS : manifeste `PrivacyInfo.xcprivacy` (e-mail et identifiant liés, pas de pistage, `UserDefaults` raison CA92.1), `ITSAppUsesNonExemptEncryption = NO`, liens conditions et confidentialité sur l'écran de connexion.
+- `docs/app-store-juridique.md` : URL à saisir, étiquette « App Privacy », chiffrement, âge, statut de commerçant (DSA), règles Apple encore manquantes, points à faire valider.
+
+**À faire**
+- Remplir les champs jaunes « À compléter » (nom, adresse, téléphone, SIREN, TVA, médiateur), **puis seulement** mettre ces pages en ligne (fusion dans `main`).
+- Adhérer à un médiateur de la consommation ; faire relire par un juriste (§6 du guide).
+- Dans l'app : suppression du compte, écran Réglages, pub réelle ou retirée, sauvegarde en ligne ou phrase de connexion à changer.
+
+**Fragile**
+- Politique, manifeste et étiquette App Store doivent changer ensemble à chaque nouvelle donnée (sauvegarde en ligne, régie publicitaire, mesure d'audience).
+
+---
+
+## 2026-10-13 (suite 6) · Jules · Claude Code · branche `jules/ios-app`
+
+Formulaires Tally : vérifiés, déjà à jour.
+
+**Fait**
+- Les deux formulaires (FR J9N7AJ, EN Me9oLY) promettent déjà le **skin d'huître exclusif**, dans l'éditeur comme dans la version publiée ; plus aucune « perle de bienvenue ». Aucun changement en attente de publication. Notification par e-mail à chaque inscription : activée sur les deux.
+- `docs/tally-formulaire.md` aligné sur les textes réellement publiés (FR et EN).
+
+**À faire**
+- Inscription test FR et EN une fois, puis la supprimer dans Tally.
+
+---
+
 ## 2026-10-13 (suite 5) · Jules · Claude Code · branche `jules/ios-app`
 
 Icône de l'app partout (app iOS, site, fichier à télécharger) ; le prototype du site montre mieux qu'on ouvre l'iPhone.

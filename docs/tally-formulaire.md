@@ -3,7 +3,7 @@
 > Page concernée : `site/index.html` (pearl-inc.app). Rédigé le 2026-10-08.
 > Le joueur ouvre d'abord ses **5 huîtres d'essai sans rien donner** ; le formulaire n'arrive qu'après, ou s'il clique de lui-même sur « Préviens-moi de la sortie ».
 >
-> **À mettre à jour (2026-10-13)** : depuis le 2026-10-12, la page promet aux inscrits **un skin d'huître exclusif** (« Première marée », voir `docs/duo-gadget.md` §6), plus une perle de bienvenue. Les formulaires publiés et les textes ci-dessous (introduction, remerciement, confidentialité) parlent encore de la « perle de bienvenue » : les changer ensemble, dans Tally puis ici.
+> **Promesse aux inscrits : un skin d'huître exclusif** (« Première marée », voir `docs/duo-gadget.md` §6), depuis le 2026-10-12, sur la page comme dans les deux formulaires publiés (vérifié le 2026-10-13). Elle remplace la « perle de bienvenue ».
 
 ## 1. Deux formulaires : un en français, un en anglais
 
@@ -27,13 +27,14 @@ Tant qu'ils sont vides, les boutons affichent « Les inscriptions ouvrent très 
 
 **Titre :** Sois là pour la première huître.
 
-**Texte d'introduction :** Pearl Inc. arrive sur l'App Store. Laisse ton adresse : on t'écrit une seule fois, le jour de la sortie, avec ta perle de bienvenue.
+**Texte d'introduction :** Pearl Inc. arrive sur l'App Store. Laisse ton adresse : on t'écrit une seule fois, le jour de la sortie. Les premiers inscrits recevront un skin d'huître exclusif.
+(EN : Pearl Inc. is coming to the App Store. Leave your address: we'll write to you once, on launch day. Early sign-ups get an exclusive oyster skin.)
 
 | # | Type Tally | Question | Obligatoire | Pourquoi |
 |---|---|---|---|---|
 | 1 | Email | Ton e-mail | Oui | Le seul vrai besoin |
 | 2 | Multiple choice | Tu joueras sur quel téléphone ? — iPhone Duo · Un autre iPhone · Android (choix de Jules : pas de distinction précommandé / à acheter) | Non | Mesure directe de l'intérêt pour le Duo, utile pour la décision du 25 |
-| 3 | Checkbox | J'accepte de recevoir un e-mail de Pearl Inc. à la sortie du jeu, et je peux me désinscrire à tout moment. [Confidentialité](#3-confidentialité-rgpd) | Oui | Consentement RGPD explicite |
+| 3 | Checkbox | J'accepte de recevoir un e-mail de Pearl Inc. à la sortie du jeu. Je peux me désinscrire à tout moment. [Confidentialité](#3-confidentialité-rgpd) | Oui | Consentement RGPD explicite |
 
 Pas de prénom, pas d'âge, pas de téléphone : chaque champ en plus fait perdre des inscrits.
 
@@ -49,8 +50,10 @@ Pas de prénom, pas d'âge, pas de téléphone : chaque champ en plus fait perdr
 `bouton` dit si les gens s'inscrivent **après avoir joué** (`fin-essai`) ou **avant** : c'est la preuve que le geste convainc.
 
 **Page de remerciement :**
-> C'est noté ! Ta perle de bienvenue t'attend le jour de la sortie.
-> En attendant, retourne sur la page : 5 nouvelles huîtres t'attendent.
+> C'est noté !
+> Si tu fais partie des premiers inscrits, un skin d'huître exclusif t'attend le jour de la sortie. En attendant, retourne sur la page : 5 nouvelles huîtres t'attendent.
+>
+> (EN : You're on the list! If you're one of the first to sign up, an exclusive oyster skin will be waiting on launch day. Meanwhile, head back to the page: 5 new oysters are waiting for you.)
 
 (La page redonne déjà 5 huîtres à qui clique sur « Préviens-moi » à la fin de l'essai.)
 
@@ -60,7 +63,7 @@ On collecte des e-mails de personnes en Europe : il faut un texte court, accessi
 
 > **Qui :** MJHstudio (Jules, Mathys, Hugo), éditeur de Pearl Inc. Contact : laplateformemjh@gmail.com.
 > **Quoi :** ton adresse e-mail, ta réponse sur ton téléphone, et d'où tu viens (réseau social, langue).
-> **Pour quoi :** t'envoyer un e-mail à la sortie de Pearl Inc. avec ta perle de bienvenue, et mesurer quel message fonctionne le mieux. Rien d'autre, jamais revendu.
+> **Pour quoi :** t'envoyer un e-mail à la sortie de Pearl Inc. (avec ton skin d'inscrit), et mesurer quel message fonctionne le mieux. Rien d'autre, jamais revendu.
 > **Combien de temps :** jusqu'à 6 mois après la sortie du jeu, puis effacé.
 > **Tes droits :** écris-nous pour consulter ou supprimer tes données, ou désinscris-toi en un clic depuis l'e-mail.
 > **Où :** chez Tally, notre outil de formulaires (données hébergées dans l'Union européenne).
@@ -69,7 +72,7 @@ Vérifier ce dernier point dans les réglages et la documentation de Tally au mo
 
 ## 4. Réglages Tally
 
-- **Notifications** : un e-mail à chaque inscription (au moins pendant la campagne, pour réagir vite).
+- **Notifications** : un e-mail à chaque inscription (au moins pendant la campagne, pour réagir vite). **Activé** sur les deux formulaires (vérifié le 2026-10-13).
 - **Fermer le formulaire** : pas de limite.
 - **Doublons** : rien à faire ; on dédoublonne à l'export.
 - Plan gratuit suffisant (les champs cachés sont gratuits). Le logo Tally reste affiché ; on peut l'enlever plus tard avec Tally Pro.
