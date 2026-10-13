@@ -65,12 +65,7 @@ struct LoginView: View {
         }
         .padding(20)
         .frame(maxWidth: 440)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .strokeBorder(LinearGradient(colors: [.white.opacity(0.6), .white.opacity(0.12), .white.opacity(0.35)],
-                                             startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
-        )
+        .glassPanel(cornerRadius: 32, shade: 0)
         .disabled(auth.isLoading)
         .overlay { if auth.isLoading { ProgressView().tint(.white) } }
     }
@@ -171,51 +166,6 @@ struct LoginView: View {
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(.white.opacity(0.85))
             .frame(height: 40)
-    }
-}
-
-// MARK: - Styles
-
-/// Bouton principal couleur nacre.
-struct PearlButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: 17, weight: .semibold))
-            .foregroundStyle(Lagoon.abyss)
-            .frame(maxWidth: .infinity, minHeight: 54)
-            .background(
-                Capsule().fill(LinearGradient(colors: [.white, Lagoon.pearl, Color(hex: 0xE4DCCB)],
-                                              startPoint: .top, endPoint: .bottom))
-            )
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.snappy(duration: 0.15), value: configuration.isPressed)
-    }
-}
-
-/// Bouton secondaire en verre.
-struct GlassButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: 17, weight: .semibold))
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, minHeight: 54)
-            .background(Capsule().fill(.white.opacity(configuration.isPressed ? 0.26 : 0.16)))
-            .overlay(Capsule().strokeBorder(.white.opacity(0.4), lineWidth: 1))
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.snappy(duration: 0.15), value: configuration.isPressed)
-    }
-}
-
-/// Champ de saisie en verre.
-struct GlassField: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .foregroundStyle(.white)
-            .tint(.white)
-            .padding(.horizontal, 18)
-            .frame(minHeight: 56)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(.black.opacity(0.18)))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(.white.opacity(0.3), lineWidth: 1))
     }
 }
 

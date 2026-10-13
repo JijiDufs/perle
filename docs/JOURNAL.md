@@ -4,6 +4,24 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite) · Jules · Claude Code · branche `jules/ios-app`
+
+L'app iOS (MVP « gadget ») prend la direction de l'écran de connexion : lagon lumineux et verre (glassmorphism).
+
+**Fait**
+- `Features/Glass.swift` : le verre commun à tout le jeu. `glass(_:)` / `glassPanel()` (flou du lagon + liseré clair en dégradé, liseré or possible), `lagoonTitle()`, `PearlButtonStyle` (nacre) et `GlassButtonStyle` (verre), avec une taille `compact` et un état désactivé estompé. Les styles quittent `LoginView.swift` (inchangés à l'écran).
+- `LagoonBackground(dim:)` : voile d'eau profonde pour les écrans pleins de texte.
+- Pêche : le lagon animé (rayons de lumière) remplace le dégradé ; pastilles du haut et message sous l'huître en verre.
+- Carte de révélation et « La marée remonte… » : panneaux de verre (liseré or pour la carte), boutons nacre / verre.
+- Collection et Boutique : fond lagon assombri, comptoir, cases de l'encyclopédie, listes et coquilles en panneaux de verre (coquille équipée : liseré or).
+- Missions : feuille en verre au-dessus du lagon.
+
+**À faire**
+- Essayer sur iPhone : lisibilité du blanc sur le haut clair du lagon, fluidité (rayons animés + flou derrière les panneaux).
+- Sur iOS 26, envisager le vrai « Liquid Glass » (`glassEffect`) derrière `#available`, en gardant ce verre pour iOS 18.
+
+---
+
 ## 2026-10-13 · Jules · Claude Code · branche `jules/ios-app`
 
 Connexion des joueurs dans l'app iOS (Supabase), écrite par Jules ; le domaine pearl-inc.app est branché sur Vercel.

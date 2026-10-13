@@ -15,6 +15,7 @@ struct MissionsView: View {
                                 game.claimMission(at: index)
                             }
                         }
+                        .listRowBackground(Color.white.opacity(0.08))
                     } footer: {
                         Text(daily.bonusClaimed
                              ? "Bonus des trois missions récupéré. À demain !"
@@ -26,12 +27,15 @@ struct MissionsView: View {
                         Label("Nouvelles missions dans \(Clock.countdown(Clock.secondsUntilMidnight(timeline.date)))", systemImage: "moon.stars")
                             .foregroundStyle(.secondary)
                     }
+                    .listRowBackground(Color.white.opacity(0.08))
                 }
             }
+            .scrollContentBackground(.hidden)
             .navigationTitle("Missions du jour")
             .navigationBarTitleDisplayMode(.inline)
         }
         .presentationDetents([.medium, .large])
+        .presentationBackground(.ultraThinMaterial)
     }
 }
 
@@ -54,8 +58,7 @@ private struct MissionRow: View {
                     .accessibilityLabel("Récupérée")
             } else {
                 Button("+ \(reward) ✦", action: claim)
-                    .buttonStyle(.borderedProminent)
-                    .tint(Palette.gold)
+                    .buttonStyle(PearlButtonStyle(compact: true))
                     .disabled(!mission.isDone)
             }
         }

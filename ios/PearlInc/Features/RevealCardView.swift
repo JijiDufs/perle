@@ -14,8 +14,7 @@ struct RevealCardView: View {
                 ShareLink(item: message) {
                     Label("Partager", systemImage: "square.and.arrow.up")
                 }
-                .buttonStyle(.bordered)
-                .tint(Palette.gold)
+                .buttonStyle(GlassButtonStyle(compact: true))
                 .simultaneousGesture(TapGesture().onEnded { game.recordShare() })
             }
             Text("Touche la carte pour l'huître suivante")
@@ -25,11 +24,7 @@ struct RevealCardView: View {
         }
         .padding(24)
         .frame(maxWidth: 320)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Palette.night.opacity(0.94))
-                .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(Palette.gold.opacity(0.6), lineWidth: 1.5))
-        )
+        .glassPanel(cornerRadius: 28, rim: Palette.gold, shade: 0.4)
         .shadow(color: .black.opacity(0.4), radius: 30, y: 12)
         .padding(.horizontal, 24)
         .accessibilityElement(children: .combine)

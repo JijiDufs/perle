@@ -10,9 +10,7 @@ struct FishingView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Palette.lagoonTop, Palette.lagoonMid, Palette.sand],
-                           startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
+            LagoonBackground()
 
             TimelineView(.animation(paused: reduceMotion)) { timeline in
                 Canvas { context, size in
@@ -107,7 +105,7 @@ private struct StatusPill: View {
             .font(.headline)
             .padding(.horizontal, 18)
             .padding(.vertical, 10)
-            .background(.ultraThinMaterial, in: Capsule())
+            .glass(Capsule())
             .foregroundStyle(warning ? Color(hex: "#FF5A5F") : .white)
             .opacity(text == " " ? 0 : 1)
     }

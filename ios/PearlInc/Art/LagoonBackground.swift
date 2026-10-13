@@ -15,6 +15,8 @@ enum Lagoon {
 
 /// Fond : eau turquoise qui descend vers le sable, avec des rayons de lumière qui ondulent.
 struct LagoonBackground: View {
+    /// Voile d'eau profonde par-dessus (0 = lagon clair) : les écrans pleins de texte (collection, boutique) l'assombrissent.
+    var dim: Double = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -50,6 +52,8 @@ struct LagoonBackground: View {
                     startRadius: geo.size.width * 0.35,
                     endRadius: geo.size.height * 0.75
                 )
+
+                Lagoon.abyss.opacity(dim)
             }
         }
         .ignoresSafeArea()

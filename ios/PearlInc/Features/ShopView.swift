@@ -12,12 +12,12 @@ struct ShopView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     HStack {
-                        Text("Coquilles").font(.title3.weight(.bold))
+                        Text("Coquilles").lagoonTitle()
                         Spacer()
                         Text("✦ \(game.player.dust)").font(.headline.monospacedDigit()).foregroundStyle(Palette.gold)
                     }
                     Text("Purement cosmétiques : elles ne changent ni les perles ni les chances.")
-                        .font(.footnote).foregroundStyle(.white.opacity(0.6))
+                        .font(.footnote).foregroundStyle(.white.opacity(0.8))
 
                     LazyVGrid(columns: columns, spacing: 12) {
                         ForEach(game.economy.skins) { skin in
@@ -25,15 +25,14 @@ struct ShopView: View {
                         }
                     }
 
+                    Text("Huîtres").lagoonTitle()
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Huîtres").font(.title3.weight(.bold))
                         Button {
                             game.buyOyster()
                         } label: {
-                            Text("Une huître · \(game.economy.oysterDustPrice) ✦").frame(maxWidth: .infinity)
+                            Text("Une huître · \(game.economy.oysterDustPrice) ✦")
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Palette.gold)
+                        .buttonStyle(PearlButtonStyle())
                         .disabled(game.player.dust < game.economy.oysterDustPrice)
                         ForEach(game.economy.consumables) { product in
                             HStack {
@@ -43,12 +42,14 @@ struct ShopView: View {
                             }
                             .font(.subheadline)
                         }
-                        Text("Achats intégrés : prochaine étape.").font(.footnote).foregroundStyle(.white.opacity(0.5))
+                        Text("Achats intégrés : prochaine étape.").font(.footnote).foregroundStyle(.white.opacity(0.6))
                     }
+                    .padding()
+                    .glassPanel()
                 }
                 .padding()
             }
-            .background(Palette.night.ignoresSafeArea())
+            .background(LagoonBackground(dim: 0.35))
             .navigationTitle("Boutique")
         }
     }
@@ -71,7 +72,8 @@ private struct SkinCard: View {
                 }
             }
             .frame(height: 120)
-            .background(LinearGradient(colors: [Palette.lagoonTop, Palette.lagoonMid, Palette.sand], startPoint: .top, endPoint: .bottom))
+            .background(LinearGradient(colors: [Lagoon.surface, Lagoon.shallow, Lagoon.deep, Lagoon.seagrass, Lagoon.sand],
+                                       startPoint: .top, endPoint: .bottom))
             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             .accessibilityHidden(true)
 
@@ -79,24 +81,20 @@ private struct SkinCard: View {
             action(owned: owned, equipped: equipped)
         }
         .padding(10)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(.white.opacity(0.06))
-                .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(equipped ? Palette.gold : .clear, lineWidth: 2))
-        )
+        .glassPanel(cornerRadius: 22, rim: equipped ? Palette.gold : nil)
     }
 
     @ViewBuilder private func action(owned: Bool, equipped: Bool) -> some View {
         if equipped {
             Label("Équipée", systemImage: "checkmark").font(.caption.weight(.semibold)).foregroundStyle(Palette.gold)
         } else if owned {
-            Button("Équiper") { game.equip(skin.id) }.buttonStyle(.bordered).tint(Palette.gold).font(.caption.weight(.semibold))
+            Button("Équiper") { game.equip(skin.id) }.buttonStyle(GlassButtonStyle(compact: true))
         } else if let price = skin.dustPrice {
             VStack(spacing: 4) {
                 Button("\(price) ✦") { game.buySkin(skin.id) }
-                    .buttonStyle(.borderedProminent).tint(Palette.gold).font(.caption.weight(.semibold))
+                    .buttonStyle(PearlButtonStyle(compact: true))
                     .disabled(game.player.dust < price)
-                if skin.productId != nil { Text("ou en achat (bientôt)").font(.caption2).foregroundStyle(.white.opacity(0.5)) }
+                if skin.productId != nil { Text("ou en achat (bientôt)").font(.caption2).foregroundStyle(.white.opacity(0.65)) }
             }
         } else if skin.grant == "signup" {
             Text("Réservée aux inscrits").font(.caption).foregroundStyle(.white.opacity(0.6))

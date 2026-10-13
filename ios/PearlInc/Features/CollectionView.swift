@@ -15,8 +15,8 @@ struct CollectionView: View {
                     counter
 
                     Text("\(discovered) / \(findable.count) perles découvertes")
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.7))
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.white.opacity(0.85))
 
                     LazyVGrid(columns: columns, spacing: 12) {
                         ForEach(findable) { pearl in
@@ -30,29 +30,34 @@ struct CollectionView: View {
                     }
 
                     if !game.player.findCards.isEmpty {
-                        Text("Trouvailles").font(.title3.weight(.bold))
-                        ForEach(game.player.findCards.reversed()) { card in
-                            let find = game.catalog.find(card.findId)
-                            HStack {
-                                PearlDot(color: Color(hex: find.glow), glow: nil, size: 28)
-                                Text(find.name)
-                                Spacer()
-                                Text(serialLabel(card.serial)).font(.caption.monospaced()).foregroundStyle(.white.opacity(0.5))
+                        Text("Trouvailles").lagoonTitle()
+                        GlassList {
+                            ForEach(game.player.findCards.reversed()) { card in
+                                let find = game.catalog.find(card.findId)
+                                HStack {
+                                    PearlDot(color: Color(hex: find.glow), glow: nil, size: 28)
+                                    Text(find.name)
+                                    Spacer()
+                                    Text(serialLabel(card.serial)).font(.caption.monospaced()).foregroundStyle(.white.opacity(0.6))
+                                }
+                                .padding(.vertical, 10)
                             }
                         }
                     }
 
                     if !game.player.pearlCards.isEmpty {
-                        Text("Mes perles").font(.title3.weight(.bold))
-                        Text("Appui long sur une perle en double pour la revendre.").font(.footnote).foregroundStyle(.white.opacity(0.6))
-                        ForEach(game.player.pearlCards.suffix(40).reversed()) { card in
-                            PearlRow(card: card)
+                        Text("Mes perles").lagoonTitle()
+                        Text("Appui long sur une perle en double pour la revendre.").font(.footnote).foregroundStyle(.white.opacity(0.8))
+                        GlassList {
+                            ForEach(game.player.pearlCards.suffix(40).reversed()) { card in
+                                PearlRow(card: card).padding(.vertical, 10)
+                            }
                         }
                     }
                 }
                 .padding()
             }
-            .background(Palette.night.ignoresSafeArea())
+            .background(LagoonBackground(dim: 0.35))
             .navigationTitle("Collection")
             .confirmationDialog("Revendre les doublons ?", isPresented: $confirmSellAll, titleVisibility: .visible) {
                 Button("Revendre \(sellable.count) perles pour \(sellableDust) ✦") { game.sellAllDuplicates() }
@@ -76,12 +81,11 @@ struct CollectionView: View {
                 Text(sellable.isEmpty ? "Aucun doublon à revendre" : "Revendre \(sellable.count) doublons · + \(sellableDust) ✦")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Palette.gold)
+            .buttonStyle(PearlButtonStyle())
             .disabled(sellable.isEmpty)
         }
         .padding()
-        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(.white.opacity(0.06)))
+        .glassPanel()
     }
 
     private var findable: [PearlType] { game.catalog.pearls.filter { $0.id != "empty" } }
@@ -130,20 +134,31 @@ private struct EncyclopediaCell: View {
             if count > 0 {
                 PearlDot(color: Color(hex: pearl.color), glow: pearl.glow.map { Color(hex: $0) }, size: 46)
             } else {
-                Circle().strokeBorder(.white.opacity(0.25), style: StrokeStyle(lineWidth: 1.5, dash: [4, 4])).frame(width: 46, height: 46)
+                Circle().strokeBorder(.white.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [4, 4])).frame(width: 46, height: 46)
             }
             Text(count > 0 ? pearl.name : "???").font(.subheadline.weight(.semibold))
             Text(pearl.rarity + (count > 0 ? "  ×\(count)" : "")).font(.caption).foregroundStyle(Palette.gold)
             if count == 0, let price {
                 Button("Acheter · \(price) ✦", action: buy)
-                    .font(.caption.weight(.semibold))
-                    .buttonStyle(.bordered)
-                    .tint(Palette.gold)
+                    .buttonStyle(PearlButtonStyle(compact: true))
                     .disabled(dust < price)
             }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 16)
-        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(.white.opacity(0.06)))
+        .padding(.horizontal, 8)
+        .glassPanel(cornerRadius: 20)
+    }
+}
+
+/// Une liste de lignes dans un seul panneau de verre.
+struct GlassList<Content: View>: View {
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        VStack(spacing: 0) { content }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 6)
+            .glassPanel(cornerRadius: 20)
     }
 }

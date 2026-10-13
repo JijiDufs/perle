@@ -18,15 +18,15 @@ struct TideOutView: View {
             } label: {
                 Text("Une huître pour \(game.economy.oysterDustPrice) ✦").frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Palette.gold)
+            .buttonStyle(PearlButtonStyle())
             .disabled(game.player.dust < game.economy.oysterDustPrice)
             Text("Tu as \(game.player.dust) ✦. Revends tes perles en double dans la collection.")
                 .font(.footnote).multilineTextAlignment(.center).foregroundStyle(.white.opacity(0.7))
         }
         .padding(24)
         .frame(maxWidth: 320)
-        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Palette.night.opacity(0.9)))
+        .glassPanel(cornerRadius: 28, shade: 0.3)
         .foregroundStyle(.white)
+        .padding(.horizontal, 24)
     }
 }

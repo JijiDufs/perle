@@ -16,7 +16,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A1B2C3D40000000000000004 /* PearlInc */ = {isa = PBXFileSystemSynchronizedRootGroup; path = PearlInc; sourceTree = "<group>"; };
+		A1B2C3D40000000000000004 /* PearlInc */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PearlInc;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */

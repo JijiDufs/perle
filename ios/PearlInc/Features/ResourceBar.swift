@@ -10,7 +10,7 @@ struct ResourceBar: View {
         TimelineView(.periodic(from: .now, by: 1)) { timeline in
             HStack(spacing: 10) {
                 Chip {
-                    Image(systemName: "drop.fill").foregroundStyle(Palette.lagoonMid)
+                    Image(systemName: "drop.fill").foregroundStyle(Lagoon.surface)
                     Text("\(game.oystersAvailable(at: timeline.date))").monospacedDigit()
                     if let next = game.nextOysterIn(at: timeline.date) {
                         Text(Clock.countdown(next)).font(.caption.monospacedDigit()).foregroundStyle(.white.opacity(0.65))
@@ -53,6 +53,6 @@ private struct Chip<Content: View>: View {
         HStack(spacing: 6) { content }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(.ultraThinMaterial, in: Capsule())
+            .glass(Capsule())
     }
 }
