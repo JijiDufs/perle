@@ -13,8 +13,10 @@ Site : pages légales réduites à ce que fait vraiment pearl-inc.app aujourd'hu
 - Les pages propres à l'app (confidentialité complète, conditions d'utilisation, aide) sortent du site et sont gardées dans `docs/pages-app/` (même arborescence) : à remettre dans `site/` à la soumission App Store, avec les infos de l'éditeur. Liens du pied de page de l'accueil : Confidentialité · Mentions légales.
 - Éditeur : MJHstudio n'existe pas encore ; ce sera la micro-entreprise de Mathys (EI), avec un nom commercial éventuel. Champs jaunes adaptés.
 
+- Éditeur rempli partout (site et `docs/pages-app/`) : **Mathys Hosin EI**, sans nom commercial, 212 rue de Solférino, 59800 Lille (code postal du répertoire SIRENE), SIREN 994 477 008, RNE (activité 70.22Z, section M), TVA non applicable (art. 293 B du CGI). Seul le médiateur reste à compléter, dans les conditions de l'app.
+
 **À faire**
-- Remplir les champs jaunes (nom, adresse, téléphone, SIREN, registre, TVA) des mentions légales et de la confidentialité, puis fusionner dans `main`.
+- Activité de la micro de Mathys (70.22Z, conseil) : ajouter l'édition de jeux (58.21Z) avant de vendre des achats intégrés.
 - Avant la soumission : remettre `docs/pages-app/` dans `site/`, éditeur = Mathys EI (et médiateur) ; l'app pointe déjà vers `/support/`, `/conditions/`, `/confidentialite/`.
 
 **Fragile**
