@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A1B2C3D40000000000000001 /* PearlCore in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D40000000000000002 /* PearlCore */; };
+		A1B2C3D40000000000000013 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D40000000000000014 /* Supabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1B2C3D40000000000000001 /* PearlCore in Frameworks */,
+				A1B2C3D40000000000000013 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +69,7 @@
 			name = PearlInc;
 			packageProductDependencies = (
 				A1B2C3D40000000000000002 /* PearlCore */,
+				A1B2C3D40000000000000014 /* Supabase */,
 			);
 			productName = PearlInc;
 			productReference = A1B2C3D40000000000000003 /* PearlInc.app */;
@@ -99,6 +102,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				A1B2C3D4000000000000000E /* XCLocalSwiftPackageReference "PearlCore" */,
+				A1B2C3D40000000000000015 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A1B2C3D40000000000000007 /* Products */;
@@ -174,6 +178,7 @@
 		A1B2C3D40000000000000011 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PearlInc.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -202,6 +207,7 @@
 		A1B2C3D40000000000000012 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PearlInc.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -257,10 +263,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		A1B2C3D40000000000000015 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		A1B2C3D40000000000000002 /* PearlCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PearlCore;
+		};
+		A1B2C3D40000000000000014 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1B2C3D40000000000000015 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

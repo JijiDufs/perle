@@ -3,12 +3,22 @@ import SwiftUI
 @main
 struct PearlIncApp: App {
     @State private var game = GameModel()
+    @StateObject private var auth = AuthViewModel()
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environment(game)
-                .preferredColorScheme(.dark)
+            Group {
+                // Connexion d'abord (Apple, e-mail ou sans compte), puis le jeu.
+                if auth.session != nil {
+                    RootView()
+                        .environment(game)
+                        .environmentObject(auth)
+                } else {
+                    LoginView(auth: auth)
+                }
+            }
+            .animation(.easeInOut(duration: 0.3), value: auth.session != nil)
+            .preferredColorScheme(.dark)
         }
     }
 }

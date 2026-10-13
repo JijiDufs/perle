@@ -4,6 +4,29 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 · Jules · Claude Code · branche `jules/ios-app`
+
+Connexion des joueurs dans l'app iOS (Supabase), écrite par Jules ; le domaine pearl-inc.app est branché sur Vercel.
+
+**Fait**
+- Domaine **pearl-inc.app** relié au projet Vercel de la page d'inscription (fait par Jules).
+- Écran de connexion (`Features/LoginView.swift`) sur fond de lagon animé (`Art/LagoonBackground.swift`) : **Sign in with Apple**, **code à 6 chiffres par e-mail**, ou **jouer sans compte** (joueur anonyme Supabase, à lier plus tard). Messages d'erreur en français.
+- `Platform/AuthViewModel.swift` (session, nonce Apple, OTP e-mail, anonyme, déconnexion) et `Platform/SupabaseClient.swift` (URL du projet + clé « publishable », faite pour être embarquée : la sécurité repose sur les règles RLS).
+- `PearlIncApp.swift` : écran de connexion tant qu'il n'y a pas de session, puis le jeu (onglets inchangés). L'écran provisoire « Connecté » de Jules n'est pas repris, le jeu existe déjà.
+- Projet Xcode : paquet `supabase-swift` (2.x, versions figées dans `Package.resolved`), capacité Sign in with Apple (`ios/PearlInc.entitlements`).
+
+**À faire**
+- Dans Supabase : activer les fournisseurs Apple (Services ID + clé), e-mail en mode code (modèle d'e-mail avec `{{ .Token }}`) et connexion anonyme ; vérifier que le projet est hébergé dans l'UE.
+- Dans le portail Apple Developer : cocher Sign in with Apple sur l'App ID `app.pearlinc.PearlInc`.
+- Bouton « Se déconnecter » / « Lier mon compte » quelque part dans le jeu (rien pour l'instant).
+- Synchroniser la progression (aujourd'hui toujours locale, malgré « Ta collection te suit ») et relier l'e-mail aux inscrits Tally (huître pionnière).
+
+**Fragile**
+- **Build non vérifié** dans cette passe (compilation interrompue) : à lancer dans Xcode. Points à surveiller avec Swift 6 : la fermeture passée à `Task` dans `AuthViewModel.run`.
+- Premier lancement **sans réseau** : même « Jouer sans compte » demande Supabase, on reste bloqué sur l'écran de connexion.
+
+---
+
 ## 2026-10-08 (suite 10) · Jules · Claude Code · branche `jules/ios-app`
 
 Formulaires d'inscription Tally créés, publiés et branchés sur la page pearl-inc.app.
