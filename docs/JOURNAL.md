@@ -4,6 +4,24 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 8) · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : suppression du compte et écran Réglages (exigences d'Apple).
+
+**Fait**
+- Supabase : fonction `public.delete_account()` (migration `supabase/migrations/20261013200000_delete_account.sql`, appliquée au projet) : supprime **seulement le compte de l'appelant** ; profils, sauvegardes, skins et droits partent en cascade. Exécutable par les joueurs connectés, pas par les visiteurs anonymes. Testé côté serveur (refus sans connexion, rien d'effacé pour un compte inexistant). L'avertissement de Supabase sur cette fonction est voulu.
+- App : écran **Réglages** (roue dentée dans la barre du haut de la Pêche) : compte (type, e-mail, identifiant à copier pour le support), se déconnecter (avertissement sans compte), **supprimer mon compte** (confirmation, puis partie remise à zéro et skins achetés relus auprès d'Apple), vibrations (réglage respecté par `Haptics`), probabilités, restaurer les achats, aide, écrire au support (identifiant dans l'objet), confidentialité, conditions, mentions légales, version.
+- Pages du site et guide juridique mis à jour (suppression dans l'app).
+
+**À faire**
+- **Connexion avec Apple** : à la suppression, révoquer aussi le jeton Apple (API REST d'Apple, clé côté serveur : fonction Supabase Edge), une fois le fournisseur Apple configuré.
+- Tester la suppression de bout en bout avec un vrai compte de test (TestFlight).
+
+**Fragile**
+- Si une nouvelle table liée aux joueurs est ajoutée, elle doit référencer `profiles` (ou `auth.users`) avec `ON DELETE CASCADE`, sinon la suppression échouera ou laissera des données.
+
+---
+
 ## 2026-10-13 (suite 7) · Jules · Claude Code · branche `jules/ios-app`
 
 Juridique pour l'App Store : pages publiques, manifeste de confidentialité, guide des questionnaires d'Apple.

@@ -170,6 +170,28 @@ final class GameModel {
         if player.equip(skinId) { haptics.tick(); save() }
     }
 
+    // MARK: - Compte supprimé
+
+    /// Efface la partie sur cet iPhone (après la suppression du compte) : on repart d'une partie neuve.
+    /// Les skins achetés reviennent tout seuls (droits relus auprès d'Apple).
+    func eraseLocalGame() {
+        player = PlayerState.new(rng, tuning, now: Clock.nowMs)
+        engine = OpeningEngine(tuning: tuning)
+        thumb.reset()
+        lastTickDistance = 0
+        angle = 0
+        cracked = false
+        inFragileZone = false
+        tooFast = false
+        current = player.oyster
+        shapeSeed = player.nextSerial
+        revealStartedAt = nil
+        flashAt = nil
+        stage = .playing
+        refresh()
+        store.refreshEntitlements()
+    }
+
     // MARK: - Pub récompensée
 
     func adRewardsLeft(at date: Date = Date()) -> Int {

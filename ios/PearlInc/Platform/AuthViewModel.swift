@@ -100,14 +100,41 @@ final class AuthViewModel: ObservableObject {
         run { try await supabase.auth.signOut() }
     }
 
+    // MARK: - Le compte (Réglages)
+
+    enum AccountKind { case anonymous, apple, email }
+
+    var accountKind: AccountKind? {
+        guard let user = session?.user else { return nil }
+        if user.isAnonymous { return .anonymous }
+        if case .string("apple") = user.appMetadata["provider"] { return .apple }
+        return .email
+    }
+
+    var accountEmail: String? { session?.user.email }
+
+    /// Début de l'identifiant du compte, à donner au support.
+    var shortAccountId: String? { session.map { String($0.user.id.uuidString.prefix(8)).lowercased() } }
+
+    /// Supprime le compte et toutes ses données (fonction `delete_account` de Supabase, en cascade),
+    /// puis déconnecte. `onDeleted` efface la partie locale (règle 5.1.1 (v) de l'App Store).
+    func deleteAccount(onDeleted: @escaping @MainActor () -> Void) {
+        run(failure: "La suppression n’a pas abouti. Vérifie ta connexion et réessaie, ou écris-nous.") {
+            try await supabase.rpc("delete_account").execute()
+            onDeleted()
+            // Le compte n'existe plus côté serveur : on oublie seulement la session sur cet iPhone.
+            try? await supabase.auth.signOut(scope: .local)
+        }
+    }
+
     // MARK: - Outils
 
-    private func run(_ action: @escaping () async throws -> Void) {
+    private func run(failure: String? = nil, _ action: @escaping () async throws -> Void) {
         errorMessage = nil
         isLoading = true
         Task {
             defer { isLoading = false }
-            do { try await action() } catch { errorMessage = Self.message(for: error) }
+            do { try await action() } catch { errorMessage = failure ?? Self.message(for: error) }
         }
     }
 

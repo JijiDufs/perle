@@ -96,7 +96,8 @@ public/
   icons/            Icônes générées par scripts/make-icons.py (ne pas éditer à la main)
   manifest.webmanifest
 scripts/            Outils (génération des icônes, aperçu des liens, planche des skins `make-skin-sheet.sh` → docs/skins.png ; macOS)
-site/               Page d'inscription pearl-inc.app (HTML autonome, prototype de 5 huîtres) : hors de la build Vite
+site/               Page d'inscription pearl-inc.app (HTML autonome, prototype de 5 huîtres) et pages légales / aide (FR, EN) : hors de la build Vite
+supabase/           Migrations SQL du projet Supabase des comptes de l'app iOS (ex. suppression du compte)
 ios/                App iOS native (SwiftUI) : PearlCore (Swift Package, logique pure, miroir de src/core) + PearlInc (l'app).
                     Catalogues et réglages exportés depuis src/ par `npm run ios:export` (voir docs/duo-gadget.md §8)
 ```

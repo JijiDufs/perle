@@ -53,8 +53,8 @@ Le manifeste de confidentialité de l'app (`ios/PearlInc/PrivacyInfo.xcprivacy`)
 
 | Règle | État | À faire |
 |---|---|---|
-| 5.1.1 (v) Suppression du compte **dans l'app** | ❌ (seulement par e-mail) | Bouton « Supprimer mon compte » (Réglages), qui efface aussi le compte Supabase |
-| 5.1.1 (i) Politique accessible depuis l'app | ✅ écran de connexion | La remettre dans les Réglages |
+| 5.1.1 (v) Suppression du compte **dans l'app** | ✅ Réglages → « Supprimer mon compte » (fonction Supabase `delete_account`, en cascade) | **Connexion avec Apple** : révoquer aussi le jeton Apple à la suppression (API REST d'Apple, demande la clé « Sign in with Apple » côté serveur : fonction Supabase Edge à écrire quand le fournisseur Apple sera configuré) |
+| 5.1.1 (i) Politique accessible depuis l'app | ✅ écran de connexion et Réglages | — |
 | 3.1.1 Probabilités affichées avant achat | ✅ Collection et Boutique | — |
 | 3.1.1 Restaurer les achats | ✅ Boutique | — |
 | 2.1 Pas de fonction factice | ❌ pub simulée | Brancher une régie ou retirer la pub de la 1.0 |

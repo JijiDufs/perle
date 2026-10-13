@@ -1,10 +1,11 @@
 import SwiftUI
 import PearlCore
 
-/// Barre du haut : huîtres (avec le minuteur de recharge), poussière d'or, missions du jour.
+/// Barre du haut : huîtres (avec le minuteur de recharge), poussière d'or, missions du jour, réglages.
 struct ResourceBar: View {
     @Environment(GameModel.self) private var game
     @Binding var showMissions: Bool
+    @Binding var showSettings: Bool
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { timeline in
@@ -39,6 +40,11 @@ struct ResourceBar: View {
                     }
                 }
                 .accessibilityLabel("Missions du jour")
+
+                Button { showSettings = true } label: {
+                    Chip { Image(systemName: "gearshape.fill") }
+                }
+                .accessibilityLabel("Réglages")
             }
             .font(.headline)
             .foregroundStyle(.white)
