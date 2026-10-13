@@ -82,18 +82,19 @@ private func newPlayer() -> PlayerState {
     #expect(!result4)
 }
 
-@Test func lesPerlesEtoileesNeSAchetentPas() {
+@Test func lesPubsDonnentDesHuitresTroisFoisParJour() {
     var player = newPlayer()
-    player.dust = 100_000
-    let result5 = player.buyMissingPearl("golden", now: 0)
-    #expect(result5 == nil)
-    let result6 = player.buyMissingPearl("cursed", now: 0)
-    #expect(result6 == nil)
-    let bought = player.buyMissingPearl("black", now: 0)
-    #expect(bought?.fromDust == true)
-    #expect(bought?.lustre == .B)
-    let result7 = player.buyMissingPearl("black", now: 0)
-    #expect(result7 == nil)
+    let economy = catalog.economy
+    let before = player.stock.count
+    for _ in 0..<economy.rewardedAdsPerDay {
+        let gained = player.claimAdReward(day: "2026-10-13")
+        #expect(gained == economy.rewardedAdOysters)
+    }
+    #expect(player.stock.count == before + economy.rewardedAdOysters * economy.rewardedAdsPerDay)
+    #expect(player.adRewardsLeft(day: "2026-10-13") == 0)
+    #expect(player.claimAdReward(day: "2026-10-13") == nil)
+    // Le lendemain, le compteur repart.
+    #expect(player.adRewardsLeft(day: "2026-10-14") == economy.rewardedAdsPerDay)
 }
 
 @Test func skins() {

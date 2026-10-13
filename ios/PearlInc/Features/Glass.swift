@@ -1,18 +1,17 @@
 import SwiftUI
 
-/// Le verre du jeu (glassmorphism) : panneaux, boutons et champs, repris de l'écran de connexion.
-/// Le lagon passe flouté derrière ; un liseré clair en dégradé dessine le bord.
+/// Le verre du jeu (glassmorphism), comme dans le prototype de pearl-inc.app (glassPanel) : le lagon passe
+/// flouté derrière, un voile clair, un reflet en haut, un liseré lumineux et une ombre douce.
 
 extension View {
     /// Verre de n'importe quelle forme (capsule des pastilles, panneau arrondi…).
-    /// `rim` : liseré coloré (or pour une carte révélée, une coquille équipée) ; `shade` : assombrit un peu le verre
-    /// pour lire le texte blanc sur l'eau claire.
-    func glass<S: InsettableShape>(_ shape: S, rim: Color? = nil, shade: Double = 0.18) -> some View {
+    /// `rim` : liseré coloré (or pour une coquille équipée) ; `shade` : assombrit le verre (panneaux pleins de texte).
+    func glass<S: InsettableShape>(_ shape: S, rim: Color? = nil, shade: Double = 0) -> some View {
         modifier(Glass(shape: shape, rim: rim, shade: shade))
     }
 
     /// Panneau de verre arrondi.
-    func glassPanel(cornerRadius: CGFloat = 24, rim: Color? = nil, shade: Double = 0.18) -> some View {
+    func glassPanel(cornerRadius: CGFloat = 24, rim: Color? = nil, shade: Double = 0) -> some View {
         glass(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous), rim: rim, shade: shade)
     }
 
@@ -31,15 +30,24 @@ private struct Glass<S: InsettableShape>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .background(Lagoon.abyss.opacity(shade), in: shape)
-            .background(.ultraThinMaterial, in: shape)
+            .background {
+                ZStack {
+                    shape.fill(.ultraThinMaterial)
+                    shape.fill(Color.white.opacity(0.14))
+                    shape.fill(LinearGradient(stops: [.init(color: .white.opacity(0.26), location: 0), .init(color: .white.opacity(0.03), location: 0.45),
+                                                      .init(color: .white.opacity(0.08), location: 1)], startPoint: .top, endPoint: .bottom))
+                    if shade > 0 { shape.fill(Color(hex: 0x021218).opacity(shade)) }
+                }
+                .compositingGroup()
+                .shadow(color: .black.opacity(0.22), radius: 14, y: 8)
+            }
             .overlay(shape.strokeBorder(LinearGradient(colors: rimColors, startPoint: .topLeading, endPoint: .bottomTrailing),
                                         lineWidth: rim == nil ? 1 : 1.5))
     }
 
     private var rimColors: [Color] {
         if let rim { return [rim, rim.opacity(0.3), rim.opacity(0.8)] }
-        return [.white.opacity(0.6), .white.opacity(0.12), .white.opacity(0.35)]
+        return [.white.opacity(0.75), .white.opacity(0.18), .white.opacity(0.45)]
     }
 }
 
@@ -64,10 +72,11 @@ struct GlassButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         PressableLabel(configuration: configuration, compact: compact) {
-            Capsule().fill(.white.opacity(configuration.isPressed ? 0.26 : 0.16))
-                .overlay(Capsule().strokeBorder(.white.opacity(0.4), lineWidth: 1))
+            Capsule().fill(.white.opacity(configuration.isPressed ? 0.18 : 0))
+                .glass(Capsule())
         }
         .foregroundStyle(.white)
+        .shadow(color: .black.opacity(0.25), radius: 3)
     }
 }
 

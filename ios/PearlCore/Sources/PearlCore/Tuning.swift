@@ -35,6 +35,9 @@ public struct Tuning: Codable, Sendable, Equatable {
     public var revealSuspenseTier1Ms: Double
     public var revealSuspenseTier2Ms: Double
     public var revealSuspenseTier3Ms: Double
+    /// Le couvercle finit de s'ouvrir en douceur après la révélation, et éclair blanc des ★ (ms).
+    public var revealLidSettleMs: Double
+    public var revealFlashMs: Double
     /// Huîtres d'affilée sans perle dorée ou mieux avant que la suivante soit garantie.
     public var pityThreshold: Int
     /// Stock d'huîtres maximum, et minutes pour qu'une huître revienne.

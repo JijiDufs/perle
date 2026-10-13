@@ -6,7 +6,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { APP_CONSUMABLES, APP_ECONOMY, APP_MISSING_PEARL_PRICE_BY_TIER, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { APP_CONSUMABLES, APP_ECONOMY, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS } from '../src/core/catalog';
 import { RARITY_SYMBOLS } from '../src/core/jewels';
 import { INITIAL_DRAW_STATE } from '../src/core/draw';
@@ -48,7 +48,6 @@ function catalog() {
     economy: {
       ...APP_ECONOMY,
       sellDustByTier: APP_SELL_DUST_BY_TIER,
-      missingPearlPriceByTier: APP_MISSING_PEARL_PRICE_BY_TIER,
       rareMissionTier: APP_RARE_MISSION_TIER,
       missions: APP_MISSIONS,
       skins: APP_SKINS,

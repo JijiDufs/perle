@@ -13,79 +13,25 @@ enum Lagoon {
     static let glow    = Color(hex: 0xFFF1D6)
 }
 
-/// Fond : eau turquoise qui descend vers le sable, avec des rayons de lumière qui ondulent.
+/// Fond des écrans : le lagon du prototype (LagoonArt), animé. `dim` pose un voile d'eau profonde
+/// (celui de la collection du prototype) pour les écrans pleins de texte.
 struct LagoonBackground: View {
-    /// Voile d'eau profonde par-dessus (0 = lagon clair) : les écrans pleins de texte (collection, boutique) l'assombrissent.
     var dim: Double = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                LinearGradient(
-                    stops: [
-                        .init(color: Lagoon.surface, location: 0.00),
-                        .init(color: Lagoon.shallow, location: 0.14),
-                        .init(color: Lagoon.deep,    location: 0.42),
-                        .init(color: Lagoon.abyss,   location: 0.62),
-                        .init(color: Lagoon.deep,    location: 0.70),
-                        .init(color: Lagoon.seagrass, location: 0.82),
-                        .init(color: Lagoon.sand,    location: 0.94),
-                        .init(color: Lagoon.wetSand, location: 1.00),
-                    ],
-                    startPoint: .top, endPoint: .bottom
-                )
-
-                TimelineView(.animation(paused: reduceMotion)) { context in
-                    let t = context.date.timeIntervalSinceReferenceDate
-                    Canvas { ctx, size in
-                        drawRays(in: &ctx, size: size, time: reduceMotion ? 0 : t)
-                    }
-                }
-                .blendMode(.plusLighter)
-                .allowsHitTesting(false)
-
-                // Vignette douce, comme sous l'eau.
-                RadialGradient(
-                    colors: [.clear, Color(hex: 0x00141E).opacity(0.45)],
-                    center: .center,
-                    startRadius: geo.size.width * 0.35,
-                    endRadius: geo.size.height * 0.75
-                )
-
-                Lagoon.abyss.opacity(dim)
+        TimelineView(.animation(paused: reduceMotion)) { context in
+            let t = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate
+            Canvas { ctx, size in
+                let lagoon = LagoonArt(time: t, focus: .init(x: Double(size.width) / 2, y: Double(size.height) * 0.62,
+                                                             size: Double(size.width) * 0.5), shadow: false)
+                lagoon.draw(&ctx, size: size)
+                lagoon.drawOverlay(&ctx, size: size)
+                if dim > 0 { ctx.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Color(hex: 0x021218).opacity(dim))) }
             }
         }
         .ignoresSafeArea()
-    }
-
-    private func drawRays(in ctx: inout GraphicsContext, size: CGSize, time: Double) {
-        let depth = size.height * 0.62
-        for i in 0..<6 {
-            let d = Double(i)
-            let sway = sin(time * 0.25 + d * 1.9) * size.width * 0.04
-            let x = size.width * (0.02 + d * 0.19) + sway
-            let top = size.width * (0.035 + 0.02 * sin(d * 3.1))
-            let spread = size.width * (0.12 + 0.05 * sin(d * 2.3))
-            let slant = size.width * 0.16
-            let alpha = 0.08 + 0.05 * sin(time * 0.6 + d * 2.1)
-
-            var path = Path()
-            path.move(to: CGPoint(x: x, y: 0))
-            path.addLine(to: CGPoint(x: x + top, y: 0))
-            path.addLine(to: CGPoint(x: x + top + slant + spread, y: depth))
-            path.addLine(to: CGPoint(x: x + slant - spread * 0.2, y: depth))
-            path.closeSubpath()
-
-            ctx.fill(path, with: .linearGradient(
-                Gradient(colors: [
-                    Color(red: 1, green: 1, blue: 0.88).opacity(alpha),
-                    Color(red: 0.86, green: 1, blue: 0.94).opacity(alpha * 0.45),
-                    .clear,
-                ]),
-                startPoint: .zero, endPoint: CGPoint(x: 0, y: depth)
-            ))
-        }
+        .accessibilityHidden(true)
     }
 }
 

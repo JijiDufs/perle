@@ -4,6 +4,31 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 2) · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : direction artistique du prototype de pearl-inc.app, ouverture corrigée, bénitier redessiné, pub récompensée, achats intégrés.
+
+**Fait**
+- **Ouverture corrigée** : le Core tire l'huître suivante dès la révélation, et l'écran dessinait déjà sa perle pendant le suspense (la perle « changeait au dernier moment »). `GameModel.current` garde l'huître ouverte jusqu'à la carte refermée. Le couvercle finit de s'ouvrir en douceur, la perle palpite et son halo envahit l'écran pendant le suspense, éclair blanc pour les ★ (comme la webapp). Réglages `revealLidSettleMs` / `revealFlashMs` dans `src/tuning.ts`.
+- **Lagon du prototype** (`Art/LagoonArt.swift`, port de `src/art/lagoon.ts`) : eau, récif, sable et rides, galets, étoiles de mer, rayons, caustiques, algues, poissons, bulles, ombre de l'huître, vignette. Sert à la Pêche (l'horizon suit l'huître), à la connexion, à la collection, à la boutique et aux aperçus des coquilles.
+- **Verre clair du prototype** (`Glass.swift`), **cartes** aux couleurs de chaque perle avec vitrine, stats, reflet holographique (`PearlCardView`, `Art/CardStyle.swift`), **collection** en cases comme le prototype (toucher = plus belle carte), probabilités affichées (collection et boutique).
+- **Bénitier redessiné** (`Art/ClamArt.swift`) : vu de dessus comme l'huître, 5 ou 6 gros plis avec écailles, bord festonné, porcelaine et manteau bleu-vert irisé tacheté ; il s'ouvre exactement comme l'huître. `docs/skins.png` régénérée (`sh scripts/make-skin-sheet.sh`).
+- **Économie** : la poussière d'or n'achète plus de perles (TS + Swift + tests). **Pub récompensée** : 3 huîtres, 3 fois par jour (`Economy.rewardedAdOysters/PerDay`, `PlayerState.claimAdReward`), pub simulée de 5 s (`Platform/RewardedAds.swift`, `Features/SimulatedAdView.swift`).
+- **Achats intégrés StoreKit 2** (`Platform/Store.swift`) : packs d'huîtres et de poussière, skins (achat ou poussière), « Restaurer les achats », prix venant de StoreKit. `ios/PearlInc.storekit` (prix de test) et schéma Xcode partagé qui l'utilise au lancement depuis Xcode.
+
+**À faire**
+- Lancer depuis Xcode pour tester les achats (le simulateur lancé hors Xcode affiche « Indisponible »). Vérifier dans le schéma (Run → Options → StoreKit Configuration) que `PearlInc.storekit` est bien choisi.
+- App Store Connect : créer les 7 produits (mêmes identifiants), accord « Paid Apps » et coordonnées bancaires.
+- Choisir la régie publicitaire (AdMob proposé) et remplacer la pub simulée ; consentement RGPD.
+- Les trouvailles sont encore dessinées comme une perle lumineuse (la webapp a ses objets en relief, `src/art/finds.ts`).
+
+**Fragile**
+- Les caustiques sont dessinées à partir d'une planche de motifs : le décalage doit rester ramené à un motif (sinon, avec le temps compté depuis 2001, plus rien ne s'affiche sur iPhone).
+- Fluidité à vérifier sur un vrai iPhone : lagon complet redessiné à chaque image, plus le verre.
+- Achats consommables : livrés puis `finish()` ; un plantage entre les deux pourrait livrer deux fois (rare).
+
+---
+
 ## 2026-10-13 (suite) · Jules · Claude Code · branche `jules/ios-app`
 
 L'app iOS (MVP « gadget ») prend la direction de l'écran de connexion : lagon lumineux et verre (glassmorphism).

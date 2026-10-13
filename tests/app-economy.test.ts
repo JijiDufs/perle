@@ -1,6 +1,6 @@
 // Garde-fous de l'économie de l'app iOS (docs/duo-gadget.md §6 quater).
 import { describe, expect, it } from 'vitest';
-import { APP_CONSUMABLES, APP_ECONOMY, APP_MISSING_PEARL_PRICE_BY_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { APP_CONSUMABLES, APP_ECONOMY, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS, pearlTier } from '../src/core/catalog';
 
 /** Poussière moyenne par huître si tout est en double. */
@@ -22,9 +22,9 @@ describe('économie de l’app iOS', () => {
     expect(days).toBeLessThan(35);
   });
 
-  it('les perles ★ et ★★ ne s’achètent pas', () => {
-    expect(APP_MISSING_PEARL_PRICE_BY_TIER[4]).toBeNull();
-    expect(APP_MISSING_PEARL_PRICE_BY_TIER[5]).toBeNull();
+  it('les pubs d’une journée rapportent moins que « Marée haute »', () => {
+    const tide = APP_CONSUMABLES.find((c) => c.id === 'app.pearlinc.oysters.10')!;
+    expect(APP_ECONOMY.rewardedAdOysters * APP_ECONOMY.rewardedAdsPerDay).toBeLessThan(tide.oysters);
   });
 
   it('acheter le bénitier en poussière coûte plus cher que l’acheter directement', () => {

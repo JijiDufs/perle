@@ -63,6 +63,8 @@ public struct PlayerState: Codable, Sendable, Equatable {
     public var missions: DailyMissions?
     /// Huîtres ouvertes d'affilée sans fêlure.
     public var noCrackStreak: Int
+    /// Pubs récompensées regardées aujourd'hui.
+    public var adRewards: DailyCount?
 
     /// Nouvelle partie : stock plein, skin de départ, première huître déjà tirée.
     public static func new(_ rng: Rng, _ tuning: Tuning, now: Double, catalog: Catalog = .shared) -> PlayerState {
@@ -71,7 +73,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
         return PlayerState(
             oyster: first.oyster, drawState: first.drawState, nextSerial: 1, pearlCards: [], findCards: [], oystersOpened: 0,
             dust: 0, stock: StockState(count: tuning.oysterStockMax, lastRefillAt: now),
-            ownedSkins: starters, equippedSkin: starters.first ?? "", missions: nil, noCrackStreak: 0
+            ownedSkins: starters, equippedSkin: starters.first ?? "", missions: nil, noCrackStreak: 0, adRewards: nil
         )
     }
 
@@ -183,23 +185,6 @@ public struct PlayerState: Codable, Sendable, Equatable {
         return true
     }
 
-    /// Une perle jamais trouvée, jusqu'à ◆◆◆ : perle ordinaire (taille moyenne, lustre B), marquée « poussière d'or ».
-    public mutating func buyMissingPearl(_ pearlId: String, now: Double, catalog: Catalog = .shared) -> PearlCard? {
-        guard count(of: pearlId) == 0, let price = catalog.missingPearlPrice(pearlId), dust >= price else { return nil }
-        let range = catalog.pearl(pearlId).sizeMm
-        let sizeMm = (range[0] + range[1]) / 2
-        var card = PearlCard(
-            serial: nextSerial, pearlId: pearlId, sizeMm: sizeMm,
-            value: pearlValue(pearlId, sizeMm: sizeMm, cracked: false, traits: nil, catalog: catalog),
-            lustre: catalog.economy.boughtPearlLustre, cracked: false, foundAt: now, traits: nil
-        )
-        card.fromDust = true
-        dust -= price
-        nextSerial += 1
-        pearlCards.append(card)
-        return card
-    }
-
     /// Un skin acheté avec la poussière d'or (s'il est à vendre en poussière).
     public mutating func buySkin(_ skinId: String, catalog: Catalog = .shared) -> Bool {
         guard !ownedSkins.contains(skinId), let price = catalog.economy.skin(skinId)?.dustPrice, dust >= price else { return false }
@@ -223,6 +208,24 @@ public struct PlayerState: Codable, Sendable, Equatable {
     public mutating func grant(_ product: AppConsumable) {
         stock.count += product.oysters
         dust += product.dust
+    }
+
+    // MARK: - Pub récompensée
+
+    /// Pubs récompensées qu'il reste à regarder aujourd'hui (`day` : AAAA-MM-JJ, heure locale).
+    public func adRewardsLeft(day: String, catalog: Catalog = .shared) -> Int {
+        let watched = adRewards?.day == day ? adRewards?.count ?? 0 : 0
+        return max(0, catalog.economy.rewardedAdsPerDay - watched)
+    }
+
+    /// Une pub regardée jusqu'au bout : des huîtres en plus (au-delà du maximum si besoin).
+    /// nil si la limite du jour est atteinte.
+    public mutating func claimAdReward(day: String, catalog: Catalog = .shared) -> Int? {
+        guard adRewardsLeft(day: day, catalog: catalog) > 0 else { return nil }
+        let watched = adRewards?.day == day ? adRewards?.count ?? 0 : 0
+        adRewards = DailyCount(day: day, count: watched + 1)
+        stock.count += catalog.economy.rewardedAdOysters
+        return catalog.economy.rewardedAdOysters
     }
 
     // MARK: - Missions
@@ -250,7 +253,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
 extension PlayerState {
     private enum CodingKeys: String, CodingKey {
         case oyster, drawState, nextSerial, pearlCards, findCards, oystersOpened
-        case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak
+        case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak, adRewards
     }
 
     /// Les anciennes sauvegardes (sans poussière, stock ni skins) se chargent avec des valeurs de départ.
@@ -270,6 +273,18 @@ extension PlayerState {
         equippedSkin = try container.decodeIfPresent(String.self, forKey: .equippedSkin) ?? (starters.first ?? "")
         missions = try container.decodeIfPresent(DailyMissions.self, forKey: .missions)
         noCrackStreak = try container.decodeIfPresent(Int.self, forKey: .noCrackStreak) ?? 0
+        adRewards = try container.decodeIfPresent(DailyCount.self, forKey: .adRewards)
+    }
+}
+
+/// Un compteur qui repart de zéro chaque jour.
+public struct DailyCount: Codable, Sendable, Equatable {
+    public let day: String
+    public let count: Int
+
+    public init(day: String, count: Int) {
+        self.day = day
+        self.count = count
     }
 }
 

@@ -1,310 +1,193 @@
 import SwiftUI
 
-/// Le bénitier (skin), dans la même direction artistique que l'huître (src/art/shell.ts) : bandes de
-/// croissance en relief, lumière du dessus à gauche. Vu de dessus : deux valves crème aux gros plis
-/// écailleux qui se rejoignent en zigzag, et le manteau sombre irisé qui ondule entre elles.
-/// La valve du haut est modélisée en 3D (un dôme à gros plis) : elle bascule en arrière sur sa charnière
-/// et on voit son relief en raccourci (et son intérieur de porcelaine là où il se présente).
-/// Le manteau apparaît dessous, avec la perle. Le geste ne change pas.
+/// Le bénitier (skin), vu de dessus comme l'huître et dans la même direction artistique (src/art/shell.ts,
+/// prototype de pearl-inc.app) : un grand éventail crème à gros plis rayonnants, couverts d'écailles
+/// relevées, au bord festonné. Ouvert : une coquille de porcelaine et le manteau bleu-vert irisé, tacheté,
+/// sur lequel repose la perle. Le couvercle se soulève exactement comme celui de l'huître : le geste ne change pas.
 ///
-/// Repère : charnière (hx, hy) en haut du coquillage, hauteur L, largeur ≈ 1,6 L.
-/// Les phases rendent chaque bénitier unique : largeur, nombre et profondeur des ondulations.
+/// Repère : charnière (ax, ay), valve dirigée selon `angle`, longueur L.
+/// Les phases rendent chaque bénitier unique : nombre de plis, largeur, irrégularités.
 enum ClamArt {
-    /// Bascule maximale de la valve du haut (grande ouverture) : assez pour dégager le manteau,
-    /// pas trop pour que la coquille reste en relief (de profil, elle paraîtrait plate).
-    private static let maxTilt = 72.0 * .pi / 180
-    /// Maillage de la valve 3D : colonnes (le long du zigzag) et rangées (de la charnière au bord).
-    private static let meshColumns = 48
-    private static let meshRows = 14
-    /// Lumière : du haut à gauche, vers l'écran.
-    private static let light: (Double, Double, Double) = {
-        let v = (-0.3, -0.5, 0.8)
-        let n = (v.0 * v.0 + v.1 * v.1 + v.2 * v.2).squareRoot()
-        return (v.0 / n, v.1 / n, v.2 / n)
-    }()
-    /// Bandes de croissance [éclairée, dans l'ombre], de l'extérieur vers le sommet de la valve.
-    private static let bands: [(String, String)] = [
-        ("#e9dcc0", "#8f7b5c"), ("#f7efde", "#b19c7a"), ("#dccdae", "#86734f"),
-        ("#fff8ea", "#bfaa86"), ("#e6d8bb", "#937f5f"), ("#fbf3e3", "#b6a17f"),
-    ]
-    private static let mantleIris = ["#0f5e66", "#2fa38a", "#1d3f8f", "#5b3b8c", "#14868a", "#0f5e66"]
+    /// Le bénitier est plus large que long : à longueur égale, il déborderait de l'écran.
+    static let lengthFactor = 0.78
+    /// Demi-ouverture de l'éventail (radians, dans le repère de la valve).
+    private static let spread = 1.45
+    /// Élargissement latéral par rapport à l'huître.
+    private static let breadth = 1.3
 
-    struct Geometry {
-        let cx: Double, cy: Double, a: Double, b: Double, L: Double
-        /// Ondulations du zigzag : nombre, profondeur (fraction de b), décalage.
-        let waves: Double, depth: Double, shift: Double
-        /// Demi-écart entre les deux valves, où l'on voit le manteau.
-        var gap: Double { L * 0.065 }
-        var top: CGPoint { CGPoint(x: cx, y: cy - b) }
-        var bottom: CGPoint { CGPoint(x: cx, y: cy + b) }
-    }
+    private static let mantleIris = ["#2ec4b6", "#3f7fe0", "#7a4fd0", "#1fa3a0", "#6fe0c8", "#2ec4b6"]
 
-    static func geometry(_ hx: Double, _ hy: Double, _ L: Double, _ ph: ShellArt.Phases) -> Geometry {
-        Geometry(cx: hx, cy: hy + L * 0.5, a: L * (0.82 + 0.04 * sin(ph.1)), b: L * 0.5, L: L,
-                 waves: ph.2 > 3.15 ? 3.5 : 2.5, depth: 0.29 + 0.05 * sin(ph.0 * 1.7), shift: ph.0 * 0.2)
-    }
+    /// Nombre de plis : 5 ou 6 selon le bénitier.
+    private static func ribs(_ ph: ShellArt.Phases) -> Double { ph.2 > 3.15 ? 6 : 5 }
 
-    /// Où se pose la perle, sur le manteau.
-    static func pearlCenter(_ hx: Double, _ hy: Double, _ L: Double) -> CGPoint {
-        CGPoint(x: hx, y: hy + L * 0.36)
-    }
-
-    private static func wave(_ g: Geometry, _ u: Double) -> Double {
-        sin(2 * .pi * g.waves * u + g.shift)
-    }
-
-    /// Zigzag entre les valves, de gauche à droite, décalé verticalement de `offset`.
-    private static func zigzag(_ g: Geometry, _ ph: ShellArt.Phases, offset: Double, wobble: Double = 0) -> [CGPoint] {
-        (0...120).map { i in
-            let u = Double(i) / 120
-            let envelope = pow(sin(.pi * u), 0.7)
-            let w = wave(g, u) + wobble * sin(u * 90 + ph.2)
-            return CGPoint(x: g.cx + (2 * u - 1) * g.a * 0.985, y: g.cy + g.b * g.depth * w * envelope + offset * envelope)
+    /// Bord de la valve : éventail festonné par les plis.
+    static func outline(_ ax: Double, _ ay: Double, _ angle: Double, _ L: Double, _ ph: ShellArt.Phases,
+                        scallop: Double = 0.06) -> [CGPoint] {
+        let steps = 160
+        let n = ribs(ph)
+        let ca = cos(angle), sa = sin(angle)
+        return (0...steps).map { i in
+            let u = Double(i) / Double(steps)
+            let f = -spread + 2 * spread * u
+            var r = L * pow(max(0, cos(f * 0.92)), 0.3) * (1 + 0.035 * sin(f * 2 + ph.0) + 0.02 * sin(f * 5 + ph.1))
+            r *= 1 + scallop * cos(2 * .pi * (u * n - 0.5))
+            r *= 1 + 0.01 * sin(f * 70 + ph.2)
+            let x = cos(f) * r
+            let y = sin(f) * r * breadth
+            return CGPoint(x: ax + x * ca - y * sa, y: ay + x * sa + y * ca)
         }
     }
 
-    /// Demi-ellipse du haut (de gauche à droite) ou du bas (de droite à gauche), légèrement festonnée.
-    private static func arc(_ g: Geometry, upper: Bool, _ ph: ShellArt.Phases) -> [CGPoint] {
-        (0...80).map { i in
-            let t = Double(i) / 80
-            let phi = upper ? .pi + .pi * t : .pi * t
-            let r = 1 + 0.018 * sin(phi * 14 + ph.1)
-            return CGPoint(x: g.cx + cos(phi) * g.a * r, y: g.cy + sin(phi) * g.b * r)
+    /// Point de la valve à l'angle `f` (repère de la valve) et à la fraction `k` du bord.
+    private static func point(_ ax: Double, _ ay: Double, _ angle: Double, _ L: Double, _ ph: ShellArt.Phases, f: Double, k: Double) -> CGPoint {
+        let r = L * k * pow(max(0, cos(f * 0.92)), 0.3)
+        let x = cos(f) * r, y = sin(f) * r * breadth
+        return CGPoint(x: ax + x * cos(angle) - y * sin(angle), y: ay + x * sin(angle) + y * cos(angle))
+    }
+
+    /// Relief des plis : clair sur les crêtes, sombre dans les creux (dégradé conique depuis la charnière).
+    private static func ribShading(_ ax: Double, _ ay: Double, _ angle: Double, _ ph: ShellArt.Phases, light: Double, dark: Double) -> GraphicsContext.Shading {
+        let n = ribs(ph)
+        let start = angle - .pi
+        var stops: [Gradient.Stop] = []
+        for i in 0...96 {
+            let u = Double(i) / 96
+            let f = -spread + 2 * spread * u
+            // Angle à l'écran, en tenant compte de l'élargissement.
+            let screen = angle + atan2(sin(f) * breadth, cos(f))
+            let b = cos(2 * .pi * (u * n - 0.5))
+            let color = b > 0 ? Color.white.opacity(light * pow(b, 1.5)) : rgba(70, 50, 25, dark * pow(-b, 1.2))
+            let location = (screen - start) / (2 * .pi)
+            stops.append(.init(color: color, location: min(1, max(0, location))))
         }
+        return .conicGradient(Gradient(stops: stops), center: CGPoint(x: ax, y: ay), angle: .radians(start))
     }
 
-    private static func upperValve(_ g: Geometry, _ ph: ShellArt.Phases) -> Path {
-        ShellArt.path(arc(g, upper: true, ph) + zigzag(g, ph, offset: -g.gap).reversed())
-    }
+    // MARK: - Extérieur
 
-    private static func lowerValve(_ g: Geometry, _ ph: ShellArt.Phases) -> Path {
-        ShellArt.path(zigzag(g, ph, offset: g.gap) + arc(g, upper: false, ph))
-    }
+    static func drawExterior(_ c: inout GraphicsContext, _ ax: Double, _ ay: Double, _ angle: Double, _ L: Double, _ ph: ShellArt.Phases) {
+        let shape = ShellArt.path(outline(ax, ay, angle, L, ph))
+        let light = CGPoint(x: ax - L * 0.3, y: ay + L * 0.2)
 
-    /// L'intérieur (le manteau), là où l'ombre tombe tant que le bénitier est fermé.
-    static func interior(_ hx: Double, _ hy: Double, _ L: Double, _ ph: ShellArt.Phases) -> Path {
-        mantleBody(geometry(hx, hy, L, ph))
-    }
+        var shadow = c
+        shadow.translateBy(x: L * 0.01, y: L * 0.025)
+        shadow.fill(shape, with: .color(rgba(10, 20, 20, 0.35)))
 
-    private static func mantleBody(_ g: Geometry) -> Path {
-        Path(ellipseIn: CGRect(x: g.cx - g.a * 0.96, y: g.cy - g.b * 0.94, width: g.a * 1.92, height: g.b * 1.88))
-    }
+        c.fill(shape, with: .radialGradient(
+            Gradient(stops: [.init(color: Color(hex: "#fdf7ea"), location: 0), .init(color: Color(hex: "#e3d4b4"), location: 0.55),
+                             .init(color: Color(hex: "#a89270"), location: 1)]),
+            center: light, startRadius: L * 0.05, endRadius: L * 1.35))
 
-    /// Ombre portée et manteau (sous la perle).
-    static func drawBase(_ c: inout GraphicsContext, _ hx: Double, _ hy: Double, _ L: Double, _ ph: ShellArt.Phases, _ t: Double) {
-        let g = geometry(hx, hy, L, ph)
-        c.fill(Path(ellipseIn: CGRect(x: g.cx - g.a * 1.02, y: g.cy - g.b * 0.6, width: g.a * 2.04, height: g.b * 2.0)),
-               with: .radialGradient(Gradient(colors: [rgba(10, 30, 30, 0.35), rgba(10, 30, 30, 0)]),
-                                     center: CGPoint(x: g.cx + L * 0.03, y: g.cy + g.b * 0.5), startRadius: 0, endRadius: g.a * 1.05))
-        drawMantle(&c, g, ph, t)
-    }
+        var inside = c
+        inside.clip(to: shape)
+        inside.fill(Path(CGRect(x: ax - L * 2, y: ay - L * 2, width: L * 4, height: L * 4)),
+                    with: ribShading(ax, ay, angle, ph, light: 0.4, dark: 0.38))
 
-    /// La valve du bas, posée par-dessus le manteau (après la perle et la pénombre).
-    static func drawLowerValve(_ c: inout GraphicsContext, _ hx: Double, _ hy: Double, _ L: Double, _ ph: ShellArt.Phases) {
-        let g = geometry(hx, hy, L, ph)
-        drawValve(&c, lowerValve(g, ph), umbo: g.bottom, g, ph, upper: false, tilt: 0)
-    }
-
-    /// Bascule de la valve du haut pour un angle d'ouverture (radians, 0 à π).
-    private static func tilt(_ theta: Double) -> Double {
-        min(max(theta, 0), .pi) / .pi * maxTilt
-    }
-
-    /// La valve du haut bascule en arrière autour de la charnière. Fermée, c'est le même dessin que la valve
-    /// du bas ; dès qu'elle bouge, un modèle 3D prend le relais (fondu sur les premiers degrés).
-    static func drawLid(_ c: inout GraphicsContext, _ hx: Double, _ hy: Double, _ L: Double, _ ph: ShellArt.Phases, theta: Double) {
-        let g = geometry(hx, hy, L, ph)
-        let phi = tilt(theta)
-        let flat = 1 - smoothstep(0, 0.2, phi)
-        if flat < 1 {
-            var solid = c
-            solid.opacity = 1 - flat * 0.999
-            drawLidMesh(&solid, g, ph, phi)
+        // Lignes de croissance : le feston se répète en plus petit vers la charnière.
+        for k in 1...6 {
+            let kk = Double(k)
+            let band = ShellArt.path(outline(ax, ay, angle, L * (1 - kk * 0.13), ph, scallop: 0.06 * (1 - kk * 0.1)))
+            inside.stroke(band, with: .color(rgba(110, 85, 50, 0.22)), lineWidth: max(1, L * 0.007))
+            var lit = inside
+            lit.translateBy(x: -L * 0.004, y: -L * 0.006)
+            lit.stroke(band, with: .color(rgba(255, 252, 240, 0.25)), lineWidth: max(0.8, L * 0.004))
         }
-        if flat > 0 {
-            var lid = c
-            lid.opacity = flat
-            lid.translateBy(x: hx, y: hy)
-            lid.scaleBy(x: 1, y: cos(phi))
-            lid.translateBy(x: -hx, y: -hy)
-            drawValve(&lid, upperValve(g, ph), umbo: g.top, g, ph, upper: true, tilt: 0)
-        }
-    }
 
-    /// Bord de la valve du haut (pour la lumière qui filtre), une fois basculée.
-    static func lidEdgeY(_ hx: Double, _ hy: Double, _ L: Double, theta: Double) -> Double {
-        hy + L * 0.5 * cos(tilt(theta))
-    }
-
-    // MARK: - Valve en 3D
-
-    private struct Point3 { var x, y, z: Double; var hingeY = 0.0 }
-
-    /// Un point de la valve du haut, à plat (avant bascule) : u le long du zigzag (0 à 1),
-    /// v de la charnière (0) au bord (1). z : hauteur du dôme vers l'écran, avec les plis.
-    private static func valvePoint(_ g: Geometry, _ u: Double, _ v: Double) -> Point3 {
-        let side = 2 * u - 1
-        let x = g.cx + side * g.a * 0.985
-        let topY = g.cy - g.b * (max(0, 1 - side * side)).squareRoot()
-        let envelope = pow(sin(.pi * u), 0.7)
-        let edgeY = g.cy + g.b * g.depth * wave(g, u) * envelope - g.gap * envelope
-        let y = topY + (edgeY - topY) * v
-        let across = pow(sin(.pi * u), 0.6)
-        let dome = g.L * 0.3 * across * pow(sin(.pi * v), 0.8)
-        let folds = g.L * 0.07 * wave(g, u) * pow(v, 1.4) * pow(sin(.pi * u), 0.5)
-        return Point3(x: x, y: y, z: dome + folds, hingeY: topY)
-    }
-
-    /// Bascule autour de la charnière : le bord libre monte vers l'écran. Chaque colonne pivote sur le bord
-    /// du haut de la coquille, pour que la valve reste attachée tout le long.
-    private static func rotate(_ p: Point3, _ phi: Double) -> Point3 {
-        let dy = p.y - p.hingeY
-        return Point3(x: p.x, y: p.hingeY + dy * cos(phi) - p.z * sin(phi), z: dy * sin(phi) + p.z * cos(phi), hingeY: p.hingeY)
-    }
-
-    private static func drawLidMesh(_ c: inout GraphicsContext, _ g: Geometry, _ ph: ShellArt.Phases, _ phi: Double) {
-        let columns = meshColumns, rows = meshRows
-        // Sommets basculés.
-        var vertices = [[Point3]](repeating: [], count: rows + 1)
-        for row in 0...rows {
-            vertices[row] = (0...columns).map { col in
-                rotate(valvePoint(g, Double(col) / Double(columns), Double(row) / Double(rows)), phi)
+        // Écailles relevées sur la crête des plis, de plus en plus grandes vers le bord.
+        let n = ribs(ph)
+        for i in 0..<Int(n) {
+            let u = (Double(i) + 0.5) / n
+            let f = -spread + 2 * spread * u
+            let screen = angle + atan2(sin(f) * breadth, cos(f))
+            for (j, k) in [0.42, 0.56, 0.69, 0.81, 0.92].enumerated() {
+                let p = point(ax, ay, angle, L, ph, f: f, k: k)
+                let size = L * (0.045 + Double(j) * 0.012) * (0.85 + 0.15 * sin(ph.1 + Double(i)))
+                var scale = c
+                scale.translateBy(x: p.x, y: p.y)
+                scale.rotate(by: .radians(screen))
+                // Une écaille : une lamelle en croissant, ombre côté bord, reflet côté charnière.
+                var lamella = Path()
+                lamella.move(to: CGPoint(x: 0, y: -size))
+                lamella.addQuadCurve(to: CGPoint(x: 0, y: size), control: CGPoint(x: size * 1.1, y: 0))
+                lamella.addQuadCurve(to: CGPoint(x: 0, y: -size), control: CGPoint(x: size * 0.35, y: 0))
+                var under = scale
+                under.translateBy(x: size * 0.18, y: 0)
+                under.fill(lamella, with: .color(rgba(60, 40, 20, 0.35)))
+                scale.fill(lamella, with: .linearGradient(Gradient(colors: [Color(hex: "#fffaf0"), Color(hex: "#d8c7a2")]),
+                                                          startPoint: CGPoint(x: 0, y: 0), endPoint: CGPoint(x: size, y: 0)))
+                scale.stroke(lamella, with: .color(rgba(255, 255, 250, 0.55)), lineWidth: max(0.6, L * 0.003))
             }
         }
-        // Lèvre du manteau, sous le bord de la valve.
-        var mantleLip = Path()
-        mantleLip.addLines(vertices[rows].map { CGPoint(x: $0.x, y: $0.y + g.L * 0.014) })
-        c.stroke(mantleLip, with: .color(Color(hex: "#3fd0c0").opacity(0.55)), lineWidth: g.L * 0.014)
 
-        struct Facet { let path: Path; let depth: Double; let color: Color }
-        var facets: [Facet] = []
-        facets.reserveCapacity(rows * columns)
-        let porcelain = hexComponents("#f7f1e6")
-        for row in 0..<rows {
-            for col in 0..<columns {
-                let p00 = vertices[row][col], p10 = vertices[row][col + 1]
-                let p01 = vertices[row + 1][col], p11 = vertices[row + 1][col + 1]
-                let e1 = (p10.x - p00.x, p10.y - p00.y, p10.z - p00.z)
-                let e2 = (p01.x - p00.x, p01.y - p00.y, p01.z - p00.z)
-                var n = (e1.1 * e2.2 - e1.2 * e2.1, e1.2 * e2.0 - e1.0 * e2.2, e1.0 * e2.1 - e1.1 * e2.0)
-                let length = (n.0 * n.0 + n.1 * n.1 + n.2 * n.2).squareRoot()
-                guard length > 1e-9 else { continue }
-                n = (n.0 / length, n.1 / length, n.2 / length)
-                let outside = n.2 >= 0
-                if !outside { n = (-n.0, -n.1, -n.2) }
-                let diffuse = max(0, n.0 * light.0 + n.1 * light.1 + n.2 * light.2)
-                let v = (Double(row) + 0.5) / Double(rows)
-                let base: (Double, Double, Double)
-                var shade = 0.42 + 0.7 * diffuse
-                if outside {
-                    // Extérieur : bandes de croissance crème, une ombre sous chaque écaille.
-                    let scale = (1 - v) * Double(bands.count)
-                    let band = bands[min(bands.count - 1, Int(scale))]
-                    base = hexComponents(band.0)
-                    let within = scale - scale.rounded(.down)
-                    if within < 0.18 { shade *= 0.84 }
-                } else {
-                    // Intérieur : porcelaine, un peu plus chaude près de la charnière.
-                    base = porcelain
-                    shade *= 0.92 + 0.08 * v
-                }
-                let color = Color(red: min(1, base.0 / 255 * shade), green: min(1, base.1 / 255 * shade), blue: min(1, base.2 / 255 * shade))
-                var path = Path()
-                path.addLines([p00, p10, p11, p01].map { CGPoint(x: $0.x, y: $0.y) })
-                path.closeSubpath()
-                facets.append(Facet(path: path, depth: (p00.z + p10.z + p01.z + p11.z) / 4, color: color))
+        // Bord festonné éclairé, et reflet de la lumière du dessus.
+        c.stroke(shape, with: .color(rgba(255, 250, 235, 0.45)), lineWidth: max(1, L * 0.008))
+        inside.fill(Path(CGRect(x: ax - L * 2, y: ay - L * 2, width: L * 4, height: L * 4)),
+                    with: .radialGradient(Gradient(colors: [rgba(255, 252, 240, 0.3), rgba(255, 252, 240, 0)]),
+                                          center: light, startRadius: 0, endRadius: L * 0.75))
+    }
+
+    // MARK: - Intérieur
+
+    /// L'intérieur, là où l'ombre tombe tant que le bénitier est fermé.
+    static func interiorPath(_ ax: Double, _ ay: Double, _ angle: Double, _ L: Double, _ ph: ShellArt.Phases) -> Path {
+        ShellArt.path(outline(ax, ay, angle, L * 0.92, ph, scallop: 0.05))
+    }
+
+    /// Porcelaine de la valve ; `mantle` : le manteau irisé (valve du bas seulement).
+    static func drawInterior(_ c: inout GraphicsContext, _ ax: Double, _ ay: Double, _ angle: Double, _ L: Double, _ ph: ShellArt.Phases,
+                             _ t: Double, mantle: Bool) {
+        let porcelain = interiorPath(ax, ay, angle, L, ph)
+        let center = CGPoint(x: ax + cos(angle) * L * 0.5, y: ay + sin(angle) * L * 0.5)
+        let square = Path(CGRect(x: center.x - L * 1.5, y: center.y - L * 1.5, width: L * 3, height: L * 3))
+        var inside = c
+        inside.clip(to: porcelain)
+        inside.fill(square, with: .radialGradient(
+            Gradient(stops: [.init(color: .white, location: 0), .init(color: Color(hex: "#f3eee4"), location: 0.6),
+                             .init(color: Color(hex: "#c9bea8"), location: 1)]),
+            center: center, startRadius: L * 0.05, endRadius: L * 0.95))
+        inside.fill(square, with: ribShading(ax, ay, angle, ph, light: 0.35, dark: 0.18))
+        guard mantle else { return }
+
+        // Le manteau : chair bleu-vert irisée qui respire doucement, au bord frisé.
+        let frill = ShellArt.path(outline(ax, ay, angle, L * 0.8, ph, scallop: 0.07).enumerated().map { i, p in
+            let wave = 1 + 0.025 * sin(Double(i) * 0.9 + t * 0.8)
+            return CGPoint(x: ax + (p.x - ax) * wave, y: ay + (p.y - ay) * wave)
+        })
+        var flesh = c
+        flesh.clip(to: frill)
+        flesh.fill(square, with: .radialGradient(
+            Gradient(stops: [.init(color: Color(hex: "#39d6c2"), location: 0), .init(color: Color(hex: "#1c8fb0"), location: 0.45),
+                             .init(color: Color(hex: "#2a4da0"), location: 0.78), .init(color: Color(hex: "#3a2366"), location: 1)]),
+            center: center, startRadius: L * 0.04, endRadius: L * 0.7))
+        var iris = flesh
+        iris.opacity = 0.32
+        iris.fill(square, with: .conicGradient(Gradient(colors: mantleIris.map { Color(hex: $0) }),
+                                               center: center, angle: .radians(t * 0.2 + ph.0)))
+        // Rayures ondulées et « yeux » clairs, comme sur un vrai bénitier.
+        let n = ribs(ph)
+        for i in 0..<Int(n * 2) {
+            let u = (Double(i) + 0.5) / (n * 2)
+            let f = -spread + 2 * spread * u
+            var stripe = Path()
+            for s in 0...20 {
+                let k = 0.15 + 0.62 * Double(s) / 20
+                let p = point(ax, ay, angle, L, ph, f: f + 0.05 * sin(Double(s) * 1.4 + Double(i)), k: k)
+                if s == 0 { stripe.move(to: p) } else { stripe.addLine(to: p) }
             }
+            flesh.stroke(stripe, with: .color(rgba(170, 255, 240, 0.22)), lineWidth: max(1, L * 0.012))
         }
-        // Du plus loin au plus proche de l'écran.
-        for facet in facets.sorted(by: { $0.depth < $1.depth }) {
-            c.fill(facet.path, with: .color(facet.color))
-            c.stroke(facet.path, with: .color(facet.color), lineWidth: 0.6)
+        var seed = (ph.0 * 1000).rounded(.down) + 7
+        func rand() -> Double {
+            seed = (seed * 16807).truncatingRemainder(dividingBy: 2_147_483_647)
+            return seed / 2_147_483_647
         }
-        // Lèvre blanche du bord libre (on voit l'épaisseur de la coquille), liseré du sommet.
-        var edge = Path()
-        edge.addLines(vertices[rows].map { CGPoint(x: $0.x, y: $0.y) })
-        c.stroke(edge, with: .color(rgba(255, 253, 246, 0.95)), lineWidth: g.L * 0.02 * (1 + 0.8 * abs(sin(phi))))
-        c.stroke(edge.offsetBy(dx: 0, dy: g.L * 0.012), with: .color(rgba(110, 92, 64, 0.3)), lineWidth: g.L * 0.006)
-        var rim = Path()
-        rim.addLines(vertices[0].map { CGPoint(x: $0.x, y: $0.y) })
-        c.stroke(rim, with: .color(rgba(120, 100, 70, 0.45)), lineWidth: g.L * 0.008)
-    }
-
-    // MARK: - Matières
-
-    private static func drawMantle(_ c: inout GraphicsContext, _ g: Geometry, _ ph: ShellArt.Phases, _ t: Double) {
-        let body = mantleBody(g)
-        c.fill(body, with: .radialGradient(Gradient(colors: [Color(hex: "#123447"), Color(hex: "#081620")]),
-                                           center: CGPoint(x: g.cx, y: g.cy), startRadius: 0, endRadius: g.a))
-        var iris = c
-        iris.clip(to: body)
-        iris.opacity = 0.55
-        iris.fill(body, with: .conicGradient(Gradient(colors: mantleIris.map { Color(hex: $0) }),
-                                             center: CGPoint(x: g.cx, y: g.cy), angle: .radians(t * 0.12 + ph.1)))
-        // Taches claires et reflets bleus du manteau.
-        var spots = c
-        spots.clip(to: body)
-        for i in 0..<70 {
-            let angle = Double(i) * 2.399 + ph.2
-            let r = sqrt(Double(i) / 70)
-            let p = CGPoint(x: g.cx + cos(angle) * r * g.a * 0.92, y: g.cy + sin(angle) * r * g.b * 0.9)
-            let size = g.L * (0.006 + 0.006 * Double(i % 3))
-            let color = i % 3 == 0 ? Color(hex: "#7fe9ff").opacity(0.55) : i % 3 == 1 ? Color(hex: "#3ad6a6").opacity(0.35) : Color(hex: "#8e7cff").opacity(0.3)
-            spots.fill(Path(ellipseIn: CGRect(x: p.x - size, y: p.y - size, width: size * 2, height: size * 2)), with: .color(color))
+        for _ in 0..<46 {
+            let p = point(ax, ay, angle, L, ph, f: -spread * 0.95 + rand() * spread * 1.9, k: 0.2 + 0.58 * sqrt(rand()))
+            let r = L * (0.008 + rand() * 0.012)
+            flesh.fill(Path(ellipseIn: CGRect(x: p.x - r * 1.6, y: p.y - r * 1.6, width: r * 3.2, height: r * 3.2)), with: .color(rgba(10, 30, 70, 0.35)))
+            flesh.fill(Path(ellipseIn: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2)), with: .color(rgba(200, 255, 245, 0.75)))
         }
-        // Plis du manteau, en douces ondulations sombres.
-        for k in 1...3 {
-            var ruffle = Path()
-            ruffle.addLines(zigzag(g, ph, offset: -g.b * 0.18 * Double(k), wobble: 0.06))
-            spots.stroke(ruffle, with: .color(.black.opacity(0.18)), lineWidth: g.L * 0.018)
-        }
-        // Lèvre du manteau contre la valve du bas.
-        var lip = Path()
-        lip.addLines(zigzag(g, ph, offset: g.gap * 0.45, wobble: 0.04))
-        spots.stroke(lip, with: .color(Color(hex: "#5b8cff").opacity(0.45)), lineWidth: g.L * 0.012)
-    }
-
-    /// Une valve : bandes de croissance en relief autour du sommet (umbo), plis, lèvre blanche.
-    /// `tilt` : bascule de la valve (la lèvre s'épaissit, on voit sa tranche).
-    private static func drawValve(_ c: inout GraphicsContext, _ valve: Path, umbo: CGPoint, _ g: Geometry, _ ph: ShellArt.Phases, upper: Bool, tilt: Double) {
-        let light = CGPoint(x: g.cx - g.a * 0.35, y: g.cy - g.b * 0.75)
-        for (k, band) in bands.enumerated() {
-            let scale = 1 - Double(k) * 0.13
-            let shape = valve.applying(CGAffineTransform(translationX: umbo.x, y: umbo.y).scaledBy(x: scale, y: scale).translatedBy(x: -umbo.x, y: -umbo.y))
-            var shadow = c
-            shadow.translateBy(x: g.L * 0.006, y: g.L * 0.016)
-            shadow.fill(shape, with: .color(rgba(40, 30, 18, 0.32)))
-            c.fill(shape, with: .radialGradient(Gradient(colors: [Color(hex: band.0), Color(hex: band.1)]),
-                                                center: light, startRadius: g.L * 0.05, endRadius: g.L * 1.5))
-            c.stroke(shape, with: .color(rgba(255, 252, 242, 0.35 + Double(k) * 0.04)), lineWidth: max(1, g.L * 0.008))
-        }
-        var folds = c
-        folds.clip(to: valve)
-        drawFolds(&folds, umbo: umbo, g, ph, upper: upper)
-        // Lèvre blanche épaisse au bord du zigzag (plus épaisse quand la valve bascule : on voit sa tranche).
-        var lip = Path()
-        lip.addLines(zigzag(g, ph, offset: upper ? -g.gap : g.gap))
-        c.stroke(lip, with: .color(rgba(255, 253, 246, 0.95)), lineWidth: g.L * 0.022 * (1 + 1.5 * sin(tilt)))
-        c.stroke(lip.offsetBy(dx: 0, dy: upper ? -g.L * 0.016 : g.L * 0.016), with: .color(rgba(120, 100, 70, 0.35)), lineWidth: g.L * 0.008)
-        // Reflet de la lumière du dessus.
-        folds.fill(Path(CGRect(x: g.cx - g.a, y: g.cy - g.b, width: g.a * 2, height: g.b * 2)),
-                   with: .radialGradient(Gradient(colors: [rgba(255, 252, 240, 0.22), rgba(255, 252, 240, 0)]),
-                                         center: light, startRadius: 0, endRadius: g.L * 0.8))
-    }
-
-    /// Les gros plis : lumière sur les crêtes qui avancent vers le zigzag, ombre dans les creux.
-    private static func drawFolds(_ c: inout GraphicsContext, umbo: CGPoint, _ g: Geometry, _ ph: ShellArt.Phases, upper: Bool) {
-        let edge = zigzag(g, ph, offset: 0)
-        let width = g.a * 2 / Double(edge.count) * 2.2
-        // Les plis partent de loin derrière le sommet : de larges ondulations presque parallèles.
-        let origin = CGPoint(x: umbo.x, y: g.cy + (umbo.y - g.cy) * 2.6)
-        for (i, point) in edge.enumerated() {
-            let crest = (upper ? 1 : -1) * wave(g, Double(i) / Double(edge.count - 1))
-            var line = Path()
-            line.move(to: origin)
-            line.addLine(to: CGPoint(x: point.x + (point.x - origin.x) * 0.1, y: point.y + (point.y - origin.y) * 0.1))
-            let color = crest > 0 ? rgba(255, 252, 240, 0.2 * crest) : rgba(60, 44, 24, 0.2 * -crest)
-            c.stroke(line, with: .color(color), lineWidth: width)
-        }
+        // Bord du manteau, plus clair.
+        c.stroke(frill, with: .color(rgba(140, 240, 225, 0.55)), lineWidth: max(1, L * 0.012))
     }
 }

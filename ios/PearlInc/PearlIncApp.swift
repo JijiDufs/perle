@@ -25,6 +25,8 @@ struct PearlIncApp: App {
 
 /// Onglets du système : sur l'iPhone Duo, ils passent tout seuls sur le côté (docs/duo-gadget.md §5).
 struct RootView: View {
+    @Environment(GameModel.self) private var game
+
     var body: some View {
         TabView {
             Tab("Pêche", systemImage: "drop.fill") {
@@ -38,5 +40,8 @@ struct RootView: View {
             }
         }
         .tint(Palette.gold)
+        .fullScreenCover(isPresented: Binding(get: { game.ads.isShowing }, set: { if !$0 && game.ads.isShowing { game.ads.finish(rewarded: false) } })) {
+            SimulatedAdView(ads: game.ads)
+        }
     }
 }

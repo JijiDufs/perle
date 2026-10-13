@@ -1,116 +1,206 @@
 import SwiftUI
 import PearlCore
 
-/// La collection : le comptoir (revente des doublons), l'encyclopédie des perles (nombre pair de colonnes,
-/// pour se couper proprement au pli du Duo), puis les dernières cartes et les trouvailles.
+/// La collection, comme dans le prototype de pearl-inc.app : les huit perles en cases (toucher une perle
+/// trouvée montre sa plus belle carte), le trésor, le comptoir (revente des doublons), les trouvailles,
+/// les dernières perles et les probabilités. Nombre pair de colonnes, pour se couper proprement au pli du Duo.
 struct CollectionView: View {
     @Environment(GameModel.self) private var game
     @State private var confirmSellAll = false
-    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+    @State private var shown: PearlCard?
+    private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
     var body: some View {
-        NavigationStack {
+        ZStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    counter
+                VStack(spacing: 22) {
+                    header
 
-                    Text("\(discovered) / \(findable.count) perles découvertes")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.white.opacity(0.85))
-
-                    LazyVGrid(columns: columns, spacing: 12) {
+                    LazyVGrid(columns: columns, spacing: 14) {
                         ForEach(findable) { pearl in
-                            EncyclopediaCell(
-                                pearl: pearl,
-                                count: game.player.count(of: pearl.id),
-                                price: game.catalog.missingPearlPrice(pearl.id),
-                                dust: game.player.dust
-                            ) { game.buyMissingPearl(pearl.id) }
+                            let count = game.player.count(of: pearl.id)
+                            Button {
+                                if let best = best(pearl.id) { withAnimation(.snappy) { shown = best } }
+                            } label: {
+                                PearlCell(pearl: pearl, count: count)
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(count == 0)
                         }
                     }
 
+                    counter
+
                     if !game.player.findCards.isEmpty {
-                        Text("Trouvailles").lagoonTitle()
+                        section("Trouvailles")
                         GlassList {
                             ForEach(game.player.findCards.reversed()) { card in
                                 let find = game.catalog.find(card.findId)
                                 HStack {
-                                    PearlDot(color: Color(hex: find.glow), glow: nil, size: 28)
+                                    PearlThumb(look: PearlLook(find: find), glow: find.glow, size: 12)
                                     Text(find.name)
                                     Spacer()
                                     Text(serialLabel(card.serial)).font(.caption.monospaced()).foregroundStyle(.white.opacity(0.6))
                                 }
-                                .padding(.vertical, 10)
+                                .padding(.vertical, 4)
                             }
                         }
                     }
 
                     if !game.player.pearlCards.isEmpty {
-                        Text("Mes perles").lagoonTitle()
-                        Text("Appui long sur une perle en double pour la revendre.").font(.footnote).foregroundStyle(.white.opacity(0.8))
+                        section("Mes perles", note: "Appui long sur une perle en double pour la revendre.")
                         GlassList {
                             ForEach(game.player.pearlCards.suffix(40).reversed()) { card in
-                                PearlRow(card: card).padding(.vertical, 10)
+                                PearlRow(card: card) { withAnimation(.snappy) { shown = card } }
                             }
                         }
                     }
+
+                    section("Probabilités", note: "Chaque huître est un tirage. Les chances ne changent jamais, ni avec un skin ni avec un achat.")
+                    GlassList { OddsList().padding(.vertical, 8) }
                 }
-                .padding()
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 28)
             }
-            .background(LagoonBackground(dim: 0.35))
-            .navigationTitle("Collection")
-            .confirmationDialog("Revendre les doublons ?", isPresented: $confirmSellAll, titleVisibility: .visible) {
-                Button("Revendre \(sellable.count) perles pour \(sellableDust) ✦") { game.sellAllDuplicates() }
-            } message: {
-                Text("On garde la plus belle de chaque sorte et toutes les perles à marque rare.")
+            .background(LagoonBackground(dim: 0.82))
+
+            if let shown {
+                Color.black.opacity(0.6).ignoresSafeArea()
+                    .onTapGesture { withAnimation(.snappy) { self.shown = nil } }
+                    .transition(.opacity)
+                VStack(spacing: 18) {
+                    PearlCardView(content: .pearl(shown), width: 300)
+                    Button("Fermer") { withAnimation(.snappy) { self.shown = nil } }
+                        .buttonStyle(GlassButtonStyle())
+                        .frame(maxWidth: 200)
+                }
+                .transition(.scale(scale: 0.4).combined(with: .opacity))
             }
+        }
+        .confirmationDialog("Revendre les doublons ?", isPresented: $confirmSellAll, titleVisibility: .visible) {
+            Button("Revendre \(sellable.count) perles pour \(sellableDust) ✦") { game.sellAllDuplicates() }
+        } message: {
+            Text("On garde la plus belle de chaque sorte et toutes les perles à marque rare.")
         }
     }
 
-    /// Le comptoir : poussière d'or et revente en lot.
+    // MARK: - En-tête et comptoir
+
+    private var header: some View {
+        VStack(spacing: 6) {
+            Text("Ma collection").font(.system(size: 34, weight: .bold)).tracking(-0.8)
+            Text("\(discovered) / \(findable.count) perles trouvées").font(.headline).opacity(0.9)
+            Text("Trésor : \(treasure) · \(game.player.pearlCards.count) perle\(game.player.pearlCards.count > 1 ? "s" : "")")
+                .font(.subheadline).opacity(0.65)
+        }
+        .shadow(color: .black.opacity(0.3), radius: 6)
+        .padding(.top, 16)
+    }
+
     private var counter: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Comptoir").font(.title3.weight(.bold))
                 Spacer()
                 Text("✦ \(game.player.dust)").font(.headline.monospacedDigit()).foregroundStyle(Palette.gold)
             }
+            Text("Revends tes doublons contre de la poussière d’or. On garde toujours un exemplaire de chaque sorte.")
+                .font(.footnote).opacity(0.75)
             Button {
                 confirmSellAll = true
             } label: {
                 Text(sellable.isEmpty ? "Aucun doublon à revendre" : "Revendre \(sellable.count) doublons · + \(sellableDust) ✦")
-                    .frame(maxWidth: .infinity)
             }
             .buttonStyle(PearlButtonStyle())
             .disabled(sellable.isEmpty)
         }
-        .padding()
-        .glassPanel()
+        .padding(18)
+        .glassPanel(shade: 0.25)
     }
 
-    private var findable: [PearlType] { game.catalog.pearls.filter { $0.id != "empty" } }
+    private func section(_ title: String, note: String? = nil) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title).lagoonTitle()
+            if let note { Text(note).font(.footnote).foregroundStyle(.white.opacity(0.7)) }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Les perles à trouver (l'huître vide ne donne pas de carte).
+    private var findable: [PearlType] { game.catalog.pearls.filter { $0.glow != nil } }
     private var discovered: Int { findable.filter { game.player.count(of: $0.id) > 0 }.count }
+    private var treasure: Int { Int(game.player.pearlCards.reduce(0) { $0 + $1.value }) }
     private var sellable: [PearlCard] { game.player.sellableDuplicates() }
     private var sellableDust: Int { sellable.reduce(0) { $0 + game.catalog.sellDust($1.pearlId) } }
+
+    /// La plus belle carte d'une sorte de perle.
+    private func best(_ pearlId: String) -> PearlCard? {
+        game.player.pearlCards.filter { $0.pearlId == pearlId }.max { $0.value < $1.value }
+    }
+}
+
+/// Une case de l'encyclopédie, comme dans le prototype : la perle et son halo, ou un « ? ».
+private struct PearlCell: View {
+    @Environment(GameModel.self) private var game
+    let pearl: PearlType
+    let count: Int
+
+    private static let cyan = rgba(174, 244, 255, 1)
+
+    var body: some View {
+        let known = count > 0
+        let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
+        VStack(spacing: 0) {
+            ZStack {
+                if known && pearl.glow != nil {
+                    PearlThumb(look: PearlLook(pearl, traits: nil, catalog: game.catalog), glow: pearl.glow, size: pearl.id == "giant" ? 46 : 36)
+                } else if known {
+                    Circle().strokeBorder(.white.opacity(0.35), style: StrokeStyle(lineWidth: 2, dash: [5, 5])).frame(width: 52, height: 52)
+                } else {
+                    Text("?").font(.system(size: 50, weight: .semibold)).foregroundStyle(.white.opacity(0.22))
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 104)
+            HStack(alignment: .firstTextBaseline) {
+                Text(known ? pearl.name : "???").font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.white.opacity(known ? 0.95 : 0.4)).lineLimit(1).minimumScaleFactor(0.75)
+                Spacer(minLength: 4)
+                Text(known ? "×\(count)" : pearl.rarity).font(.subheadline.weight(.semibold)).foregroundStyle(Self.cyan.opacity(0.85))
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.bottom, 14)
+        .background(shape.fill(.white.opacity(known ? 0.1 : 0.04)))
+        .overlay(shape.strokeBorder(known ? Self.cyan.opacity(0.4) : .white.opacity(0.1), lineWidth: 1))
+        .contentShape(shape)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(known ? "\(pearl.name), \(count) exemplaire\(count > 1 ? "s" : "")" : "Perle pas encore trouvée, \(pearl.rarity)")
+    }
 }
 
 private struct PearlRow: View {
     @Environment(GameModel.self) private var game
     let card: PearlCard
+    let open: () -> Void
 
     var body: some View {
         let pearl = game.catalog.pearl(card.pearlId)
         let isDuplicate = game.player.count(of: card.pearlId) > 1
-        HStack {
-            PearlDot(color: Color(hex: pearl.color), glow: nil, size: 28)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(card.cracked ? "\(pearl.name) fêlée" : pearl.name)
-                if card.fromDust == true { Text("Poussière d’or").font(.caption2).foregroundStyle(Palette.gold) }
+        Button(action: open) {
+            HStack {
+                PearlThumb(look: PearlLook(pearl, traits: card.traits, catalog: game.catalog), glow: pearl.glow, size: 12)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(card.cracked ? "\(pearl.name) fêlée" : pearl.name)
+                    Text("\(pearl.rarity) · lustre \(card.lustre.rawValue)").font(.caption).foregroundStyle(.white.opacity(0.6))
+                }
+                Spacer()
+                Text("\(Int(card.value))").font(.headline.monospacedDigit()).foregroundStyle(Palette.gold)
             }
-            Spacer()
-            Text("\(card.lustre.rawValue) · \(Int(card.value))").foregroundStyle(Palette.gold)
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
         }
-        .contentShape(Rectangle())
+        .buttonStyle(.plain)
         .contextMenu {
             if isDuplicate {
                 Button("Revendre · + \(game.catalog.sellDust(card.pearlId)) ✦", systemImage: "sparkles") { game.sell(card) }
@@ -121,33 +211,28 @@ private struct PearlRow: View {
     }
 }
 
-private struct EncyclopediaCell: View {
-    let pearl: PearlType
-    let count: Int
-    /// Prix en poussière d'or si elle manque ; nil si elle ne s'achète pas (★).
-    let price: Int?
-    let dust: Int
-    let buy: () -> Void
+/// Les probabilités de chaque perle (et des trouvailles), toujours affichées (docs/duo-gadget.md §5, règle 3.1.1).
+struct OddsList: View {
+    @Environment(GameModel.self) private var game
 
     var body: some View {
-        VStack(spacing: 8) {
-            if count > 0 {
-                PearlDot(color: Color(hex: pearl.color), glow: pearl.glow.map { Color(hex: $0) }, size: 46)
-            } else {
-                Circle().strokeBorder(.white.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [4, 4])).frame(width: 46, height: 46)
+        VStack(spacing: 10) {
+            ForEach(game.catalog.pearls) { pearl in
+                row("\(pearl.name)  \(pearl.rarity)", pearl.probability)
             }
-            Text(count > 0 ? pearl.name : "???").font(.subheadline.weight(.semibold))
-            Text(pearl.rarity + (count > 0 ? "  ×\(count)" : "")).font(.caption).foregroundStyle(Palette.gold)
-            if count == 0, let price {
-                Button("Acheter · \(price) ✦", action: buy)
-                    .buttonStyle(PearlButtonStyle(compact: true))
-                    .disabled(dust < price)
-            }
+            row("Trouvaille, à la place de la perle", game.catalog.findProbability)
+            Text("Garantie : une perle dorée ou plus rare au plus tard à la \(game.tuning.pityThreshold + 1)ᵉ huître.")
+                .font(.caption).foregroundStyle(.white.opacity(0.65)).frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
-        .padding(.horizontal, 8)
-        .glassPanel(cornerRadius: 20)
+    }
+
+    private func row(_ label: String, _ probability: Double) -> some View {
+        HStack {
+            Text(label).font(.subheadline)
+            Spacer()
+            Text(probability.formatted(.percent.precision(.fractionLength(0...2)).locale(Locale(identifier: "fr_FR"))))
+                .font(.subheadline.monospacedDigit()).foregroundStyle(.white.opacity(0.85))
+        }
     }
 }
 
@@ -158,7 +243,7 @@ struct GlassList<Content: View>: View {
     var body: some View {
         VStack(spacing: 0) { content }
             .padding(.horizontal, 16)
-            .padding(.vertical, 6)
-            .glassPanel(cornerRadius: 20)
+            .padding(.vertical, 8)
+            .glassPanel(cornerRadius: 20, shade: 0.25)
     }
 }

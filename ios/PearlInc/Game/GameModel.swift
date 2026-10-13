@@ -31,6 +31,19 @@ final class GameModel {
     /// Graine de la forme de l'huître posée (bosses, dentelure, taches) : elle ne change pas
     /// pendant la révélation, seulement quand l'huître suivante arrive.
     private(set) var shapeSeed = 0
+    /// L'huître à l'écran. Le Core tire la suivante dès la révélation (invariant 5) : on garde celle qu'on
+    /// vient d'ouvrir jusqu'à ce que la carte soit refermée, sinon la perle changerait sous les yeux du joueur.
+    private(set) var current: Oyster
+    /// Début de la révélation, angle du couvercle à cet instant, et durée du suspense.
+    private(set) var revealStartedAt: Date?
+    private(set) var revealAngle = 0.0
+    private(set) var suspenseMs = 0.0
+    /// Éclair blanc des ★, au moment où la carte arrive.
+    private(set) var flashAt: Date?
+
+    /// Achats intégrés et pub récompensée (plateforme).
+    let store = Store()
+    let ads = RewardedAds()
 
     @ObservationIgnored private var engine: OpeningEngine
     @ObservationIgnored private let thumb = ThumbSource()
@@ -40,20 +53,24 @@ final class GameModel {
 
     init() {
         let catalog = Catalog.shared
-        player = Storage.load() ?? PlayerState.new(systemRng(), catalog.tuning, now: Clock.nowMs)
+        let saved = Storage.load() ?? PlayerState.new(systemRng(), catalog.tuning, now: Clock.nowMs)
+        player = saved
+        current = saved.oyster
         engine = OpeningEngine(tuning: catalog.tuning)
         thumb.onSample = { [weak self] sample, distance in self?.handle(sample, distance: distance) }
         thumb.onRelease = { [weak self] in self?.handleRelease() }
         shapeSeed = player.nextSerial
         refresh()
+        store.onDeliver = { [weak self] productId in self?.deliver(productId) }
+        store.start(productIds: catalog.economy.consumables.map(\.id) + catalog.economy.skins.compactMap(\.productId))
     }
 
     // MARK: - Ce que voit le joueur
 
     /// La perle (ou l'huître vide) de l'huître en cours.
-    var pearl: PearlType { catalog.pearl(player.oyster.pearlId) }
+    var pearl: PearlType { catalog.pearl(current.pearlId) }
     /// La trouvaille cachée, s'il y en a une.
-    var find: FindType? { player.oyster.findId.map { catalog.find($0) } }
+    var find: FindType? { current.findId.map { catalog.find($0) } }
     /// Couleur de la lumière qui filtre : celle de la perle ou de la trouvaille ; nil = reste noire.
     var glowHex: String? { find?.glow ?? pearl.glow }
     var trembles: Bool { find.map { $0.tier >= 4 } ?? pearl.trembles }
@@ -115,7 +132,20 @@ final class GameModel {
         inFragileZone = false
         tooFast = false
         shapeSeed = player.nextSerial
+        current = player.oyster
+        revealStartedAt = nil
+        flashAt = nil
         stage = .playing
+    }
+
+    /// Avancée du suspense (0 → 1) et angle du couvercle, qui finit de s'ouvrir en douceur après la révélation.
+    func revealProgress(at date: Date) -> (suspense: Double, lidAngle: Double, flash: Double) {
+        guard let start = revealStartedAt else { return (0, angle, 0) }
+        let elapsed = date.timeIntervalSince(start) * 1000
+        let suspense = smoothstep(0, max(suspenseMs, 1), elapsed)
+        let lid = revealAngle + (180 - revealAngle) * smoothstep(0, tuning.revealLidSettleMs, elapsed)
+        let flash = flashAt.map { 1 - smoothstep(0, tuning.revealFlashMs, date.timeIntervalSince($0) * 1000) } ?? 0
+        return (suspense, lid, flash)
     }
 
     // MARK: - Comptoir, boutique, missions
@@ -132,16 +162,55 @@ final class GameModel {
         if player.buyOyster() { haptics.pop(); save() }
     }
 
-    func buyMissingPearl(_ pearlId: String) {
-        if player.buyMissingPearl(pearlId, now: Clock.nowMs) != nil { haptics.reveal(tier: 1); save() }
-    }
-
     func buySkin(_ skinId: String) {
         if player.buySkin(skinId) { _ = player.equip(skinId); haptics.reveal(tier: 2); save() }
     }
 
     func equip(_ skinId: String) {
         if player.equip(skinId) { haptics.tick(); save() }
+    }
+
+    // MARK: - Pub récompensée
+
+    func adRewardsLeft(at date: Date = Date()) -> Int {
+        player.adRewardsLeft(day: Clock.dayKey(date))
+    }
+
+    /// Regarder une pub jusqu'au bout : des huîtres en plus (limite par jour dans le Core).
+    func watchAd() {
+        guard adRewardsLeft() > 0 else { return }
+        ads.show { [weak self] rewarded in
+            guard let self, rewarded, self.player.claimAdReward(day: Clock.dayKey()) != nil else { return }
+            self.haptics.reveal(tier: 1)
+            self.save()
+        }
+    }
+
+    // MARK: - Achats intégrés
+
+    /// Acheter un produit de la boutique Apple ; un skin acheté est équipé tout de suite.
+    func purchase(_ productId: String) {
+        Task {
+            guard await store.purchase(productId) else { return }
+            if let skin = economy.skins.first(where: { $0.productId == productId }) { equip(skin.id) }
+        }
+    }
+
+    func restorePurchases() {
+        Task { await store.restore() }
+    }
+
+    /// Un achat validé par StoreKit : le Core décide de ce qu'il donne.
+    private func deliver(_ productId: String) {
+        if let product = economy.consumables.first(where: { $0.id == productId }) {
+            player.grant(product)
+            if product.dust > 0 { dustBump += 1 }
+            haptics.reveal(tier: 2)
+            save()
+        } else if let skin = economy.skins.first(where: { $0.productId == productId }), !player.ownedSkins.contains(skin.id) {
+            player.grantSkin(skin.id)
+            save()
+        }
     }
 
     func claimMission(at index: Int) {
@@ -203,6 +272,9 @@ final class GameModel {
     private func startReveal(lustre: Lustre, cracked: Bool) {
         stage = .suspense
         let tier = revealTier
+        revealStartedAt = Date()
+        revealAngle = engine.angle
+        suspenseMs = tuning.revealSuspenseMs(tier: tier)
         player.refresh(now: Clock.nowMs, day: Clock.dayKey(), tuning: tuning)
         let reveal = player.reveal(lustre: lustre, cracked: cracked, now: Clock.nowMs, rng: rng, tuning: tuning)
         if case .find(_, let dust) = reveal, dust > 0 { dustBump += 1 }
@@ -219,6 +291,7 @@ final class GameModel {
             try? await Task.sleep(for: .milliseconds(Int(max(0, suspense - elapsed))))
             guard let self else { return }
             self.haptics.reveal(tier: tier)
+            if tier >= 3 { self.flashAt = Date() }
             self.stage = .card(reveal)
         }
     }

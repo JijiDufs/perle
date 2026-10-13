@@ -5,12 +5,6 @@
 /** Poussière d'or d'un doublon revendu, selon sa rareté (— ◆ ◆◆ ◆◆◆ ★ ★★). Plus bas que la webapp. */
 export const APP_SELL_DUST_BY_TIER: readonly number[] = [0, 1, 2, 5, 15, 40];
 
-/**
- * Prix d'une perle manquante en poussière d'or, selon sa rareté.
- * null : pas à vendre (les ★ et ★★ restent à pêcher, la garantie est là pour ça).
- */
-export const APP_MISSING_PEARL_PRICE_BY_TIER: readonly (number | null)[] = [null, 5, 10, 25, null, null];
-
 export const APP_ECONOMY = {
   /** Une huître achetée avec la poussière d'or (quand le stock est vide). */
   oysterDustPrice: 20,
@@ -20,8 +14,9 @@ export const APP_ECONOMY = {
   missionsPerDay: 3,
   missionRewardDust: 5,
   missionBonusDust: 10,
-  /** Une perle achetée à la poussière d'or est une perle ordinaire. */
-  boughtPearlLustre: 'B',
+  /** Pub récompensée (choix de Jules, 2026-10-13) : huîtres par pub regardée, et pubs par jour. */
+  rewardedAdOysters: 3,
+  rewardedAdsPerDay: 3,
 } as const;
 
 export type AppMissionKind = 'open' | 'lustreA' | 'lustreS' | 'rare' | 'noCrack' | 'sell' | 'share';

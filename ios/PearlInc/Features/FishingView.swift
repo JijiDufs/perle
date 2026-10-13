@@ -10,11 +10,16 @@ struct FishingView: View {
 
     var body: some View {
         ZStack {
-            LagoonBackground()
-
-            TimelineView(.animation(paused: reduceMotion)) { timeline in
+            // Le lagon et l'huître dans la même scène, comme dans le prototype : l'horizon et l'ombre suivent l'huître.
+            TimelineView(.animation(paused: reduceMotion && game.stage == .playing)) { timeline in
                 Canvas { context, size in
-                    art(time: timeline.date.timeIntervalSinceReferenceDate).draw(&context, size: size)
+                    let oyster = art(at: timeline.date)
+                    let layout = OysterArt.layout(size: size, look: oyster.look)
+                    let lagoon = LagoonArt(time: reduceMotion ? 0 : oyster.time, focus: .init(x: layout.hx, y: layout.hy, size: layout.L))
+                    lagoon.draw(&context, size: size)
+                    oyster.draw(&context, size: size)
+                    lagoon.drawOverlay(&context, size: size)
+                    oyster.drawRevealEffects(&context, size: size)
                 }
             }
             .ignoresSafeArea()
@@ -47,8 +52,11 @@ struct FishingView: View {
             }
 
             if case .card(let reveal) = game.stage {
+                Color(hex: 0x02141A).opacity(0.3).ignoresSafeArea()
+                    .transition(.opacity)
+                    .allowsHitTesting(false)
                 RevealCardView(reveal: reveal)
-                    .transition(.scale(scale: 0.6).combined(with: .opacity))
+                    .transition(.scale(scale: 0.3).combined(with: .opacity))
                     .onTapGesture { withAnimation(.snappy) { game.nextOyster() } }
             }
         }
@@ -74,13 +82,14 @@ struct FishingView: View {
         return " "
     }
 
-    private func art(time: Double) -> OysterArt {
-        let oyster = game.player.oyster
+    private func art(at date: Date) -> OysterArt {
+        let oyster = game.current
         let look: PearlLook? = if let find = game.find { PearlLook(find: find) }
             else if oyster.pearlId == "empty" { nil }
             else { PearlLook(game.pearl, traits: oyster.traits, catalog: game.catalog) }
+        let progress = game.revealProgress(at: date)
         return OysterArt(
-            angle: game.stage == .playing ? game.angle : 180,
+            angle: game.stage == .playing ? game.angle : progress.lidAngle,
             pearl: look,
             glowColor: game.glowHex,
             sizeMm: oyster.sizeMm,
@@ -89,7 +98,9 @@ struct FishingView: View {
             cracked: game.cracked,
             trembles: game.trembles && !reduceMotion,
             revealed: game.stage != .playing,
-            time: time,
+            suspense: progress.suspense,
+            flash: progress.flash,
+            time: date.timeIntervalSinceReferenceDate,
             look: SkinLook(skinId: game.player.equippedSkin),
             shapeSeed: game.shapeSeed
         )

@@ -51,7 +51,7 @@ Ce que promet la page d'inscription, ni plus ni moins :
 | Stock d'huîtres | 10 max, 1 toutes les 20 min : la raison de revenir | `core/stock.ts` |
 | **Perle de bienvenue** | Promise aux premiers inscrits (page d'inscription) : voir §6 | nouveau |
 | **Trouvailles (easter eggs)** | 5 % des huîtres cachent un objet à la place de la perle : 25 objets en 3 albums (bric-à-brac du port, clins d'œil à la pop culture sans nom d'œuvre ni de marque, trésors engloutis) | `core/finds.ts` |
-| **Poussière d'or** | On **revend ses perles en double** contre de la poussière d'or (on garde toujours un exemplaire de chaque sorte) ; elle achète des skins, des huîtres et les pièces manquantes de la collection | `core/dust.ts` |
+| **Poussière d'or** | On **revend ses perles en double** contre de la poussière d'or (on garde toujours un exemplaire de chaque sorte) ; elle achète des skins et des huîtres (plus les perles manquantes depuis le 2026-10-13 : on les pêche) | `core/dust.ts` |
 | **Skins d'huître** | Le **bénitier** (poussière d'or ou achat) et l'**huître d'or** pour le flex (achat seulement) : voir §6 bis | nouveau |
 | **Boutique** | Recharger ses huîtres, acheter de la poussière d'or, acheter un skin : voir §6 ter | nouveau |
 | **Missions du jour** | 3 petites missions par jour (mêmes pour tous, renouvelées à minuit), un peu de poussière d'or chacune : voir §6 quater | `core/quests.ts` |
@@ -77,7 +77,7 @@ Le moteur est le même, la charnière et le pouce aussi (§7). Pour l'écrin, on
 
 ### Exclu de la 1.0
 
-Écrins, expertise, atelier, Maison, niveaux, succès, quêtes du jour, pubs, abonnement, compte, bandeau « BÊTA ».
+Écrins, expertise, atelier, Maison, niveaux, succès, quêtes du jour, abonnement, bandeau « BÊTA ». Les **pubs récompensées** entrent dans la 1.0 (choix de Jules, 2026-10-13) : 3 huîtres par pub, 3 pubs par jour ; pub simulée en attendant le choix de la régie.
 
 ## 5. Règles Apple à respecter
 
@@ -176,7 +176,7 @@ Choix de Jules (2026-10-08) : on peut **recharger ses huîtres** et **acheter de
 **Points d'attention (à trancher entre associés)**
 - **Acheter des huîtres, c'est payer pour du hasard** : Apple l'autorise si **les probabilités sont affichées avant l'achat** (règle 3.1.1). On les montre déjà ; il faut les rappeler sur l'écran d'achat.
 - **Belgique (et peut-être Pays-Bas)** : les objets aléatoires payants y sont traités comme des jeux d'argent. Proposition : masquer les recharges d'huîtres pour la boutique de l'App Store belge (`Storefront.countryCode`), ou ne pas publier en Belgique au début. **À vérifier avec un juriste avant la sortie.**
-- **Payer pour compléter sa collection** : sans garde-fou, une perle maudite manquante s'achèterait avec quelques euros de poussière. Ça enlève du prestige aux perles rares. Proposition : la poussière achète les pièces manquantes **jusqu'à ◆◆◆ seulement** ; les ★ et ★★ restent à pêcher (la garantie après 25 huîtres est là pour ça).
+- **Payer pour compléter sa collection** : sans garde-fou, une perle maudite manquante s'achèterait avec quelques euros de poussière. Ça enlève du prestige aux perles rares. **Tranché le 2026-10-13 (Jules) : la poussière n'achète plus aucune perle** dans l'app ; toutes se pêchent (la garantie après 25 huîtres est là pour les rares).
 - **Monnaie virtuelle (règles européennes de protection des consommateurs)** : montrer clairement ce que coûte un objet et ce qu'il donne, pas d'urgence artificielle, pas de vente ciblée vers les enfants. À relire avant la sortie.
 - **Les achats consommables ne se restaurent pas** chez Apple : la poussière et les huîtres achetées vivent dans la sauvegarde (d'où la sauvegarde iCloud). Les skins, eux, se restaurent.
 - Les huîtres achetées et données au-delà du maximum ne bloquent pas la recharge gratuite : elle reprend quand on repasse sous 10.
@@ -211,7 +211,6 @@ Les premiers jours, il y a peu de doublons (on garde toujours le premier exempla
 | Article | Prix |
 |---|---|
 | Une huître (quand le stock est vide) | 20 ✦ |
-| Une perle manquante ◆ / ◆◆ / ◆◆◆ | 5 / 10 / 25 ✦ (les ★ et ★★ restent à pêcher) |
 | Bénitier | 2 000 ✦ |
 
 **Cohérence avec la boutique** : 2 000 ✦ en poussière achetée coûtent plus de 4,99 €, alors que le bénitier coûte 2,99 € en direct. Celui qui paie achète donc le skin, pas la poussière. Et 10 huîtres valent 200 ✦ ou 0,99 € : les deux prix se tiennent.

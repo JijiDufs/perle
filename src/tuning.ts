@@ -36,6 +36,10 @@ export interface Tuning {
   revealSuspenseTier1Ms: number;
   revealSuspenseTier2Ms: number;
   revealSuspenseTier3Ms: number;
+  /** App iOS : le couvercle finit de s'ouvrir en douceur après la révélation (ms). */
+  revealLidSettleMs: number;
+  /** Éclair blanc des perles ★ quand la carte arrive (ms). */
+  revealFlashMs: number;
   /** Huîtres d'affilée sans perle dorée ou mieux avant que la suivante soit garantie. Cahier §5. */
   pityThreshold: number;
   /** Stock d'huîtres maximum. Cahier §5 : 10. */
@@ -166,6 +170,8 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   revealSuspenseTier1Ms: 700,
   revealSuspenseTier2Ms: 1200,
   revealSuspenseTier3Ms: 2000,
+  revealLidSettleMs: 350,
+  revealFlashMs: 500,
   pityThreshold: 25,
   oysterStockMax: 10,
   oysterRechargeMinutes: 20,

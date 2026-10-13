@@ -37,9 +37,10 @@ public struct Economy: Codable, Sendable {
     public let missionsPerDay: Int
     public let missionRewardDust: Int
     public let missionBonusDust: Int
-    public let boughtPearlLustre: Lustre
+    /// Pub récompensée : huîtres données par pub regardée, et nombre de pubs par jour.
+    public let rewardedAdOysters: Int
+    public let rewardedAdsPerDay: Int
     public let sellDustByTier: [Int]
-    public let missingPearlPriceByTier: [Int?]
     public let rareMissionTier: Int
     public let missions: [MissionTemplate]
     public let skins: [AppSkin]
@@ -57,10 +58,5 @@ extension Catalog {
     /// Poussière d'or rapportée par la revente d'une perle de cette sorte.
     public func sellDust(_ pearlId: String) -> Int {
         economy.sellDustByTier[tier(of: pearlId)]
-    }
-
-    /// Prix d'une perle manquante ; nil si elle ne s'achète pas (★ et ★★).
-    public func missingPearlPrice(_ pearlId: String) -> Int? {
-        economy.missingPearlPriceByTier[tier(of: pearlId)]
     }
 }

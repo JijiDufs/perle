@@ -19,6 +19,8 @@
     "revealSuspenseTier1Ms": 700,
     "revealSuspenseTier2Ms": 1200,
     "revealSuspenseTier3Ms": 2000,
+    "revealLidSettleMs": 350,
+    "revealFlashMs": 500,
     "pityThreshold": 25,
     "oysterStockMax": 10,
     "oysterRechargeMinutes": 20,
@@ -863,7 +865,8 @@
     "missionsPerDay": 3,
     "missionRewardDust": 5,
     "missionBonusDust": 10,
-    "boughtPearlLustre": "B",
+    "rewardedAdOysters": 3,
+    "rewardedAdsPerDay": 3,
     "sellDustByTier": [
       0,
       1,
@@ -871,14 +874,6 @@
       5,
       15,
       40
-    ],
-    "missingPearlPriceByTier": [
-      null,
-      5,
-      10,
-      25,
-      null,
-      null
     ],
     "rareMissionTier": 2,
     "missions": [

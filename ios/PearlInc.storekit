@@ -1,0 +1,120 @@
+{
+  "identifier": "5E1A9C3B",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "0.99",
+      "familyShareable": false,
+      "internalID": "6740000001",
+      "localizations": [
+        {
+          "description": "Le stock d’huîtres rempli : 10 huîtres.",
+          "displayName": "Marée haute",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "app.pearlinc.oysters.10",
+      "referenceName": "Marée haute",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "2.99",
+      "familyShareable": false,
+      "internalID": "6740000002",
+      "localizations": [
+        {
+          "description": "30 huîtres, au-delà du maximum.",
+          "displayName": "Grande marée",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "app.pearlinc.oysters.30",
+      "referenceName": "Grande marée",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": false,
+      "internalID": "6740000003",
+      "localizations": [
+        {
+          "description": "400 ✦ de poussière d’or.",
+          "displayName": "Bourse de poussière d’or",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "app.pearlinc.dust.400",
+      "referenceName": "Bourse de poussière d’or",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "4.99",
+      "familyShareable": false,
+      "internalID": "6740000004",
+      "localizations": [
+        {
+          "description": "1 200 ✦ de poussière d’or.",
+          "displayName": "Coffret de poussière d’or",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "app.pearlinc.dust.1200",
+      "referenceName": "Coffret de poussière d’or",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "9.99",
+      "familyShareable": false,
+      "internalID": "6740000005",
+      "localizations": [
+        {
+          "description": "3 000 ✦ de poussière d’or.",
+          "displayName": "Malle de poussière d’or",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "app.pearlinc.dust.3000",
+      "referenceName": "Malle de poussière d’or",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "2.99",
+      "familyShareable": true,
+      "internalID": "6740000006",
+      "localizations": [
+        {
+          "description": "La coquille du bénitier, pour toutes tes huîtres.",
+          "displayName": "Bénitier",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "app.pearlinc.skin.benitier",
+      "referenceName": "Bénitier",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "9.99",
+      "familyShareable": true,
+      "internalID": "6740000007",
+      "localizations": [
+        {
+          "description": "Or martelé, nacre champagne.",
+          "displayName": "Huître d’or",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "app.pearlinc.skin.or",
+      "referenceName": "Huître d’or",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {
+    "_locale": "fr_FR",
+    "_storefront": "FRA"
+  },
+  "subscriptionGroups": [],
+  "version": {
+    "major": 4,
+    "minor": 0
+  }
+}
