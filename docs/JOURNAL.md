@@ -4,6 +4,24 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 9) · Jules · Claude Code · branche `jules/ios-app`
+
+Site : pages légales réduites à ce que fait vraiment pearl-inc.app aujourd'hui (prototype + inscription), en attendant l'app.
+
+**Fait**
+- Confidentialité du site (`/confidentialite/`, `/en/privacy/`) réécrite en version courte : prototype sans collecte, inscription Tally (données, finalités, effacement 6 mois après la sortie, consentement), hébergement, droits et CNIL.
+- Les pages propres à l'app (confidentialité complète, conditions d'utilisation, aide) sortent du site et sont gardées dans `docs/pages-app/` (même arborescence) : à remettre dans `site/` à la soumission App Store, avec les infos de l'éditeur. Liens du pied de page de l'accueil : Confidentialité · Mentions légales.
+- Éditeur : MJHstudio n'existe pas encore ; ce sera la micro-entreprise de Mathys (EI), avec un nom commercial éventuel. Champs jaunes adaptés.
+
+**À faire**
+- Remplir les champs jaunes (nom, adresse, téléphone, SIREN, registre, TVA) des mentions légales et de la confidentialité, puis fusionner dans `main`.
+- Avant la soumission : remettre `docs/pages-app/` dans `site/`, éditeur = Mathys EI (et médiateur) ; l'app pointe déjà vers `/support/`, `/conditions/`, `/confidentialite/`.
+
+**Fragile**
+- Tant que `docs/pages-app/` n'est pas remis en ligne, les liens Aide et Conditions des Réglages de l'app mènent à une page introuvable (sans conséquence avant la sortie).
+
+---
+
 ## 2026-10-13 (suite 8) · Jules · Claude Code · branche `jules/ios-app`
 
 App iOS : suppression du compte et écran Réglages (exigences d'Apple).

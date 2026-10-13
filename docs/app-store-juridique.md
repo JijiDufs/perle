@@ -1,6 +1,6 @@
 # Juridique et App Store : ce qu'il faut pour soumettre Pearl Inc.
 
-> Rédigé le 2026-10-13. Éditeur : **entreprise individuelle** (MJHstudio), contact `laplateformemjh@gmail.com`.
+> Rédigé le 2026-10-13. Éditeur : **la micro-entreprise de Mathys** (entrepreneur individuel) tant que le studio MJHstudio n'est pas créé, contact `laplateformemjh@gmail.com`.
 > Ce sont des **brouillons sérieux, pas un avis juridique** : faire relire par un avocat (ou un juriste en droit du numérique) avant la sortie, en particulier les points du §6.
 
 ## 1. Les pages publiques (site/)
@@ -13,7 +13,7 @@
 | Mentions légales | `/mentions-legales/` | `/en/legal-notice/` | — (obligation française, loi LCEN) |
 | Site | `/` | `/?lang=en` | **Marketing URL** (facultatif) |
 
-Les pages sont générées avec le même style que l'accueil (`site/legal.css`) et liées en bas de la page d'accueil. **Ne pas les mettre en ligne tant que les champs jaunes « À compléter » ne sont pas remplis** :
+Les pages sont au même style que l'accueil (`site/legal.css`). **Aujourd'hui, seules les mentions légales et une confidentialité courte (prototype + inscription) sont sur le site** ; les versions de l'app (confidentialité complète, conditions, aide) attendent dans `docs/pages-app/` et reviennent dans `site/` à la soumission. **Ne rien mettre en ligne tant que les champs jaunes « À compléter » ne sont pas remplis** :
 
 - prénom et nom de l'entrepreneur, adresse postale, numéro de téléphone (mentions légales), SIREN et registre (RNE ou RCS) ;
 - TVA : numéro intracommunautaire, ou « TVA non applicable, art. 293 B du CGI » en franchise ;
