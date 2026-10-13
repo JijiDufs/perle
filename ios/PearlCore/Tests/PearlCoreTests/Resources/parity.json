@@ -1,0 +1,5869 @@
+{
+  "rngSeed": 2026,
+  "rngValues": [
+    0.45540769933722913,
+    0.30849614599719644,
+    0.6611574492417276,
+    0.6184752183035016,
+    0.15228010178543627,
+    0.22184331016615033,
+    0.682859911583364,
+    0.8014086990151554,
+    0.29346877010539174,
+    0.042668113484978676,
+    0.06658769561909139,
+    0.6195805927272886,
+    0.3888109920080751,
+    0.11450255266390741,
+    0.17949429899454117,
+    0.3310605422593653,
+    0.4067008001729846,
+    0.9208663781173527,
+    0.565062012989074,
+    0.0017315458972007036
+  ],
+  "oysterSeed": 42,
+  "oysters": [
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.273
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.9,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.307
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.7,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.837
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.784
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": "jumelle",
+        "seed": 0.557
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.859
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.681
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 9.4,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.137
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.2,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.278
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.563
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.729
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.432
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.3,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.905
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.709
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.207
+      },
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.3,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.864
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 19
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.184
+      },
+      "sinceGoldenOrBetter": 20
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "jeton",
+      "sinceGoldenOrBetter": 21
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.994
+      },
+      "sinceGoldenOrBetter": 22
+    },
+    {
+      "pearlId": "giant",
+      "sizeMm": 19.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.395
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.327
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.299
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.125
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.9,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.439
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.1,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.147
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.8,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.492
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.507
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 11,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.853
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.1,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.938
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": "jumelle",
+        "seed": 0.648
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 13.5,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "cuivre",
+        "mark": null,
+        "seed": 0.273
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.8,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.666
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.308
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.437
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.23
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.796
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.1,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.06
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.7,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "arc-en-ciel",
+        "mark": "etoile",
+        "seed": 0.338
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.1,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.266
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.7,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.312
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.2,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.967
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.2,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.387
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.837
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.8,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.487
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.9,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.847
+      },
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.2,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.675
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.168
+      },
+      "sinceGoldenOrBetter": 19
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.9,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.085
+      },
+      "sinceGoldenOrBetter": 20
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "canard",
+      "sinceGoldenOrBetter": 21
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.345
+      },
+      "sinceGoldenOrBetter": 22
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.72
+      },
+      "sinceGoldenOrBetter": 23
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.919
+      },
+      "sinceGoldenOrBetter": 24
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 25
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 11,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.84
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.1,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.204
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.87
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.675
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.555
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.1,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.58
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.643
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.212
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.5,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.979
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.5,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.485
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.1,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.252
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.1,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.587
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.016
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.903
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.595
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.9,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.516
+      },
+      "sinceGoldenOrBetter": 19
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.984
+      },
+      "sinceGoldenOrBetter": 20
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 13.2,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "cuivre",
+        "mark": null,
+        "seed": 0.089
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.9,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.923
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.138
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.9,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.793
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.842
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.595
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.392
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.567
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.2,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.096
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.5,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.626
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.3,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.59
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.943
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.693
+      },
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.32
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.989
+      },
+      "sinceGoldenOrBetter": 19
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 10.9,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.39
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.365
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.4,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.889
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.8,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.66
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.327
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "ticket",
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.708
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.468
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.4,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.661
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10.8,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.902
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.1,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.523
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 12.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.884
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.441
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.238
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.997
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.1,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.339
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.439
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.2,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.844
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.065
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 9.8,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.451
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.766
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.5,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.852
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.002
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "vert-paon",
+        "mark": "coeur",
+        "seed": 0.672
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.369
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.034
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 13.8,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.282
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.064
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.425
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 10.8,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.559
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.9,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.622
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.2,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.147
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.433
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 9.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.493
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.949
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.207
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "jeton",
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.1,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.55
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.873
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.299
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.645
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.5,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.508
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "aubergine",
+        "mark": "jumelle",
+        "seed": 0.727
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.717
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.1,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.059
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10.6,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.636
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.2,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.913
+      },
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 13.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "cuivre",
+        "mark": null,
+        "seed": 0.835
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.41
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.568
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.2,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.996
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.8,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.988
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.9,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.593
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.684
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.1
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.1,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.792
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.979
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.463
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.494
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.8,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.06
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.978
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 1
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10.2,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.601
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.739
+      },
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": "jumelle",
+        "seed": 0.19
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 11.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "cuivre",
+        "mark": null,
+        "seed": 0.226
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.838
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.96
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.715
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.064
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "cube",
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.034
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.333
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.974
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.326
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.448
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.9,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.226
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.5,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.219
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.343
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.461
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.243
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.186
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.494
+      },
+      "sinceGoldenOrBetter": 19
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.934
+      },
+      "sinceGoldenOrBetter": 20
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.6,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.912
+      },
+      "sinceGoldenOrBetter": 21
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.315
+      },
+      "sinceGoldenOrBetter": 22
+    },
+    {
+      "pearlId": "giant",
+      "sizeMm": 25,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.919
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.856
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.849
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.3,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.553
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.5,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.054
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "ballon",
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.1,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.48
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.2,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.161
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.117
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.967
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "cursed",
+      "sizeMm": 13,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "sang",
+        "mark": null,
+        "seed": 0.797
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.278
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.5,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.94
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.51
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.8,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.8
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.9,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.173
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.19
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.2,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.272
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.146
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 12.1,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.251
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.3,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.072
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.7,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.406
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.922
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.749
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 13.7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.54
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.7,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.267
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.9,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.238
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.8,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.526
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.653
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.9,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.118
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.8,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.132
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.8,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.478
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.4,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.007
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.5,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": "lune",
+        "seed": 0.857
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.918
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.9,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.176
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 12.9,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "cuivre",
+        "mark": null,
+        "seed": 0.505
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.2,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "bleute",
+        "mark": "lune",
+        "seed": 0.615
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.17
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": "jumelle",
+        "seed": 0.927
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "ballon",
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.67
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.949
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.786
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.7,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.682
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.242
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.815
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.638
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.278
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.172
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.8,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.722
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.418
+      },
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.724
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "giant",
+      "sizeMm": 22.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.628
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.6,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.438
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.275
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.2,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.674
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.75
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.2,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.902
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.1,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.388
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 9.5,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.753
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.935
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.645
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "bouteille",
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 13.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "dore",
+        "mark": "coeur",
+        "seed": 0.74
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 11.5,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.184
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.741
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.555
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.3,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.107
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.871
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 13.8,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.333
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.448
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.05
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.977
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.104
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.225
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.204
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.5,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.682
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.691
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "cuivre",
+        "mark": null,
+        "seed": 0.279
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.607
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10.5,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.156
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.2,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": "lune",
+        "seed": 0.316
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 9.5,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.774
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "cube",
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 12.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.551
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "canard",
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10.8,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.099
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.483
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 13,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.802
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.989
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.027
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.1,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.774
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "nain",
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.9,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.263
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.1,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.828
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "champignon",
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.2,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.326
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.4,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.609
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.8,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.002
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.6,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.248
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.5,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.611
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "boussole",
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.695
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.548
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.2,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.066
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.452
+      },
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.5,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.682
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.9,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.54
+      },
+      "sinceGoldenOrBetter": 19
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 20
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.119
+      },
+      "sinceGoldenOrBetter": 21
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 22
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.869
+      },
+      "sinceGoldenOrBetter": 23
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 24
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 9.9,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.043
+      },
+      "sinceGoldenOrBetter": 25
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 10.5,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.598
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10.9,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.925
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "jeton",
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.4,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.575
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.9,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.644
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.749
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.9,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.218
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.4,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.684
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "piece-or",
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.2
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.4,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.07
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.298
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.692
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.304
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.36
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.532
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.1,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.972
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.108
+      },
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.075
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.654
+      },
+      "sinceGoldenOrBetter": 19
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.511
+      },
+      "sinceGoldenOrBetter": 20
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 11.7,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.401
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.2,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.747
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.37
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.5,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.996
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 12.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.865
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 10.5,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.504
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.909
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.078
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.539
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.583
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.185
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.7,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.985
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.8,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.586
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.4,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.811
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.865
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.8,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.862
+      },
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.503
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10.2,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.739
+      },
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 12.4,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.358
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.718
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.1,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.089
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.32
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.2,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.906
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.6,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.306
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.6,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.175
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.2,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.283
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.572
+      },
+      "sinceGoldenOrBetter": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.313
+      },
+      "sinceGoldenOrBetter": 9
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.6,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.299
+      },
+      "sinceGoldenOrBetter": 10
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "jeton",
+      "sinceGoldenOrBetter": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.9,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.277
+      },
+      "sinceGoldenOrBetter": 12
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 13
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.712
+      },
+      "sinceGoldenOrBetter": 14
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.3,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.246
+      },
+      "sinceGoldenOrBetter": 15
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.264
+      },
+      "sinceGoldenOrBetter": 16
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.313
+      },
+      "sinceGoldenOrBetter": 17
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.2,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": "lune",
+        "seed": 0.51
+      },
+      "sinceGoldenOrBetter": 18
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.686
+      },
+      "sinceGoldenOrBetter": 19
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.4,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.412
+      },
+      "sinceGoldenOrBetter": 20
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.525
+      },
+      "sinceGoldenOrBetter": 21
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.981
+      },
+      "sinceGoldenOrBetter": 22
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.5,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.838
+      },
+      "sinceGoldenOrBetter": 23
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.2,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.876
+      },
+      "sinceGoldenOrBetter": 24
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 25
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 11,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "dore",
+        "mark": null,
+        "seed": 0.412
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "giant",
+      "sizeMm": 18.3,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.814
+      },
+      "sinceGoldenOrBetter": 0
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.935
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.9,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.484
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.5,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.961
+      },
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.4,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.159
+      },
+      "sinceGoldenOrBetter": 4
+    }
+  ],
+  "openings": [
+    {
+      "name": "lent et régulier",
+      "crackProtected": false,
+      "samples": [
+        {
+          "angle": 0,
+          "time": 0
+        },
+        {
+          "angle": 0.16071428571428573,
+          "time": 16
+        },
+        {
+          "angle": 0.32142857142857145,
+          "time": 32
+        },
+        {
+          "angle": 0.4821428571428571,
+          "time": 48
+        },
+        {
+          "angle": 0.6428571428571429,
+          "time": 64
+        },
+        {
+          "angle": 0.8035714285714285,
+          "time": 80
+        },
+        {
+          "angle": 0.9642857142857142,
+          "time": 96
+        },
+        {
+          "angle": 1.125,
+          "time": 112
+        },
+        {
+          "angle": 1.2857142857142858,
+          "time": 128
+        },
+        {
+          "angle": 1.4464285714285714,
+          "time": 144
+        },
+        {
+          "angle": 1.607142857142857,
+          "time": 160
+        },
+        {
+          "angle": 1.7678571428571428,
+          "time": 176
+        },
+        {
+          "angle": 1.9285714285714284,
+          "time": 192
+        },
+        {
+          "angle": 2.0892857142857144,
+          "time": 208
+        },
+        {
+          "angle": 2.25,
+          "time": 224
+        },
+        {
+          "angle": 2.410714285714286,
+          "time": 240
+        },
+        {
+          "angle": 2.5714285714285716,
+          "time": 256
+        },
+        {
+          "angle": 2.732142857142857,
+          "time": 272
+        },
+        {
+          "angle": 2.892857142857143,
+          "time": 288
+        },
+        {
+          "angle": 3.0535714285714284,
+          "time": 304
+        },
+        {
+          "angle": 3.214285714285714,
+          "time": 320
+        },
+        {
+          "angle": 3.375,
+          "time": 336
+        },
+        {
+          "angle": 3.5357142857142856,
+          "time": 352
+        },
+        {
+          "angle": 3.6964285714285716,
+          "time": 368
+        },
+        {
+          "angle": 16.26923076923077,
+          "time": 384
+        },
+        {
+          "angle": 18.173076923076923,
+          "time": 400
+        },
+        {
+          "angle": 20.076923076923077,
+          "time": 416
+        },
+        {
+          "angle": 21.98076923076923,
+          "time": 432
+        },
+        {
+          "angle": 23.884615384615387,
+          "time": 448
+        },
+        {
+          "angle": 25.78846153846154,
+          "time": 464
+        },
+        {
+          "angle": 27.692307692307693,
+          "time": 480
+        },
+        {
+          "angle": 29.596153846153847,
+          "time": 496
+        },
+        {
+          "angle": 31.5,
+          "time": 512
+        },
+        {
+          "angle": 33.40384615384615,
+          "time": 528
+        },
+        {
+          "angle": 35.30769230769231,
+          "time": 544
+        },
+        {
+          "angle": 37.21153846153846,
+          "time": 560
+        },
+        {
+          "angle": 39.11538461538461,
+          "time": 576
+        },
+        {
+          "angle": 41.019230769230774,
+          "time": 592
+        },
+        {
+          "angle": 42.92307692307692,
+          "time": 608
+        },
+        {
+          "angle": 44.82692307692308,
+          "time": 624
+        },
+        {
+          "angle": 46.730769230769226,
+          "time": 640
+        },
+        {
+          "angle": 48.63461538461539,
+          "time": 656
+        },
+        {
+          "angle": 50.53846153846154,
+          "time": 672
+        },
+        {
+          "angle": 52.44230769230769,
+          "time": 688
+        },
+        {
+          "angle": 54.34615384615385,
+          "time": 704
+        },
+        {
+          "angle": 56.25,
+          "time": 720
+        },
+        {
+          "angle": 58.15384615384615,
+          "time": 736
+        },
+        {
+          "angle": 60.05769230769231,
+          "time": 752
+        },
+        {
+          "angle": 61.96153846153846,
+          "time": 768
+        },
+        {
+          "angle": 63.86538461538461,
+          "time": 784
+        },
+        {
+          "angle": 65.76923076923077,
+          "time": 800
+        },
+        {
+          "angle": 67.67307692307692,
+          "time": 816
+        },
+        {
+          "angle": 69.57692307692308,
+          "time": 832
+        },
+        {
+          "angle": 71.48076923076923,
+          "time": 848
+        },
+        {
+          "angle": 73.38461538461539,
+          "time": 864
+        },
+        {
+          "angle": 75.28846153846155,
+          "time": 880
+        },
+        {
+          "angle": 77.1923076923077,
+          "time": 896
+        },
+        {
+          "angle": 79.09615384615384,
+          "time": 912
+        },
+        {
+          "angle": 81,
+          "time": 928
+        },
+        {
+          "angle": 82.90384615384616,
+          "time": 944
+        },
+        {
+          "angle": 84.8076923076923,
+          "time": 960
+        },
+        {
+          "angle": 86.71153846153847,
+          "time": 976
+        },
+        {
+          "angle": 88.61538461538461,
+          "time": 992
+        },
+        {
+          "angle": 90.51923076923077,
+          "time": 1008
+        },
+        {
+          "angle": 92.42307692307692,
+          "time": 1024
+        },
+        {
+          "angle": 94.32692307692308,
+          "time": 1040
+        },
+        {
+          "angle": 96.23076923076923,
+          "time": 1056
+        },
+        {
+          "angle": 98.13461538461539,
+          "time": 1072
+        },
+        {
+          "angle": 100.03846153846153,
+          "time": 1088
+        },
+        {
+          "angle": 101.9423076923077,
+          "time": 1104
+        },
+        {
+          "angle": 103.84615384615384,
+          "time": 1120
+        },
+        {
+          "angle": 105.75,
+          "time": 1136
+        },
+        {
+          "angle": 107.65384615384616,
+          "time": 1152
+        },
+        {
+          "angle": 109.5576923076923,
+          "time": 1168
+        },
+        {
+          "angle": 111.46153846153847,
+          "time": 1184
+        },
+        {
+          "angle": 113.36538461538461,
+          "time": 1200
+        },
+        {
+          "angle": 115.26923076923077,
+          "time": 1216
+        },
+        {
+          "angle": 117.17307692307692,
+          "time": 1232
+        },
+        {
+          "angle": 119.07692307692308,
+          "time": 1248
+        },
+        {
+          "angle": 120.98076923076923,
+          "time": 1264
+        },
+        {
+          "angle": 122.88461538461539,
+          "time": 1280
+        },
+        {
+          "angle": 124.78846153846153,
+          "time": 1296
+        },
+        {
+          "angle": 126.6923076923077,
+          "time": 1312
+        },
+        {
+          "angle": 128.59615384615384,
+          "time": 1328
+        },
+        {
+          "angle": 130.5,
+          "time": 1344
+        },
+        {
+          "angle": 132.40384615384616,
+          "time": 1360
+        },
+        {
+          "angle": 134.30769230769232,
+          "time": 1376
+        },
+        {
+          "angle": 136.21153846153845,
+          "time": 1392
+        },
+        {
+          "angle": 138.1153846153846,
+          "time": 1408
+        },
+        {
+          "angle": 140.01923076923077,
+          "time": 1424
+        },
+        {
+          "angle": 141.9230769230769,
+          "time": 1440
+        },
+        {
+          "angle": 143.82692307692307,
+          "time": 1456
+        },
+        {
+          "angle": 145.73076923076923,
+          "time": 1472
+        },
+        {
+          "angle": 147.6346153846154,
+          "time": 1488
+        },
+        {
+          "angle": 149.53846153846155,
+          "time": 1504
+        },
+        {
+          "angle": 151.44230769230768,
+          "time": 1520
+        },
+        {
+          "angle": 153.34615384615384,
+          "time": 1536
+        },
+        {
+          "angle": 155.25,
+          "time": 1552
+        },
+        {
+          "angle": 157.15384615384616,
+          "time": 1568
+        },
+        {
+          "angle": 159.05769230769232,
+          "time": 1584
+        },
+        {
+          "angle": 160.96153846153845,
+          "time": 1600
+        },
+        {
+          "angle": 162.8653846153846,
+          "time": 1616
+        },
+        {
+          "angle": 164.76923076923077,
+          "time": 1632
+        },
+        {
+          "angle": 166.67307692307693,
+          "time": 1648
+        },
+        {
+          "angle": 168.57692307692307,
+          "time": 1664
+        },
+        {
+          "angle": 170.48076923076923,
+          "time": 1680
+        },
+        {
+          "angle": 172.3846153846154,
+          "time": 1696
+        },
+        {
+          "angle": 174.28846153846155,
+          "time": 1712
+        },
+        {
+          "angle": 176.19230769230768,
+          "time": 1728
+        },
+        {
+          "angle": 178.09615384615384,
+          "time": 1744
+        },
+        {
+          "angle": 180,
+          "time": 1760
+        }
+      ],
+      "events": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+          "pop"
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+          "reveal"
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "phase": "revealed",
+      "cracked": false,
+      "lustre": "S"
+    },
+    {
+      "name": "trop vite",
+      "crackProtected": false,
+      "samples": [
+        {
+          "angle": 0,
+          "time": 0
+        },
+        {
+          "angle": 1.4732142857142856,
+          "time": 16
+        },
+        {
+          "angle": 2.946428571428571,
+          "time": 32
+        },
+        {
+          "angle": 22.932692307692307,
+          "time": 48
+        },
+        {
+          "angle": 40.38461538461539,
+          "time": 64
+        },
+        {
+          "angle": 57.83653846153846,
+          "time": 80
+        },
+        {
+          "angle": 75.28846153846155,
+          "time": 96
+        },
+        {
+          "angle": 92.74038461538461,
+          "time": 112
+        },
+        {
+          "angle": 110.1923076923077,
+          "time": 128
+        },
+        {
+          "angle": 127.64423076923077,
+          "time": 144
+        },
+        {
+          "angle": 145.09615384615384,
+          "time": 160
+        },
+        {
+          "angle": 162.54807692307693,
+          "time": 176
+        },
+        {
+          "angle": 180,
+          "time": 192
+        }
+      ],
+      "events": [
+        [],
+        [],
+        [],
+        [
+          "pop"
+        ],
+        [
+          "crack"
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+          "reveal"
+        ],
+        [],
+        []
+      ],
+      "phase": "revealed",
+      "cracked": true,
+      "lustre": "S"
+    },
+    {
+      "name": "trop vite mais protégée",
+      "crackProtected": true,
+      "samples": [
+        {
+          "angle": 0,
+          "time": 0
+        },
+        {
+          "angle": 1.4732142857142856,
+          "time": 16
+        },
+        {
+          "angle": 2.946428571428571,
+          "time": 32
+        },
+        {
+          "angle": 22.932692307692307,
+          "time": 48
+        },
+        {
+          "angle": 40.38461538461539,
+          "time": 64
+        },
+        {
+          "angle": 57.83653846153846,
+          "time": 80
+        },
+        {
+          "angle": 75.28846153846155,
+          "time": 96
+        },
+        {
+          "angle": 92.74038461538461,
+          "time": 112
+        },
+        {
+          "angle": 110.1923076923077,
+          "time": 128
+        },
+        {
+          "angle": 127.64423076923077,
+          "time": 144
+        },
+        {
+          "angle": 145.09615384615384,
+          "time": 160
+        },
+        {
+          "angle": 162.54807692307693,
+          "time": 176
+        },
+        {
+          "angle": 180,
+          "time": 192
+        }
+      ],
+      "events": [
+        [],
+        [],
+        [],
+        [
+          "pop"
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+          "reveal"
+        ],
+        [],
+        []
+      ],
+      "phase": "revealed",
+      "cracked": false,
+      "lustre": "S"
+    },
+    {
+      "name": "irrégulier",
+      "crackProtected": false,
+      "samples": [
+        {
+          "angle": 0,
+          "time": 0
+        },
+        {
+          "angle": 1.0714285714285714,
+          "time": 33
+        },
+        {
+          "angle": 2.142857142857143,
+          "time": 66
+        },
+        {
+          "angle": 3.214285714285714,
+          "time": 99
+        },
+        {
+          "angle": 18.173076923076923,
+          "time": 132
+        },
+        {
+          "angle": 21.346153846153847,
+          "time": 165
+        },
+        {
+          "angle": 22.615384615384613,
+          "time": 198
+        },
+        {
+          "angle": 30.865384615384613,
+          "time": 231
+        },
+        {
+          "angle": 53.07692307692308,
+          "time": 264
+        },
+        {
+          "angle": 56.25,
+          "time": 297
+        },
+        {
+          "angle": 59.42307692307692,
+          "time": 330
+        },
+        {
+          "angle": 78.46153846153845,
+          "time": 363
+        },
+        {
+          "angle": 84.8076923076923,
+          "time": 396
+        },
+        {
+          "angle": 110.1923076923077,
+          "time": 429
+        },
+        {
+          "angle": 116.53846153846153,
+          "time": 462
+        },
+        {
+          "angle": 135.5769230769231,
+          "time": 495
+        },
+        {
+          "angle": 160.96153846153845,
+          "time": 528
+        },
+        {
+          "angle": 180,
+          "time": 561
+        }
+      ],
+      "events": [
+        [],
+        [],
+        [],
+        [],
+        [
+          "pop"
+        ],
+        [],
+        [],
+        [],
+        [
+          "crack"
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+          "reveal"
+        ],
+        []
+      ],
+      "phase": "revealed",
+      "cracked": true,
+      "lustre": "C"
+    },
+    {
+      "name": "lâché avant le pop",
+      "crackProtected": false,
+      "samples": [
+        {
+          "angle": 0,
+          "time": 0
+        },
+        {
+          "angle": 0.5357142857142857,
+          "time": 16
+        },
+        {
+          "angle": 1.607142857142857,
+          "time": 32
+        },
+        {
+          "angle": 2.678571428571429,
+          "time": 48
+        },
+        {
+          "angle": 2.142857142857143,
+          "time": 64
+        }
+      ],
+      "events": [
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "phase": "resisting",
+      "cracked": false,
+      "lustre": null
+    }
+  ],
+  "thumbAngles": [
+    {
+      "distance": -10,
+      "angle": 0
+    },
+    {
+      "distance": 0,
+      "angle": 0
+    },
+    {
+      "distance": 10,
+      "angle": 0.5357142857142857
+    },
+    {
+      "distance": 35,
+      "angle": 1.875
+    },
+    {
+      "distance": 69.9,
+      "angle": 3.7446428571428574
+    },
+    {
+      "distance": 70,
+      "angle": 15
+    },
+    {
+      "distance": 71,
+      "angle": 15.634615384615385
+    },
+    {
+      "distance": 150,
+      "angle": 65.76923076923077
+    },
+    {
+      "distance": 200,
+      "angle": 97.5
+    },
+    {
+      "distance": 330,
+      "angle": 180
+    },
+    {
+      "distance": 400,
+      "angle": 180
+    }
+  ],
+  "values": [
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "cracked": true,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.273
+      },
+      "value": 5
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.9,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.307
+      },
+      "value": 68
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.7,
+      "cracked": false,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.837
+      },
+      "value": 23
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.1,
+      "cracked": true,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.784
+      },
+      "value": 8
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": false,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": "jumelle",
+        "seed": 0.557
+      },
+      "value": 20
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.6,
+      "cracked": true,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.859
+      },
+      "value": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.681
+      },
+      "value": 11
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 9.4,
+      "cracked": false,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.137
+      },
+      "value": 52
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": true,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 8.2,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.278
+      },
+      "value": 28
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.3,
+      "cracked": false,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.563
+      },
+      "value": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.4,
+      "cracked": true,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.729
+      },
+      "value": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "cracked": false,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.432
+      },
+      "value": 11
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.3,
+      "cracked": false,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.905
+      },
+      "value": 7
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "cracked": true,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.709
+      },
+      "value": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.207
+      },
+      "value": 11
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 10.3,
+      "cracked": false,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.864
+      },
+      "value": 54
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": true,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.6,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.184
+      },
+      "value": 82
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": false,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "cracked": true,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.994
+      },
+      "value": 5
+    },
+    {
+      "pearlId": "giant",
+      "sizeMm": 19.3,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.395
+      },
+      "value": 378
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.7,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.327
+      },
+      "value": 11
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.4,
+      "cracked": true,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.299
+      },
+      "value": 11
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.6,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.125
+      },
+      "value": 23
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": false,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.9,
+      "cracked": true,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.439
+      },
+      "value": 4
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.1,
+      "cracked": false,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.147
+      },
+      "value": 56
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.8,
+      "cracked": false,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.492
+      },
+      "value": 26
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 10,
+      "cracked": true,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.507
+      },
+      "value": 18
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 11,
+      "cracked": false,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.853
+      },
+      "value": 37
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.1,
+      "cracked": false,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.938
+      },
+      "value": 10
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "cracked": true,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": "jumelle",
+        "seed": 0.648
+      },
+      "value": 13
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 13.5,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "cuivre",
+        "mark": null,
+        "seed": 0.273
+      },
+      "value": 142
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": false,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.8,
+      "cracked": true,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.666
+      },
+      "value": 12
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.308
+      },
+      "value": 10
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.7,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.437
+      },
+      "value": 18
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": true,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": false,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.2,
+      "cracked": false,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.23
+      },
+      "value": 14
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.2,
+      "cracked": true,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.796
+      },
+      "value": 7
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.1,
+      "cracked": false,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.06
+      },
+      "value": 33
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.7,
+      "cracked": false,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "arc-en-ciel",
+        "mark": "etoile",
+        "seed": 0.338
+      },
+      "value": 47
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.1,
+      "cracked": true,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.266
+      },
+      "value": 23
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.7,
+      "cracked": false,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "aubergine",
+        "mark": null,
+        "seed": 0.312
+      },
+      "value": 91
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 9.2,
+      "cracked": false,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.967
+      },
+      "value": 31
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.2,
+      "cracked": true,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.387
+      },
+      "value": 15
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.2,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.837
+      },
+      "value": 12
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.8,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.487
+      },
+      "value": 105
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.9,
+      "cracked": true,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.847
+      },
+      "value": 12
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.2,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.675
+      },
+      "value": 25
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.5,
+      "cracked": false,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.168
+      },
+      "value": 8
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.9,
+      "cracked": true,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.085
+      },
+      "value": 6
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": false,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.345
+      },
+      "value": 12
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.6,
+      "cracked": true,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.72
+      },
+      "value": 9
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.5,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.919
+      },
+      "value": 12
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": false,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "golden",
+      "sizeMm": 11,
+      "cracked": true,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.84
+      },
+      "value": 103
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.1,
+      "cracked": false,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.204
+      },
+      "value": 18
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.3,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.87
+      },
+      "value": 22
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.4,
+      "cracked": true,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.675
+      },
+      "value": 7
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8,
+      "cracked": false,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.555
+      },
+      "value": 29
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 11.1,
+      "cracked": false,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "vert-paon",
+        "mark": null,
+        "seed": 0.58
+      },
+      "value": 63
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": true,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8,
+      "cracked": false,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.643
+      },
+      "value": 27
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 7.1,
+      "cracked": false,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.212
+      },
+      "value": 14
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.5,
+      "cracked": true,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.979
+      },
+      "value": 10
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.5,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.485
+      },
+      "value": 8
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.1,
+      "cracked": false,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.252
+      },
+      "value": 14
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": true,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "black",
+      "sizeMm": 12.1,
+      "cracked": false,
+      "traits": {
+        "shape": "goutte",
+        "overtone": "bleute",
+        "mark": null,
+        "seed": 0.587
+      },
+      "value": 83
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.3,
+      "cracked": false,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.016
+      },
+      "value": 10
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": true,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.8,
+      "cracked": false,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.903
+      },
+      "value": 9
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "cracked": false,
+      "traits": null,
+      "value": 0
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6.2,
+      "cracked": true,
+      "traits": {
+        "shape": "bouton",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.595
+      },
+      "value": 4
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 8.9,
+      "cracked": false,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.516
+      },
+      "value": 45
+    }
+  ]
+}

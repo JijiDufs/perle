@@ -4,6 +4,201 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 3) · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : les trouvailles en relief, comme dans la webapp.
+
+**Fait**
+- `Art/Canvas2D.swift` : un petit équivalent du Canvas 2D du navigateur au-dessus de `GraphicsContext` (chemins transformés à la construction, dégradés et traits dans le repère courant, `evenodd`, pointillés, découpe, texte). Les dégradés radiaux à deux centres (le reflet décentré qui donne le volume) sont reconstruits fidèlement par disques emboîtés.
+- `Art/FindArt.swift` : les 25 objets de `src/art/finds.ts` portés presque ligne à ligne (mêmes noms, même ordre), avec leurs animations (téléphone qui clignote, boussole qui hésite, jeton qui décompte, diode, éclats). Comparé côte à côte avec le rendu de la webapp : identique, à la police près (SF au lieu de Figtree / Young Serif).
+- Branchés dans l'huître ouverte (à la place de la perle, dans leur lumière qui vacille), sur la carte (animée) et dans la liste « Trouvailles » de la collection. `PearlLook(find:)` (la boule lumineuse provisoire) supprimé.
+
+**Fragile**
+- Pour un nouvel objet dans `src/art/finds.ts`, il faut le porter aussi dans `FindArt.swift` (pas d'export automatique du dessin).
+- Le volume des objets passe par ≈ 40 disques par dégradé radial : à surveiller si plusieurs trouvailles s'affichent en même temps (collection).
+
+---
+
+## 2026-10-13 (suite 2) · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : direction artistique du prototype de pearl-inc.app, ouverture corrigée, bénitier redessiné, pub récompensée, achats intégrés.
+
+**Fait**
+- **Ouverture corrigée** : le Core tire l'huître suivante dès la révélation, et l'écran dessinait déjà sa perle pendant le suspense (la perle « changeait au dernier moment »). `GameModel.current` garde l'huître ouverte jusqu'à la carte refermée. Le couvercle finit de s'ouvrir en douceur, la perle palpite et son halo envahit l'écran pendant le suspense, éclair blanc pour les ★ (comme la webapp). Réglages `revealLidSettleMs` / `revealFlashMs` dans `src/tuning.ts`.
+- **Lagon du prototype** (`Art/LagoonArt.swift`, port de `src/art/lagoon.ts`) : eau, récif, sable et rides, galets, étoiles de mer, rayons, caustiques, algues, poissons, bulles, ombre de l'huître, vignette. Sert à la Pêche (l'horizon suit l'huître), à la connexion, à la collection, à la boutique et aux aperçus des coquilles.
+- **Verre clair du prototype** (`Glass.swift`), **cartes** aux couleurs de chaque perle avec vitrine, stats, reflet holographique (`PearlCardView`, `Art/CardStyle.swift`), **collection** en cases comme le prototype (toucher = plus belle carte), probabilités affichées (collection et boutique).
+- **Bénitier redessiné** (`Art/ClamArt.swift`) : vu de dessus comme l'huître, 5 ou 6 gros plis avec écailles, bord festonné, porcelaine et manteau bleu-vert irisé tacheté ; il s'ouvre exactement comme l'huître. `docs/skins.png` régénérée (`sh scripts/make-skin-sheet.sh`).
+- **Économie** : la poussière d'or n'achète plus de perles (TS + Swift + tests). **Pub récompensée** : 3 huîtres, 3 fois par jour (`Economy.rewardedAdOysters/PerDay`, `PlayerState.claimAdReward`), pub simulée de 5 s (`Platform/RewardedAds.swift`, `Features/SimulatedAdView.swift`).
+- **Achats intégrés StoreKit 2** (`Platform/Store.swift`) : packs d'huîtres et de poussière, skins (achat ou poussière), « Restaurer les achats », prix venant de StoreKit. `ios/PearlInc.storekit` (prix de test) et schéma Xcode partagé qui l'utilise au lancement depuis Xcode.
+
+**À faire**
+- Lancer depuis Xcode pour tester les achats (le simulateur lancé hors Xcode affiche « Indisponible »). Vérifier dans le schéma (Run → Options → StoreKit Configuration) que `PearlInc.storekit` est bien choisi.
+- App Store Connect : créer les 7 produits (mêmes identifiants), accord « Paid Apps » et coordonnées bancaires.
+- Choisir la régie publicitaire (AdMob proposé) et remplacer la pub simulée ; consentement RGPD.
+
+**Fragile**
+- Les caustiques sont dessinées à partir d'une planche de motifs : le décalage doit rester ramené à un motif (sinon, avec le temps compté depuis 2001, plus rien ne s'affiche sur iPhone).
+- Fluidité à vérifier sur un vrai iPhone : lagon complet redessiné à chaque image, plus le verre.
+- Achats consommables : livrés puis `finish()` ; un plantage entre les deux pourrait livrer deux fois (rare).
+
+---
+
+## 2026-10-13 (suite) · Jules · Claude Code · branche `jules/ios-app`
+
+L'app iOS (MVP « gadget ») prend la direction de l'écran de connexion : lagon lumineux et verre (glassmorphism).
+
+**Fait**
+- `Features/Glass.swift` : le verre commun à tout le jeu. `glass(_:)` / `glassPanel()` (flou du lagon + liseré clair en dégradé, liseré or possible), `lagoonTitle()`, `PearlButtonStyle` (nacre) et `GlassButtonStyle` (verre), avec une taille `compact` et un état désactivé estompé. Les styles quittent `LoginView.swift` (inchangés à l'écran).
+- `LagoonBackground(dim:)` : voile d'eau profonde pour les écrans pleins de texte.
+- Pêche : le lagon animé (rayons de lumière) remplace le dégradé ; pastilles du haut et message sous l'huître en verre.
+- Carte de révélation et « La marée remonte… » : panneaux de verre (liseré or pour la carte), boutons nacre / verre.
+- Collection et Boutique : fond lagon assombri, comptoir, cases de l'encyclopédie, listes et coquilles en panneaux de verre (coquille équipée : liseré or).
+- Missions : feuille en verre au-dessus du lagon.
+
+**À faire**
+- Essayer sur iPhone : lisibilité du blanc sur le haut clair du lagon, fluidité (rayons animés + flou derrière les panneaux).
+- Sur iOS 26, envisager le vrai « Liquid Glass » (`glassEffect`) derrière `#available`, en gardant ce verre pour iOS 18.
+
+---
+
+## 2026-10-13 · Jules · Claude Code · branche `jules/ios-app`
+
+Connexion des joueurs dans l'app iOS (Supabase), écrite par Jules ; le domaine pearl-inc.app est branché sur Vercel.
+
+**Fait**
+- Domaine **pearl-inc.app** relié au projet Vercel de la page d'inscription (fait par Jules).
+- Écran de connexion (`Features/LoginView.swift`) sur fond de lagon animé (`Art/LagoonBackground.swift`) : **Sign in with Apple**, **code à 6 chiffres par e-mail**, ou **jouer sans compte** (joueur anonyme Supabase, à lier plus tard). Messages d'erreur en français.
+- `Platform/AuthViewModel.swift` (session, nonce Apple, OTP e-mail, anonyme, déconnexion) et `Platform/SupabaseClient.swift` (URL du projet + clé « publishable », faite pour être embarquée : la sécurité repose sur les règles RLS).
+- `PearlIncApp.swift` : écran de connexion tant qu'il n'y a pas de session, puis le jeu (onglets inchangés). L'écran provisoire « Connecté » de Jules n'est pas repris, le jeu existe déjà.
+- Projet Xcode : paquet `supabase-swift` (2.x, versions figées dans `Package.resolved`), capacité Sign in with Apple (`ios/PearlInc.entitlements`).
+
+**À faire**
+- Dans Supabase : activer les fournisseurs Apple (Services ID + clé), e-mail en mode code (modèle d'e-mail avec `{{ .Token }}`) et connexion anonyme ; vérifier que le projet est hébergé dans l'UE.
+- Dans le portail Apple Developer : cocher Sign in with Apple sur l'App ID `app.pearlinc.PearlInc`.
+- Bouton « Se déconnecter » / « Lier mon compte » quelque part dans le jeu (rien pour l'instant).
+- Synchroniser la progression (aujourd'hui toujours locale, malgré « Ta collection te suit ») et relier l'e-mail aux inscrits Tally (huître pionnière).
+
+**Fragile**
+- **Build non vérifié** dans cette passe (compilation interrompue) : à lancer dans Xcode. Points à surveiller avec Swift 6 : la fermeture passée à `Task` dans `AuthViewModel.run`.
+- Premier lancement **sans réseau** : même « Jouer sans compte » demande Supabase, on reste bloqué sur l'écran de connexion.
+
+---
+
+## 2026-10-08 (suite 10) · Jules · Claude Code · branche `jules/ios-app`
+
+Formulaires d'inscription Tally créés, publiés et branchés sur la page pearl-inc.app.
+
+**Fait**
+- Tally FR https://tally.so/r/J9N7AJ et EN https://tally.so/r/Me9oLY : e-mail (obligatoire), téléphone (iPhone Duo / autre iPhone / Android, facultatif), consentement (obligatoire), résumé de confidentialité (contact laplateformemjh@gmail.com), champs cachés `utm_source`, `utm_campaign`, `lang`, `bouton`, page de remerciement. Couleurs et police du site, icône du site en logo.
+- `site/index.html` : `TALLY_URLS` renseigné ; chaque visiteur va vers le formulaire de sa langue (FR / EN).
+- `docs/tally-formulaire.md` à jour (liens, 3 options de téléphone, contact).
+
+**À faire**
+- Dans Tally (Settings) : activer la notification par e-mail à chaque inscription.
+- Vérifier que Tally héberge bien les données dans l'UE (texte de confidentialité).
+- Envoyer une inscription test de chaque langue une fois le site en ligne, puis la supprimer.
+
+---
+
+## 2026-10-08 (suite 9) · Jules · Claude Code · branche `jules/ios-app`
+
+Ouverture du bénitier en 3D ; forme stable de chaque huître pendant la révélation.
+
+**Fait**
+- Retour de Jules : le bénitier ouvert était bizarre (valve retournée en « ailes », puis valve écrasée à plat). La valve du haut est maintenant **modélisée en 3D** (`ClamArt.drawLidMesh`) : un dôme à gros plis, maillé (48 × 14 facettes), éclairé du haut à gauche, dessiné du plus loin au plus proche. Elle bascule en arrière en restant attachée le long du bord de la coquille, jusqu'à 72° : on voit son relief, puis le manteau et la perle. Fermée, c'est toujours le dessin 2D que Jules aime (fondu vers la 3D sur les premiers degrés).
+- Variété du bénitier : largeur, nombre (2,5 ou 3,5) et profondeur des ondulations tirés des phases, comme les bosses et la dentelure de l'huître.
+- Correction : la forme de l'huître changeait au moment de la révélation (la graine suivait le numéro de série, qui avance à l'ouverture). `GameModel.shapeSeed` ne change plus qu'à l'huître suivante.
+- `docs/skins.png` : ajout de « Chaque huître est unique » (4 tirages de l'huître et du bénitier) et des étapes de l'ouverture du bénitier (0° à 180°).
+
+**Fragile**
+- Le maillage 3D du bénitier (≈ 670 facettes triées à chaque image) : à surveiller sur iPhone avec le reste du dessin.
+
+---
+
+## 2026-10-08 (suite 8) · Jules · Claude Code · branche `jules/ios-app`
+
+Les huîtres de l'app iOS reprennent la direction artistique de la webapp ; bénitier refait d'après une photo.
+
+**Fait**
+- Retour de Jules : les huîtres iOS ne ressemblaient pas à celles du jeu web. Le dessin de la webapp est porté en Swift, à l'identique : `Art/ShellArt.swift` (contour, bandes de croissance en relief avec ombre portée, stries, taches, algues, balanes, reflet ; nacre irisée ; chair, depuis `src/art/shell.ts`), `Art/PearlArt.swift` (perle selon ses traits : forme, reflet, marques, fêlure ; halo, depuis `src/art/pearl.ts`), `Art/OysterArt.swift` (scène composée comme `oysterScreen.ts` : pénombre, halo, couvercle qui s'assombrit en se redressant, lumière qui filtre).
+- Skins = variantes du même dessin (`ShellPalette`) : huître du lagon (couleurs exactes de la webapp), Première marée (sable, écume, liseré argent), huître d'or (bandes dorées, nacre champagne, éclats). **Bénitier** (`Art/ClamArt.swift`), d'après la photo de Jules : deux valves crème aux larges plis écailleux, jointure en zigzag aux lèvres blanches, manteau sombre irisé (bleu-vert, taches) entre les valves ; la valve du haut se soulève comme le couvercle de l'huître (le geste ne change pas), la perle se pose sur le manteau.
+- Les couleurs des skins vivent avec le dessin (`Art/SkinLook.swift`) ; le catalogue (`appEconomy.ts`) ne garde que l'identifiant et la silhouette (`oyster` / `clam`).
+- `docs/skins.png` régénérée.
+
+**À faire**
+- Porter aussi le lagon de la webapp (`art/lagoon.ts` : rayons, sable, caustiques, algues) : le fond iOS est encore un simple dégradé.
+- Vérifier la fluidité sur iPhone : la webapp garde l'extérieur de la coquille en cache (image), l'app le redessine à chaque image.
+
+---
+
+## 2026-10-08 (suite 7) · Jules · Claude Code · branche `jules/ios-app`
+
+Économie de l'app iOS codée : stock, poussière d'or, comptoir, missions du jour, skins.
+
+**Fait**
+- `src/core/appEconomy.ts` (nouveau catalogue, app iOS seulement) : barème de revente (◆ 1 … ★★ 40 ✦), prix des perles manquantes (◆ à ◆◆◆ seulement), huître à 20 ✦, missions du jour, 4 skins (huître du lagon, bénitier, première marée, huître d'or) avec leurs couleurs, produits de la boutique. Exporté vers `catalog.json`. `tests/app-economy.test.ts` vérifie l'équilibre (≈ 2,5 ✦ par huître, bénitier en 2 à 5 semaines, ★ non achetables, huître d'or en achat seulement).
+- `ios/PearlCore` : `Stock` (miroir de `stock.ts`), `Missions` (3 par jour, graine = la date), `Economy`, et `Player` : stock consommé à l'ouverture, revente (jamais le dernier exemplaire ; « tout revendre » garde le plus bel exemplaire et les perles marquées), achats en poussière (huître, perle manquante, skin), skins possédés et équipé, missions et bonus, pièce d'or engloutie = 5 ✦. Les anciennes sauvegardes se chargent avec des valeurs de départ. **20 tests Swift.**
+- App : barre du haut (huîtres + minuteur, poussière qui rebondit, missions avec pastille), écran « La marée remonte… » avec une huître à 20 ✦, fiche des missions, comptoir dans la collection (revente en lot ou à l'appui long, achat des perles manquantes), onglet **Boutique** (skins avec aperçu, équiper / acheter en poussière ; achats Apple désactivés), bouton Partager sur la carte (texte ; compte pour la mission).
+- Dessin des skins (`Art/OysterArt.swift`, `Art/SkinLook.swift`) : silhouette et matière par skin, lumière de la perle intacte. Bénitier : grands plis en éventail, bord ondulé, manteau bleu-vert tacheté qui dépasse. Huître d'or : or martelé, reflet, éclats qui scintillent.
+- `scripts/make-skin-sheet.sh` → `docs/skins.png` : planche des 4 skins, fermés et ouverts, dessinée sur le Mac avec le code de l'app.
+
+**À faire**
+- StoreKit 2 (skins, recharges, poussière), calendrier de connexion, tutoriel, image story, Core Haptics, Game Center, iCloud.
+- Lancer l'app dans le simulateur (plateforme iOS à installer dans Xcode).
+
+**Fragile**
+- Le changement de jour des missions suit l'heure du téléphone (comme la webapp).
+- La mission « Partager » compte le toucher du bouton, pas le partage effectif (iOS ne dit pas si le partage a abouti).
+
+---
+
+## 2026-10-08 (suite 6) · Jules · Claude Code · branche `jules/ios-app`
+
+Équilibre de la poussière d'or et missions du jour (app iOS), sans code.
+
+**Fait**
+- `docs/duo-gadget.md` §6 quater : barème de revente de l'app (◆ 1, ◆◆ 2, ◆◆◆ 5, ★ 15, ★★ 40 ✦), missions du jour (3 par jour, 5 ✦ chacune, + 10 ✦ les trois), calcul par profil de joueur (≈ 65 à 200 ✦ par jour), bénitier à 2 000 ✦ ou 2,99 €, packs de poussière revus (400 / 1 200 / 3 000 ✦), prix en poussière (huître 20 ✦, pièces ◆ à ◆◆◆). Le bénitier n'est plus offert par le calendrier.
+- AGENTS.md §6 : décision.
+
+**À faire**
+- Coder ce barème dans un catalogue (exporté vers l'app, pas dans les écrans), puis le stock, le comptoir, les missions et la boutique.
+
+---
+
+## 2026-10-08 (suite 5) · Jules · Claude Code · branche `jules/ios-app`
+
+Création de l'app iOS, et périmètre de la 1.0 App Store.
+
+**Fait**
+- `ios/PearlCore` (Swift Package, logique pure) : générateur à graine, réglages, catalogue, tirage avec garantie et trouvailles, traits des perles, moteur d'ouverture et lustre, conversion pouce → angle, état du joueur, valeur des cartes. **8 tests Swift passent** et donnent exactement les mêmes résultats que le TypeScript (400 huîtres, ouvertures, fêlures, lustre, valeurs).
+- `tests/ios-export.test.ts` + `npm run ios:export` : exporte `catalog.json` (catalogues et réglages) et `parity.json` (cas de référence) ; le test échoue si l'export est périmé. `SHAPE_WEIGHTS` et `OVERTONE_WEIGHTS` sont maintenant exportés par `core/pearlTraits.ts` (aucun changement de comportement).
+- `ios/PearlInc.xcodeproj` + `ios/PearlInc` (SwiftUI, iOS 18+) : Pêche (lagon, huître dessinée par code, couvercle qui se soulève, lumière de la couleur de la perle, tremblement des rares, fêlure), geste du pouce avec résistance, « pop », ouverture automatique en fin de course, haptique, suspense selon la rareté, carte de révélation (perle, trouvaille ou huître vide), collection (encyclopédie en 2 colonnes, trouvailles, dernières perles), sauvegarde, action VoiceOver « Ouvrir l'huître ». Onglets du système (Duo). **La build passe** pour le simulateur.
+- `docs/duo-gadget.md` : périmètre choisi par Jules (trouvailles, poussière d'or et revente, skins bénitier et huître d'or, boutique : recharges, poussière, skins), ajouts proposés (calendrier, Game Center, iCloud, notification, réglages), points d'attention de la boutique (probabilités avant achat, Belgique, pièces ★, consommables), architecture réelle.
+- AGENTS.md : dossier `ios/`, commandes, deux décisions (§6).
+
+**À faire**
+- Installer la plateforme iOS dans Xcode (Settings → Components) pour lancer l'app dans le simulateur, et choisir l'identifiant définitif de l'app (`app.pearlinc.PearlInc` provisoire, il ne pourra plus changer une fois sur l'App Store).
+- Prochaines passes : stock d'huîtres, poussière d'or et comptoir, skins, boutique StoreKit 2, tutoriel, partage, Core Haptics, décor plus riche, anglais, puis la charnière avec Xcode / iOS 27.1.
+
+**Fragile**
+- Le projet Xcode a été écrit à la main (format Xcode 16+ à dossiers synchronisés) : tout fichier ajouté dans `ios/PearlInc/` est pris automatiquement, sans toucher au projet.
+- Après tout changement de catalogue ou de réglage dans `src/` : `npm run ios:export`, sinon `npm test` échoue.
+
+---
+
+## 2026-10-08 (suite 4) · Jules · Claude Code · branche `jules/duo-gadget`
+
+Lecture des règles d'Apple pour l'iPhone Duo.
+
+**Fait**
+- `docs/duo-gadget.md` §5 : règles de « Designing for iPhone Duo » et « Preparing your app for iPhone Duo » (deux écrans, poses, zones réservées dont le pli, barres sur le côté, jeux qui remplissent l'écran dans chaque pose) et ce qu'elles changent pour Pearl Inc. (le pli = la charnière de l'huître, onglets du système, rien ne se perd entre les écrans).
+- §7 : **l'API de la charnière existe** (`DeviceHinge` en SwiftUI, angle continu + état, `.onHingeChange`, iOS 27.1 bêta). Absente du SDK iOS 26.2 de Xcode 26.3, installé sur le Mac.
+
+**À faire**
+- Installer la version d'Xcode qui fournit iOS 27.1 ; mesurer la fréquence de l'angle et le passage d'un écran à l'autre (simulateur du Duo, Device Hub).
+
+---
+
 ## 2026-10-08 (suite 3) · Jules · Claude Code · branche `jules/duo-gadget`
 
 Image d'aperçu des liens et skins d'huître.

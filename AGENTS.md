@@ -82,6 +82,7 @@ src/
     dust.ts         Poussière d'or : fonte des doublons, achat d'une pièce manquante ou d'un écrin
     finds.ts        Trouvailles : objets à la place de la perle, albums, tirage, messages des bouteilles
     pearlTraits.ts  Ce qui rend chaque perle unique : forme, reflet, marque rare
+    appEconomy.ts   Économie de l'app iOS seulement : barème de revente, missions du jour, skins, produits de la boutique
   input/            Sources du geste → produisent des OpeningSample
     thumb.ts        Pouce vers le haut (iPhone classique)
     pinch.ts        Pincer deux doigts (sertissage), ou un doigt vers le bas
@@ -94,18 +95,20 @@ public/
   sw.js             Service worker : mode hors ligne (build de production uniquement)
   icons/            Icônes générées par scripts/make-icons.py (ne pas éditer à la main)
   manifest.webmanifest
-scripts/            Outils (génération des icônes, macOS)
+scripts/            Outils (génération des icônes, aperçu des liens, planche des skins `make-skin-sheet.sh` → docs/skins.png ; macOS)
 site/               Page d'inscription pearl-inc.app (HTML autonome, prototype de 5 huîtres) : hors de la build Vite
+ios/                App iOS native (SwiftUI) : PearlCore (Swift Package, logique pure, miroir de src/core) + PearlInc (l'app).
+                    Catalogues et réglages exportés depuis src/ par `npm run ios:export` (voir docs/duo-gadget.md §8)
 ```
 
 ### Les invariants — ne jamais casser
 
 1. **Core est pur.** Rien dans `src/core/` ne touche au DOM, à `window`, `document`, `navigator` ou `localStorage`, et rien n'y importe `platform/`, `features/` ou `input/`. Un test vérifie automatiquement cette règle (`tests/core-purity.test.ts`).
 2. **Une seule interface de geste.** Toute source de geste (pouce, charnière, autre) produit des `OpeningSample { angle: number /* degrés, 0…180 */, time: number /* ms */ }`. Le moteur calcule lui-même la vitesse. Aucune vue ne décide d'une règle de jeu.
-3. **Aucun nombre magique.** Probabilités, seuils, angles, vitesses, durées : uniquement dans `src/tuning.ts` ou les catalogues du Core (`catalog.ts`, `jewels.ts`, `finds.ts`, `pearlTraits.ts`). Les valeurs viennent du cahier des charges ; si on s'en écarte, on le note dans §6.
+3. **Aucun nombre magique.** Probabilités, seuils, angles, vitesses, durées : uniquement dans `src/tuning.ts` ou les catalogues du Core (`catalog.ts`, `jewels.ts`, `finds.ts`, `pearlTraits.ts`, `appEconomy.ts`). Les valeurs viennent du cahier des charges ; si on s'en écarte, on le note dans §6.
 4. **Hasard injectable.** Le tirage reçoit un générateur aléatoire en paramètre (graine fixe dans les tests). Le temps (`now`) est aussi passé en paramètre.
 5. **La perle est tirée à la création de l'huître** et sauvegardée avec l'état du joueur : recharger la page ne relance pas le tirage.
-6. **`npm test` et `npm run build` passent avant chaque passe.** Pas de test cassé laissé à l'associé.
+6. **`npm test` et `npm run build` passent avant chaque passe** (et `swift test` dans `ios/PearlCore` si on touche à l'app iOS ou aux catalogues). Pas de test cassé laissé à l'associé. Après un changement de catalogue ou de réglage : `npm run ios:export`.
 7. **Les vues ne contiennent pas de règles.** Une vue affiche un état et transmet des gestes, c'est tout.
 8. **Mesure d'usage centralisée.** Les écrans appellent seulement `track()` de `src/platform/analytics.ts`. L'outil d'analytics se branche dans ce seul fichier.
 
@@ -151,6 +154,7 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 | Atelier : étoiles | 1 + 4 × (0,4 × matériaux + 0,6 × geste) | cahier §6 (« matériaux × réussite du geste ») |
 | Lettre de la Maison lue | 20 ✦ + 20 de réputation | proposition (§6) |
 | Quêtes du jour | 3 par jour ; 10 ✦ + 30 de réputation chacune ; les trois = 1 écrin | cahier §15 (« trois quêtes du jour ») |
+| App iOS : pub récompensée | 3 huîtres par pub, 3 pubs par jour | choix de Jules (§6) |
 | Trouvailles : part des huîtres | 5 % (huître vide 12 → 9 %, perle blanche 40 → 38 %) | choix de Jules (§6) |
 | Trouvailles : poids par rareté (◆ ◆◆ ◆◆◆ ★ ★★) | 40 / 18 / 12 / 5 / 2 | proposition (§6) |
 | Pièce d'or / clé d'épave / album complété | 15 ✦ / 1 écrin / 1 écrin | proposition (§6) |
@@ -162,7 +166,7 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 - Un fichier = une responsabilité. Noms explicites, pas d'abréviations.
 - Ne pas renommer ni déplacer de fichiers dans `src/core/` sans le noter dans le journal.
 - Petites modifications ciblées : ne pas « nettoyer » ou reformater du code qui n'a rien à voir avec la tâche.
-- Commandes : `npm install`, `npm run dev` (ouvre aussi l'adresse réseau pour tester sur iPhone), `npm test`, `npm run build`, `npm start` (build + version de production sur le port 4173, avec le mode hors ligne), `npm run icons` (régénère les icônes).
+- Commandes : `npm install`, `npm run dev` (ouvre aussi l'adresse réseau pour tester sur iPhone), `npm test`, `npm run build`, `npm start` (build + version de production sur le port 4173, avec le mode hors ligne), `npm run icons` (régénère les icônes), `npm run ios:export` (exporte catalogues, réglages et cas de référence vers `ios/`), `swift test` dans `ios/PearlCore` (moteur Swift).
 - Toute modification de `public/sw.js` qui change la façon de mettre en cache : incrémenter `CACHE_VERSION`.
 - **Barre d'état, Dynamic Island, barre d'accueil** (jeu installé sur l'écran d'accueil, iPhone) : rien d'interactif ni de texte dans ces zones. En CSS, toujours `var(--safe-top|bottom|left|right)`, `--hud-h` et `--tab-h` (définis sur `:root`), jamais `env(safe-area-inset-*)` directement : les variables se simulent dans le navigateur pour tester (ex. `--safe-top: 59px; --safe-bottom: 34px` pour un iPhone 15 Pro). Toute nouvelle fenêtre plein écran prévoit ces marges.
 - Transitions : pas de fondu entre deux contenus opaques (on lit les deux superposés). Les écrans glissent (`main.ts`), les panneaux plein écran montent depuis le bas.
@@ -227,6 +231,12 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-06 | **Jauge de réglage masquée par défaut** (angle, vitesse) : outil du prototype, réactivable dans les réglages. Le message sous la coquille donne déjà « Zone fragile » et « Trop vite ! » | Chasse aux détails qui font « cheap » (retour de Jules) |
 | 2026-10-08 | **La Maison en maison de poupée** (vue en coupe de trois quarts, dessinée par code) : boutique (porte, vitrine) et atelier (établi) au rez-de-chaussée, bureau de Rose (fenêtre, carnet) et grenier (la boîte) à l'étage ; une pièce dort (pénombre, draps, toiles d'araignée) jusqu'à sa lettre. **Elle grandit avec le rang** (`houseStage`) : l'étage à Perlier, la boutique repeinte à Artisan, le salon Pearl Inc. à Joaillier, l'aile du musée à Maître joaillier, la tour à Maison de haute joaillerie. Les pièces au-delà des lettres (salon, musée) sont du décor : elles n'ouvrent aucune fonction pour l'instant | Choix de Jules : « maison de poupée en 3/4 » qui grandit jusqu'à Pearl Inc. ; cahier §8 (« chaque chapitre débloque une pièce de la Maison ») |
 | 2026-10-08 | **Mise en ligne de la page d'inscription** (`site/`) sur Vercel, domaine **pearl-inc.app**, pour la campagne X / LinkedIn du 12 au 25 octobre. Inscriptions par Tally, seulement après les 5 huîtres d'essai (ou sur demande). Remplace « pas de mise en ligne pour l'instant » pour cette page ; le jeu (webapp) reste en local | Choix de Jules : teaser du lancement et mesure de l'intérêt avant de construire l'app (voir `docs/duo-gadget.md`, `docs/tally-formulaire.md`) |
+| 2026-10-08 | **App iOS en SwiftUI** dans `ios/` : `PearlCore` (Swift Package, logique pure) + `PearlInc` (l'app, iOS 18+). Les catalogues et réglages restent définis dans `src/` et sont exportés en JSON (`npm run ios:export`) ; des cas de référence garantissent que le Swift donne exactement les mêmes résultats que le TypeScript. Tranche « Capacitor ou SwiftUI » (§1) | Choix de Jules : préparer l'app de l'App Store pendant la campagne. Charnière (`DeviceHinge`, iOS 27.1) et Core Haptics sont natifs ; une seule source de vérité pour l'équilibrage |
+| 2026-10-08 | **Périmètre de la 1.0 App Store** : l'huître et les 8 perles, les trouvailles (easter eggs), la poussière d'or (revente des doublons), les skins **bénitier** et **huître d'or**, et une **boutique payante** : recharge d'huîtres, poussière d'or, skins (détail : `docs/duo-gadget.md` §4, §6 bis, §6 ter). Lève « monnaies » et « boutique payante » hors V1 pour l'app iOS seulement. **Prix et garde-fous (probabilités avant achat, Belgique, pièces ★ non achetables) à valider entre associés** | Choix de Jules : un jeu court mais complet, qui prouve la traction et le revenu |
+| 2026-10-08 | **Poussière d'or lente dans l'app iOS** : barème de revente plus bas que la webapp (◆ 1 … ★★ 40 ✦), **3 missions du jour** à 5 ✦ (+ 10 ✦ les trois), bénitier à **2 000 ✦** (≈ 3 semaines de jeu régulier) ou 2,99 €, packs de poussière moins avantageux que l'achat direct du skin (détail : `docs/duo-gadget.md` §6 quater). La webapp garde son barème. **Montants provisoires, à ajuster avec les chiffres de la bêta** | Choix de Jules : ne pas gagner la poussière trop vite, pour que payer un skin ait du sens ; les missions donnent une raison de revenir chaque jour |
+| 2026-10-13 | **Comptes joueurs dans l'app iOS avec Supabase** (paquet Swift `supabase-swift`) : Sign in with Apple, code par e-mail, ou partie sans compte (anonyme, liable plus tard). Écran de connexion avant le jeu. La webapp ne change pas. **Hébergement UE, synchronisation de la progression et lien avec les inscrits à valider** | Code de Jules ; §8 proposait Supabase EU pour relier un bêta-testeur à son futur compte |
+| 2026-10-13 | **App iOS : direction artistique du prototype de pearl-inc.app** (lagon de `src/art/lagoon.ts` porté en Swift : sable, caustiques, récif, algues, poissons, bulles ; verre clair ; cartes aux couleurs de chaque perle ; collection en cases comme le prototype). **Bénitier redessiné vu de dessus** (éventail à gros plis écailleux, porcelaine, manteau bleu-vert tacheté), il s'ouvre comme l'huître. Correction : pendant le suspense, l'écran montrait déjà la perle de l'huître suivante | Retour de Jules : « l'app fait cheap », « la perle change au dernier moment », bénitier pas dans le ton |
+| 2026-10-13 | **App iOS : la poussière d'or n'achète plus de perles** (skins et huîtres seulement). **Pub récompensée** : 3 huîtres par pub, 3 par jour, sur l'écran « La marée remonte… » et dans la boutique ; **pub simulée** tant que la régie n'est pas choisie (`Platform/RewardedAds.swift`). **Achats intégrés StoreKit 2** branchés (consommables, skins, restauration ; fichier de test `ios/PearlInc.storekit`). Lève « pubs récompensées » hors V1, pour l'app iOS seulement. **Montants provisoires** | Choix de Jules : on pêche ses perles, on ne les achète pas ; la pub donne une autre façon de continuer quand la marée est basse |
 
 ## 7. Limites connues du prototype web
 

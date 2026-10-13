@@ -408,7 +408,7 @@ export function mountOysterScreen(root: HTMLElement, ctx: AppContext): () => voi
 
     // Révélation : le halo envahit l'écran, puis éclair blanc pour les ★.
     if (busy) drawGlow(c, px, py, L * (1.4 + tier * 0.5), glow, suspense * 0.5 * cursedPulse, false);
-    const flash = flashAt ? 1 - smoothstep(0, 500, now - flashAt) : 0;
+    const flash = flashAt ? 1 - smoothstep(0, ctx.tuning.revealFlashMs, now - flashAt) : 0;
     if (flash > 0) {
       c.fillStyle = `rgba(255,250,235,${flash * 0.7})`;
       c.fillRect(0, 0, w, h);

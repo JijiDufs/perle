@@ -5,6 +5,12 @@
 
 ## 1. Deux formulaires : un en français, un en anglais
 
+**Créés et publiés le 2026-10-08** (compte Tally de Jules) et branchés dans `site/index.html` :
+- français : https://tally.so/r/J9N7AJ (« Sois là pour la première huître. »)
+- anglais : https://tally.so/r/Me9oLY (« Be there for the first oyster. »)
+
+Apparence : fond blanc, police Inter, texte #1D1D1F, bouton et accent #0071E3 (comme le site), icône du site en logo, pas de bannière. Les réglages « Advanced » (largeur, arrondi du logo…) demandent Tally Pro.
+
 Tally n'affiche qu'une langue par formulaire. On crée le français, on le **duplique**, on traduit la copie. La page envoie chaque visiteur vers le formulaire de sa langue (FR / EN en haut de la page).
 
 Une fois publiés, coller les deux liens dans `site/index.html`, dans le dernier `<script>` :
@@ -24,7 +30,7 @@ Tant qu'ils sont vides, les boutons affichent « Les inscriptions ouvrent très 
 | # | Type Tally | Question | Obligatoire | Pourquoi |
 |---|---|---|---|---|
 | 1 | Email | Ton e-mail | Oui | Le seul vrai besoin |
-| 2 | Multiple choice | Tu joueras sur quel téléphone ? — iPhone Duo (déjà précommandé) · iPhone Duo (je compte l'acheter) · Un autre iPhone · Android | Non | Mesure directe de l'intérêt pour le Duo, utile pour la décision du 25 |
+| 2 | Multiple choice | Tu joueras sur quel téléphone ? — iPhone Duo · Un autre iPhone · Android (choix de Jules : pas de distinction précommandé / à acheter) | Non | Mesure directe de l'intérêt pour le Duo, utile pour la décision du 25 |
 | 3 | Checkbox | J'accepte de recevoir un e-mail de Pearl Inc. à la sortie du jeu, et je peux me désinscrire à tout moment. [Confidentialité](#3-confidentialité-rgpd) | Oui | Consentement RGPD explicite |
 
 Pas de prénom, pas d'âge, pas de téléphone : chaque champ en plus fait perdre des inscrits.
@@ -48,9 +54,9 @@ Pas de prénom, pas d'âge, pas de téléphone : chaque champ en plus fait perdr
 
 ## 3. Confidentialité (RGPD)
 
-On collecte des e-mails de personnes en Europe : il faut un texte court, accessible depuis la case à cocher (bloc de texte en bas du formulaire, ou page dédiée). Proposition, **à relire entre associés** :
+On collecte des e-mails de personnes en Europe : il faut un texte court, accessible depuis la case à cocher (bloc de texte en bas du formulaire, ou page dédiée). Version longue, **à relire entre associés**. Le formulaire publié en affiche un résumé sous la case (« Confidentialité · MJHstudio… », contact : laplateformemjh@gmail.com) :
 
-> **Qui :** MJHstudio (Jules, Mathys, Hugo), éditeur de Pearl Inc. Contact : [adresse e-mail du studio].
+> **Qui :** MJHstudio (Jules, Mathys, Hugo), éditeur de Pearl Inc. Contact : laplateformemjh@gmail.com.
 > **Quoi :** ton adresse e-mail, ta réponse sur ton téléphone, et d'où tu viens (réseau social, langue).
 > **Pour quoi :** t'envoyer un e-mail à la sortie de Pearl Inc. avec ta perle de bienvenue, et mesurer quel message fonctionne le mieux. Rien d'autre, jamais revendu.
 > **Combien de temps :** jusqu'à 6 mois après la sortie du jeu, puis effacé.

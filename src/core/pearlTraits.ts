@@ -57,7 +57,7 @@ type Weights<K extends string> = Partial<Record<K, number>>;
 type FindablePearl = Exclude<PearlId, 'empty'>;
 
 /** Formes possibles de chaque perle, avec leur poids. */
-const SHAPE_WEIGHTS: Readonly<Record<FindablePearl, Weights<PearlShape>>> = {
+export const SHAPE_WEIGHTS: Readonly<Record<FindablePearl, Weights<PearlShape>>> = {
   white: { ronde: 30, 'presque-ronde': 35, bouton: 15, goutte: 12, cerclee: 8 },
   rose: { ronde: 20, 'presque-ronde': 35, goutte: 25, bouton: 12, cerclee: 8 },
   baroque: { baroque: 100 },
@@ -68,7 +68,7 @@ const SHAPE_WEIGHTS: Readonly<Record<FindablePearl, Weights<PearlShape>>> = {
 };
 
 /** Reflets possibles de chaque perle, avec leur poids. */
-const OVERTONE_WEIGHTS: Readonly<Record<FindablePearl, Weights<PearlOvertone>>> = {
+export const OVERTONE_WEIGHTS: Readonly<Record<FindablePearl, Weights<PearlOvertone>>> = {
   white: { argente: 45, creme: 35, rose: 15, bleute: 5 },
   rose: { rose: 60, lavande: 20, creme: 15, 'arc-en-ciel': 5 },
   baroque: { lavande: 35, argente: 30, rose: 20, 'arc-en-ciel': 15 },

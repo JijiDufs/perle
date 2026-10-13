@@ -1,0 +1,1016 @@
+{
+  "tuning": {
+    "popAngle": 15,
+    "resistanceDistance": 70,
+    "resistanceAngleRatio": 0.25,
+    "fullOpenDistance": 260,
+    "resistanceTickDistance": 18,
+    "fragileMinAngle": 20,
+    "fragileMaxAngle": 110,
+    "maxSafeVelocity": 380,
+    "velocityWindowMs": 60,
+    "revealAngle": 140,
+    "autoOpenFromAngle": 115,
+    "lustreMaxVariationS": 0.25,
+    "lustreMaxVariationA": 0.45,
+    "lustreMaxVariationB": 0.7,
+    "lustreMinSamples": 4,
+    "revealSuspenseTier0Ms": 250,
+    "revealSuspenseTier1Ms": 700,
+    "revealSuspenseTier2Ms": 1200,
+    "revealSuspenseTier3Ms": 2000,
+    "revealLidSettleMs": 350,
+    "revealFlashMs": 500,
+    "pityThreshold": 25,
+    "oysterStockMax": 10,
+    "oysterRechargeMinutes": 20,
+    "glintMinAngle": 55,
+    "glintMaxAngle": 115,
+    "glintTolerance": 6,
+    "glintSparkleRange": 28,
+    "glintHoldMs": 900,
+    "glintMaxVelocity": 45,
+    "glintPerfectMultiplier": 1.5,
+    "glintRareVariantChance": 0.12,
+    "glintRareVariantMultiplier": 2,
+    "ecrinPityThreshold": 20,
+    "oystersPerEcrin": 8,
+    "expertiseDurationMs": 20000,
+    "expertiseHitRadius": 0.09,
+    "expertiseDwellMs": 350,
+    "expertiseGoodRatio": 0.6666666666666666,
+    "expertiseBonusExcellent": 0.25,
+    "expertiseBonusGood": 0.12,
+    "dustTier0": 1,
+    "dustTier1": 2,
+    "dustTier2": 5,
+    "dustTier3": 12,
+    "dustTier4": 40,
+    "dustTier5": 120,
+    "dustBuyMultiplier": 5,
+    "dustEcrinPrice": 60,
+    "repOyster": 10,
+    "repPerTier": 5,
+    "repLustreS": 10,
+    "repLustreA": 5,
+    "repDiscovery": 30,
+    "repEcrin": 25,
+    "repPerfect": 15,
+    "repExpertise": 20,
+    "levelBaseXp": 60,
+    "levelGrowthXp": 15,
+    "levelGrowthPower": 1.5,
+    "maxLevel": 100,
+    "levelRewardOysters": 3,
+    "levelRewardDust": 15,
+    "levelEcrinEvery": 3,
+    "achievementDustBronze": 10,
+    "achievementDustSilver": 30,
+    "achievementDustGold": 80,
+    "achievementReputation": 40,
+    "questsPerDay": 3,
+    "questRewardDust": 10,
+    "questRewardReputation": 30,
+    "chapterRewardDust": 20,
+    "chapterRewardReputation": 20,
+    "dailyRewardReputation": 15,
+    "atelierLevel": 5,
+    "settingStartAt": 0.08,
+    "settingCompleteAt": 0.95,
+    "settingIdealMinMs": 350,
+    "settingIdealMaxMs": 1000,
+    "settingMaxVariation": 1.2,
+    "settingPerfectScore": 0.85,
+    "settingPinchDistance": 140,
+    "repCraft": 30,
+    "findCoinDust": 15,
+    "findKeyEcrins": 1,
+    "albumRewardEcrins": 1,
+    "pearlMarkChance": 0.04
+  },
+  "pearls": [
+    {
+      "id": "empty",
+      "name": "Huître vide",
+      "rarity": "—",
+      "probability": 0.09,
+      "color": "#5b6b6b",
+      "glow": null,
+      "shape": "round",
+      "flavor": "Rien. Elle te regarde, tu la regardes.",
+      "baseValue": 0,
+      "sizeMm": [
+        0,
+        0
+      ],
+      "trembles": false,
+      "goldenOrBetter": false,
+      "revealTier": 0
+    },
+    {
+      "id": "white",
+      "name": "Perle blanche",
+      "rarity": "◆",
+      "probability": 0.38,
+      "color": "#F3F0EA",
+      "glow": "#fff1d6",
+      "shape": "round",
+      "flavor": "La classique. Ronde, sage, impeccable.",
+      "baseValue": 10,
+      "sizeMm": [
+        5,
+        7.5
+      ],
+      "trembles": false,
+      "goldenOrBetter": false,
+      "revealTier": 0
+    },
+    {
+      "id": "rose",
+      "name": "Perle rosée",
+      "rarity": "◆",
+      "probability": 0.22,
+      "color": "#F2C4CC",
+      "glow": "#ffb3c6",
+      "shape": "round",
+      "flavor": "Un reflet rose qu'on ne voit qu'à la bonne lumière.",
+      "baseValue": 18,
+      "sizeMm": [
+        6,
+        8.5
+      ],
+      "trembles": false,
+      "goldenOrBetter": false,
+      "revealTier": 0
+    },
+    {
+      "id": "baroque",
+      "name": "Perle baroque",
+      "rarity": "◆◆",
+      "probability": 0.12,
+      "color": "#C9C4D8",
+      "glow": "#c9bcff",
+      "shape": "baroque",
+      "flavor": "Bosselée et unique. Personne n'en a une pareille.",
+      "baseValue": 30,
+      "sizeMm": [
+        7,
+        11
+      ],
+      "trembles": false,
+      "goldenOrBetter": false,
+      "revealTier": 1
+    },
+    {
+      "id": "black",
+      "name": "Perle noire",
+      "rarity": "◆◆◆",
+      "probability": 0.08,
+      "color": "#33374a",
+      "glow": "#7f8cff",
+      "shape": "round",
+      "flavor": "Reflets aubergine et vert paon. Les connaisseurs se taisent.",
+      "baseValue": 60,
+      "sizeMm": [
+        9,
+        13
+      ],
+      "trembles": false,
+      "goldenOrBetter": false,
+      "revealTier": 2
+    },
+    {
+      "id": "golden",
+      "name": "Perle dorée",
+      "rarity": "★",
+      "probability": 0.045,
+      "color": "#E2B04A",
+      "glow": "#ffc845",
+      "shape": "round",
+      "flavor": "Elle chauffe un peu la paume. Sûrement une impression.",
+      "baseValue": 120,
+      "sizeMm": [
+        10,
+        14
+      ],
+      "trembles": true,
+      "goldenOrBetter": true,
+      "revealTier": 3
+    },
+    {
+      "id": "giant",
+      "name": "Perle géante",
+      "rarity": "★★",
+      "probability": 0.012,
+      "color": "#F6F2FF",
+      "glow": "#aef4ff",
+      "shape": "round",
+      "flavor": "L'huître n'a pas fermé l'œil depuis des années.",
+      "baseValue": 300,
+      "sizeMm": [
+        18,
+        26
+      ],
+      "trembles": true,
+      "goldenOrBetter": true,
+      "revealTier": 3
+    },
+    {
+      "id": "cursed",
+      "name": "Perle maudite",
+      "rarity": "★★",
+      "probability": 0.003,
+      "color": "#3a0f2a",
+      "glow": "#ff2f72",
+      "shape": "round",
+      "flavor": "Elle était là avant l'huître.",
+      "baseValue": 666,
+      "sizeMm": [
+        13,
+        13
+      ],
+      "trembles": true,
+      "goldenOrBetter": true,
+      "revealTier": 3
+    }
+  ],
+  "findProbability": 0.05,
+  "findTierWeights": [
+    {
+      "id": "1",
+      "weight": 40
+    },
+    {
+      "id": "2",
+      "weight": 18
+    },
+    {
+      "id": "3",
+      "weight": 12
+    },
+    {
+      "id": "4",
+      "weight": 5
+    },
+    {
+      "id": "5",
+      "weight": 2
+    }
+  ],
+  "findAlbums": [
+    {
+      "id": "port",
+      "name": "Le bric-à-brac du port",
+      "description": "Tout ce que les touristes perdent, la mer le rend un jour."
+    },
+    {
+      "id": "clins",
+      "name": "Clins d’œil",
+      "description": "Des objets qui rappellent quelque chose. Sûrement une coïncidence."
+    },
+    {
+      "id": "tresors",
+      "name": "Trésors engloutis",
+      "description": "Ils servent à quelque chose. Enfin, pour la plupart."
+    }
+  ],
+  "finds": [
+    {
+      "id": "tong",
+      "album": "port",
+      "name": "Tong orpheline",
+      "tier": 1,
+      "value": 6,
+      "glow": "#7fd8ff",
+      "flavor": "La gauche. La droite a refait sa vie au large."
+    },
+    {
+      "id": "ticket",
+      "album": "port",
+      "name": "Ticket de manège",
+      "tier": 1,
+      "value": 5,
+      "glow": "#ffb070",
+      "flavor": "Valable pour un tour. Le manège, lui, a coulé."
+    },
+    {
+      "id": "cadenas",
+      "album": "port",
+      "name": "Cadenas d’amoureux",
+      "tier": 1,
+      "value": 8,
+      "glow": "#ff9fb6",
+      "flavor": "« J + M pour toujours ». La clé est quelque part au fond."
+    },
+    {
+      "id": "canard",
+      "album": "port",
+      "name": "Canard de bain",
+      "tier": 1,
+      "value": 7,
+      "glow": "#ffe066",
+      "flavor": "Il a fait le tour du monde. Il ne s’en vante pas."
+    },
+    {
+      "id": "lunettes",
+      "album": "port",
+      "name": "Lunettes en cœur",
+      "tier": 2,
+      "value": 22,
+      "glow": "#ff6fa8",
+      "flavor": "Un seul verre. L’autre a vu trop de soleil."
+    },
+    {
+      "id": "clapet",
+      "album": "port",
+      "name": "Téléphone à clapet",
+      "tier": 2,
+      "value": 28,
+      "glow": "#9fe7c4",
+      "flavor": "Un téléphone qui se plie en deux. Ça ne prendra jamais."
+    },
+    {
+      "id": "dentier",
+      "album": "port",
+      "name": "Dentier",
+      "tier": 2,
+      "value": 25,
+      "glow": "#fff4e0",
+      "flavor": "Il sourit encore. Plus que toi ce matin."
+    },
+    {
+      "id": "usb",
+      "album": "port",
+      "name": "Clé « NE PAS OUVRIR »",
+      "tier": 3,
+      "value": 70,
+      "glow": "#7dffb2",
+      "flavor": "Tu ne l’ouvriras pas. Hein ?"
+    },
+    {
+      "id": "nain",
+      "album": "port",
+      "name": "Nain de jardin",
+      "tier": 3,
+      "value": 85,
+      "glow": "#ff6b5e",
+      "flavor": "Il a beaucoup voyagé. Il ne dira pas où."
+    },
+    {
+      "id": "poisson-clown",
+      "album": "clins",
+      "name": "Petit poisson-clown",
+      "tier": 1,
+      "value": 9,
+      "glow": "#ff9a3c",
+      "flavor": "Toute une famille le cherchait. Le voilà."
+    },
+    {
+      "id": "fourchette",
+      "album": "clins",
+      "name": "Fourchette",
+      "tier": 1,
+      "value": 6,
+      "glow": "#c9f0ff",
+      "flavor": "Certaines s’en servent pour se coiffer. Personne ne les contredit."
+    },
+    {
+      "id": "cube",
+      "album": "clins",
+      "name": "Cube à six couleurs",
+      "tier": 1,
+      "value": 10,
+      "glow": "#ffd23f",
+      "flavor": "Une face est presque finie. Presque."
+    },
+    {
+      "id": "jeton",
+      "album": "clins",
+      "name": "Jeton « Continue ? »",
+      "tier": 2,
+      "value": 30,
+      "glow": "#ffd76a",
+      "flavor": "10… 9… 8… Insère une huître pour continuer."
+    },
+    {
+      "id": "champignon",
+      "album": "clins",
+      "name": "Champignon à pois",
+      "tier": 2,
+      "value": 32,
+      "glow": "#ff4d4d",
+      "flavor": "Il paraît qu’en manger fait grandir. Ne pas essayer."
+    },
+    {
+      "id": "ballon",
+      "album": "clins",
+      "name": "Ballon avec un visage",
+      "tier": 2,
+      "value": 35,
+      "glow": "#ffe2b8",
+      "flavor": "Il écoute pendant des heures. Il ne répond jamais."
+    },
+    {
+      "id": "chapeau",
+      "album": "clins",
+      "name": "Chapeau de paille",
+      "tier": 2,
+      "value": 30,
+      "glow": "#ffcf6b",
+      "flavor": "Son propriétaire est parti devenir roi de quelque chose."
+    },
+    {
+      "id": "aileron",
+      "album": "clins",
+      "name": "Aileron en caoutchouc",
+      "tier": 3,
+      "value": 80,
+      "glow": "#8fb8d8",
+      "flavor": "Il va falloir un plus gros bateau."
+    },
+    {
+      "id": "cartouche",
+      "album": "clins",
+      "name": "Cartouche de jeu",
+      "tier": 3,
+      "value": 90,
+      "glow": "#b48cff",
+      "flavor": "Souffle dedans. Ça ne sert à rien, mais souffle quand même."
+    },
+    {
+      "id": "boussole",
+      "album": "clins",
+      "name": "Boussole capricieuse",
+      "tier": 4,
+      "value": 220,
+      "glow": "#ffb347",
+      "flavor": "Elle n’indique pas le nord. Elle indique ce que tu veux le plus."
+    },
+    {
+      "id": "anneau",
+      "album": "clins",
+      "name": "Anneau qui murmure",
+      "tier": 4,
+      "value": 260,
+      "glow": "#ffdf6b",
+      "flavor": "Un simple anneau d’or. Tu le reposes. Doucement."
+    },
+    {
+      "id": "coeur-ocean",
+      "album": "clins",
+      "name": "Le grand diamant bleu",
+      "tier": 5,
+      "value": 950,
+      "glow": "#4fa8ff",
+      "flavor": "Une vieille dame l’a jeté par-dessus bord. Personne n’a jamais compris pourquoi."
+    },
+    {
+      "id": "piece-or",
+      "album": "tresors",
+      "name": "Pièce d’or engloutie",
+      "tier": 2,
+      "value": 40,
+      "glow": "#ffcb47",
+      "effect": "dust",
+      "flavor": "Frappée pour un roi dont personne ne se souvient. Elle fond très bien."
+    },
+    {
+      "id": "bouteille",
+      "album": "tresors",
+      "name": "Bouteille à la mer",
+      "tier": 2,
+      "value": 20,
+      "glow": "#7fe0a8",
+      "effect": "message",
+      "flavor": "Il y a un message dedans. Évidemment."
+    },
+    {
+      "id": "pierre-brute",
+      "album": "tresors",
+      "name": "Pierre brute",
+      "tier": 3,
+      "value": 75,
+      "glow": "#c07cff",
+      "flavor": "Une gemme, sous la croûte. Il faudra apprendre à la tailler."
+    },
+    {
+      "id": "cle-epave",
+      "album": "tresors",
+      "name": "Clé d’épave",
+      "tier": 4,
+      "value": 180,
+      "glow": "#d9a35b",
+      "effect": "ecrin",
+      "flavor": "Elle ouvrait un coffre. Le coffre t’attend dans l’onglet Écrins."
+    }
+  ],
+  "bottleMessages": [
+    "Si tu lis ceci, la poste maritime fonctionne encore.",
+    "Liste de courses : pain, beurre, une perle géante.",
+    "Je suis sur une île déserte avec un ballon de volley. On s’entend bien.",
+    "Ne pas ouvrir la troisième huître en partant de la gauche. Trop tard ?",
+    "Ceci n’est pas un message.",
+    "Bonne année 1997 à celui qui trouvera cette bouteille !",
+    "Si trouvée, merci de la rendre à la mer.",
+    "Rose, la perle maudite n’est jamais sortie d’une huître. Elle y est entrée."
+  ],
+  "shapes": {
+    "ronde": {
+      "label": "Ronde",
+      "value": 1.25
+    },
+    "presque-ronde": {
+      "label": "Presque ronde",
+      "value": 1
+    },
+    "goutte": {
+      "label": "Goutte",
+      "value": 1.1
+    },
+    "bouton": {
+      "label": "Bouton",
+      "value": 0.85
+    },
+    "cerclee": {
+      "label": "Cerclée",
+      "value": 0.8
+    },
+    "baroque": {
+      "label": "Baroque",
+      "value": 1
+    }
+  },
+  "overtones": {
+    "argente": {
+      "label": "argenté",
+      "value": 1,
+      "color": "#dfe8f2"
+    },
+    "creme": {
+      "label": "crème",
+      "value": 0.95,
+      "color": "#f4e4c1"
+    },
+    "rose": {
+      "label": "rose",
+      "value": 1.1,
+      "color": "#ffc2d2"
+    },
+    "lavande": {
+      "label": "lavande",
+      "value": 1.1,
+      "color": "#c9b6ff"
+    },
+    "bleute": {
+      "label": "bleuté",
+      "value": 1.15,
+      "color": "#9cc4ff"
+    },
+    "vert-paon": {
+      "label": "vert paon",
+      "value": 1.3,
+      "color": "#37c49c"
+    },
+    "aubergine": {
+      "label": "aubergine",
+      "value": 1.2,
+      "color": "#8a4f9e"
+    },
+    "dore": {
+      "label": "doré",
+      "value": 1.15,
+      "color": "#f2cf72"
+    },
+    "cuivre": {
+      "label": "cuivré",
+      "value": 1.05,
+      "color": "#de8d5c"
+    },
+    "sang": {
+      "label": "sang",
+      "value": 1,
+      "color": "#ff3160"
+    },
+    "arc-en-ciel": {
+      "label": "arc-en-ciel",
+      "value": 1.5,
+      "color": "#b9f0ff"
+    }
+  },
+  "marks": {
+    "jumelle": {
+      "label": "Jumelle",
+      "value": 1.8,
+      "weight": 35,
+      "description": "Deux perles soudées dans la même nacre."
+    },
+    "etoile": {
+      "label": "Étoilée",
+      "value": 1.5,
+      "weight": 30,
+      "description": "Un reflet en étoile, net comme un éclat."
+    },
+    "lune": {
+      "label": "Lunaire",
+      "value": 1.4,
+      "weight": 25,
+      "description": "Une tache pâle en croissant de lune."
+    },
+    "coeur": {
+      "label": "En cœur",
+      "value": 2,
+      "weight": 10,
+      "description": "La nacre a pris la forme d’un cœur."
+    }
+  },
+  "shapeWeights": {
+    "white": [
+      {
+        "id": "ronde",
+        "weight": 30
+      },
+      {
+        "id": "presque-ronde",
+        "weight": 35
+      },
+      {
+        "id": "bouton",
+        "weight": 15
+      },
+      {
+        "id": "goutte",
+        "weight": 12
+      },
+      {
+        "id": "cerclee",
+        "weight": 8
+      }
+    ],
+    "rose": [
+      {
+        "id": "ronde",
+        "weight": 20
+      },
+      {
+        "id": "presque-ronde",
+        "weight": 35
+      },
+      {
+        "id": "goutte",
+        "weight": 25
+      },
+      {
+        "id": "bouton",
+        "weight": 12
+      },
+      {
+        "id": "cerclee",
+        "weight": 8
+      }
+    ],
+    "baroque": [
+      {
+        "id": "baroque",
+        "weight": 100
+      }
+    ],
+    "black": [
+      {
+        "id": "ronde",
+        "weight": 20
+      },
+      {
+        "id": "presque-ronde",
+        "weight": 30
+      },
+      {
+        "id": "goutte",
+        "weight": 20
+      },
+      {
+        "id": "cerclee",
+        "weight": 20
+      },
+      {
+        "id": "bouton",
+        "weight": 10
+      }
+    ],
+    "golden": [
+      {
+        "id": "ronde",
+        "weight": 35
+      },
+      {
+        "id": "presque-ronde",
+        "weight": 40
+      },
+      {
+        "id": "goutte",
+        "weight": 15
+      },
+      {
+        "id": "bouton",
+        "weight": 10
+      }
+    ],
+    "giant": [
+      {
+        "id": "ronde",
+        "weight": 40
+      },
+      {
+        "id": "presque-ronde",
+        "weight": 40
+      },
+      {
+        "id": "goutte",
+        "weight": 20
+      }
+    ],
+    "cursed": [
+      {
+        "id": "presque-ronde",
+        "weight": 60
+      },
+      {
+        "id": "cerclee",
+        "weight": 40
+      }
+    ]
+  },
+  "overtoneWeights": {
+    "white": [
+      {
+        "id": "argente",
+        "weight": 45
+      },
+      {
+        "id": "creme",
+        "weight": 35
+      },
+      {
+        "id": "rose",
+        "weight": 15
+      },
+      {
+        "id": "bleute",
+        "weight": 5
+      }
+    ],
+    "rose": [
+      {
+        "id": "rose",
+        "weight": 60
+      },
+      {
+        "id": "lavande",
+        "weight": 20
+      },
+      {
+        "id": "creme",
+        "weight": 15
+      },
+      {
+        "id": "arc-en-ciel",
+        "weight": 5
+      }
+    ],
+    "baroque": [
+      {
+        "id": "lavande",
+        "weight": 35
+      },
+      {
+        "id": "argente",
+        "weight": 30
+      },
+      {
+        "id": "rose",
+        "weight": 20
+      },
+      {
+        "id": "arc-en-ciel",
+        "weight": 15
+      }
+    ],
+    "black": [
+      {
+        "id": "vert-paon",
+        "weight": 35
+      },
+      {
+        "id": "aubergine",
+        "weight": 35
+      },
+      {
+        "id": "bleute",
+        "weight": 20
+      },
+      {
+        "id": "cuivre",
+        "weight": 10
+      }
+    ],
+    "golden": [
+      {
+        "id": "dore",
+        "weight": 70
+      },
+      {
+        "id": "cuivre",
+        "weight": 25
+      },
+      {
+        "id": "arc-en-ciel",
+        "weight": 5
+      }
+    ],
+    "giant": [
+      {
+        "id": "argente",
+        "weight": 45
+      },
+      {
+        "id": "bleute",
+        "weight": 40
+      },
+      {
+        "id": "arc-en-ciel",
+        "weight": 15
+      }
+    ],
+    "cursed": [
+      {
+        "id": "sang",
+        "weight": 80
+      },
+      {
+        "id": "aubergine",
+        "weight": 20
+      }
+    ]
+  },
+  "raritySymbols": [
+    "—",
+    "◆",
+    "◆◆",
+    "◆◆◆",
+    "★",
+    "★★"
+  ],
+  "economy": {
+    "oysterDustPrice": 20,
+    "goldCoinDust": 5,
+    "missionsPerDay": 3,
+    "missionRewardDust": 5,
+    "missionBonusDust": 10,
+    "rewardedAdOysters": 3,
+    "rewardedAdsPerDay": 3,
+    "sellDustByTier": [
+      0,
+      1,
+      2,
+      5,
+      15,
+      40
+    ],
+    "rareMissionTier": 2,
+    "missions": [
+      {
+        "kind": "open",
+        "goals": [
+          5,
+          8
+        ]
+      },
+      {
+        "kind": "lustreA",
+        "goals": [
+          2,
+          3
+        ]
+      },
+      {
+        "kind": "lustreS",
+        "goals": [
+          1
+        ]
+      },
+      {
+        "kind": "rare",
+        "goals": [
+          1
+        ]
+      },
+      {
+        "kind": "noCrack",
+        "goals": [
+          3,
+          5
+        ]
+      },
+      {
+        "kind": "sell",
+        "goals": [
+          1,
+          3
+        ]
+      },
+      {
+        "kind": "share",
+        "goals": [
+          1
+        ]
+      }
+    ],
+    "skins": [
+      {
+        "id": "lagon",
+        "name": "Huître du lagon",
+        "description": "Celle de grand-mère Rose. Rugueuse, fidèle, increvable.",
+        "style": "oyster",
+        "dustPrice": null,
+        "productId": null,
+        "grant": "start"
+      },
+      {
+        "id": "benitier",
+        "name": "Bénitier",
+        "description": "Le coquillage géant des lagons chauds. Il se referme sans prévenir.",
+        "style": "clam",
+        "dustPrice": 2000,
+        "productId": "app.pearlinc.skin.benitier",
+        "grant": null
+      },
+      {
+        "id": "premiere-maree",
+        "name": "Première marée",
+        "description": "Pour celles et ceux qui étaient là avant tout le monde.",
+        "style": "oyster",
+        "dustPrice": null,
+        "productId": null,
+        "grant": "signup"
+      },
+      {
+        "id": "or",
+        "name": "Huître d’or",
+        "description": "Or martelé, nacre champagne. Elle ne passe pas inaperçue, c’est le but.",
+        "style": "oyster",
+        "dustPrice": null,
+        "productId": "app.pearlinc.skin.or",
+        "grant": null
+      }
+    ],
+    "consumables": [
+      {
+        "id": "app.pearlinc.oysters.10",
+        "name": "Marée haute",
+        "oysters": 10,
+        "dust": 0
+      },
+      {
+        "id": "app.pearlinc.oysters.30",
+        "name": "Grande marée",
+        "oysters": 30,
+        "dust": 0
+      },
+      {
+        "id": "app.pearlinc.dust.400",
+        "name": "Bourse de poussière d’or",
+        "oysters": 0,
+        "dust": 400
+      },
+      {
+        "id": "app.pearlinc.dust.1200",
+        "name": "Coffret de poussière d’or",
+        "oysters": 0,
+        "dust": 1200
+      },
+      {
+        "id": "app.pearlinc.dust.3000",
+        "name": "Malle de poussière d’or",
+        "oysters": 0,
+        "dust": 3000
+      }
+    ]
+  },
+  "markWeights": [
+    {
+      "id": "jumelle",
+      "weight": 35
+    },
+    {
+      "id": "etoile",
+      "weight": 30
+    },
+    {
+      "id": "lune",
+      "weight": 25
+    },
+    {
+      "id": "coeur",
+      "weight": 10
+    }
+  ]
+}
