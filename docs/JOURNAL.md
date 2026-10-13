@@ -4,6 +4,19 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 6) · Jules · Claude Code · branche `jules/ios-app`
+
+Formulaires Tally : vérifiés, déjà à jour.
+
+**Fait**
+- Les deux formulaires (FR J9N7AJ, EN Me9oLY) promettent déjà le **skin d'huître exclusif**, dans l'éditeur comme dans la version publiée ; plus aucune « perle de bienvenue ». Aucun changement en attente de publication. Notification par e-mail à chaque inscription : activée sur les deux.
+- `docs/tally-formulaire.md` aligné sur les textes réellement publiés (FR et EN).
+
+**À faire**
+- Inscription test FR et EN une fois, puis la supprimer dans Tally.
+
+---
+
 ## 2026-10-13 (suite 5) · Jules · Claude Code · branche `jules/ios-app`
 
 Icône de l'app partout (app iOS, site, fichier à télécharger) ; le prototype du site montre mieux qu'on ouvre l'iPhone.
