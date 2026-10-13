@@ -4,6 +4,21 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 4) · Jules · Claude Code · branche `jules/ios-app`
+
+La doc suit la nouvelle promesse de la page : les inscrits recevront le **skin Première marée** (plus de « perle de bienvenue »).
+
+**Fait**
+- Branche mise à jour depuis `main` (texte du site modifié par Jules sur GitHub le 2026-10-12 : « un skin d'huître exclusif »).
+- `docs/duo-gadget.md` : périmètre (§4), §6 réécrit (« Le skin des inscrits : Première marée », deux pistes pour le donner : par le compte Supabase avec la même adresse que sur Tally, ou par un lien dans l'e-mail de lancement), mesure de traction, calendrier, ordre des coupes, accord entre associés.
+- Écran de connexion de l'app : « Utilise la même adresse pour récupérer ta coquille Première marée ».
+
+**À faire**
+- Les formulaires Tally publiés (FR et EN) promettent encore une « perle de bienvenue » : textes d'introduction, de remerciement et de confidentialité à changer, puis `docs/tally-formulaire.md` (un avertissement y est posé).
+- Choisir la piste pour donner le skin (compte ou lien) et la date limite.
+
+---
+
 ## 2026-10-13 (suite 3) · Jules · Claude Code · branche `jules/ios-app`
 
 App iOS : les trouvailles en relief, comme dans la webapp.

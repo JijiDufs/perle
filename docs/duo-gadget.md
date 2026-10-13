@@ -49,7 +49,7 @@ Ce que promet la page d'inscription, ni plus ni moins :
 | Collection | Encyclopédie des 8 perles + cartes triables | `core/collection.ts` |
 | Premières minutes | Huîtres écrites à l'avance (rosée garantie en 1re), main fantôme | `core/tutorial.ts` |
 | Stock d'huîtres | 10 max, 1 toutes les 20 min : la raison de revenir | `core/stock.ts` |
-| **Perle de bienvenue** | Promise aux premiers inscrits (page d'inscription) : voir §6 | nouveau |
+| **Skin des inscrits : Première marée** | Promis aux premiers inscrits (page d'inscription : « un skin d'huître exclusif ») : voir §6 | nouveau |
 | **Trouvailles (easter eggs)** | 5 % des huîtres cachent un objet à la place de la perle : 25 objets en 3 albums (bric-à-brac du port, clins d'œil à la pop culture sans nom d'œuvre ni de marque, trésors engloutis) | `core/finds.ts` |
 | **Poussière d'or** | On **revend ses perles en double** contre de la poussière d'or (on garde toujours un exemplaire de chaque sorte) ; elle achète des skins et des huîtres (plus les perles manquantes depuis le 2026-10-13 : on les pêche) | `core/dust.ts` |
 | **Skins d'huître** | Le **bénitier** (poussière d'or ou achat) et l'**huître d'or** pour le flex (achat seulement) : voir §6 bis | nouveau |
@@ -116,14 +116,16 @@ Le moteur est le même, la charnière et le pouce aussi (§7). Pour l'écrin, on
 - **La carte de révélation** n'est jamais coupée par le pli : centrée sur une moitié quand le téléphone est à moitié ouvert, au centre quand il est grand ouvert. L'encyclopédie de la collection prend un **nombre pair de colonnes**, pour se couper proprement au pli.
 - **Tester toutes les poses** avec Device Hub dans Xcode (simulateur du Duo), puis sur un vrai Duo.
 
-## 6. La perle de bienvenue
+## 6. Le skin des inscrits : Première marée
 
-La page promet que « les premiers inscrits auront une perle de bienvenue ». Sans compte ni serveur, la piste la plus simple :
+La page promet que « les premiers inscrits recevront un **skin d'huître exclusif** » (changé le 2026-10-12, à la place de la « perle de bienvenue »). Ce skin, c'est **Première marée** (§6 bis) : coquille sable et écume, liseré argent, qui ne sera plus jamais disponible. Il est déjà dans le catalogue (`premiere-maree`, `grant: 'signup'` dans `src/core/appEconomy.ts`) et dessiné dans l'app ; la boutique l'affiche « Réservée aux inscrits ». Comme tout skin, il est purement cosmétique : ni probabilités, ni garantie, ni valeur des perles.
 
-- l'e-mail de lancement envoyé aux inscrits contient un **lien** (`pearlinc://bienvenue?code=…`, ou un lien universel) ;
-- l'app vérifie le code **sans serveur**, puis offre une perle cosmétique exclusive (« Perle de la première marée ») qui n'entre ni dans les probabilités ni dans la garantie.
+Comment le donner, deux pistes :
 
-**À décider** : quelle perle exactement, un code commun ou un code par inscrit, et la date limite. Les codes d'offre d'Apple ne servent qu'aux achats intégrés, ils ne conviennent pas ici.
+- **Par le compte** (l'app a maintenant une connexion Supabase) : l'inscrit se connecte avec la **même adresse e-mail** que sur Tally (l'écran de connexion le lui rappelle), et le serveur reconnaît l'adresse dans la liste des inscrits. Demande de verser la liste Tally dans Supabase (fonction serveur, données hébergées dans l'UE).
+- **Par un lien**, sans serveur : l'e-mail de lancement contient un lien (`pearlinc://premiere-maree?code=…`, ou un lien universel) ; l'app vérifie le code puis débloque le skin.
+
+**À décider** : la piste (compte ou lien), un code commun ou un code par inscrit, et la date limite. Les codes d'offre d'Apple ne servent qu'aux achats intégrés, ils ne conviennent pas ici.
 
 ## 6 bis. Les skins d'huître
 
@@ -282,7 +284,7 @@ ios/
 
 | Indicateur | Source | Seuil « ça marche » (proposition) |
 |---|---|---|
-| Inscrits qui installent (perle de bienvenue utilisée) | mesure d'usage | ≥ 30 % |
+| Inscrits qui installent (skin Première marée débloqué) | mesure d'usage | ≥ 30 % |
 | Rétention J1 / J7 | App Store Connect (App Analytics) | ≥ 35 % / ≥ 12 % |
 | Huîtres ouvertes par jour et par joueur | mesure d'usage | ≥ 8 |
 | Part des perles ◆◆◆ et plus partagées | mesure d'usage | ≥ 10 % |
@@ -302,12 +304,12 @@ La mesure d'usage reste centralisée dans un seul fichier (`Platform/Analytics`)
 |---|---|
 | **12 – 22 oct.** (pendant la campagne) | Xcode, compte Apple Developer, nom réservé sur App Store Connect ; projet créé ; PearlCore porté avec les tests de parité ; ouverture au pouce jouable sans décor ; lecture de la documentation de la charnière |
 | 23 – 25 oct. | Essais sur un vrai Duo (§7) ; **décision du 25** ; périmètre ajusté |
-| 26 oct. – 6 nov. | Décor, révélation, haptique, sons, carte, collection, premières minutes, stock, partage, perle de bienvenue, poussière d'or et skins (achats testés dans le bac à sable d'Apple), anglais, accessibilité |
+| 26 oct. – 6 nov. | Décor, révélation, haptique, sons, carte, collection, premières minutes, stock, partage, skin Première marée des inscrits, poussière d'or et skins (achats testés dans le bac à sable d'Apple), anglais, accessibilité |
 | 6 – 12 nov. | TestFlight (quelques inscrits volontaires) ; corrections ; fiche App Store (captures, vidéo du geste, textes FR/EN) ; dossier pour l'équipe éditoriale de l'App Store |
 | ≈ 13 nov. | **Soumission** ; examen d'Apple (souvent 1 à 2 jours, sans garantie) |
-| ≈ 17 – 20 nov. | **Sortie** ; e-mail aux inscrits avec la perle de bienvenue |
+| ≈ 17 – 20 nov. | **Sortie** ; e-mail aux inscrits avec leur skin Première marée |
 
-**Si on prend du retard**, on coupe dans cet ordre : classement Game Center, calendrier de connexion, perles uniques, anglais (en mise à jour), bénitier en poussière d'or (on garde l'achat). On ne coupe ni le geste, ni l'haptique, ni la carte, ni le partage, ni la perle de bienvenue (c'est une promesse faite aux inscrits).
+**Si on prend du retard**, on coupe dans cet ordre : classement Game Center, calendrier de connexion, perles uniques, anglais (en mise à jour), bénitier en poussière d'or (on garde l'achat). On ne coupe ni le geste, ni l'haptique, ni la carte, ni le partage, ni le skin Première marée des inscrits (c’est une promesse faite aux inscrits).
 
 ## 11. Ce qu'il faut avant de commencer
 
@@ -316,4 +318,4 @@ La mesure d'usage reste centralisée dans un seul fichier (`Platform/Analytics`)
 - [ ] **Contrat « Apps payantes »** dans App Store Connect, avec les informations bancaires et fiscales : obligatoire pour vendre des skins, et la validation prend du temps. À faire dès que le compte existe.
 - [ ] **Réserver le nom « Pearl Inc. »** sur App Store Connect dès que le compte existe, et vérifier qu'il ne pose pas de problème de marque.
 - [ ] Un iPhone récent pour tester l'haptique ; un Duo dès sa sortie.
-- [ ] **Accord entre associés** sur : SwiftUI, une seule app qui grandit, sortie en novembre plutôt que le 23 octobre, perle de bienvenue, skins et prix (la boutique payante est encore marquée « hors V1 » dans AGENTS.md §2), seuils de traction. Ensuite, inscription en §6 de AGENTS.md.
+- [ ] **Accord entre associés** sur : SwiftUI, une seule app qui grandit, sortie en novembre plutôt que le 23 octobre, skin Première marée pour les inscrits, skins et prix (la boutique payante est encore marquée « hors V1 » dans AGENTS.md §2), seuils de traction. Ensuite, inscription en §6 de AGENTS.md.

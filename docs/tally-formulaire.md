@@ -2,6 +2,8 @@
 
 > Page concernée : `site/index.html` (pearl-inc.app). Rédigé le 2026-10-08.
 > Le joueur ouvre d'abord ses **5 huîtres d'essai sans rien donner** ; le formulaire n'arrive qu'après, ou s'il clique de lui-même sur « Préviens-moi de la sortie ».
+>
+> **À mettre à jour (2026-10-13)** : depuis le 2026-10-12, la page promet aux inscrits **un skin d'huître exclusif** (« Première marée », voir `docs/duo-gadget.md` §6), plus une perle de bienvenue. Les formulaires publiés et les textes ci-dessous (introduction, remerciement, confidentialité) parlent encore de la « perle de bienvenue » : les changer ensemble, dans Tally puis ici.
 
 ## 1. Deux formulaires : un en français, un en anglais
 

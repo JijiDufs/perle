@@ -102,7 +102,7 @@ struct LoginView: View {
             Text("Ton adresse e-mail")
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(.white)
-            Text("On t’envoie un code à 6 chiffres. Inscrit avant la sortie ? Utilise la même adresse pour récupérer ton huître pionnière.")
+            Text("On t’envoie un code à 6 chiffres. Inscrit avant la sortie ? Utilise la même adresse pour récupérer ta coquille Première marée.")
                 .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.78))
                 .multilineTextAlignment(.center)
