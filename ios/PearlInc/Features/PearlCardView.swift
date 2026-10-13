@@ -84,9 +84,11 @@ struct PearlCardView: View {
         return game.catalog.pearl(card.pearlId).revealTier >= 2
     }
 
-    /// La vitrine : fond nacré (ou nuit pour les cartes sombres), halo, perle.
+    /// La vitrine : fond nacré (ou nuit pour les cartes sombres), halo, perle ou trouvaille (certaines s'animent).
     private func well(_ frame: CardFrame) -> some View {
+        TimelineView(.animation(paused: reduceMotion || !isFind)) { timeline in
         Canvas { c, size in
+            let time = timeline.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 3600)
             let w = Double(size.width), h = Double(size.height)
             let colors = frame.well.map { Color(hex: $0) }
             c.fill(Path(CGRect(origin: .zero, size: size)), with: .radialGradient(
@@ -100,15 +102,18 @@ struct PearlCardView: View {
             case .find(let card, _):
                 let find = game.catalog.find(card.findId)
                 PearlArt.glow(&c, w / 2, h / 2, w * 0.5, find.glow, 0.6, additive: false)
-                PearlArt.draw(&c, w / 2, h / 2, w * 0.15, PearlLook(find: find), cracked: false)
+                FindArt.draw(c, w / 2, h / 2, h * 0.36, id: find.id, t: time)
             case .empty:
                 let r = w * 0.17
                 c.stroke(Path(ellipseIn: CGRect(x: w / 2 - r, y: h / 2 - r, width: r * 2, height: r * 2)),
                          with: .color(rgba(30, 40, 40, 0.35)), style: StrokeStyle(lineWidth: 3 * s, dash: [10 * s, 10 * s]))
             }
         }
+        }
         .accessibilityHidden(true)
     }
+
+    private var isFind: Bool { if case .find = content { true } else { false } }
 
     @ViewBuilder private var details: some View {
         switch content {

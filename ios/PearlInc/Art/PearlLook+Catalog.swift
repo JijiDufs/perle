@@ -7,8 +7,4 @@ extension PearlLook {
                   overtoneColor: traits.flatMap { catalog.overtones[$0.overtone]?.color }, mark: traits?.mark, seed: traits?.seed ?? 0.5)
     }
 
-    /// Une trouvaille : un objet lumineux de sa couleur.
-    init(find: FindType) {
-        self.init(id: "find", color: find.glow, glow: find.glow, shape: "ronde")
-    }
 }

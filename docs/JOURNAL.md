@@ -4,6 +4,21 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 3) · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : les trouvailles en relief, comme dans la webapp.
+
+**Fait**
+- `Art/Canvas2D.swift` : un petit équivalent du Canvas 2D du navigateur au-dessus de `GraphicsContext` (chemins transformés à la construction, dégradés et traits dans le repère courant, `evenodd`, pointillés, découpe, texte). Les dégradés radiaux à deux centres (le reflet décentré qui donne le volume) sont reconstruits fidèlement par disques emboîtés.
+- `Art/FindArt.swift` : les 25 objets de `src/art/finds.ts` portés presque ligne à ligne (mêmes noms, même ordre), avec leurs animations (téléphone qui clignote, boussole qui hésite, jeton qui décompte, diode, éclats). Comparé côte à côte avec le rendu de la webapp : identique, à la police près (SF au lieu de Figtree / Young Serif).
+- Branchés dans l'huître ouverte (à la place de la perle, dans leur lumière qui vacille), sur la carte (animée) et dans la liste « Trouvailles » de la collection. `PearlLook(find:)` (la boule lumineuse provisoire) supprimé.
+
+**Fragile**
+- Pour un nouvel objet dans `src/art/finds.ts`, il faut le porter aussi dans `FindArt.swift` (pas d'export automatique du dessin).
+- Le volume des objets passe par ≈ 40 disques par dégradé radial : à surveiller si plusieurs trouvailles s'affichent en même temps (collection).
+
+---
+
 ## 2026-10-13 (suite 2) · Jules · Claude Code · branche `jules/ios-app`
 
 App iOS : direction artistique du prototype de pearl-inc.app, ouverture corrigée, bénitier redessiné, pub récompensée, achats intégrés.
@@ -20,7 +35,6 @@ App iOS : direction artistique du prototype de pearl-inc.app, ouverture corrigé
 - Lancer depuis Xcode pour tester les achats (le simulateur lancé hors Xcode affiche « Indisponible »). Vérifier dans le schéma (Run → Options → StoreKit Configuration) que `PearlInc.storekit` est bien choisi.
 - App Store Connect : créer les 7 produits (mêmes identifiants), accord « Paid Apps » et coordonnées bancaires.
 - Choisir la régie publicitaire (AdMob proposé) et remplacer la pub simulée ; consentement RGPD.
-- Les trouvailles sont encore dessinées comme une perle lumineuse (la webapp a ses objets en relief, `src/art/finds.ts`).
 
 **Fragile**
 - Les caustiques sont dessinées à partir d'une planche de motifs : le décalage doit rester ramené à un motif (sinon, avec le temps compté depuis 2001, plus rien ne s'affiche sur iPhone).

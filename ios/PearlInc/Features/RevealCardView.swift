@@ -58,6 +58,22 @@ struct RevealCardView: View {
     }
 }
 
+/// Une trouvaille en relief avec sa lumière, pour les petites cases (collection), comme findCanvas de la webapp.
+struct FindThumb: View {
+    let find: FindType
+    var size: CGFloat = 30
+
+    var body: some View {
+        Canvas { c, canvasSize in
+            let mid = Double(canvasSize.width) / 2
+            PearlArt.glow(&c, mid, mid, Double(size) * 0.5, find.glow, 0.45)
+            FindArt.draw(c, mid, mid, Double(size) * 0.36, id: find.id)
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
+    }
+}
+
 /// Une perle dessinée avec son halo, pour les petites cases (collection).
 struct PearlThumb: View {
     let look: PearlLook?

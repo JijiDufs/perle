@@ -84,8 +84,7 @@ struct FishingView: View {
 
     private func art(at date: Date) -> OysterArt {
         let oyster = game.current
-        let look: PearlLook? = if let find = game.find { PearlLook(find: find) }
-            else if oyster.pearlId == "empty" { nil }
+        let look: PearlLook? = if game.find != nil || oyster.pearlId == "empty" { nil }
             else { PearlLook(game.pearl, traits: oyster.traits, catalog: game.catalog) }
         let progress = game.revealProgress(at: date)
         return OysterArt(
@@ -93,7 +92,7 @@ struct FishingView: View {
             pearl: look,
             glowColor: game.glowHex,
             sizeMm: oyster.sizeMm,
-            isFind: game.find != nil,
+            findId: game.find?.id,
             revealTier: game.revealTier,
             cracked: game.cracked,
             trembles: game.trembles && !reduceMotion,

@@ -37,7 +37,7 @@ struct CollectionView: View {
                             ForEach(game.player.findCards.reversed()) { card in
                                 let find = game.catalog.find(card.findId)
                                 HStack {
-                                    PearlThumb(look: PearlLook(find: find), glow: find.glow, size: 12)
+                                    FindThumb(find: find, size: 30)
                                     Text(find.name)
                                     Spacer()
                                     Text(serialLabel(card.serial)).font(.caption.monospaced()).foregroundStyle(.white.opacity(0.6))

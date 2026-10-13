@@ -15,8 +15,8 @@ struct OysterArt {
     /// Couleur de la lumière qui filtre ; nil : reste noire.
     var glowColor: String?
     var sizeMm: Double
-    /// Une trouvaille à la place de la perle : un objet lumineux qui vacille.
-    var isFind = false
+    /// Une trouvaille à la place de la perle : l'objet en relief (FindArt), dans sa lumière qui vacille.
+    var findId: String?
     var revealTier = 0
     var cracked: Bool
     var trembles: Bool
@@ -49,6 +49,7 @@ struct OysterArt {
     }
 
     private var isClam: Bool { if case .clam = look { true } else { false } }
+    private var isFind: Bool { findId != nil }
 
     func draw(_ c: inout GraphicsContext, size: CGSize) {
         let t = time
@@ -87,8 +88,14 @@ struct OysterArt {
         var radius = isFind ? L * 0.12 : L * (0.05 + sizeMm * 0.0055)
         if isClam { radius *= 1.1 }
         // Suspense : la perle palpite, de plus en plus vite selon la rareté.
-        if revealed && suspense < 1 { radius *= 1 + 0.1 * suspense * max(0, sin(t * (6 + Double(tier) * 3))) }
-        if let pearl { PearlArt.draw(&c, pearlCenter.x, pearlCenter.y, radius, pearl, cracked: cracked && !isFind) }
+        let pulse = revealed && suspense < 1 ? 1 + 0.1 * suspense * max(0, sin(t * (6 + Double(tier) * 3))) : 1
+        radius *= pulse
+        if let findId {
+            // Une trouvaille ne se fêle pas (comme la webapp : drawFind à 0,2 L).
+            FindArt.draw(c, pearlCenter.x, pearlCenter.y, L * 0.2 * pulse, id: findId, t: t)
+        } else if let pearl {
+            PearlArt.draw(&c, pearlCenter.x, pearlCenter.y, radius, pearl, cracked: cracked)
+        }
 
         // L'intérieur reste dans l'ombre tant que la coquille est peu ouverte.
         let dim = revealed ? 0 : 1 - smoothstep(4, 140, angle)
