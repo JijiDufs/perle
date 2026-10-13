@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-13 (suite 7) · Jules · Claude Code · branche `jules/ios-app`
+
+Juridique pour l'App Store : pages publiques, manifeste de confidentialité, guide des questionnaires d'Apple.
+
+**Fait**
+- Pages du site, FR et EN, au style de l'accueil (`site/legal.css`) : confidentialité (`/confidentialite/`, `/en/privacy/`), conditions d'utilisation (`/conditions/`, `/en/terms/`), aide et contact avec FAQ (`/support/`, `/en/support/`), mentions légales (`/mentions-legales/`, `/en/legal-notice/`). Liens en bas de l'accueil. Éditeur : entreprise individuelle (MJHstudio), contact laplateformemjh@gmail.com. Supabase vérifié : région eu-west-1 (Irlande).
+- App iOS : manifeste `PrivacyInfo.xcprivacy` (e-mail et identifiant liés, pas de pistage, `UserDefaults` raison CA92.1), `ITSAppUsesNonExemptEncryption = NO`, liens conditions et confidentialité sur l'écran de connexion.
+- `docs/app-store-juridique.md` : URL à saisir, étiquette « App Privacy », chiffrement, âge, statut de commerçant (DSA), règles Apple encore manquantes, points à faire valider.
+
+**À faire**
+- Remplir les champs jaunes « À compléter » (nom, adresse, téléphone, SIREN, TVA, médiateur), **puis seulement** mettre ces pages en ligne (fusion dans `main`).
+- Adhérer à un médiateur de la consommation ; faire relire par un juriste (§6 du guide).
+- Dans l'app : suppression du compte, écran Réglages, pub réelle ou retirée, sauvegarde en ligne ou phrase de connexion à changer.
+
+**Fragile**
+- Politique, manifeste et étiquette App Store doivent changer ensemble à chaque nouvelle donnée (sauvegarde en ligne, régie publicitaire, mesure d'audience).
+
+---
+
 ## 2026-10-13 (suite 6) · Jules · Claude Code · branche `jules/ios-app`
 
 Formulaires Tally : vérifiés, déjà à jour.
