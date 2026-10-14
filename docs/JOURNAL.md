@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-14 (suite) · Jules · Claude Code · branche `jules/ios-app`
+
+Préparation de la fiche App Store Connect.
+
+**Fait**
+- Écran de connexion : « Ta collection te suit, sur tous tes iPhone » (promesse non tenue sans sauvegarde en ligne) remplacé par « Ouvre des huîtres, trouve la perle rare ».
+- App en **version 1.0** (build 1).
+- Pas à pas App Store Connect donné à Jules (compte au nom de Mathys, accords, identifiant, fiche, achats intégrés aux identifiants de `PearlInc.storekit`, TestFlight, captures 6,9 pouces).
+
+**À faire**
+- ~~Connexion anonyme~~ activée par Jules ; **captures App Store** faites : `docs/app-store/captures/` (5 JPEG 1320 × 2868, iPhone 17 Pro Max, barre d'état 9:41) : pêche, ouverture, révélation (perle rosée), collection, missions. Pas de capture de la Boutique : hors de Xcode les prix StoreKit sont « Indisponible » (à refaire depuis TestFlight).
+- **AdMob vérifié de bout en bout** dans le simulateur : pub de test Google affichée, récompense comptée (« Encore 2 aujourd'hui »).
+- Mathys : choisir un **médiateur de la consommation**. Ensuite seulement, mettre en ligne **ensemble** confidentialité, aide et conditions (`docs/pages-app/` → `site/`) : les pages d'aide renvoient vers `/conditions/`, qui ne doit pas sortir avec un champ « À compléter ».
+
+**Fragile**
+- Tant que ces pages ne sont pas en ligne, `/confidentialite/` reste la version courte (site seulement) : à remplacer avant toute soumission ou test TestFlight externe (Apple demande l'URL).
+
+---
+
 ## 2026-10-14 · Jules · Claude Code · branche `jules/ios-app`
 
 App iOS : la pub récompensée passe par **AdMob**, avec les identifiants de test de Google.
