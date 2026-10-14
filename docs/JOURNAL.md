@@ -16,8 +16,8 @@ App iOS : la pub récompensée passe par **AdMob**, avec les identifiants de tes
 - Builds Debug et Release OK ; l'app démarre dans le simulateur avec le SDK (Info.plist vérifié).
 
 **À faire**
-- Compte AdMob de Pearl Inc. (au nom de l'éditeur, Mathys EI ?) : créer l'app et le bloc « avec récompense », configurer le message RGPD ; remplacer l'App ID dans `PearlInc-Info.plist` et le bloc de Release dans `RewardedAds.adUnitID`.
-- `app-ads.txt` sur pearl-inc.app ; relier l'app à sa fiche App Store dans AdMob après la sortie.
+- ~~Compte AdMob~~ fait par Jules : App ID `…~7375419878` dans `PearlInc-Info.plist`, bloc « 3 huîtres » `…/7814403570` en Release (Debug garde le bloc de test). `site/app-ads.txt` prêt.
+- Mettre `app-ads.txt` en ligne (déploiement de `site/`), publier le message RGPD dans AdMob, relier l'app à sa fiche App Store dans AdMob après la sortie.
 - Politique de confidentialité (`docs/pages-app/confidentialite/`, section « La publicité ») : dit encore « aucune régie publicitaire » → citer Google AdMob, le consentement, les données. Étiquette App Privacy d'App Store Connect à mettre à jour (identifiant de l'appareil, données publicitaires).
 - Décider si l'on demande le suivi (ATT) : meilleures recettes, mais déclaration de pistage.
 

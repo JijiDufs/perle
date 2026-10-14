@@ -10,12 +10,12 @@ import UserMessagingPlatform
 @MainActor
 @Observable
 final class RewardedAds: NSObject, FullScreenContentDelegate {
-    /// Bloc d'annonces « avec récompense ». Aujourd'hui celui de TEST de Google partout :
-    /// en Release, mettre celui de Pearl Inc. (et l'App ID dans PearlInc-Info.plist) avant la soumission.
+    /// Bloc d'annonces « avec récompense » (3 huîtres). En Debug, celui de TEST de Google : on ne voit
+    /// jamais ses propres vraies pubs en développement (risque de suspension du compte AdMob).
     #if DEBUG
     static let adUnitID = "ca-app-pub-3940256099942544/1712485313"
     #else
-    static let adUnitID = "ca-app-pub-3940256099942544/1712485313"
+    static let adUnitID = "ca-app-pub-1299710250358184/7814403570"
     #endif
 
     /// Durée de la pub simulée, en secondes (une vraie pub dure de 15 à 30 s).
