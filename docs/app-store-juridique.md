@@ -30,20 +30,27 @@ Dans App Store Connect → App Privacy, répondre **« Oui, nous collectons des 
 |---|---|---|---|---|
 | Contact Info | Email Address | Oui | Non | App Functionality |
 | Identifiers | User ID | Oui | Non | App Functionality |
+| Location | Coarse Location | Non | Non* | Third-Party Advertising, Analytics |
+| Identifiers | Device ID | Non | Non* | Third-Party Advertising, Analytics |
+| Usage Data | Product Interaction | Non | Non* | Third-Party Advertising, Analytics |
+| Usage Data | Advertising Data | Non | Non* | Third-Party Advertising, Analytics |
+| Diagnostics | Crash Data, Performance Data, Other Diagnostic Data | Non | Non | Analytics |
 
-**Non collecté** (à ne pas cocher) : achats (Apple les gère, l'app ne nous les envoie pas), partie (reste sur l'iPhone), diagnostics, localisation, publicité.
+Les cinq dernières lignes viennent du kit **Google AdMob** (pubs récompensées, branché le 2026-10-14), d'après la page de Google « Data disclosure » pour iOS ; la relire au moment de remplir. \* **Pistage : à valider entre associés.** L'app ne demande pas l'ATT (pas d'IDFA), mais Apple peut considérer comme du pistage la pub personnalisée que Google sert quand le joueur l'accepte dans le formulaire RGPD. Si c'est « Oui », il faut ajouter la fenêtre ATT (`NSUserTrackingUsageDescription`) ; sinon, demander à Google des pubs non personnalisées seulement.
 
-Le manifeste de confidentialité de l'app (`ios/PearlInc/PrivacyInfo.xcprivacy`) dit la même chose, plus l'usage de `UserDefaults` (raison `CA92.1`, la sauvegarde de la partie). Le paquet Supabase fournit son propre manifeste.
+**Non collecté** (à ne pas cocher) : achats (Apple les gère, l'app ne nous les envoie pas), partie (reste sur l'iPhone).
+
+Le manifeste de confidentialité de l'app (`ios/PearlInc/PrivacyInfo.xcprivacy`) dit la même chose, plus l'usage de `UserDefaults` (raison `CA92.1`, la sauvegarde de la partie). Les paquets Supabase et Google Mobile Ads fournissent leur propre manifeste.
 
 **À mettre à jour en même temps (politique, manifeste, étiquette)** :
 - **sauvegarde en ligne** de la partie : ajouter « Gameplay Content » ou « Other User Content » (liée, App Functionality) ;
-- **régie publicitaire** (AdMob…) : ajouter au minimum Device ID, Advertising Data, Product Interaction, Coarse Location, Crash Data selon la régie ; « Pistage : Oui » si publicité personnalisée (fenêtre ATT obligatoire) ; formulaire de consentement RGPD de la régie ;
+- ~~régie publicitaire~~ : fait (AdMob, 2026-10-14) : politique FR/EN, tableau ci-dessus, formulaire RGPD de Google ; reste la question du pistage ;
 - **mesure d'audience** (PostHog…) : Product Interaction, Usage Data.
 
 ## 3. Les autres questions d'App Store Connect
 
 - **Chiffrement à l'exportation** : l'app n'utilise que le chiffrement standard (HTTPS). Déclaré dans l'app (`ITSAppUsesNonExemptEncryption = NO`) : la question ne sera plus posée à chaque build.
-- **Classification par âge** (questionnaire de 2025) : répondre honnêtement ; points concernés : **achats intégrés**, **objets obtenus au hasard achetables** (les huîtres), **publicité** (dès qu'une régie est branchée). Pas de jeu d'argent réel, pas de violence, pas de navigation web libre, pas de contenu créé par les joueurs. Le résultat (4+, 9+, 13+…) sort du questionnaire : à noter ici une fois rempli.
+- **Classification par âge** (questionnaire de 2025) : répondre honnêtement ; points concernés : **achats intégrés**, **objets obtenus au hasard achetables** (les huîtres), **publicité** (AdMob, pubs récompensées). Pas de jeu d'argent réel, pas de violence, pas de navigation web libre, pas de contenu créé par les joueurs. Le résultat (4+, 9+, 13+…) sort du questionnaire : à noter ici une fois rempli.
 - **Statut de commerçant (DSA, Union européenne)** : avec des achats intégrés, on est **commerçant**. Apple **affiche publiquement** sur la fiche de l'app, dans l'UE : nom, **adresse**, **téléphone** et e-mail. Pour une entreprise individuelle, c'est l'adresse de l'entrepreneur : prévoir si besoin une **domiciliation** (adresse professionnelle) et un numéro dédié.
 - **Compte Apple Developer** : au nom de l'entrepreneur (compte individuel, pas besoin de D-U-N-S) ; le nom affiché comme vendeur sur l'App Store sera son nom.
 - **Accords** : Paid Apps Agreement, coordonnées bancaires, fiscalité (formulaires dans App Store Connect).
