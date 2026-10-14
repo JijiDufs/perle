@@ -118,6 +118,8 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
         guard consent.canRequestAds else { return }
         if !sdkStarted {
             sdkStarted = true
+            // Pubs jamais personnalisées (choix de Jules, 2026-10-14) : pas de pistage à déclarer à Apple, pas d'ATT.
+            MobileAds.shared.requestConfiguration.publisherPrivacyPersonalizationState = .disabled
             _ = await MobileAds.shared.start()
         }
         load()
