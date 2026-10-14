@@ -18,7 +18,7 @@ App iOS : la pub récompensée passe par **AdMob**, avec les identifiants de tes
 **À faire**
 - ~~Compte AdMob~~ fait par Jules : App ID `…~7375419878` dans `PearlInc-Info.plist`, bloc « 3 huîtres » `…/7814403570` en Release (Debug garde le bloc de test). `site/app-ads.txt` prêt.
 - Mettre `app-ads.txt` en ligne (déploiement de `site/`), publier le message RGPD dans AdMob, relier l'app à sa fiche App Store dans AdMob après la sortie.
-- ~~Politique de confidentialité~~ fait : `docs/pages-app/confidentialite/` et `en/privacy/` (AdMob, formulaire de Google, préchargement au lancement, pas d'ATT, Google responsable indépendant) ; étiquette App Privacy détaillée dans `docs/app-store-juridique.md` §2. **À valider** : pistage oui/non (pub personnalisée sans ATT).
+- ~~Politique de confidentialité~~ fait : `docs/pages-app/confidentialite/` et `en/privacy/` (AdMob, formulaire de Google, préchargement au lancement, pas d'ATT, Google responsable indépendant) ; étiquette App Privacy détaillée dans `docs/app-store-juridique.md` §2. Pistage tranché par Jules : **pubs non personnalisées seulement** (réglage du SDK), étiquette « Pistage : Non », pas d'ATT.
 - Décider si l'on demande le suivi (ATT) : meilleures recettes, mais déclaration de pistage.
 
 **Fragile**
