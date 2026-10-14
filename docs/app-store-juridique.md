@@ -64,9 +64,10 @@ Le manifeste de confidentialité de l'app (`ios/PearlInc/PrivacyInfo.xcprivacy`)
 | 5.1.1 (i) Politique accessible depuis l'app | ✅ écran de connexion et Réglages | — |
 | 3.1.1 Probabilités affichées avant achat | ✅ Collection et Boutique | — |
 | 3.1.1 Restaurer les achats | ✅ Boutique | — |
-| 2.1 Pas de fonction factice | ❌ pub simulée | Brancher une régie ou retirer la pub de la 1.0 |
+| 2.1 Pas de fonction factice | ✅ pub AdMob (la pub simulée ne reste qu'en Debug) | Publier le message RGPD dans AdMob |
+| 2.1 L'app marche pour le testeur d'Apple | ❌ « Jouer sans compte » échoue : connexions anonymes désactivées dans Supabase (`anonymous_provider_disabled`, vu le 2026-10-14) | Activer « Allow anonymous sign-ins » dans Supabase |
 | 4.8 Connexion avec Apple proposée | ✅ | — |
-| 5.1.2 Pas de pistage sans ATT | ✅ aucun pistage | Revoir avec la régie |
+| 5.1.2 Pas de pistage sans ATT | ✅ aucun pistage (pubs non personnalisées) | — |
 | Manifeste de confidentialité | ✅ | Tenir à jour (§2) |
 | « Ta collection te suit sur tous tes iPhone » | ❌ promesse non tenue | Sauvegarde en ligne, ou changer la phrase |
 
