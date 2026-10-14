@@ -34,7 +34,7 @@ struct LoginView: View {
                 Text("Pearl Inc.")
                     .font(.system(size: 44, weight: .bold))
                     .tracking(-1.4)
-                Text("Ta collection te suit,\nsur tous tes iPhone.")
+                Text("Ouvre des huîtres,\ntrouve la perle rare.")
                     .font(.system(size: 19, weight: .medium))
                     .multilineTextAlignment(.center)
                     .opacity(0.88)
