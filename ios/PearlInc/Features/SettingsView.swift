@@ -27,6 +27,11 @@ struct SettingsView: View {
                     } label: {
                         Label("Probabilités des perles", systemImage: "percent")
                     }
+                    if game.ads.privacyOptionsRequired {
+                        Button { Task { await game.ads.showPrivacyOptions() } } label: {
+                            Label("Confidentialité des pubs", systemImage: "hand.raised.square")
+                        }
+                    }
                 }
                 .listRowBackground(Color.white.opacity(0.08))
 

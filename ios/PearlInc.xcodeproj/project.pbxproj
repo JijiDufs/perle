@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		A1B2C3D40000000000000001 /* PearlCore in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D40000000000000002 /* PearlCore */; };
 		A1B2C3D40000000000000013 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D40000000000000014 /* Supabase */; };
+		A1B2C3D40000000000000016 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D40000000000000017 /* GoogleMobileAds */; };
+		A1B2C3D40000000000000019 /* GoogleUserMessagingPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D4000000000000001A /* GoogleUserMessagingPlatform */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 			files = (
 				A1B2C3D40000000000000001 /* PearlCore in Frameworks */,
 				A1B2C3D40000000000000013 /* Supabase in Frameworks */,
+				A1B2C3D40000000000000016 /* GoogleMobileAds in Frameworks */,
+				A1B2C3D40000000000000019 /* GoogleUserMessagingPlatform in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +78,8 @@
 			packageProductDependencies = (
 				A1B2C3D40000000000000002 /* PearlCore */,
 				A1B2C3D40000000000000014 /* Supabase */,
+				A1B2C3D40000000000000017 /* GoogleMobileAds */,
+				A1B2C3D4000000000000001A /* GoogleUserMessagingPlatform */,
 			);
 			productName = PearlInc;
 			productReference = A1B2C3D40000000000000003 /* PearlInc.app */;
@@ -107,6 +113,8 @@
 			packageReferences = (
 				A1B2C3D4000000000000000E /* XCLocalSwiftPackageReference "PearlCore" */,
 				A1B2C3D40000000000000015 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				A1B2C3D40000000000000018 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				A1B2C3D4000000000000001B /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A1B2C3D40000000000000007 /* Products */;
@@ -188,6 +196,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "PearlInc-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Pearl Inc.";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.casual-games";
@@ -219,6 +228,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "PearlInc-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Pearl Inc.";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.casual-games";
@@ -280,6 +290,22 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		A1B2C3D40000000000000018 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.11.0;
+			};
+		};
+		A1B2C3D4000000000000001B /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -291,6 +317,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A1B2C3D40000000000000015 /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		A1B2C3D40000000000000017 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1B2C3D40000000000000018 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+		A1B2C3D4000000000000001A /* GoogleUserMessagingPlatform */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1B2C3D4000000000000001B /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */;
+			productName = GoogleUserMessagingPlatform;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

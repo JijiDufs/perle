@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// La pub simulée (en attendant la régie, voir Platform/RewardedAds.swift) : un écran plein, un compte à rebours,
+/// La pub simulée (Debug, quand AdMob n'a pas de pub prête, voir Platform/RewardedAds.swift) : un écran plein, un compte à rebours,
 /// puis la récompense. La fermer avant la fin ne rapporte rien, comme une vraie pub récompensée.
 struct SimulatedAdView: View {
     let ads: RewardedAds
@@ -13,7 +13,7 @@ struct SimulatedAdView: View {
                 Text("PUBLICITÉ (SIMULÉE)").font(.caption.weight(.bold)).tracking(1.5).foregroundStyle(.white.opacity(0.7))
                 PearlAppIcon(size: 96)
                 Text("Ici, une vraie pub").font(.title2.weight(.bold))
-                Text("La régie publicitaire n’est pas encore branchée.").font(.subheadline).foregroundStyle(.white.opacity(0.8))
+                Text("Pas de pub AdMob prête (version de développement).").font(.subheadline).foregroundStyle(.white.opacity(0.8))
                 Text(remaining > 0 ? "Récompense dans \(remaining) s" : "Récompense gagnée !")
                     .font(.headline.monospacedDigit())
                     .padding(.horizontal, 18).frame(minHeight: 40)
