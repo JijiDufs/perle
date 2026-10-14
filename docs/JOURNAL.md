@@ -14,7 +14,8 @@ Préparation de la fiche App Store Connect.
 - Pas à pas App Store Connect donné à Jules (compte au nom de Mathys, accords, identifiant, fiche, achats intégrés aux identifiants de `PearlInc.storekit`, TestFlight, captures 6,9 pouces).
 
 **À faire**
-- Jules : activer « Allow anonymous sign-ins » dans Supabase (journal Supabase : `anonymous_provider_disabled`), puis captures d'écran du jeu (iPhone 17 Pro Max, 1320 × 2868).
+- ~~Connexion anonyme~~ activée par Jules ; **captures App Store** faites : `docs/app-store/captures/` (5 JPEG 1320 × 2868, iPhone 17 Pro Max, barre d'état 9:41) : pêche, ouverture, révélation (perle rosée), collection, missions. Pas de capture de la Boutique : hors de Xcode les prix StoreKit sont « Indisponible » (à refaire depuis TestFlight).
+- **AdMob vérifié de bout en bout** dans le simulateur : pub de test Google affichée, récompense comptée (« Encore 2 aujourd'hui »).
 - Mathys : choisir un **médiateur de la consommation**. Ensuite seulement, mettre en ligne **ensemble** confidentialité, aide et conditions (`docs/pages-app/` → `site/`) : les pages d'aide renvoient vers `/conditions/`, qui ne doit pas sortir avec un champ « À compléter ».
 
 **Fragile**
