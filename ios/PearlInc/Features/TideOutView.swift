@@ -48,8 +48,9 @@ struct AdRewardButton: View {
                 Label("Regarder une pub · + \(game.economy.rewardedAdOysters) huîtres", systemImage: "play.rectangle.fill")
             }
             .buttonStyle(PearlButtonStyle())
-            .disabled(left == 0)
-            Text(left > 0 ? "Encore \(left) aujourd’hui" : "Plus de pub aujourd’hui : reviens demain")
+            .disabled(left == 0 || !game.ads.canShow)
+            Text(left == 0 ? "Plus de pub aujourd’hui : reviens demain"
+                 : game.ads.canShow ? "Encore \(left) aujourd’hui" : "Pub en préparation…")
                 .font(.caption).foregroundStyle(.white.opacity(0.75))
         }
     }

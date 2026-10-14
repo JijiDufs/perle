@@ -4,6 +4,29 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-14 · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : la pub récompensée passe par **AdMob**, avec les identifiants de test de Google.
+
+**Fait**
+- Paquets Swift `GoogleMobileAds` (13.11) et `GoogleUserMessagingPlatform` (3.1) ajoutés au projet.
+- `ios/PearlInc-Info.plist` (fusionné avec l'Info.plist généré) : `GADApplicationIdentifier` (App ID **de test**) et la liste `SKAdNetworkItems` de Google (50, relevée le 2026-10-14).
+- `Platform/RewardedAds.swift` : consentement RGPD (UMP) à l'arrivée dans le jeu, démarrage d'AdMob, préchargement d'une pub récompensée (rechargée après chaque pub, après 1 h, ou 60 s après un échec), récompense seulement si la pub est regardée jusqu'au bout. En Debug, sans pub prête, la pub simulée prend le relais ; en Release, le bouton affiche « Pub en préparation… ».
+- Réglages : « Confidentialité des pubs » (formulaire de Google) quand la loi l'exige.
+- Builds Debug et Release OK ; l'app démarre dans le simulateur avec le SDK (Info.plist vérifié).
+
+**À faire**
+- Compte AdMob de Pearl Inc. (au nom de l'éditeur, Mathys EI ?) : créer l'app et le bloc « avec récompense », configurer le message RGPD ; remplacer l'App ID dans `PearlInc-Info.plist` et le bloc de Release dans `RewardedAds.adUnitID`.
+- `app-ads.txt` sur pearl-inc.app ; relier l'app à sa fiche App Store dans AdMob après la sortie.
+- Politique de confidentialité (`docs/pages-app/confidentialite/`, section « La publicité ») : dit encore « aucune régie publicitaire » → citer Google AdMob, le consentement, les données. Étiquette App Privacy d'App Store Connect à mettre à jour (identifiant de l'appareil, données publicitaires).
+- Décider si l'on demande le suivi (ATT) : meilleures recettes, mais déclaration de pistage.
+
+**Fragile**
+- Pas encore vu une vraie pub de test à l'écran : dans le simulateur, « Jouer sans compte » échoue (« La connexion n'a pas abouti », appel `/auth/v1/signup` de Supabase), sans rapport avec AdMob. À vérifier (connexion anonyme activée dans Supabase ?).
+- Ne jamais cliquer sur ses propres vraies pubs (suspension du compte AdMob) : déclarer son iPhone comme appareil de test.
+
+---
+
 ## 2026-10-13 (suite 9) · Jules · Claude Code · branche `jules/ios-app`
 
 Site : pages légales réduites à ce que fait vraiment pearl-inc.app aujourd'hui (prototype + inscription), en attendant l'app.

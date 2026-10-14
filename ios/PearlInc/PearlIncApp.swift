@@ -43,5 +43,7 @@ struct RootView: View {
         .fullScreenCover(isPresented: Binding(get: { game.ads.isShowing }, set: { if !$0 && game.ads.isShowing { game.ads.finish(rewarded: false) } })) {
             SimulatedAdView(ads: game.ads)
         }
+        // Consentement RGPD (formulaire de Google si besoin), puis première pub récompensée.
+        .task { await game.ads.start() }
     }
 }
