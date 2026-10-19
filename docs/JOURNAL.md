@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 6) · Jules · Claude Code · branche `jules/ios-app`
+
+La page anglaise du site a sa propre adresse : **pearl-inc.app/en** (mesure de la campagne par langue).
+
+**Fait**
+- `site/en/index.html`, généré depuis `site/index.html` par `npm run site:en` (test `tests/site-english.test.ts`, qui échoue si elle n'est plus à jour) : seul l'en-tête change (langue, titre, description, adresse canonique, aperçu de lien X / LinkedIn en anglais).
+- `site/index.html` : `/en` est toujours en anglais ; sur `/`, la langue choisie ou celle de l'iPhone, et l'adresse devient `/en` si la page s'affiche en anglais. Les boutons FR / EN changent l'adresse sans recharger, en gardant `utm_…`. Liens `hreflang`. La traduction se fait tout de suite (plus d'éclair de français en attendant three.js).
+- Pages anglaises (confidentialité, mentions, merci) : le lien vers l'accueil pointe sur `/en` au lieu de `/?lang=en`.
+
+**À faire**
+- Après le déploiement : ouvrir `https://pearl-inc.app/en`, vérifier l'aperçu avec le Card Validator de X / Post Inspector de LinkedIn, et que Vercel Analytics compte bien `/en` à part.
+- Annonces anglaises : pointer sur `https://pearl-inc.app/en?utm_source=…&utm_campaign=…`.
+
+**Fragile**
+- Ne jamais éditer `site/en/index.html` à la main : modifier `site/index.html`, puis `npm run site:en`.
+- Un changement de langue par les boutons change l'adresse mais n'est sans doute pas compté comme une nouvelle visite : la mesure par langue repose sur la page d'arrivée.
+
+---
+
 ## 2026-10-19 (suite 5) · Jules · Claude Code · branche `jules/ios-app`
 
 Événement X « Inscription » sur pearl-inc.app.

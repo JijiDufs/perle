@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "start": "npm run build && vite preview --host",
     "icons": "python3 scripts/make-icons.py",
-    "ios:export": "UPDATE_IOS_FIXTURES=1 vitest run tests/ios-export.test.ts"
+    "ios:export": "UPDATE_IOS_FIXTURES=1 vitest run tests/ios-export.test.ts",
+    "site:en": "UPDATE_SITE_EN=1 vitest run tests/site-english.test.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",

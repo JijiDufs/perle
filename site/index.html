@@ -8,6 +8,10 @@
 <title>Pearl Inc. pour iPhone Duo</title>
 <!-- Aperçu des liens (X, LinkedIn, iMessage…). Image : sh scripts/make-og.sh. Adresses absolues : à changer si le domaine change. -->
 <link rel="canonical" href="https://pearl-inc.app/">
+<!-- Une adresse par langue (mesure de la campagne) : / en français, /en en anglais. site/en/index.html est généré depuis ce fichier : npm run site:en -->
+<link rel="alternate" hreflang="fr" href="https://pearl-inc.app/">
+<link rel="alternate" hreflang="en" href="https://pearl-inc.app/en">
+<link rel="alternate" hreflang="x-default" href="https://pearl-inc.app/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/favicon-64.png" sizes="64x64" type="image/png">
@@ -354,13 +358,25 @@ en:{
   }
 }};
 const KEY='pearl-lang';
+// Une adresse par langue : /en est toujours en anglais ; sur /, la langue choisie ou celle de l'iPhone.
+const PATHS={fr:'/',en:'/en'};
+const onEnglishPage=/^\/en\/?$/.test(location.pathname);
 function pick(){
+  if(onEnglishPage)return 'en';
   try{const q=new URLSearchParams(location.search).get('lang');if(q==='fr'||q==='en')return q;}catch(e){}
   try{const s=localStorage.getItem(KEY);if(s==='fr'||s==='en')return s;}catch(e){}
   const n=(navigator.languages&&navigator.languages[0])||navigator.language||'fr';
   return /^fr\b/i.test(n)?'fr':'en';
 }
 let lang=pick();const subs=[];
+/* L'adresse suit la langue affichée (sans recharger), en gardant les paramètres de campagne (utm_…). */
+function syncPath(){
+  if(!/^\/(en\/?)?$/.test(location.pathname))return; // aperçu local ou autre page : on ne touche pas à l'adresse
+  if(location.pathname.replace(/\/$/,'')===PATHS[lang].replace(/\/$/,''))return;
+  try{const q=new URLSearchParams(location.search);q.delete('lang');const qs=q.toString();
+    history.replaceState(history.state,'',PATHS[lang]+(qs?'?'+qs:'')+location.hash);}catch(e){}
+}
+syncPath();
 const t=k=>(D[lang][k]!==undefined?D[lang][k]:D.fr[k]);
 function apply(){
   document.documentElement.lang=lang;document.title=t('title');
@@ -370,7 +386,7 @@ function apply(){
   document.querySelectorAll('[data-i18n-aria]').forEach(el=>{el.setAttribute('aria-label',t(el.dataset.i18nAria));});
   document.querySelectorAll('.lang [data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
 }
-function set(l){if(l===lang||!D[l])return;lang=l;try{localStorage.setItem(KEY,l);}catch(e){}apply();subs.forEach(f=>{try{f(l);}catch(e){}});}
+function set(l){if(l===lang||!D[l])return;lang=l;try{localStorage.setItem(KEY,l);}catch(e){}syncPath();apply();subs.forEach(f=>{try{f(l);}catch(e){}});}
 const fr=()=>lang==='fr';
 window.PearlI18n={
   get lang(){return lang;}, t, set, onChange:f=>subs.push(f),
@@ -384,7 +400,7 @@ window.PearlI18n={
   treasure:(v,n)=>fr()?'Trésor : '+v+' points  ·  '+n+(n>1?' huîtres ouvertes':' huître ouverte'):'Treasure: '+v+' points  ·  '+n+(n===1?' oyster opened':' oysters opened')
 };
 function init(){apply();document.querySelectorAll('.lang [data-lang]').forEach(b=>b.addEventListener('click',()=>set(b.dataset.lang)));}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+init(); // la page est déjà au-dessus de ce script : on traduit tout de suite, sans attendre three.js
 })();
 
 </script>
