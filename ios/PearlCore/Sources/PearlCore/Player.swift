@@ -66,9 +66,9 @@ public struct PlayerState: Codable, Sendable, Equatable {
     /// Pubs récompensées regardées aujourd'hui.
     public var adRewards: DailyCount?
 
-    /// Nouvelle partie : stock plein, skin de départ, première huître déjà tirée.
+    /// Nouvelle partie : stock plein, skin de départ, première huître (celle du tutoriel) déjà posée.
     public static func new(_ rng: Rng, _ tuning: Tuning, now: Double, catalog: Catalog = .shared) -> PlayerState {
-        let first = createOyster(.initial, rng, tuning, catalog: catalog)
+        let first = nextOyster(oystersOpened: 0, .initial, rng, tuning, catalog: catalog)
         let starters = catalog.economy.skins.filter { $0.grant == "start" }.map(\.id)
         return PlayerState(
             oyster: first.oyster, drawState: first.drawState, nextSerial: 1, pearlCards: [], findCards: [], oystersOpened: 0,
@@ -91,10 +91,15 @@ public struct PlayerState: Codable, Sendable, Equatable {
 
     // MARK: - Ouvrir
 
-    /// L'huître en cours est ouverte : consomme une huître du stock, crée sa carte,
-    /// fait avancer les missions et tire la suivante.
+    /// Le joueur en est encore aux premières huîtres, écrites à l'avance.
+    public func isInTutorial(catalog: Catalog = .shared) -> Bool {
+        catalog.isInTutorial(oystersOpened: oystersOpened)
+    }
+
+    /// L'huître en cours est ouverte : consomme une huître du stock (sauf celles du tutoriel, offertes),
+    /// crée sa carte, fait avancer les missions et pose la suivante.
     public mutating func reveal(lustre: Lustre, cracked: Bool, now: Double, rng: Rng, tuning: Tuning, catalog: Catalog = .shared) -> Reveal {
-        if let consumed = consumeOyster(stock, now: now, tuning) { stock = consumed }
+        if !isInTutorial(catalog: catalog), let consumed = consumeOyster(stock, now: now, tuning) { stock = consumed }
         let serial = nextSerial
         let opened = oyster
         let result: Reveal
@@ -128,7 +133,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
         }
         missions?.reachStreak(.noCrack, noCrackStreak)
 
-        let next = createOyster(drawState, rng, tuning, catalog: catalog)
+        let next = nextOyster(oystersOpened: oystersOpened, drawState, rng, tuning, catalog: catalog)
         oyster = next.oyster
         drawState = next.drawState
         return result

@@ -860,6 +860,12 @@
     "★",
     "★★"
   ],
+  "tutorialPearls": [
+    "rose",
+    "white",
+    "empty",
+    "baroque"
+  ],
   "economy": {
     "oysterDustPrice": 20,
     "goldCoinDust": 5,

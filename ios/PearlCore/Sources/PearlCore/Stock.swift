@@ -47,3 +47,11 @@ public func nextRefillIn(_ stock: StockState, now: Double, _ tuning: Tuning) -> 
     if fresh.count >= tuning.oysterStockMax { return nil }
     return Swift.max(0, fresh.lastRefillAt + rechargeIntervalMs(tuning) - now)
 }
+
+/// Temps (ms) avant que le stock soit plein (notification « tes huîtres sont revenues »), ou nil s'il l'est déjà.
+public func fullStockIn(_ stock: StockState, now: Double, _ tuning: Tuning) -> Double? {
+    let fresh = refreshStock(stock, now: now, tuning)
+    let missing = tuning.oysterStockMax - fresh.count
+    if missing <= 0 { return nil }
+    return Swift.max(0, fresh.lastRefillAt + Double(missing) * rechargeIntervalMs(tuning) - now)
+}

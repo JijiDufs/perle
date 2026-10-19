@@ -5,6 +5,7 @@ import PearlCore
 /// une pub récompensée, une huître contre de la poussière d'or, ou la boutique.
 struct TideOutView: View {
     @Environment(GameModel.self) private var game
+    @AppStorage(Notifications.settingKey) private var notify = false
     let date: Date
 
     var body: some View {
@@ -24,6 +25,18 @@ struct TideOutView: View {
             .disabled(game.player.dust < game.economy.oysterDustPrice)
             Text("Tu as \(game.player.dust) ✦. Revends tes perles en double dans la collection, ou recharge tes huîtres dans la boutique.")
                 .font(.footnote).multilineTextAlignment(.center).foregroundStyle(.white.opacity(0.8))
+            // Le bon moment pour proposer la notification : le joueur attend ses huîtres.
+            if notify {
+                Label("Je te préviens quand la marée est haute", systemImage: "bell.fill")
+                    .font(.footnote.weight(.semibold)).foregroundStyle(.white.opacity(0.85))
+            } else {
+                Button {
+                    Task { notify = await Notifications.enable() }
+                } label: {
+                    Label("Me prévenir quand elles reviennent", systemImage: "bell")
+                }
+                .buttonStyle(GlassButtonStyle(compact: true))
+            }
         }
         .padding(24)
         .frame(maxWidth: 340)

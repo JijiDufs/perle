@@ -13,10 +13,11 @@ import { RARITY_SYMBOLS } from '../src/core/jewels';
 import { INITIAL_DRAW_STATE } from '../src/core/draw';
 import { FIND_TIER_WEIGHTS, FINDS, FIND_ALBUMS, BOTTLE_MESSAGES } from '../src/core/finds';
 import { OpeningEngine, type OpeningSample } from '../src/core/opening';
-import { createOyster } from '../src/core/oyster';
+import { createOyster, oysterWith } from '../src/core/oyster';
 import { pearlValue } from '../src/core/player';
 import { MARKS, OVERTONES, OVERTONE_WEIGHTS, SHAPES, SHAPE_WEIGHTS } from '../src/core/pearlTraits';
 import { seededRng } from '../src/core/rng';
+import { scriptedPearl, TUTORIAL_PEARLS } from '../src/core/tutorial';
 import { DEFAULT_TUNING } from '../src/tuning';
 import { thumbDistanceToAngle } from '../src/input/thumb';
 
@@ -46,6 +47,7 @@ function catalog() {
     shapeWeights: perPearl(SHAPE_WEIGHTS),
     overtoneWeights: perPearl(OVERTONE_WEIGHTS),
     raritySymbols: RARITY_SYMBOLS,
+    tutorialPearls: TUTORIAL_PEARLS,
     economy: {
       ...APP_ECONOMY,
       sellDustByTier: APP_SELL_DUST_BY_TIER,
@@ -107,7 +109,22 @@ function parity() {
     value: pearlValue(oyster.pearlId, oyster.sizeMm, i % 3 === 0, oyster.traits),
   }));
 
-  return { rngSeed: 2026, rngValues, oysterSeed: 42, oysters, openings, thumbAngles, values };
+  // Premières minutes : les huîtres écrites à l'avance, puis le tirage normal (même générateur).
+  const tutorialRng = seededRng(7);
+  let tutorialDraw = INITIAL_DRAW_STATE;
+  const tutorialOysters = Array.from({ length: TUTORIAL_PEARLS.length + 4 }, (_, opened) => {
+    const scripted = scriptedPearl(opened);
+    if (scripted) {
+      const goldenOrBetter = PEARLS.find((pearl) => pearl.id === scripted)?.goldenOrBetter ?? false;
+      tutorialDraw = { sinceGoldenOrBetter: goldenOrBetter ? 0 : tutorialDraw.sinceGoldenOrBetter + 1 };
+      return { ...oysterWith(scripted, tutorialRng), sinceGoldenOrBetter: tutorialDraw.sinceGoldenOrBetter };
+    }
+    const result = createOyster(tutorialDraw, tutorialRng, DEFAULT_TUNING);
+    tutorialDraw = result.drawState;
+    return { ...result.oyster, sinceGoldenOrBetter: tutorialDraw.sinceGoldenOrBetter };
+  });
+
+  return { rngSeed: 2026, rngValues, oysterSeed: 42, oysters, tutorialSeed: 7, tutorialOysters, openings, thumbAngles, values };
 }
 
 function check(path: string, data: unknown) {

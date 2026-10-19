@@ -70,6 +70,8 @@ public struct Catalog: Codable, Sendable {
     public let overtoneWeights: [String: [Weighted]]
     public let markWeights: [Weighted]
     public let raritySymbols: [String]
+    /// Les premières huîtres, écrites à l'avance (src/core/tutorial.ts) ; voir Tutorial.swift.
+    public let tutorialPearls: [String]
     public internal(set) var economy: Economy
     /// Textes anglais du contenu (src/core/catalogEnglish.ts) ; voir `localized(_:)`.
     public let english: CatalogEnglish?

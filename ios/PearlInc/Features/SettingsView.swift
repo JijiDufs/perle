@@ -9,6 +9,8 @@ struct SettingsView: View {
     @EnvironmentObject private var auth: AuthViewModel
     @Environment(\.dismiss) private var dismiss
     @AppStorage(Haptics.settingKey) private var haptics = true
+    @AppStorage(Notifications.settingKey) private var notify = false
+    @State private var notificationsDenied = false
     @State private var confirmSignOut = false
     @State private var confirmDelete = false
     @State private var copied = false
@@ -20,6 +22,29 @@ struct SettingsView: View {
                 Section("Jeu") {
                     Toggle(isOn: $haptics) { Label("Vibrations", systemImage: "iphone.radiowaves.left.and.right") }
                         .tint(Palette.gold)
+                    Toggle(isOn: Binding(get: { notify }, set: { on in
+                        if on {
+                            Task {
+                                notify = await Notifications.enable()
+                                notificationsDenied = await Notifications.isDenied()
+                            }
+                        } else {
+                            Notifications.disable()
+                            notify = false
+                        }
+                    })) {
+                        Label("Huîtres revenues", systemImage: "bell")
+                    }
+                    .tint(Palette.gold)
+                    if notificationsDenied {
+                        Button {
+                            if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+                        } label: {
+                            Text("Les notifications de Pearl Inc. sont coupées dans les Réglages d’iOS. Les rallumer")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                     // La langue se choisit dans les réglages d'iOS (une langue pour cette app seule).
                     Button {
                         if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }

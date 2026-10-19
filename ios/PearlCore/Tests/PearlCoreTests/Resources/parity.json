@@ -4051,6 +4051,86 @@
       "sinceGoldenOrBetter": 4
     }
   ],
+  "tutorialSeed": 7,
+  "tutorialOysters": [
+    {
+      "pearlId": "rose",
+      "sizeMm": 6,
+      "traits": {
+        "shape": "ronde",
+        "overtone": "arc-en-ciel",
+        "mark": null,
+        "seed": 0.521
+      },
+      "sinceGoldenOrBetter": 1
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 6,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.73
+      },
+      "sinceGoldenOrBetter": 2
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "sinceGoldenOrBetter": 3
+    },
+    {
+      "pearlId": "baroque",
+      "sizeMm": 7.6,
+      "traits": {
+        "shape": "baroque",
+        "overtone": "argente",
+        "mark": null,
+        "seed": 0.368
+      },
+      "sinceGoldenOrBetter": 4
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 6.7,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "rose",
+        "mark": null,
+        "seed": 0.191
+      },
+      "sinceGoldenOrBetter": 5
+    },
+    {
+      "pearlId": "white",
+      "sizeMm": 5.7,
+      "traits": {
+        "shape": "presque-ronde",
+        "overtone": "creme",
+        "mark": null,
+        "seed": 0.913
+      },
+      "sinceGoldenOrBetter": 6
+    },
+    {
+      "pearlId": "rose",
+      "sizeMm": 7.7,
+      "traits": {
+        "shape": "cerclee",
+        "overtone": "lavande",
+        "mark": null,
+        "seed": 0.828
+      },
+      "sinceGoldenOrBetter": 7
+    },
+    {
+      "pearlId": "empty",
+      "sizeMm": 0,
+      "findId": "cadenas",
+      "sinceGoldenOrBetter": 8
+    }
+  ],
   "openings": [
     {
       "name": "lent et régulier",

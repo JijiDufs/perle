@@ -24,6 +24,8 @@ final class GameModel {
     private(set) var player: PlayerState
     private(set) var stage: Stage = .playing
     private(set) var angle = 0.0
+    /// Où en est le geste (bulles d'accompagnement, main fantôme).
+    private(set) var phase: OpeningPhase = .closed
     private(set) var cracked = false
     private(set) var inFragileZone = false
     private(set) var tooFast = false
@@ -35,6 +37,9 @@ final class GameModel {
     /// L'huître à l'écran. Le Core tire la suivante dès la révélation (invariant 5) : on garde celle qu'on
     /// vient d'ouvrir jusqu'à ce que la carte soit refermée, sinon la perle changerait sous les yeux du joueur.
     private(set) var current: Oyster
+    /// Huîtres déjà ouvertes quand l'huître à l'écran a été posée (0 = la toute première) :
+    /// c'est elle qui dit où en sont les premières minutes, même pendant la carte.
+    private(set) var step = 0
     /// Début de la révélation, angle du couvercle à cet instant, et durée du suspense.
     private(set) var revealStartedAt: Date?
     private(set) var revealAngle = 0.0
@@ -64,7 +69,8 @@ final class GameModel {
         let saved = Storage.load() ?? PlayerState.new(systemRng(), catalog.tuning, now: Clock.nowMs)
         player = saved
         current = saved.oyster
-        engine = OpeningEngine(tuning: catalog.tuning)
+        step = saved.oystersOpened
+        engine = OpeningEngine(tuning: catalog.tuning, crackProtected: catalog.isCrackProtected(oystersOpened: saved.oystersOpened))
         hinge = HingeTracker(tuning: catalog.tuning)
         thumb.onSample = { [weak self] sample, distance in self?.handle(sample, distance: distance) }
         thumb.onRelease = { [weak self] in self?.handleRelease() }
@@ -86,6 +92,15 @@ final class GameModel {
     var revealTier: Int { find.map { min(3, $0.tier - 1) } ?? pearl.revealTier }
     var equippedSkin: AppSkin { economy.skin(player.equippedSkin) ?? economy.skins[0] }
 
+    /// Premières minutes : l'huître à l'écran est une de celles du tutoriel. Les fonctions
+    /// (onglets, missions, compteurs) n'apparaissent qu'après (cahier §15 : une à une).
+    var inTutorial: Bool { catalog.isInTutorial(oystersOpened: step) }
+
+    /// On peut ouvrir l'huître posée : celles du tutoriel sont offertes, les autres coûtent une huître du stock.
+    private var canOpen: Bool {
+        inTutorial || player.oystersAvailable(now: Clock.nowMs, tuning: tuning) > 0
+    }
+
     func oystersAvailable(at date: Date) -> Int {
         player.oystersAvailable(now: date.timeIntervalSince1970 * 1000, tuning: tuning)
     }
@@ -97,7 +112,7 @@ final class GameModel {
 
     /// Le stock est vide : la marée remonte.
     func isTideOut(at date: Date) -> Bool {
-        stage == .playing && engine.phase == .closed && oystersAvailable(at: date) == 0
+        stage == .playing && engine.phase == .closed && !inTutorial && oystersAvailable(at: date) == 0
     }
 
     // MARK: - Temps qui passe
@@ -108,12 +123,19 @@ final class GameModel {
         Storage.save(player)
     }
 
+    /// En quittant l'app : la notification « tes huîtres sont revenues » pour quand le stock sera plein
+    /// (jamais pendant le tutoriel, où les huîtres sont offertes).
+    func scheduleRefillNotification() {
+        let fullIn = inTutorial ? nil : fullStockIn(player.stock, now: Clock.nowMs, tuning).map { $0 / 1000 }
+        Notifications.scheduleRefill(in: fullIn, stockMax: tuning.oysterStockMax)
+    }
+
     // MARK: - Gestes
 
     func drag(translation: Double) {
         guard stage == .playing, !hingeDriving else { return }
         if engine.phase == .closed {
-            guard player.oystersAvailable(now: Clock.nowMs, tuning: tuning) > 0 else { return }
+            guard canOpen else { return }
             haptics.prepare()
         }
         thumb.drag(translation: translation, tuning: tuning)
@@ -145,7 +167,7 @@ final class GameModel {
         case .sample(let angle):
             guard stage == .playing, thumb.distance == 0 || hingeDriving else { return }
             if engine.phase == .closed {
-                guard player.oystersAvailable(now: Clock.nowMs, tuning: tuning) > 0 else { return }
+                guard canOpen else { return }
                 haptics.prepare()
             }
             hingeDriving = true
@@ -157,20 +179,22 @@ final class GameModel {
 
     /// VoiceOver : ouverture lente et régulière, sans fêlure.
     func openForAccessibility() {
-        guard stage == .playing, player.oystersAvailable(now: Clock.nowMs, tuning: tuning) > 0 else { return }
+        guard stage == .playing, canOpen else { return }
         thumb.openSlowly(tuning: tuning, durationMs: 2600)
     }
 
     /// Toucher la carte (sur le Duo : refermer le téléphone) : huître suivante.
     func nextOyster() {
         guard case .card = stage else { return }
-        engine = OpeningEngine(tuning: tuning)
+        step = player.oystersOpened
+        engine = OpeningEngine(tuning: tuning, crackProtected: catalog.isCrackProtected(oystersOpened: step))
         thumb.reset()
         hinge.disarmIfOpen()
         hingeArmed = hinge.armed
         hingeDriving = false
         lastTickDistance = 0
         angle = 0
+        phase = .closed
         cracked = false
         inFragileZone = false
         tooFast = false
@@ -219,11 +243,13 @@ final class GameModel {
     /// Les skins achetés reviennent tout seuls (droits relus auprès d'Apple).
     func eraseLocalGame() {
         player = PlayerState.new(rng, tuning, now: Clock.nowMs)
-        engine = OpeningEngine(tuning: tuning)
+        step = 0
+        engine = OpeningEngine(tuning: tuning, crackProtected: catalog.isCrackProtected(oystersOpened: 0))
         thumb.reset()
         hingeDriving = false
         lastTickDistance = 0
         angle = 0
+        phase = .closed
         cracked = false
         inFragileZone = false
         tooFast = false
@@ -302,6 +328,7 @@ final class GameModel {
     private func handle(_ sample: OpeningSample, distance: Double) {
         let events = engine.push(sample)
         angle = engine.angle
+        phase = engine.phase
         inFragileZone = engine.inFragileZone && engine.phase == .opening
         // Même seuil d'alerte que la webapp (features/oyster/oysterScreen.ts).
         tooFast = inFragileZone && engine.velocity > tuning.maxSafeVelocity * 0.6
@@ -327,6 +354,7 @@ final class GameModel {
     private func handleRelease() {
         engine.release()
         angle = engine.angle
+        phase = engine.phase
         inFragileZone = false
         tooFast = false
         if engine.phase == .closed {

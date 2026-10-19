@@ -9,6 +9,9 @@ struct RevealCardView: View {
 
     var body: some View {
         VStack(spacing: 18) {
+            if let coach = Coach.afterReveal(step: game.step, cracked: game.cracked) {
+                CoachBubble(text: coach)
+            }
             PearlCardView(content: content, width: 300)
                 .accessibilityAddTraits(.isButton)
                 .accessibilityHint("Touche la carte pour l'huître suivante")

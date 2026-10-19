@@ -4,6 +4,28 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 8) · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : les premières minutes (cahier §15, `docs/duo-gadget.md` §4) et la notification « tes huîtres sont revenues ».
+
+**Fait**
+- `PearlCore/Tutorial.swift` : les 4 premières huîtres écrites à l'avance (rosée, blanche, vide, baroque), **exportées du TypeScript** (`tutorialPearls` dans `catalog.json`, depuis `src/core/tutorial.ts`). Offertes (le stock n'y touche pas), la 1re ne peut pas se fêler, elles comptent pour la garantie comme dans la webapp. Cas de référence `tutorialOysters` (parité avec le web) + `TutorialTests`.
+- Écran : bulles d'accompagnement reprises de `coach.ts` (`Features/Coach.swift`), variantes iPhone Duo (« Ouvre doucement le téléphone… »), bulle au-dessus de la carte après chaque révélation ; **main fantôme** qui montre le geste sur la 1re huître (immobile avec « Réduire les animations », absente sur le Duo).
+- Pendant le tutoriel, rien que l'huître : onglets, compteurs et missions masqués ; ils arrivent avec la 1re huître libre, accompagnés d'une bulle qui explique le stock (10 max, 1 toutes les 20 min, valeurs lues dans les réglages).
+- `Platform/Notifications.swift` : une seule notification locale, « La marée est haute », programmée en quittant l'app pour l'heure où le stock sera plein, retirée en revenant. Proposée sur l'écran « La marée remonte… » (« Me prévenir quand elles reviennent ») et dans Réglages → « Huîtres revenues ». Jamais pendant le tutoriel. `fullStockIn` dans `Stock.swift` (testé).
+- Textes FR + EN dans `Localizable.xcstrings`.
+- Vérifié : `npm test` (163), `npm run build`, `swift test` (35), build Xcode ; parcours complet des 4 huîtres + arrivée des onglets dans le simulateur iPhone Duo (FR), bulle du stock en anglais.
+
+**À faire**
+- Non vérifié à l'écran : la notification elle-même (il faut vider le stock) et la main fantôme sur un iPhone sans charnière (le simulateur utilisé était le Duo).
+- Reste de la liste 1.0 (`duo-gadget.md` §4) : image story pour le partage (aujourd'hui un texte), calendrier de connexion, Game Center, sauvegarde iCloud, skin Première marée des inscrits (comment le débloquer), mesure d'usage (outil à choisir).
+
+**Fragile**
+- Une sauvegarde d'avant cette version reprend le tutoriel là où elle en est (`oystersOpened` < 4) : bulles et huîtres offertes jusqu'à la 4e, avec l'huître déjà posée (invariant 5).
+- Les missions avancent pendant le tutoriel (invisibles) : le joueur peut avoir une récompense qui l'attend dès la fin.
+
+---
+
 ## 2026-10-19 (suite 7) · Jules · Claude Code · branche `jules/ios-app`
 
 Tests qui échouaient par intermittence quand la machine est chargée (juste après un build Xcode).

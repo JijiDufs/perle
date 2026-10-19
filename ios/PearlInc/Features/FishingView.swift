@@ -35,10 +35,26 @@ struct FishingView: View {
             .accessibilityHint("Glisse le doigt vers le haut pour l'ouvrir doucement.")
             .accessibilityAction(named: "Ouvrir l'huître") { game.openForAccessibility() }
 
-            VStack {
+            // Premières minutes : la main fantôme montre le geste sur la toute première huître.
+            if showsGhostHand {
+                GeometryReader { proxy in
+                    let layout = OysterArt.layout(size: proxy.size, look: SkinLook(skinId: game.player.equippedSkin))
+                    GhostHand(travel: min(170, layout.L * 0.75))
+                        .position(x: layout.hx, y: layout.hy + layout.L * 0.1)
+                }
+                .ignoresSafeArea()
+                .transition(.opacity)
+            }
+
+            VStack(spacing: 14) {
                 ResourceBar(showMissions: $showMissions, showSettings: $showSettings)
                     .padding(.horizontal)
                     .padding(.top, 8)
+                if let coach = coachText {
+                    CoachBubble(text: coach)
+                        .padding(.horizontal, 24)
+                        .allowsHitTesting(false)
+                }
                 Spacer()
                 StatusPill(text: statusText, warning: game.tooFast)
                     .padding(.bottom, 24)
@@ -62,6 +78,11 @@ struct FishingView: View {
             }
         }
         .animation(.spring(duration: 0.45, bounce: 0.35), value: game.stage)
+        .animation(.easeInOut(duration: 0.3), value: coachText)
+        .animation(.easeInOut(duration: 0.3), value: showsGhostHand)
+        // Pendant le tutoriel, rien que l'huître : les onglets arrivent avec la première huître libre.
+        .toolbar(game.inTutorial ? .hidden : .visible, for: .tabBar)
+        .animation(.easeInOut(duration: 0.4), value: game.inTutorial)
         #if DEBUG
         // Outil de test : par-dessus la carte, pour essayer « refermer = huître suivante ».
         .overlay(alignment: .bottom) {
@@ -85,12 +106,24 @@ struct FishingView: View {
         }
     }
 
+    /// La bulle d'accompagnement des premières huîtres ; nil = rien à dire.
+    private var coachText: String? {
+        guard game.stage == .playing, !game.cracked else { return nil }
+        return Coach.duringGesture(step: game.step, phase: game.phase, hinge: game.hasHinge, hingeArmed: game.hingeArmed, tuning: game.tuning)
+    }
+
+    private var showsGhostHand: Bool {
+        game.step == 0 && game.stage == .playing && game.phase == .closed && game.angle == 0 && !game.hasHinge
+    }
+
     /// Le message sous l'huître ; nil = rien à dire.
     private var statusText: String? {
         if game.stage != .playing { return nil }
         if game.cracked { return String(localized: "Fêlée…") }
         if game.tooFast { return String(localized: "Trop vite !") }
         if game.inFragileZone { return String(localized: "Zone fragile : doucement") }
+        // La bulle d'accompagnement dit déjà quoi faire.
+        if coachText != nil { return nil }
         if game.angle == 0 && game.isTideOut(at: Date()) { return nil }
         if game.angle == 0 {
             if game.hasHinge {

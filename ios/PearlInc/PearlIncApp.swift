@@ -26,6 +26,7 @@ struct PearlIncApp: App {
 /// Onglets du système : sur l'iPhone Duo, ils passent tout seuls sur le côté (docs/duo-gadget.md §5).
 struct RootView: View {
     @Environment(GameModel.self) private var game
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         TabView {
@@ -45,5 +46,10 @@ struct RootView: View {
         }
         // Consentement RGPD (formulaire de Google si besoin), puis première pub récompensée.
         .task { await game.ads.start() }
+        // « Tes huîtres sont revenues » : programmée en partant, retirée en revenant.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background { game.scheduleRefillNotification() }
+            if phase == .active { Notifications.cancel() }
+        }
     }
 }

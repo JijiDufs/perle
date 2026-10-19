@@ -37,6 +37,15 @@ private func newPlayer() -> PlayerState {
     #expect(nextRefillIn(stock, now: interval * 0.25, tuning) == interval * 0.75)
 }
 
+@Test func leStockEstPleinAuBoutDuCompteARebours() {
+    let interval = tuning.oysterRechargeMinutes * minute
+    let stock = StockState(count: tuning.oysterStockMax - 3, lastRefillAt: 0)
+    #expect(fullStockIn(stock, now: interval * 0.5, tuning) == interval * 2.5)
+    #expect(refreshStock(stock, now: interval * 3, tuning).count == tuning.oysterStockMax)
+    #expect(fullStockIn(stock, now: interval * 3, tuning) == nil)
+    #expect(fullStockIn(StockState(count: tuning.oysterStockMax + 2, lastRefillAt: 0), now: 0, tuning) == nil)
+}
+
 @Test func lesHuitresAcheteesDepassentLeMaximum() {
     var player = newPlayer()
     player.grant(catalog.economy.consumables.first { $0.oysters == 10 }!)
@@ -46,7 +55,11 @@ private func newPlayer() -> PlayerState {
 
 @Test func ouvrirConsommeUneHuitre() {
     var player = newPlayer()
-    _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: seededRng(2), tuning: tuning)
+    let rng = seededRng(2)
+    // Les huîtres du tutoriel sont offertes ; les suivantes coûtent une huître du stock.
+    for _ in catalog.tutorialPearls { _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning) }
+    #expect(player.stock.count == tuning.oysterStockMax)
+    _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning)
     #expect(player.stock.count == tuning.oysterStockMax - 1)
 }
 

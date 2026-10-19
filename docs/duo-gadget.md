@@ -264,7 +264,8 @@ ios/
       Resources/catalog.json   Perles, trouvailles, traits, réglages : EXPORTÉS depuis le TypeScript
       Random, Tuning, Catalog, Oyster (tirage, garantie, traits), Opening (moteur + lustre),
       ThumbMapping (pouce → angle), Player (cartes, valeurs, comptoir, achats en poussière, skins),
-      Stock (huîtres et recharge), Missions (missions du jour), Economy (barèmes, skins, produits)
+      Stock (huîtres et recharge), Missions (missions du jour), Economy (barèmes, skins, produits),
+      Tutorial (premières huîtres écrites à l'avance)
     Tests/PearlCoreTests/
       Resources/parity.json    Cas de référence produits par le TypeScript
       ParityTests              Le Swift doit donner exactement les mêmes résultats
@@ -273,8 +274,8 @@ ios/
     Input/ThumbSource   Pouce vers le haut → OpeningSample
     Input/HingeSource   Charnière du Duo (UIHingeInteraction, iOS 27.1+) → angle ; PearlCore/Hinge (HingeTracker) décide quand elle pilote l'huître
     Art/                Lagon, coquille, nacre, perle, halo : dessinés par code
-    Platform/           Haptique, sauvegarde
-    Features/           Pêche (barre de ressources, marée basse), carte, missions, collection (comptoir), boutique (skins)
+    Platform/           Haptique, sauvegarde, notification « tes huîtres sont revenues »
+    Features/           Pêche (barre de ressources, marée basse, bulles et main fantôme du tutoriel), carte, missions, collection (comptoir), boutique (skins)
 ```
 
 - **Une seule source de vérité** : catalogues et réglages restent dans `src/` (TypeScript) ; l'économie de l'app est dans `src/core/appEconomy.ts`. `npm run ios:export` régénère `catalog.json` et `parity.json`. Le test `tests/ios-export.test.ts` échoue si on oublie, et `swift test` (dans `ios/PearlCore`) vérifie que le Swift suit.

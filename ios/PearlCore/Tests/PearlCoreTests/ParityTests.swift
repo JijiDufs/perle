@@ -29,6 +29,8 @@ private struct Parity: Decodable {
     let rngValues: [Double]
     let oysterSeed: UInt32
     let oysters: [ExpectedOyster]
+    let tutorialSeed: UInt32
+    let tutorialOysters: [ExpectedOyster]
     let openings: [Opening]
     let thumbAngles: [ThumbAngle]
     struct Value: Decodable {
@@ -72,6 +74,20 @@ private let tuning = Catalog.shared.tuning
         #expect(oyster.findId == expected.findId, "huître \(index)")
         #expect(oyster.traits == expected.traits, "huître \(index)")
         #expect(state.sinceGoldenOrBetter == expected.sinceGoldenOrBetter, "huître \(index)")
+    }
+}
+
+@Test func memesPremieresHuitresQueLeWeb() {
+    let rng = seededRng(parity.tutorialSeed)
+    var player = PlayerState.new(rng, tuning, now: 0)
+    for (index, expected) in parity.tutorialOysters.enumerated() {
+        let oyster = player.oyster
+        #expect(oyster.pearlId == expected.pearlId, "huître \(index)")
+        #expect(oyster.sizeMm == expected.sizeMm, "huître \(index)")
+        #expect(oyster.findId == expected.findId, "huître \(index)")
+        #expect(oyster.traits == expected.traits, "huître \(index)")
+        #expect(player.drawState.sinceGoldenOrBetter == expected.sinceGoldenOrBetter, "huître \(index)")
+        _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning)
     }
 }
 

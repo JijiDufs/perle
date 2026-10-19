@@ -2931,6 +2931,310 @@
           }
         }
       }
+    },
+    "Attention : à mi-ouverture, la perle est fragile. Si tu vas trop vite, elle se fêle et perd la moitié de sa valeur.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attention : à mi-ouverture, la perle est fragile. Si tu vas trop vite, elle se fêle et perd la moitié de sa valeur."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Careful: halfway open, the pearl is fragile. Go too fast and it cracks, losing half its value."
+          }
+        }
+      }
+    },
+    "Bien joué : ouverte en douceur, perle intacte.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bien joué : ouverte en douceur, perle intacte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Well done: opened gently, pearl intact."
+          }
+        }
+      }
+    },
+    "Doucement…": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doucement…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gently…"
+          }
+        }
+      }
+    },
+    "Elle résiste… continue, elle va céder.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elle résiste… continue, elle va céder."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It’s resisting… keep going, it’s about to give."
+          }
+        }
+      }
+    },
+    "Fêlée… La prochaine fois, ralentis à mi-ouverture.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fêlée… La prochaine fois, ralentis à mi-ouverture."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cracked… Next time, slow down halfway."
+          }
+        }
+      }
+    },
+    "Glisse le pouce vers le haut pour ouvrir ta première huître.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glisse le pouce vers le haut pour ouvrir ta première huître."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slide your thumb up to open your first oyster."
+          }
+        }
+      }
+    },
+    "Huîtres revenues": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Huîtres revenues"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oysters back"
+          }
+        }
+      }
+    },
+    "Je te préviens quand la marée est haute": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je te préviens quand la marée est haute"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I’ll let you know when the tide is in"
+          }
+        }
+      }
+    },
+    "La marée est haute": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La marée est haute"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The tide is in"
+          }
+        }
+      }
+    },
+    "Les notifications de Pearl Inc. sont coupées dans les Réglages d’iOS. Les rallumer": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les notifications de Pearl Inc. sont coupées dans les Réglages d’iOS. Les rallumer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pearl Inc. notifications are off in iOS Settings. Turn them back on"
+          }
+        }
+      }
+    },
+    "Me prévenir quand elles reviennent": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Me prévenir quand elles reviennent"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notify me when they’re back"
+          }
+        }
+      }
+    },
+    "Ouvre doucement le téléphone : ta première huître s’ouvre avec lui.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre doucement le téléphone : ta première huître s’ouvre avec lui."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open your phone gently: your first oyster opens with it."
+          }
+        }
+      }
+    },
+    "Parfois, rien. C’est la mer. La prochaine sera peut-être la bonne.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parfois, rien. C’est la mer. La prochaine sera peut-être la bonne."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sometimes, nothing. That’s the sea. The next one might be it."
+          }
+        }
+      }
+    },
+    "Plus une perle est rare, plus elle se fait attendre. Les plus précieuses tremblent avant même qu’on les touche. Bonne pêche !": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus une perle est rare, plus elle se fait attendre. Les plus précieuses tremblent avant même qu’on les touche. Bonne pêche !"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The rarer the pearl, the longer it makes you wait. The most precious ones tremble before you even touch them. Happy fishing!"
+          }
+        }
+      }
+    },
+    "Referme le téléphone, puis ouvre-le doucement : ta première huître s’ouvre avec lui.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referme le téléphone, puis ouvre-le doucement : ta première huître s’ouvre avec lui."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close your phone, then open it gently: your first oyster opens with it."
+          }
+        }
+      }
+    },
+    "Ta première perle ! Elle rejoint ta collection.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta première perle ! Elle rejoint ta collection."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your first pearl! It joins your collection."
+          }
+        }
+      }
+    },
+    "Tes huîtres sont en haut : %lld au maximum, une revient toutes les %lld min. Tes perles t’attendent dans l’onglet Collection.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tes huîtres sont en haut : %lld au maximum, une revient toutes les %lld min. Tes perles t’attendent dans l’onglet Collection."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your oysters are up top: %1$lld at most, one comes back every %2$lld min. Your pearls are waiting in the Collection tab."
+          }
+        }
+      }
+    },
+    "Tes huîtres sont revenues : %lld t’attendent sur le ponton.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tes huîtres sont revenues : %lld t’attendent sur le ponton."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your oysters are back: %lld are waiting on the jetty."
+          }
+        }
+      }
+    },
+    "Voilà ! Ouvre-la jusqu’au bout.": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voilà ! Ouvre-la jusqu’au bout."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There! Open it all the way."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

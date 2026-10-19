@@ -10,36 +10,22 @@ struct ResourceBar: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { timeline in
             HStack(spacing: 10) {
-                Chip {
-                    Image(systemName: "drop.fill").foregroundStyle(Lagoon.surface)
-                    Text("\(game.oystersAvailable(at: timeline.date))").monospacedDigit()
-                    if let next = game.nextOysterIn(at: timeline.date) {
-                        Text(GameText.countdown(next)).font(.caption.monospacedDigit()).foregroundStyle(.white.opacity(0.65))
-                    }
-                }
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel("\(game.oystersAvailable(at: timeline.date)) huîtres")
-
-                Chip {
-                    Text("✦").foregroundStyle(Palette.gold)
-                    Text("\(game.player.dust)").monospacedDigit()
-                }
-                .phaseAnimator([1.0, 1.2, 1.0], trigger: game.dustBump) { content, scale in
-                    content.scaleEffect(scale)
-                }
-                .accessibilityLabel("\(game.player.dust) poussière d’or")
+                // Pendant le tutoriel, les huîtres sont offertes : les compteurs arrivent après.
+                if !game.inTutorial { counters(at: timeline.date) }
 
                 Spacer()
 
-                Button { showMissions = true } label: {
-                    Chip {
-                        Image(systemName: "checklist")
-                        if game.player.missions?.hasReward == true {
-                            Circle().fill(Palette.gold).frame(width: 8, height: 8)
+                if !game.inTutorial {
+                    Button { showMissions = true } label: {
+                        Chip {
+                            Image(systemName: "checklist")
+                            if game.player.missions?.hasReward == true {
+                                Circle().fill(Palette.gold).frame(width: 8, height: 8)
+                            }
                         }
                     }
+                    .accessibilityLabel("Missions du jour")
                 }
-                .accessibilityLabel("Missions du jour")
 
                 Button { showSettings = true } label: {
                     Chip { Image(systemName: "gearshape.fill") }
@@ -48,7 +34,30 @@ struct ResourceBar: View {
             }
             .font(.headline)
             .foregroundStyle(.white)
+            .animation(.easeInOut(duration: 0.4), value: game.inTutorial)
         }
+    }
+
+    @ViewBuilder
+    private func counters(at date: Date) -> some View {
+        Chip {
+            Image(systemName: "drop.fill").foregroundStyle(Lagoon.surface)
+            Text("\(game.oystersAvailable(at: date))").monospacedDigit()
+            if let next = game.nextOysterIn(at: date) {
+                Text(GameText.countdown(next)).font(.caption.monospacedDigit()).foregroundStyle(.white.opacity(0.65))
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(game.oystersAvailable(at: date)) huîtres")
+
+        Chip {
+            Text("✦").foregroundStyle(Palette.gold)
+            Text("\(game.player.dust)").monospacedDigit()
+        }
+        .phaseAnimator([1.0, 1.2, 1.0], trigger: game.dustBump) { content, scale in
+            content.scaleEffect(scale)
+        }
+        .accessibilityLabel("\(game.player.dust) poussière d’or")
     }
 }
 
