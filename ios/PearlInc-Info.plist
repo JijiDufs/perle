@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!-- Clés que les réglages de build ne savent pas générer ; Xcode les fusionne avec l'Info.plist généré.
-     AdMob : l'App ID de Pearl Inc. (le même en Debug, avec le bloc de test : recommandé par Google) et la liste
-     SKAdNetwork de Google (developers.google.com/admob/ios/quick-start, relevée le 2026-10-14). -->
 <plist version="1.0">
 <dict>
 	<key>GADApplicationIdentifier</key>

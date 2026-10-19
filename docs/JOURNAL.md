@@ -4,6 +4,20 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite) · Jules · Claude Code · branche `jules/ios-app`
+
+Mesure d'audience du site avec Vercel Web Analytics.
+
+**Fait**
+- Script de Vercel ajouté à toutes les pages de `site/` (et de `docs/pages-app/`, pour quand elles seront mises en ligne).
+- Confidentialité (site FR/EN et pages de l'app) : section « La mesure d'audience » (sans cookie, IP non conservée, chiffres globaux) à la place de « pas d'outil de mesure d'audience ».
+- Xcode : Jules a un **Xcode 27.1** (build 27A9275, SDK iOS 27.1 avec `DeviceHinge`) dans Téléchargements ; le premier archivage a échoué faute d'équipe de signature (à choisir dans Signing & Capabilities). Pas d'iPhone Duo physique : la charnière se réglera au simulateur, puis avec des inscrits équipés d'un Duo (TestFlight externe).
+
+**À faire**
+- Vérifier dans le tableau de bord Vercel (Analytics) que les visites arrivent ; le plan Hobby ne permet pas les évènements personnalisés (clic « S'inscrire »).
+
+---
+
 ## 2026-10-19 · Jules · Claude Code (Chrome) · branche `jules/ios-app`
 
 Fiche App Store Connect remplie dans Chrome (app 6822782842, compte de Mathys).
