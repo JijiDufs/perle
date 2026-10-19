@@ -72,8 +72,9 @@ struct OysterArt {
         let clam = if case .clam = look { ClamArt.lengthFactor } else { 1.0 }
         switch pose {
         case .thumb:
-            let L = (length ?? min(width * 0.6, visible * 0.42)) * clam
-            let hy = length != nil ? height / 2 - L * 0.5 : top + visible * 0.52
+            // Fermée, l'huître prend une bonne partie de l'écran (≈ 85 % de la largeur), centrée un peu sous le milieu.
+            let L = (length ?? min(width * 0.7, visible * 0.48)) * clam
+            let hy = length != nil ? height / 2 - L * 0.5 : height * 0.55 - L * 0.42
             return Layout(hx: width / 2, hy: hy, L: L)
         case .cover:
             // Comme drawCover du prototype : la charnière déborde un peu à gauche.
