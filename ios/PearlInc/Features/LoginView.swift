@@ -95,7 +95,7 @@ struct LoginView: View {
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text("En continuant, tu acceptes les [conditions d’utilisation](https://pearl-inc.app/conditions/) et la [politique de confidentialité](https://pearl-inc.app/confidentialite/).")
+            Text("En continuant, tu acceptes les [conditions d’utilisation](\(SiteLinks.terms.absoluteString)) et la [politique de confidentialité](\(SiteLinks.privacy.absoluteString)).")
                 .font(.caption)
                 .foregroundStyle(.white.opacity(0.6))
                 .tint(.white)

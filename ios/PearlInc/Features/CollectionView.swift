@@ -40,7 +40,7 @@ struct CollectionView: View {
                                     FindThumb(find: find, size: 30)
                                     Text(find.name)
                                     Spacer()
-                                    Text(serialLabel(card.serial)).font(.caption.monospaced()).foregroundStyle(.white.opacity(0.6))
+                                    Text(GameText.serial(card.serial)).font(.caption.monospaced()).foregroundStyle(.white.opacity(0.6))
                                 }
                                 .padding(.vertical, 4)
                             }
@@ -91,7 +91,7 @@ struct CollectionView: View {
         VStack(spacing: 6) {
             Text("Ma collection").font(.system(size: 34, weight: .bold)).tracking(-0.8)
             Text("\(discovered) / \(findable.count) perles trouvées").font(.headline).opacity(0.9)
-            Text("Trésor : \(treasure) · \(game.player.pearlCards.count) perle\(game.player.pearlCards.count > 1 ? "s" : "")")
+            Text("Trésor : \(treasure) · \(game.player.pearlCards.count) perles")
                 .font(.subheadline).opacity(0.65)
         }
         .shadow(color: .black.opacity(0.3), radius: 6)
@@ -110,7 +110,11 @@ struct CollectionView: View {
             Button {
                 confirmSellAll = true
             } label: {
-                Text(sellable.isEmpty ? "Aucun doublon à revendre" : "Revendre \(sellable.count) doublons · + \(sellableDust) ✦")
+                if sellable.isEmpty {
+                    Text("Aucun doublon à revendre")
+                } else {
+                    Text("Revendre \(sellable.count) doublons · + \(sellableDust) ✦")
+                }
             }
             .buttonStyle(PearlButtonStyle())
             .disabled(sellable.isEmpty)
@@ -119,7 +123,7 @@ struct CollectionView: View {
         .glassPanel(shade: 0.25)
     }
 
-    private func section(_ title: String, note: String? = nil) -> some View {
+    private func section(_ title: LocalizedStringKey, note: LocalizedStringKey? = nil) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title).lagoonTitle()
             if let note { Text(note).font(.footnote).foregroundStyle(.white.opacity(0.7)) }
@@ -175,7 +179,12 @@ private struct PearlCell: View {
         .overlay(shape.strokeBorder(known ? Self.cyan.opacity(0.4) : .white.opacity(0.1), lineWidth: 1))
         .contentShape(shape)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(known ? "\(pearl.name), \(count) exemplaire\(count > 1 ? "s" : "")" : "Perle pas encore trouvée, \(pearl.rarity)")
+        .accessibilityLabel(accessibilityText(known: known))
+    }
+
+    private func accessibilityText(known: Bool) -> String {
+        let name = pearl.name, rarity = pearl.rarity
+        return known ? String(localized: "\(name), \(count) exemplaires") : String(localized: "Perle pas encore trouvée, \(rarity)")
     }
 }
 
@@ -191,7 +200,7 @@ private struct PearlRow: View {
             HStack {
                 PearlThumb(look: PearlLook(pearl, traits: card.traits, catalog: game.catalog), glow: pearl.glow, size: 12)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(card.cracked ? "\(pearl.name) fêlée" : pearl.name)
+                    Text(GameText.pearlName(pearl.name, cracked: card.cracked))
                     Text("\(pearl.rarity) · lustre \(card.lustre.rawValue)").font(.caption).foregroundStyle(.white.opacity(0.6))
                 }
                 Spacer()
@@ -218,19 +227,19 @@ struct OddsList: View {
     var body: some View {
         VStack(spacing: 10) {
             ForEach(game.catalog.pearls) { pearl in
-                row("\(pearl.name)  \(pearl.rarity)", pearl.probability)
+                row(Text(verbatim: "\(pearl.name)  \(pearl.rarity)"), pearl.probability)
             }
-            row("Trouvaille, à la place de la perle", game.catalog.findProbability)
+            row(Text("Trouvaille, à la place de la perle"), game.catalog.findProbability)
             Text("Garantie : une perle dorée ou plus rare au plus tard à la \(game.tuning.pityThreshold + 1)ᵉ huître.")
                 .font(.caption).foregroundStyle(.white.opacity(0.65)).frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
-    private func row(_ label: String, _ probability: Double) -> some View {
+    private func row(_ label: Text, _ probability: Double) -> some View {
         HStack {
-            Text(label).font(.subheadline)
+            label.font(.subheadline)
             Spacer()
-            Text(probability.formatted(.percent.precision(.fractionLength(0...2)).locale(Locale(identifier: "fr_FR"))))
+            Text(probability.formatted(.percent.precision(.fractionLength(0...2))))
                 .font(.subheadline.monospacedDigit()).foregroundStyle(.white.opacity(0.85))
         }
     }

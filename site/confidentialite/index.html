@@ -18,6 +18,8 @@
 <!-- Mesure d'audience Vercel Web Analytics : sans cookie, chiffres globaux seulement (voir /confidentialite/) -->
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
 <script defer src="/_vercel/insights/script.js"></script>
+<!-- Consentement aux cookies + pixel de conversion X (rh65t), chargé seulement après « Accepter » : voir /consent.js -->
+<script defer src="/consent.js"></script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="/"><img src="/favicon.svg" alt="" width="22" height="22">Pearl Inc.</a><a class="lang" href="/en/privacy/" hreflang="en" lang="en">EN</a></div></nav>
@@ -27,10 +29,14 @@
 <p class="lead">Cette page explique quelles informations sont collectées quand tu utilises le site pearl-inc.app, édité par Mathys Hosin, entrepreneur individuel (voir les <a href="/mentions-legales/">mentions légales</a>).</p>
 
 <h2>Le prototype</h2>
-<p>Le prototype jouable ne demande aucun compte et ne nous envoie rien. Ton navigateur garde seulement, sur ton appareil, ta langue et tes huîtres d'essai. Pas de cookie publicitaire.</p>
+<p>Le prototype jouable ne demande aucun compte et ne nous envoie rien. Ton navigateur garde seulement, sur ton appareil, ta langue, tes huîtres d'essai et ton choix sur les cookies.</p>
 
 <h2>La mesure d'audience</h2>
 <p>Pour savoir combien de personnes visitent le site, quelles pages elles lisent et d'où elles viennent, nous utilisons Vercel Web Analytics. Il ne dépose aucun cookie et ne garde pas ton adresse IP : chaque visite est comptée de façon anonyme, et nous ne voyons que des chiffres globaux (pages vues, pays, type d'appareil et de navigateur, site d'origine).</p>
+
+<h2>Les cookies publicitaires (X)</h2>
+<p>Pour savoir quelles annonces sur X (Twitter) amènent des visiteurs et des inscrits, nous aimerions utiliser le pixel de conversion de X. Il dépose des cookies et envoie à X l'adresse de la page, ton adresse IP et le type de ton navigateur. X les traite selon sa propre <a href="https://x.com/fr/privacy">politique de confidentialité</a>, aux États-Unis notamment.</p>
+<p>Il ne se charge <strong>que si tu cliques « Accepter »</strong> sur la bannière. Si tu refuses, rien n'est déposé. Ton choix est gardé 6 mois sur ton appareil ; tu peux le changer à tout moment avec le lien <a href="#" data-consent-open>Cookies</a> en bas de chaque page.</p>
 
 <h2>L'inscription à la sortie</h2>
 <p>Si tu t'inscris pour être prévenu de la sortie, nous recevons ton e-mail, le téléphone que tu utiliseras (facultatif) et la provenance de ta visite (réseau social, campagne). Nous nous en servons uniquement pour t'annoncer la sortie de Pearl Inc., t'offrir le skin des inscrits et savoir quelle annonce a fonctionné. Nous ne les vendons ni ne les partageons.</p>
@@ -45,6 +51,6 @@
 <h2>Changements</h2>
 <p>Cette page sera mise à jour à la sortie de l'app Pearl Inc. La date en haut indique la dernière version.</p>
 </main>
-<footer><nav><a href="/">Pearl Inc.</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a></nav><p>© 2026 Pearl Inc. · iPhone et iPhone Duo sont des marques d’Apple Inc. Pearl Inc. n’est pas affilié à Apple.</p></footer>
+<footer><nav><a href="/">Pearl Inc.</a><a href="/confidentialite/">Confidentialité</a><a href="/mentions-legales/">Mentions légales</a><a href="#" data-consent-open>Cookies</a></nav><p>© 2026 Pearl Inc. · iPhone et iPhone Duo sont des marques d’Apple Inc. Pearl Inc. n’est pas affilié à Apple.</p></footer>
 </body>
 </html>

@@ -12,7 +12,7 @@ struct TideOutView: View {
             Image(systemName: "water.waves").font(.system(size: 44)).foregroundStyle(.white.opacity(0.9))
             Text("La marée remonte…").font(.title2.weight(.bold))
             if let next = game.nextOysterIn(at: date) {
-                Text("Prochaine huître dans \(Clock.countdown(next))").font(.headline.monospacedDigit()).foregroundStyle(.white.opacity(0.85))
+                Text("Prochaine huître dans \(GameText.countdown(next))").font(.headline.monospacedDigit()).foregroundStyle(.white.opacity(0.85))
             }
             AdRewardButton(date: date)
             Button {
@@ -49,9 +49,16 @@ struct AdRewardButton: View {
             }
             .buttonStyle(PearlButtonStyle())
             .disabled(left == 0 || !game.ads.canShow)
-            Text(left == 0 ? "Plus de pub aujourd’hui : reviens demain"
-                 : game.ads.canShow ? "Encore \(left) aujourd’hui" : "Pub en préparation…")
-                .font(.caption).foregroundStyle(.white.opacity(0.75))
+            Group {
+                if left == 0 {
+                    Text("Plus de pub aujourd’hui : reviens demain")
+                } else if game.ads.canShow {
+                    Text("Encore \(left) aujourd’hui")
+                } else {
+                    Text("Pub en préparation…")
+                }
+            }
+            .font(.caption).foregroundStyle(.white.opacity(0.75))
         }
     }
 }

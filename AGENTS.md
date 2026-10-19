@@ -48,7 +48,7 @@ Objectif : valider la **sensation** du geste. Le rendu reprend la direction visu
 - Icône provisoire (huître ouverte + perle), installation sur l'écran d'accueil (aide affichée sur iPhone après le tutoriel), mode hors ligne.
 
 **Hors V1 — ne pas coder sans décision dans §6**
-Atelier au-delà des recettes et du sertissage (création libre, parures, taille, fonte, polissage, gravure, temps de production, métaux et nacre), Maison au-delà des lettres et de la cabane (pièces, personnel, vitrine qui vend…), monnaies, écrins autres que Velours (Vintage, Saison, Couronne…), personnel (Expert), pubs récompensées, bourriche, social, 3D, assets graphiques, sons définitifs, charnière Duo (préparée par l'architecture, pas implémentée), framework UI (React, etc.).
+Atelier au-delà des recettes et du sertissage (création libre, parures, taille, fonte, polissage, gravure, temps de production, métaux et nacre), Maison au-delà des lettres et de la cabane (pièces, personnel, vitrine qui vend…), monnaies, écrins autres que Velours (Vintage, Saison, Couronne…), personnel (Expert), pubs récompensées, bourriche, social, 3D, assets graphiques, sons définitifs, charnière Duo dans la webapp (elle est dans l'app iOS, voir §6), framework UI (React, etc.).
 
 ## 3. Architecture (à respecter)
 
@@ -82,6 +82,7 @@ src/
     dust.ts         Poussière d'or : fonte des doublons, achat d'une pièce manquante ou d'un écrin
     finds.ts        Trouvailles : objets à la place de la perle, albums, tirage, messages des bouteilles
     pearlTraits.ts  Ce qui rend chaque perle unique : forme, reflet, marque rare
+    catalogEnglish.ts Textes anglais du contenu (perles, trouvailles, traits, coquilles, produits) pour l'app iOS
     appEconomy.ts   Économie de l'app iOS seulement : barème de revente, missions du jour, skins, produits de la boutique
   input/            Sources du geste → produisent des OpeningSample
     thumb.ts        Pouce vers le haut (iPhone classique)
@@ -128,6 +129,7 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 | Vitesse max sans fêlure dans la zone fragile | 380 °/s | relevée avec la course raccourcie (§6) |
 | Angle de révélation | 140° | à régler |
 | Ouverture automatique en lâchant au-delà de | 115° (écrin : 121°) | une main (§6) |
+| iPhone Duo : charnière « fermée » sous | 8° | à régler sur un Duo |
 | Suspense avant la carte, par rareté | 250 / 700 / 1200 / 2000 ms | à régler (note de Mathys : révélation à la FUT / Clash Royale) |
 | Garantie perle dorée+ | 25 huîtres | cahier §5 |
 | Stock d'huîtres maximum | 10 | cahier §5 |
@@ -241,12 +243,15 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-14 | **Régie publicitaire de l'app iOS : AdMob (Google)**, avec le formulaire de consentement RGPD de Google (UMP), demandé à l'arrivée dans le jeu ; « Confidentialité des pubs » dans les Réglages quand la loi l'exige. **Pubs non personnalisées seulement** (`publisherPrivacyPersonalizationState = .disabled`), pas de demande de suivi (ATT) : rien à déclarer comme pistage à Apple (choix de Jules, moins de revenus). Nouvelles dépendances Swift : `swift-package-manager-google-mobile-ads` et `…-google-user-messaging-platform`. Tout passe par `Platform/RewardedAds.swift`. App ID et bloc d'annonces de Pearl Inc. ; en Debug, bloc de **test** de Google (ne jamais voir ses propres vraies pubs) et pub simulée en secours. `site/app-ads.txt` déclare l'éditeur | Choix de Jules : brancher AdMob |
 | 2026-10-19 | **App Store : pas de sortie en Belgique** pour la 1.0 (174 pays) : les huîtres achetées sont des tirages payants, que la Belgique traite comme des jeux de hasard. Les Pays-Bas restent ouverts. À revoir avec l'avis d'un juriste | Choix de Jules (`docs/app-store-juridique.md` §6.2) |
 | 2026-10-19 | **Mesure d'audience du site pearl-inc.app : Vercel Web Analytics** (script `/_vercel/insights/script.js` sur chaque page, pas de paquet npm). Sans cookie ni adresse IP conservée, chiffres globaux : pas de bandeau de consentement. Politiques de confidentialité (site et app) mises à jour. Le jeu (webapp, app iOS) n'est pas concerné | Choix de Jules : savoir combien de visiteurs amène la campagne |
+| 2026-10-19 | **App iOS en français et en anglais dès la 1.0.** La langue suit l'iPhone (français pour les francophones, **anglais pour tous les autres** : langue de développement du projet = `en`) ; on en change dans Réglages iOS → Pearl Inc. → Langue (ligne « Langue » dans les Réglages du jeu). Interface : catalogue de chaînes `ios/PearlInc/Localizable.xcstrings` (source française, pluriels dans les deux langues). Contenu du jeu : `src/core/catalogEnglish.ts`, exporté avec le catalogue, appliqué par `Catalog.localized` (les textes seulement, jamais les règles) ; un test échoue si un élément n'a pas son anglais. La webapp reste en français. Clins d'œil : jamais de nom d'œuvre ni de marque, dans les deux langues. **Relecture par un anglophone souhaitée** | Choix de Jules : toucher les anglophones dès la sortie (campagne bilingue) |
+| 2026-10-19 | **Charnière de l'iPhone Duo dans l'app iOS** (iOS 27.1, `UIHingeInteraction`, qui donne aussi l'état de départ) : l'angle du téléphone devient l'angle de l'huître, 1 pour 1, avec les mêmes règles que le pouce (pop, zone fragile, lustre, révélation). La charnière ne pilote une huître qu'une fois **« armée »** : le téléphone a été refermé depuis son arrivée (sinon un téléphone déjà ouvert l'ouvrirait d'un coup) ; sous `hingeClosedAngle` (8°), le téléphone est fermé : **refermer = huître suivante** (la carte se touche toujours), et pendant la résistance la coquille se referme. Le pouce reste possible tant que la charnière ne pilote pas l'huître posée. Logique dans `PearlCore/Hinge.swift` (testée) ; en Debug, `-SimulatedHinge` remplace la charnière par un curseur. **Pas d'iPhone Duo physique : vitesses et seuils à régler avec des inscrits équipés (TestFlight)** | Choix de Jules : promesse de la campagne (« l'huître s'ouvre avec ton iPhone Duo ») ; pas de Duo à disposition |
+| 2026-10-19 | **Pixel de conversion X (`rh65t`) sur pearl-inc.app, derrière une bannière de consentement** (`site/consent.js`, chargé sur chaque page) : le pixel ne se charge qu'après « Accepter » ; « Refuser » au même niveau ; choix gardé 6 mois (`localStorage`), lien « Cookies » en pied de page pour le changer. Politiques de confidentialité FR / EN mises à jour (fin de « pas de cookie publicitaire »). Pas d'API de conversion côté serveur pour l'instant (les inscriptions passent par Tally, pas par notre serveur). Le jeu (webapp, app iOS) n'est pas concerné | Choix de Jules : mesurer les annonces X de la campagne. Cookies publicitaires = accord préalable (CNIL) ; Vercel Web Analytics reste sans cookie ni bannière |
 
 ## 7. Limites connues du prototype web
 
 - **Haptique :** Safari iOS ne permet pas la vibration officiellement. On utilise une astuce non officielle (interrupteur `<input switch>`, iOS 18+) qui ne donne qu'un « tic » simple. Les vibrations riches viendront avec l'app native.
 - **HTTPS obligatoire** pour le mode hors ligne (service worker) et la feuille de partage : ils marchent sur `localhost` mais PAS sur `http://192.168.x.x` depuis un iPhone. Pour les tester sur téléphone, il faudra une adresse HTTPS (mise en ligne ou tunnel).
-- **Charnière Duo :** illisible depuis une page web. Viendra avec l'app native (module Capacitor ou SwiftUI) en implémentant une nouvelle source dans `input/`.
+- **Charnière Duo :** illisible depuis une page web. Elle est lue par l'app iOS (`ios/PearlInc/Input/HingeSource.swift`, voir §6).
 
 ## 8. Notes de Mathys (cahier des charges, surlignées en vert) — suivi
 

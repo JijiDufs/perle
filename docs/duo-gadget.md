@@ -241,6 +241,11 @@ La page d'inscription fixe le comportement voulu : fermé, l'écran extérieur m
 - **L'API existe** : [`DeviceHinge`](https://developer.apple.com/documentation/swiftui/devicehinge) en SwiftUI, **iOS 27.1+, encore en bêta**. Elle donne un **angle continu** (`angle`) et un **état** (`status`, calculé par le système d'après l'angle et l'orientation), reçus avec le modificateur `.onHingeChange`. Sur un téléphone sans charnière, il n'y a pas de charnière : on bascule sur le pouce.
 - **Le Xcode installé (26.3, SDK iOS 26.2) ne la contient pas.** Il faut la version d'Xcode qui fournit le SDK iOS 27.1 (bêta pour l'instant). On construit tout le reste avec le pouce en attendant.
 
+**Ce qu'on a appris avec Xcode 27.1 (RC) et le simulateur du Duo (2026-10-19)**
+- API réelle : `UIHingeInteraction` (UIKit) et `.onHingeChange` (SwiftUI) ; `UIHinge.angle` en **radians**, `status` = inconnu (0), fermé (1), partiellement ouvert (2), ouvert au maximum (3). Pas d'API dédiée à l'écran extérieur : l'app s'y affiche comme sur un écran normal quand le téléphone est fermé. Une zone réservée (`UIViewReservedRegion`) marque le pli.
+- Le simulateur du Duo démarre **fermé** (0°, statut 1) et Pearl Inc. s'affiche alors sur l'écran extérieur (466 × 678 pt) : « téléphone fermé = l'huître » fonctionne sans rien de plus. L'écran intérieur fait 669 × 951 pt.
+- La charnière du simulateur se règle dans DeviceHub (curseur « Hinge » de la barre d'actions, modèle 3D) ; pas de commande `simctl`. Faute d'y avoir accès, le parcours a été vérifié avec le curseur simulé (`-SimulatedHinge`) : ouvrir lentement → perle sans fêlure ; trop vite → fêlée ; carte → refermer → huître suivante ; téléphone resté ouvert → « Referme le téléphone, puis ouvre-le ».
+
 **Encore à vérifier, dans le simulateur du Duo puis sur un vrai Duo**
 1. **Fréquence des mises à jour de l'angle.** La zone fragile dépend de la vitesse : il faut au moins 30 mesures par seconde, sinon lisser ou adapter le seuil de vitesse (`tuning`).
 2. **À quel angle l'app passe de l'écran extérieur à l'écran intérieur**, et si elle reçoit l'angle pendant ce passage. **C'est la grande question d'UX.** Si le début de l'ouverture n'est pas lisible, plan B : la résistance et le « pop » se jouent sur les premiers degrés lisibles, ou l'on finit au pouce.
@@ -265,7 +270,8 @@ ios/
       ParityTests              Le Swift doit donner exactement les mêmes résultats
   PearlInc/             L'app SwiftUI
     Game/GameModel      Relie moteur, geste, haptique, sauvegarde (aucune règle)
-    Input/ThumbSource   Pouce vers le haut → OpeningSample (HingeSource viendra avec iOS 27.1)
+    Input/ThumbSource   Pouce vers le haut → OpeningSample
+    Input/HingeSource   Charnière du Duo (UIHingeInteraction, iOS 27.1+) → angle ; PearlCore/Hinge (HingeTracker) décide quand elle pilote l'huître
     Art/                Lagon, coquille, nacre, perle, halo : dessinés par code
     Platform/           Haptique, sauvegarde
     Features/           Pêche (barre de ressources, marée basse), carte, missions, collection (comptoir), boutique (skins)

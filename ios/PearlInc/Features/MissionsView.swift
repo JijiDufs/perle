@@ -17,14 +17,16 @@ struct MissionsView: View {
                         }
                         .listRowBackground(Color.white.opacity(0.08))
                     } footer: {
-                        Text(daily.bonusClaimed
-                             ? "Bonus des trois missions récupéré. À demain !"
-                             : "Les trois récupérées : + \(game.economy.missionBonusDust) ✦ de bonus.")
+                        if daily.bonusClaimed {
+                            Text("Bonus des trois missions récupéré. À demain !")
+                        } else {
+                            Text("Les trois récupérées : + \(game.economy.missionBonusDust) ✦ de bonus.")
+                        }
                     }
                 }
                 Section {
                     TimelineView(.periodic(from: .now, by: 60)) { timeline in
-                        Label("Nouvelles missions dans \(Clock.countdown(Clock.secondsUntilMidnight(timeline.date)))", systemImage: "moon.stars")
+                        Label("Nouvelles missions dans \(GameText.countdown(Clock.secondsUntilMidnight(timeline.date)))", systemImage: "moon.stars")
                             .foregroundStyle(.secondary)
                     }
                     .listRowBackground(Color.white.opacity(0.08))
@@ -47,7 +49,7 @@ private struct MissionRow: View {
     var body: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(mission.text).font(.body.weight(.medium))
+                Text(GameText.mission(mission)).font(.body.weight(.medium))
                 ProgressView(value: Double(mission.progress), total: Double(mission.goal))
                     .tint(Palette.gold)
                 Text("\(mission.progress) / \(mission.goal)").font(.caption.monospacedDigit()).foregroundStyle(.secondary)

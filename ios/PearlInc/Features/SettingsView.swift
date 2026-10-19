@@ -20,6 +20,16 @@ struct SettingsView: View {
                 Section("Jeu") {
                     Toggle(isOn: $haptics) { Label("Vibrations", systemImage: "iphone.radiowaves.left.and.right") }
                         .tint(Palette.gold)
+                    // La langue se choisit dans les réglages d'iOS (une langue pour cette app seule).
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+                    } label: {
+                        LabeledContent {
+                            Text(AppLanguage.isFrench ? "Français" : "English").foregroundStyle(.secondary)
+                        } label: {
+                            Label("Langue", systemImage: "globe")
+                        }
+                    }
                     NavigationLink {
                         ScrollView { OddsList().padding(20) }
                             .scrollContentBackground(.hidden)
@@ -74,9 +84,11 @@ struct SettingsView: View {
         .confirmationDialog("Se déconnecter ?", isPresented: $confirmSignOut, titleVisibility: .visible) {
             Button("Se déconnecter", role: .destructive) { auth.signOut() }
         } message: {
-            Text(auth.accountKind == .anonymous
-                 ? "Sans compte, tu ne pourras plus revenir sur ce compte. Ta partie reste sur cet iPhone."
-                 : "Ta partie reste sur cet iPhone. Tu pourras te reconnecter avec le même compte.")
+            if auth.accountKind == .anonymous {
+                Text("Sans compte, tu ne pourras plus revenir sur ce compte. Ta partie reste sur cet iPhone.")
+            } else {
+                Text("Ta partie reste sur cet iPhone. Tu pourras te reconnecter avec le même compte.")
+            }
         }
         .confirmationDialog("Supprimer ton compte ?", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("Supprimer définitivement", role: .destructive) {
@@ -106,7 +118,8 @@ struct SettingsView: View {
                     copied = true
                 } label: {
                     LabeledContent("Identifiant (pour le support)") {
-                        Text(copied ? "Copié" : id).font(.body.monospaced()).foregroundStyle(.secondary)
+                        Group { if copied { Text("Copié") } else { Text(verbatim: id) } }
+                            .font(.body.monospaced()).foregroundStyle(.secondary)
                     }
                 }
                 .accessibilityHint("Copie l’identifiant")
@@ -132,7 +145,7 @@ struct SettingsView: View {
         .listRowBackground(Color.white.opacity(0.08))
     }
 
-    private var accountTitle: String {
+    private var accountTitle: LocalizedStringKey {
         switch auth.accountKind {
         case .apple: "Connecté avec Apple"
         case .email: "Connecté par e-mail"
@@ -149,12 +162,15 @@ struct SettingsView: View {
     }
 }
 
-/// Les pages du site (support, légal) et le contact.
+/// Les pages du site (support, légal) et le contact, dans la langue de l'app.
 enum SiteLinks {
-    static let support = URL(string: "https://pearl-inc.app/support/")!
-    static let privacy = URL(string: "https://pearl-inc.app/confidentialite/")!
-    static let terms = URL(string: "https://pearl-inc.app/conditions/")!
-    static let legal = URL(string: "https://pearl-inc.app/mentions-legales/")!
+    private static func page(_ french: String, _ english: String) -> URL {
+        URL(string: "https://pearl-inc.app" + (AppLanguage.isFrench ? french : english))!
+    }
+    static var support: URL { page("/support/", "/en/support/") }
+    static var privacy: URL { page("/confidentialite/", "/en/privacy/") }
+    static var terms: URL { page("/conditions/", "/en/terms/") }
+    static var legal: URL { page("/mentions-legales/", "/en/legal-notice/") }
     static let supportEmail = "laplateformemjh@gmail.com"
 
     /// E-mail au support, avec l'identifiant du compte dans l'objet pour retrouver le joueur.
@@ -162,7 +178,7 @@ enum SiteLinks {
         var components = URLComponents()
         components.scheme = "mailto"
         components.path = supportEmail
-        let subject = accountId.map { "Pearl Inc. (identifiant \($0))" } ?? "Pearl Inc."
+        let subject = accountId.map { id in String(localized: "Pearl Inc. (identifiant \(id))") } ?? "Pearl Inc."
         components.queryItems = [URLQueryItem(name: "subject", value: subject)]
         return components.url ?? URL(string: "mailto:\(supportEmail)")!
     }
@@ -172,6 +188,6 @@ enum SiteLinks {
         let info = Bundle.main.infoDictionary
         let short = info?["CFBundleShortVersionString"] as? String ?? "?"
         let build = info?["CFBundleVersion"] as? String ?? "?"
-        return "version \(short) (\(build))"
+        return String(localized: "version \(short) (\(build))")
     }
 }

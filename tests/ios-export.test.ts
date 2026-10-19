@@ -8,6 +8,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { APP_CONSUMABLES, APP_ECONOMY, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS } from '../src/core/catalog';
+import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
 import { RARITY_SYMBOLS } from '../src/core/jewels';
 import { INITIAL_DRAW_STATE } from '../src/core/draw';
 import { FIND_TIER_WEIGHTS, FINDS, FIND_ALBUMS, BOTTLE_MESSAGES } from '../src/core/finds';
@@ -54,6 +55,7 @@ function catalog() {
       consumables: APP_CONSUMABLES,
     },
     markWeights: pairs(Object.fromEntries(Object.entries(MARKS).map(([id, mark]) => [id, mark.weight]))),
+    english: CATALOG_ENGLISH,
   };
 }
 

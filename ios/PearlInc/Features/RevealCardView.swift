@@ -14,7 +14,9 @@ struct RevealCardView: View {
                 .accessibilityHint("Touche la carte pour l'huître suivante")
 
             VStack(spacing: 10) {
-                Text("Touche la carte pour l’huître suivante")
+                Group {
+                    if game.hasHinge { Text("Referme le téléphone pour l’huître suivante") } else { Text("Touche la carte pour l’huître suivante") }
+                }
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.25), radius: 3)
@@ -49,9 +51,11 @@ struct RevealCardView: View {
         switch reveal {
         case .pearl(let card):
             let pearl = game.catalog.pearl(card.pearlId)
-            return "J’ai trouvé une \(pearl.name.lowercased()) \(pearl.rarity) dans Pearl Inc. (\(serialLabel(card.serial))) 🦪 pearl-inc.app"
+            let name = pearl.name.lowercased(), rarity = pearl.rarity, serial = GameText.serial(card.serial)
+            return String(localized: "J’ai trouvé une \(name) \(rarity) dans Pearl Inc. (\(serial)) 🦪 pearl-inc.app", comment: "Message partagé")
         case .find(let card, _):
-            return "Il y avait « \(game.catalog.find(card.findId).name) » dans mon huître. Pearl Inc. 🦪 pearl-inc.app"
+            let name = game.catalog.find(card.findId).name
+            return String(localized: "Il y avait « \(name) » dans mon huître. Pearl Inc. 🦪 pearl-inc.app", comment: "Message partagé")
         case .empty:
             return nil
         }

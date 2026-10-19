@@ -16,11 +16,4 @@ enum Clock {
         let midnight = Calendar.current.startOfDay(for: date).addingTimeInterval(86_400)
         return Calendar.current.startOfDay(for: midnight).timeIntervalSince(date)
     }
-
-    /// « 12:05 » ou « 3 h 12 ».
-    static func countdown(_ seconds: TimeInterval) -> String {
-        let total = max(0, Int(seconds.rounded(.up)))
-        let hours = total / 3600, minutes = (total % 3600) / 60, rest = total % 60
-        return hours > 0 ? "\(hours) h \(String(format: "%02d", minutes))" : String(format: "%d:%02d", minutes, rest)
-    }
 }

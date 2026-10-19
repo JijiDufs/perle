@@ -45,7 +45,7 @@ final class AuthViewModel: ObservableObject {
         case .failure(let error):
             // L'utilisateur a fermé la fenêtre Apple : ce n'est pas une erreur à afficher.
             if (error as? ASAuthorizationError)?.code == .canceled { return }
-            errorMessage = "La connexion avec Apple n’a pas abouti. Réessaie dans un instant."
+            errorMessage = String(localized: "La connexion avec Apple n’a pas abouti. Réessaie dans un instant.")
         case .success(let authorization):
             guard
                 let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
@@ -53,7 +53,7 @@ final class AuthViewModel: ObservableObject {
                 let idToken = String(data: tokenData, encoding: .utf8),
                 let nonce = currentNonce
             else {
-                errorMessage = "Apple n’a pas renvoyé d’identifiant. Réessaie dans un instant."
+                errorMessage = String(localized: "Apple n’a pas renvoyé d’identifiant. Réessaie dans un instant.")
                 return
             }
             run {
@@ -69,7 +69,7 @@ final class AuthViewModel: ObservableObject {
     func sendCode(to rawEmail: String) {
         let email = rawEmail.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard email.contains("@"), email.contains(".") else {
-            errorMessage = "Cette adresse e-mail ne semble pas complète."
+            errorMessage = String(localized: "Cette adresse e-mail ne semble pas complète.")
             return
         }
         run {
@@ -81,7 +81,7 @@ final class AuthViewModel: ObservableObject {
     func verify(code: String, email: String) {
         let token = code.filter(\.isNumber)
         guard token.count == 6 else {
-            errorMessage = "Le code contient 6 chiffres."
+            errorMessage = String(localized: "Le code contient 6 chiffres.")
             return
         }
         run {
@@ -119,7 +119,7 @@ final class AuthViewModel: ObservableObject {
     /// Supprime le compte et toutes ses données (fonction `delete_account` de Supabase, en cascade),
     /// puis déconnecte. `onDeleted` efface la partie locale (règle 5.1.1 (v) de l'App Store).
     func deleteAccount(onDeleted: @escaping @MainActor () -> Void) {
-        run(failure: "La suppression n’a pas abouti. Vérifie ta connexion et réessaie, ou écris-nous.") {
+        run(failure: String(localized: "La suppression n’a pas abouti. Vérifie ta connexion et réessaie, ou écris-nous.")) {
             try await supabase.rpc("delete_account").execute()
             onDeleted()
             // Le compte n'existe plus côté serveur : on oublie seulement la session sur cet iPhone.
@@ -141,15 +141,15 @@ final class AuthViewModel: ObservableObject {
     private static func message(for error: Error) -> String {
         let text = String(describing: error).lowercased()
         if text.contains("expired") || (text.contains("invalid") && text.contains("otp")) {
-            return "Ce code est incorrect ou a expiré. Demande-en un nouveau."
+            return String(localized: "Ce code est incorrect ou a expiré. Demande-en un nouveau.")
         }
         if text.contains("rate limit") {
-            return "Trop de demandes d’affilée. Attends une minute avant de réessayer."
+            return String(localized: "Trop de demandes d’affilée. Attends une minute avant de réessayer.")
         }
         if (error as? URLError) != nil {
-            return "Pas de connexion internet. Vérifie ton réseau puis réessaie."
+            return String(localized: "Pas de connexion internet. Vérifie ton réseau puis réessaie.")
         }
-        return "La connexion n’a pas abouti. Réessaie dans un instant."
+        return String(localized: "La connexion n’a pas abouti. Réessaie dans un instant.")
     }
 
     private static func randomNonce(length: Int = 32) -> String {

@@ -24,7 +24,7 @@ struct ShopView: View {
                 VStack(spacing: 14) {
                     TimelineView(.periodic(from: .now, by: 60)) { timeline in AdRewardButton(date: timeline.date) }
                     ForEach(game.economy.consumables.filter { $0.oysters > 0 }) { product in
-                        ProductRow(title: product.name, detail: "\(product.oysters) huîtres", productId: product.id)
+                        ProductRow(title: product.name, detail: String(localized: "\(product.oysters) huîtres"), productId: product.id)
                     }
                     Button("Une huître · \(game.economy.oysterDustPrice) ✦") { game.buyOyster() }
                         .buttonStyle(GlassButtonStyle())
@@ -101,7 +101,13 @@ private struct PriceButton: View {
         Button {
             game.purchase(productId)
         } label: {
-            if game.store.purchasing == productId { ProgressView().tint(Lagoon.abyss) } else { Text(price ?? "Indisponible") }
+            if game.store.purchasing == productId {
+                ProgressView().tint(Lagoon.abyss)
+            } else if let price {
+                Text(price)
+            } else {
+                Text("Indisponible")
+            }
         }
         .buttonStyle(PearlButtonStyle(compact: true))
         .disabled(price == nil || game.store.purchasing != nil)

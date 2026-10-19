@@ -139,6 +139,8 @@ footer p{margin:4px 0}
 <!-- Mesure d'audience Vercel Web Analytics : sans cookie, chiffres globaux seulement (voir /confidentialite/) -->
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
 <script defer src="/_vercel/insights/script.js"></script>
+<!-- Consentement aux cookies + pixel de conversion X (rh65t), chargé seulement après « Accepter » : voir /consent.js -->
+<script defer src="/consent.js"></script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><span class="brand">Pearl Inc.</span><div class="nav-r"><div class="lang" role="group" aria-label="Langue / Language"><button type="button" data-lang="fr" aria-pressed="true" lang="fr">FR</button><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><a class="nav-cta" data-tally data-i18n="navCta" href="#notify">Préviens-moi</a></div></div></nav>
@@ -235,7 +237,7 @@ footer p{margin:4px 0}
   <p data-i18n="foot0">Une création du studio MJHstudio.</p>
   <p data-i18n="foot1">© 2026 Pearl Inc. Tous droits réservés.</p>
   <p data-i18n="foot2">iPhone et iPhone Duo sont des marques d’Apple Inc. Pearl Inc. n’est pas affilié à Apple.</p>
-  <p class="foot-links" data-i18n-html="foot3"><a href="/confidentialite/">Confidentialité</a> · <a href="/mentions-legales/">Mentions légales</a></p>
+  <p class="foot-links" data-i18n-html="foot3"><a href="/confidentialite/">Confidentialité</a> · <a href="/mentions-legales/">Mentions légales</a> · <a href="#" data-consent-open>Cookies</a></p>
 </footer>
 <script>
 /* Langue de la page (FR / EN) : la page et le prototype suivent toujours la même langue. */
@@ -277,7 +279,7 @@ fr:{
   foot0:'Une création du studio MJHstudio.',
   foot1:'© 2026 Pearl Inc. Tous droits réservés.',
   foot2:'iPhone et iPhone Duo sont des marques d\u2019Apple Inc. Pearl Inc. n\u2019est pas affilié à Apple.',
-  foot3:'<a href="/confidentialite/">Confidentialité</a> · <a href="/mentions-legales/">Mentions légales</a>',
+  foot3:'<a href="/confidentialite/">Confidentialité</a> · <a href="/mentions-legales/">Mentions légales</a> · <a href="#" data-consent-open>Cookies</a>',
   // Prototype
   stGently:'Ouvre doucement…', stCrack:'Crac. La perle est fêlée.', stFast:'Trop vite !', stFragile:'Zone fragile', stMore:'Encore un peu…',
   stNext:'Referme l\u2019iPhone pour la suivante',
@@ -332,7 +334,7 @@ en:{
   foot0:'Created by MJHstudio.',
   foot1:'© 2026 Pearl Inc. All rights reserved.',
   foot2:'iPhone and iPhone Duo are trademarks of Apple Inc. Pearl Inc. is not affiliated with Apple.',
-  foot3:'<a href="/en/privacy/">Privacy</a> · <a href="/en/legal-notice/">Legal notice</a>',
+  foot3:'<a href="/en/privacy/">Privacy</a> · <a href="/en/legal-notice/">Legal notice</a> · <a href="#" data-consent-open>Cookies</a>',
   stGently:'Open gently…', stCrack:'Crack. The pearl is cracked.', stFast:'Too fast!', stFragile:'Fragile zone', stMore:'A little more…',
   stNext:'Close the iPhone for the next one',
   closeIphone:'Close the iPhone', toEndTrial:'to end the trial', toNextOyster:'to open the next oyster',
