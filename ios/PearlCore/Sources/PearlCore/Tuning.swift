@@ -40,6 +40,8 @@ public struct Tuning: Codable, Sendable, Equatable {
     /// Le couvercle finit de s'ouvrir en douceur après la révélation, et éclair blanc des ★ (ms).
     public var revealLidSettleMs: Double
     public var revealFlashMs: Double
+    /// Une bulle d'information (le stock, juste après le tutoriel) s'efface au bout de (ms).
+    public var coachTipMs: Double
     /// Huîtres d'affilée sans perle dorée ou mieux avant que la suivante soit garantie.
     public var pityThreshold: Int
     /// Stock d'huîtres maximum, et minutes pour qu'une huître revienne.

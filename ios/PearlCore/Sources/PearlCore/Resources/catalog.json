@@ -22,6 +22,7 @@
     "revealSuspenseTier3Ms": 2000,
     "revealLidSettleMs": 350,
     "revealFlashMs": 500,
+    "coachTipMs": 7000,
     "pityThreshold": 25,
     "oysterStockMax": 10,
     "oysterRechargeMinutes": 20,

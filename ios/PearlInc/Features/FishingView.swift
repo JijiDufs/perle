@@ -8,6 +8,8 @@ struct FishingView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var showMissions = false
     @State private var showSettings = false
+    /// La bulle sur le stock (première huître après le tutoriel) s'efface toute seule.
+    @State private var stockTipExpired = false
 
     var body: some View {
         ZStack {
@@ -101,6 +103,12 @@ struct FishingView: View {
         #endif
         // iPhone Duo : ouvrir le téléphone ouvre l'huître, le refermer passe à la suivante.
         .hingeInput({ game.hingeChanged(degrees: $0) }, fold: { if !HingeInput.simulatedFold { game.foldChanged(x: $0) } })
+        .task(id: game.step) {
+            stockTipExpired = false
+            guard game.step == game.catalog.tutorialPearls.count else { return }
+            try? await Task.sleep(for: .milliseconds(Int(game.tuning.coachTipMs)))
+            stockTipExpired = true
+        }
         .sheet(isPresented: $showMissions) { MissionsView() }
         .sheet(isPresented: $showSettings) { SettingsView() }
         .onChange(of: scenePhase) { _, phase in if phase == .active { game.refresh() } }
@@ -116,6 +124,7 @@ struct FishingView: View {
     /// La bulle d'accompagnement des premières huîtres ; nil = rien à dire.
     private var coachText: String? {
         guard game.stage == .playing, !game.cracked else { return nil }
+        if stockTipExpired && game.step == game.catalog.tutorialPearls.count { return nil }
         return Coach.duringGesture(step: game.step, phase: game.phase, hinge: game.hasHinge, hingeArmed: game.hingeArmed, tuning: game.tuning)
     }
 

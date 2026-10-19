@@ -4,6 +4,18 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 11) · Jules · Claude Code · branche `jules/ios-app`
+
+Retours de Jules sur l'écran extérieur du Duo et la bulle du stock.
+
+**Fait**
+- `Art/OysterArt.swift` (pose `cover`) : huître ≈ 10 % plus grande (L = min(0,99 × largeur, 0,68 × hauteur visible)) et plus basse (charnière à 53 % de la hauteur au lieu de 42 %) : elle ne passe plus sous la barre du haut.
+- Bulle « Tes huîtres sont en haut… » (1re huître après le tutoriel) : elle s'efface toute seule au bout de `coachTipMs` (7 s, nouveau réglage dans `src/tuning.ts`, exporté) ; avant, elle restait jusqu'à ce qu'on ouvre l'huître.
+- Vérifié au simulateur iPhone Duo (écran extérieur) ; `npm test`, `npm run build`, `swift test`.
+
+**Fragile**
+- Le calendrier se rouvre à chaque lancement tant que la case du jour n'est pas récupérée (voulu : une fois par jour… jusqu'à ce qu'on la prenne).
+
 ## 2026-10-19 (suite 10) · Jules · Claude Code · branche `jules/ios-app`
 
 App iOS : huître fermée plus grande, et calendrier de connexion sur 7 jours.

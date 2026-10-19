@@ -77,9 +77,10 @@ struct OysterArt {
             let hy = length != nil ? height / 2 - L * 0.5 : height * 0.55 - L * 0.42
             return Layout(hx: width / 2, hy: hy, L: L)
         case .cover:
-            // Comme drawCover du prototype : la charnière déborde un peu à gauche.
-            let L = min(width * 0.9, visible * 0.62) * clam
-            return Layout(hx: -width * 0.06, hy: height * 0.42, L: L, dir: 0)
+            // Comme drawCover du prototype : la charnière déborde un peu à gauche. Plus grande que sur le
+            // prototype, et centrée un peu sous le milieu (bien dégagée de la barre du haut).
+            let L = min(width * 0.99, visible * 0.68) * clam
+            return Layout(hx: -width * 0.06, hy: height * 0.53, L: L, dir: 0)
         case .fold(let x):
             // Comme drawInner du prototype : chaque valve tient dans sa moitié d'écran.
             let half = min(x, width - x)

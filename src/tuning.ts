@@ -42,6 +42,8 @@ export interface Tuning {
   revealLidSettleMs: number;
   /** Éclair blanc des perles ★ quand la carte arrive (ms). */
   revealFlashMs: number;
+  /** App iOS : une bulle d'information (le stock, juste après le tutoriel) s'efface au bout de (ms). */
+  coachTipMs: number;
   /** Huîtres d'affilée sans perle dorée ou mieux avant que la suivante soit garantie. Cahier §5. */
   pityThreshold: number;
   /** Stock d'huîtres maximum. Cahier §5 : 10. */
@@ -175,6 +177,7 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   revealSuspenseTier3Ms: 2000,
   revealLidSettleMs: 350,
   revealFlashMs: 500,
+  coachTipMs: 7000,
   pityThreshold: 25,
   oysterStockMax: 10,
   oysterRechargeMinutes: 20,

@@ -1,80 +1,98 @@
 {
-  "sourceLanguage": "fr",
-  "strings": {
-    "": {
-      "shouldTranslate": false
+  "sourceLanguage" : "fr",
+  "strings" : {
+    "" : {
+      "shouldTranslate" : false
     },
-    "%@ fêlée": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ fêlée"
+    "?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "?"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cracked %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "?"
           }
         }
       }
     },
-    "%@ · lustre %@": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · lustre %@"
+    "%@ · lustre %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · lustre %2$@"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ · lustre %2$@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · lustre %@"
           }
         }
       }
     },
-    "%@ · reflet %@": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ · reflet %@"
+    "%@ · reflet %@" : {
+      "comment" : "Forme et reflet d'une perle",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · %2$@ overtone"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ · %2$@ overtone"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · reflet %@"
           }
         }
       }
     },
-    "%@, %lld exemplaires": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@, %#@n@"
+    "%@ fêlée" : {
+      "comment" : "Perle fêlée ; %@ = nom de la perle",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cracked %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ fêlée"
+          }
+        }
+      }
+    },
+    "%@, %lld exemplaires" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %#@n@"
           },
-          "substitutions": {
-            "n": {
-              "argNum": 2,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg exemplaire"
+          "substitutions" : {
+            "n" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg copy"
                     }
                   },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg exemplaires"
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg copies"
                     }
                   }
                 }
@@ -82,1991 +100,27 @@
             }
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@, %#@n@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %#@n@"
           },
-          "substitutions": {
-            "n": {
-              "argNum": 2,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg copy"
+          "substitutions" : {
+            "n" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg exemplaire"
                     }
                   },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg copies"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "%lld": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld"
-          }
-        }
-      }
-    },
-    "%lld / %lld": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld / %lld"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld / %2$lld"
-          }
-        }
-      }
-    },
-    "%lld / %lld perles trouvées": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld / %lld perles trouvées"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld / %2$lld pearls found"
-          }
-        }
-      }
-    },
-    "%lld h %@": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld h %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lldh %2$@m"
-          }
-        }
-      }
-    },
-    "%lld huîtres": {
-      "localizations": {
-        "fr": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld huître"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld huîtres"
-                }
-              }
-            }
-          }
-        },
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld oyster"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld oysters"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "%lld poussière d’or": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld poussière d’or"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld gold dust"
-          }
-        }
-      }
-    },
-    "%lld ✦": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld ✦"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld ✦"
-          }
-        }
-      }
-    },
-    "+ %lld ✦": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "+ %lld ✦"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "+ %lld ✦"
-          }
-        }
-      }
-    },
-    "+ %lld ✦ de poussière d’or": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "+ %lld ✦ de poussière d’or"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "+ %lld ✦ gold dust"
-          }
-        }
-      }
-    },
-    "000000": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "000000"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "000000"
-          }
-        }
-      }
-    },
-    "?": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "?"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "?"
-          }
-        }
-      }
-    },
-    "Achats": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Achats"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Purchases"
-          }
-        }
-      }
-    },
-    "Aide": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aide"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Help"
-          }
-        }
-      }
-    },
-    "Aide et contact": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aide et contact"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Help and contact"
-          }
-        }
-      }
-    },
-    "Apple n’a pas renvoyé d’identifiant. Réessaie dans un instant.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple n’a pas renvoyé d’identifiant. Réessaie dans un instant."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple didn’t send back an ID. Try again in a moment."
-          }
-        }
-      }
-    },
-    "Appui long sur une perle en double pour la revendre.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Appui long sur une perle en double pour la revendre."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Long-press a duplicate pearl to sell it."
-          }
-        }
-      }
-    },
-    "Aucun doublon à revendre": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucun doublon à revendre"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No duplicates to sell"
-          }
-        }
-      }
-    },
-    "Bonus des trois missions récupéré. À demain !": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bonus des trois missions récupéré. À demain !"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bonus for all three missions collected. See you tomorrow!"
-          }
-        }
-      }
-    },
-    "Boutique": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Boutique"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shop"
-          }
-        }
-      }
-    },
-    "Ce code est incorrect ou a expiré. Demande-en un nouveau.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ce code est incorrect ou a expiré. Demande-en un nouveau."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This code is wrong or has expired. Ask for a new one."
-          }
-        }
-      }
-    },
-    "Cette adresse e-mail ne semble pas complète.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cette adresse e-mail ne semble pas complète."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This email address doesn’t look complete."
-          }
-        }
-      }
-    },
-    "Chaque huître est un tirage : voir les probabilités": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chaque huître est un tirage : voir les probabilités"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every oyster is a draw: see the odds"
-          }
-        }
-      }
-    },
-    "Chaque huître est un tirage. Les chances ne changent jamais, ni avec un skin ni avec un achat.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chaque huître est un tirage. Les chances ne changent jamais, ni avec un skin ni avec un achat."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every oyster is a draw. The odds never change, not with a shell and not with a purchase."
-          }
-        }
-      }
-    },
-    "Collection": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Collection"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Collection"
-          }
-        }
-      }
-    },
-    "Compte": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Compte"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Account"
-          }
-        }
-      }
-    },
-    "Comptoir": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Comptoir"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Counter"
-          }
-        }
-      }
-    },
-    "Conditions d’utilisation": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conditions d’utilisation"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Terms of Use"
-          }
-        }
-      }
-    },
-    "Confidentialité des pubs": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confidentialité des pubs"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ad privacy"
-          }
-        }
-      }
-    },
-    "Connecté avec Apple": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Connecté avec Apple"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signed in with Apple"
-          }
-        }
-      }
-    },
-    "Connecté par e-mail": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Connecté par e-mail"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signed in with email"
-          }
-        }
-      }
-    },
-    "Continuer avec un e-mail": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continuer avec un e-mail"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continue with email"
-          }
-        }
-      }
-    },
-    "Copie l’identifiant": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copie l’identifiant"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copies the ID"
-          }
-        }
-      }
-    },
-    "Copié": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copié"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copied"
-          }
-        }
-      }
-    },
-    "Coquilles": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Coquilles"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shells"
-          }
-        }
-      }
-    },
-    "En continuant, tu acceptes les [conditions d’utilisation](%@) et la [politique de confidentialité](%@).": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En continuant, tu acceptes les [conditions d’utilisation](%@) et la [politique de confidentialité](%@)."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "By continuing, you accept the [Terms of Use](%1$@) and the [Privacy Policy](%2$@)."
-          }
-        }
-      }
-    },
-    "Encore %lld aujourd’hui": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Encore %lld aujourd’hui"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld left today"
-          }
-        }
-      }
-    },
-    "English": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "English"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "English"
-          }
-        }
-      }
-    },
-    "Entre ton code": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entre ton code"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter your code"
-          }
-        }
-      }
-    },
-    "Envoyé à %@": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Envoyé à %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sent to %@"
-          }
-        }
-      }
-    },
-    "Fermer": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fermer"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Close"
-          }
-        }
-      }
-    },
-    "Fermer la pub sans récompense": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fermer la pub sans récompense"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Close the ad without a reward"
-          }
-        }
-      }
-    },
-    "Français": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Français"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Français"
-          }
-        }
-      }
-    },
-    "Fêlée : sa valeur est divisée par deux": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fêlée : sa valeur est divisée par deux"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cracked: its value is halved"
-          }
-        }
-      }
-    },
-    "Fêlée…": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fêlée…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cracked…"
-          }
-        }
-      }
-    },
-    "Garantie : une perle dorée ou plus rare au plus tard à la %lldᵉ huître.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Garantie : une perle dorée ou plus rare au plus tard à la %lldᵉ huître."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guarantee: a golden pearl or rarer by oyster number %lld at the latest."
-          }
-        }
-      }
-    },
-    "Glisse le doigt vers le haut pour l'ouvrir doucement.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Glisse le doigt vers le haut pour l'ouvrir doucement."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Slide your finger up to open it gently."
-          }
-        }
-      }
-    },
-    "Glisse vers le haut pour ouvrir": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Glisse vers le haut pour ouvrir"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Swipe up to open"
-          }
-        }
-      }
-    },
-    "Huître fermée": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Huître fermée"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Closed oyster"
-          }
-        }
-      }
-    },
-    "Huîtres": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Huîtres"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oysters"
-          }
-        }
-      }
-    },
-    "Ici, une vraie pub": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ici, une vraie pub"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A real ad goes here"
-          }
-        }
-      }
-    },
-    "Icône de Pearl Inc.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Icône de Pearl Inc."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl Inc. icon"
-          }
-        }
-      }
-    },
-    "Identifiant (pour le support)": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Identifiant (pour le support)"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ID (for support)"
-          }
-        }
-      }
-    },
-    "Il y avait « %@ » dans mon huître. Pearl Inc. 🦪 pearl-inc.app": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il y avait « %@ » dans mon huître. Pearl Inc. 🦪 pearl-inc.app"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "There was a “%@” in my oyster. Pearl Inc. 🦪 pearl-inc.app"
-          }
-        }
-      }
-    },
-    "Indisponible": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Indisponible"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unavailable"
-          }
-        }
-      }
-    },
-    "Informations légales": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Informations légales"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Legal"
-          }
-        }
-      }
-    },
-    "Jeu": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jeu"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Game"
-          }
-        }
-      }
-    },
-    "Jouer sans compte": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jouer sans compte"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Play without an account"
-          }
-        }
-      }
-    },
-    "J’ai trouvé une %@ %@ dans Pearl Inc. (%@) 🦪 pearl-inc.app": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "J’ai trouvé une %@ %@ dans Pearl Inc. (%@) 🦪 pearl-inc.app"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "I found a %1$@ %2$@ in Pearl Inc. (%3$@) 🦪 pearl-inc.app"
-          }
-        }
-      }
-    },
-    "La connexion avec Apple n’a pas abouti. Réessaie dans un instant.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La connexion avec Apple n’a pas abouti. Réessaie dans un instant."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signing in with Apple didn’t work. Try again in a moment."
-          }
-        }
-      }
-    },
-    "La connexion n’a pas abouti. Réessaie dans un instant.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La connexion n’a pas abouti. Réessaie dans un instant."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signing in didn’t work. Try again in a moment."
-          }
-        }
-      }
-    },
-    "La marée remonte…": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La marée remonte…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The tide is coming back in…"
-          }
-        }
-      }
-    },
-    "La suppression n’a pas abouti. Vérifie ta connexion et réessaie, ou écris-nous.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La suppression n’a pas abouti. Vérifie ta connexion et réessaie, ou écris-nous."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deleting didn’t work. Check your connection and try again, or email us."
-          }
-        }
-      }
-    },
-    "Langue": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Langue"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Language"
-          }
-        }
-      }
-    },
-    "Le code contient 6 chiffres.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le code contient 6 chiffres."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The code has 6 digits."
-          }
-        }
-      }
-    },
-    "Les trois récupérées : + %lld ✦ de bonus.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les trois récupérées : + %lld ✦ de bonus."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Collect all three: + %lld ✦ bonus."
-          }
-        }
-      }
-    },
-    "Lustre": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lustre"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lustre"
-          }
-        }
-      }
-    },
-    "Ma collection": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ma collection"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "My collection"
-          }
-        }
-      }
-    },
-    "Mentions légales": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mentions légales"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Legal notice"
-          }
-        }
-      }
-    },
-    "Mes perles": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mes perles"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "My pearls"
-          }
-        }
-      }
-    },
-    "Missions du jour": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Missions du jour"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Daily missions"
-          }
-        }
-      }
-    },
-    "Nouvelles missions dans %@": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nouvelles missions dans %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New missions in %@"
-          }
-        }
-      }
-    },
-    "N°": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "N°"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No."
-          }
-        }
-      }
-    },
-    "N° %@": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "N° %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No. %@"
-          }
-        }
-      }
-    },
-    "OK": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        }
-      }
-    },
-    "Obtenir %lld lustres A ou S": {
-      "localizations": {
-        "fr": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Obtenir %lld lustre A ou S"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Obtenir %lld lustres A ou S"
-                }
-              }
-            }
-          }
-        },
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Get %lld A or S lustre"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Get %lld A or S lustres"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "Obtenir %lld lustres S": {
-      "localizations": {
-        "fr": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Obtenir %lld lustre S"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Obtenir %lld lustres S"
-                }
-              }
-            }
-          }
-        },
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Get %lld S lustre"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Get %lld S lustres"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "On garde la plus belle de chaque sorte et toutes les perles à marque rare.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "On garde la plus belle de chaque sorte et toutes les perles à marque rare."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "We keep the finest of each kind and every pearl with a rare mark."
-          }
-        }
-      }
-    },
-    "On t’envoie un code à 6 chiffres. Inscrit avant la sortie ? Utilise la même adresse pour récupérer ta coquille Première marée.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "On t’envoie un code à 6 chiffres. Inscrit avant la sortie ? Utilise la même adresse pour récupérer ta coquille Première marée."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "We’ll send you a 6-digit code. Signed up before launch? Use the same address to get your First Tide shell."
-          }
-        }
-      }
-    },
-    "Ouvre des huîtres,\ntrouve la perle rare.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ouvre des huîtres,\ntrouve la perle rare."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open oysters,\nfind the rare pearl."
-          }
-        }
-      }
-    },
-    "Ouvre le téléphone doucement": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ouvre le téléphone doucement"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open your phone gently"
-          }
-        }
-      }
-    },
-    "Ouvrir %lld huîtres": {
-      "localizations": {
-        "fr": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Ouvrir %lld huître"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Ouvrir %lld huîtres"
-                }
-              }
-            }
-          }
-        },
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Open %lld oyster"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Open %lld oysters"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "Ouvrir %lld huîtres d’affilée sans fêlure": {
-      "localizations": {
-        "fr": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Ouvrir %lld huître sans fêlure"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Ouvrir %lld huîtres d’affilée sans fêlure"
-                }
-              }
-            }
-          }
-        },
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Open %lld oyster without a crack"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Open %lld oysters in a row without a crack"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "Ouvrir l'huître": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ouvrir l'huître"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open the oyster"
-          }
-        }
-      }
-    },
-    "PUBLICITÉ (SIMULÉE)": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PUBLICITÉ (SIMULÉE)"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "AD (SIMULATED)"
-          }
-        }
-      }
-    },
-    "Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres et la poussière d’or restent dans ta partie.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres et la poussière d’or restent dans ta partie."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paid with your Apple account. Shells you buy can be restored on a new phone; oysters and gold dust stay in your game."
-          }
-        }
-      }
-    },
-    "Partager": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Partager"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Share"
-          }
-        }
-      }
-    },
-    "Partager une carte": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Partager une carte"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Share a card"
-          }
-        }
-      }
-    },
-    "Pas de connexion internet. Vérifie ton réseau puis réessaie.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas de connexion internet. Vérifie ton réseau puis réessaie."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No internet connection. Check your network and try again."
-          }
-        }
-      }
-    },
-    "Pas de pub AdMob prête (version de développement).": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas de pub AdMob prête (version de développement)."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No AdMob ad ready (development build)."
-          }
-        }
-      }
-    },
-    "Pearl Inc.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl Inc."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl Inc."
-          }
-        }
-      }
-    },
-    "Pearl Inc. %@ · iPhone et iPhone Duo sont des marques d’Apple Inc. Pearl Inc. n’est pas affilié à Apple.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl Inc. %@ · iPhone et iPhone Duo sont des marques d’Apple Inc. Pearl Inc. n’est pas affilié à Apple."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl Inc. %@ · iPhone and iPhone Duo are trademarks of Apple Inc. Pearl Inc. is not affiliated with Apple."
-          }
-        }
-      }
-    },
-    "Pearl Inc. (identifiant %@)": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl Inc. (identifiant %@)"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl Inc. (ID %@)"
-          }
-        }
-      }
-    },
-    "Perle pas encore trouvée, %@": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Perle pas encore trouvée, %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl not found yet, %@"
-          }
-        }
-      }
-    },
-    "Plus de pub aujourd’hui : reviens demain": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plus de pub aujourd’hui : reviens demain"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No more ads today: come back tomorrow"
-          }
-        }
-      }
-    },
-    "Politique de confidentialité": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Politique de confidentialité"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Privacy Policy"
-          }
-        }
-      }
-    },
-    "Poussière d’or": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Poussière d’or"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gold dust"
-          }
-        }
-      }
-    },
-    "Probabilités": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Probabilités"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odds"
-          }
-        }
-      }
-    },
-    "Probabilités des perles": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Probabilités des perles"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl odds"
-          }
-        }
-      }
-    },
-    "Prochaine huître dans %@": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prochaine huître dans %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next oyster in %@"
-          }
-        }
-      }
-    },
-    "Pub en préparation…": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pub en préparation…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Getting an ad ready…"
-          }
-        }
-      }
-    },
-    "Purement cosmétiques : elles ne changent ni les perles ni les chances.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Purement cosmétiques : elles ne changent ni les perles ni les chances."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Purely cosmetic: they change neither the pearls nor the odds."
-          }
-        }
-      }
-    },
-    "Pêche": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pêche"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fishing"
-          }
-        }
-      }
-    },
-    "Recevoir le code": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recevoir le code"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Get the code"
-          }
-        }
-      }
-    },
-    "Referme le téléphone pour l’huître suivante": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Referme le téléphone pour l’huître suivante"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Close your phone for the next oyster"
-          }
-        }
-      }
-    },
-    "Referme le téléphone, puis ouvre-le": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Referme le téléphone, puis ouvre-le"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Close your phone, then open it"
-          }
-        }
-      }
-    },
-    "Regarder une pub · + %lld huîtres": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Regarder une pub · + %lld huîtres"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Watch an ad · + %lld oysters"
-          }
-        }
-      }
-    },
-    "Renvoyer le code": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Renvoyer le code"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Resend the code"
-          }
-        }
-      }
-    },
-    "Restaurer les achats": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restaurer les achats"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restore purchases"
-          }
-        }
-      }
-    },
-    "Retour": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Retour"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Back"
-          }
-        }
-      }
-    },
-    "Revendre %lld doublons au comptoir": {
-      "localizations": {
-        "fr": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Revendre %lld doublon au comptoir"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Revendre %lld doublons au comptoir"
-                }
-              }
-            }
-          }
-        },
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Sell %lld duplicate at the counter"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Sell %lld duplicates at the counter"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "Revendre %lld doublons · + %lld ✦": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ · + %2$lld ✦"
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "Revendre %arg doublon"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "Revendre %arg doublons"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ · + %2$lld ✦"
-          },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "Sell %arg duplicate"
-                    }
-                  },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "Sell %arg duplicates"
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg exemplaires"
                     }
                   }
                 }
@@ -2076,29 +130,2542 @@
         }
       }
     },
-    "Revendre %lld perles pour %lld ✦": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ pour %2$lld ✦"
+    "%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld / %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld"
+          }
+        }
+      }
+    },
+    "%lld / %lld perles trouvées" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld pearls found"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld perles trouvées"
+          }
+        }
+      }
+    },
+    "%lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ✦"
+          }
+        }
+      }
+    },
+    "%lld h %@" : {
+      "comment" : "Compte à rebours en heures et minutes",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lldh %2$@m"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld h %@"
+          }
+        }
+      }
+    },
+    "%lld huîtres" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld oyster"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld oysters"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld huître"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld huîtres"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld jours d’affilée" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day in a row"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days in a row"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld jour d’affilée"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld jours d’affilée"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld poussière d’or" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld gold dust"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld poussière d’or"
+          }
+        }
+      }
+    },
+    "+ %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ %lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ %lld ✦"
+          }
+        }
+      }
+    },
+    "+ %lld ✦ de poussière d’or" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ %lld ✦ gold dust"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ %lld ✦ de poussière d’or"
+          }
+        }
+      }
+    },
+    "✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✦"
+          }
+        }
+      }
+    },
+    "✦ %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✦ %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✦ %lld"
+          }
+        }
+      }
+    },
+    "✦ %lld de poussière d’or" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✦ %lld gold dust"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✦ %lld de poussière d’or"
+          }
+        }
+      }
+    },
+    "000000" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "000000"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "000000"
+          }
+        }
+      }
+    },
+    "À récupérer aujourd’hui" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To collect today"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À récupérer aujourd’hui"
+          }
+        }
+      }
+    },
+    "Achats" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchases"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achats"
+          }
+        }
+      }
+    },
+    "Aide" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aide"
+          }
+        }
+      }
+    },
+    "Aide et contact" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help and contact"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aide et contact"
+          }
+        }
+      }
+    },
+    "Apple n’a pas renvoyé d’identifiant. Réessaie dans un instant." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple didn’t send back an ID. Try again in a moment."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple n’a pas renvoyé d’identifiant. Réessaie dans un instant."
+          }
+        }
+      }
+    },
+    "Appui long sur une perle en double pour la revendre." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long-press a duplicate pearl to sell it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appui long sur une perle en double pour la revendre."
+          }
+        }
+      }
+    },
+    "Attention : à mi-ouverture, la perle est fragile. Si tu vas trop vite, elle se fêle et perd la moitié de sa valeur." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Careful: halfway open, the pearl is fragile. Go too fast and it cracks, losing half its value."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attention : à mi-ouverture, la perle est fragile. Si tu vas trop vite, elle se fêle et perd la moitié de sa valeur."
+          }
+        }
+      }
+    },
+    "Aucun doublon à revendre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No duplicates to sell"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun doublon à revendre"
+          }
+        }
+      }
+    },
+    "Bien joué : ouverte en douceur, perle intacte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Well done: opened gently, pearl intact."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bien joué : ouverte en douceur, perle intacte."
+          }
+        }
+      }
+    },
+    "Bonus des trois missions récupéré. À demain !" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bonus for all three missions collected. See you tomorrow!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bonus des trois missions récupéré. À demain !"
+          }
+        }
+      }
+    },
+    "Boutique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shop"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boutique"
+          }
+        }
+      }
+    },
+    "Case à récupérer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reward to collect"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Case à récupérer"
+          }
+        }
+      }
+    },
+    "Ce code est incorrect ou a expiré. Demande-en un nouveau." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This code is wrong or has expired. Ask for a new one."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce code est incorrect ou a expiré. Demande-en un nouveau."
+          }
+        }
+      }
+    },
+    "Cette adresse e-mail ne semble pas complète." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This email address doesn’t look complete."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette adresse e-mail ne semble pas complète."
+          }
+        }
+      }
+    },
+    "Chaque huître est un tirage : voir les probabilités" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every oyster is a draw: see the odds"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque huître est un tirage : voir les probabilités"
+          }
+        }
+      }
+    },
+    "Chaque huître est un tirage. Les chances ne changent jamais, ni avec un skin ni avec un achat." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every oyster is a draw. The odds never change, not with a shell and not with a purchase."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque huître est un tirage. Les chances ne changent jamais, ni avec un skin ni avec un achat."
+          }
+        }
+      }
+    },
+    "Collection" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collection"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collection"
+          }
+        }
+      }
+    },
+    "Compte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte"
+          }
+        }
+      }
+    },
+    "Comptoir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Counter"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comptoir"
+          }
+        }
+      }
+    },
+    "Conditions d’utilisation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Use"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conditions d’utilisation"
+          }
+        }
+      }
+    },
+    "Confidentialité des pubs" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ad privacy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confidentialité des pubs"
+          }
+        }
+      }
+    },
+    "Connecté avec Apple" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed in with Apple"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecté avec Apple"
+          }
+        }
+      }
+    },
+    "Connecté par e-mail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed in with email"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecté par e-mail"
+          }
+        }
+      }
+    },
+    "Continuer avec un e-mail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue with email"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuer avec un e-mail"
+          }
+        }
+      }
+    },
+    "Copié" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copié"
+          }
+        }
+      }
+    },
+    "Copie l’identifiant" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copies the ID"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copie l’identifiant"
+          }
+        }
+      }
+    },
+    "Coquilles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shells"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coquilles"
+          }
+        }
+      }
+    },
+    "Doucement…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gently…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doucement…"
+          }
+        }
+      }
+    },
+    "Écrire au support" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email support"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrire au support"
+          }
+        }
+      }
+    },
+    "Elle résiste… continue, elle va céder." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It’s resisting… keep going, it’s about to give."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elle résiste… continue, elle va céder."
+          }
+        }
+      }
+    },
+    "En continuant, tu acceptes les [conditions d’utilisation](%@) et la [politique de confidentialité](%@)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By continuing, you accept the [Terms of Use](%1$@) and the [Privacy Policy](%2$@)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En continuant, tu acceptes les [conditions d’utilisation](%@) et la [politique de confidentialité](%@)."
+          }
+        }
+      }
+    },
+    "Encore %lld aujourd’hui" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld left today"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encore %lld aujourd’hui"
+          }
+        }
+      }
+    },
+    "English" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English"
+          }
+        }
+      }
+    },
+    "Entre ton code" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your code"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre ton code"
+          }
+        }
+      }
+    },
+    "Envoyé à %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sent to %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyé à %@"
+          }
+        }
+      }
+    },
+    "Équipée" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equipped"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Équipée"
+          }
+        }
+      }
+    },
+    "Équiper" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equip"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Équiper"
+          }
+        }
+      }
+    },
+    "Fêlée : sa valeur est divisée par deux" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cracked: its value is halved"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fêlée : sa valeur est divisée par deux"
+          }
+        }
+      }
+    },
+    "Fêlée…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cracked…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fêlée…"
+          }
+        }
+      }
+    },
+    "Fêlée… La prochaine fois, ralentis à mi-ouverture." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cracked… Next time, slow down halfway."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fêlée… La prochaine fois, ralentis à mi-ouverture."
+          }
+        }
+      }
+    },
+    "Fermer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        }
+      }
+    },
+    "Fermer la pub sans récompense" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close the ad without a reward"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer la pub sans récompense"
+          }
+        }
+      }
+    },
+    "Français" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Français"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Français"
+          }
+        }
+      }
+    },
+    "Garantie : une perle dorée ou plus rare au plus tard à la %lldᵉ huître." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarantee: a golden pearl or rarer by oyster number %lld at the latest."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garantie : une perle dorée ou plus rare au plus tard à la %lldᵉ huître."
+          }
+        }
+      }
+    },
+    "Glisse le doigt vers le haut pour l'ouvrir doucement." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slide your finger up to open it gently."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glisse le doigt vers le haut pour l'ouvrir doucement."
+          }
+        }
+      }
+    },
+    "Glisse le pouce vers le haut pour ouvrir ta première huître." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slide your thumb up to open your first oyster."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glisse le pouce vers le haut pour ouvrir ta première huître."
+          }
+        }
+      }
+    },
+    "Glisse vers le haut pour ouvrir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe up to open"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glisse vers le haut pour ouvrir"
+          }
+        }
+      }
+    },
+    "Huître fermée" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closed oyster"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huître fermée"
+          }
+        }
+      }
+    },
+    "Huîtres" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oysters"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huîtres"
+          }
+        }
+      }
+    },
+    "Huîtres revenues" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oysters back"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huîtres revenues"
+          }
+        }
+      }
+    },
+    "Ici, une vraie pub" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A real ad goes here"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ici, une vraie pub"
+          }
+        }
+      }
+    },
+    "Icône de Pearl Inc." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl Inc. icon"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icône de Pearl Inc."
+          }
+        }
+      }
+    },
+    "Identifiant (pour le support)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID (for support)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identifiant (pour le support)"
+          }
+        }
+      }
+    },
+    "Il y avait « %@ » dans mon huître. Pearl Inc. 🦪 pearl-inc.app" : {
+      "comment" : "Message partagé",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There was a “%@” in my oyster. Pearl Inc. 🦪 pearl-inc.app"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il y avait « %@ » dans mon huître. Pearl Inc. 🦪 pearl-inc.app"
+          }
+        }
+      }
+    },
+    "Indisponible" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unavailable"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indisponible"
+          }
+        }
+      }
+    },
+    "Informations légales" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informations légales"
+          }
+        }
+      }
+    },
+    "J’ai trouvé une %@ %@ dans Pearl Inc. (%@) 🦪 pearl-inc.app" : {
+      "comment" : "Message partagé",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I found a %1$@ %2$@ in Pearl Inc. (%3$@) 🦪 pearl-inc.app"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "J’ai trouvé une %@ %@ dans Pearl Inc. (%@) 🦪 pearl-inc.app"
+          }
+        }
+      }
+    },
+    "Je te préviens quand la marée est haute" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I’ll let you know when the tide is in"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je te préviens quand la marée est haute"
+          }
+        }
+      }
+    },
+    "Jeu" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeu"
+          }
+        }
+      }
+    },
+    "Joker prêt : un jour manqué ne casse pas ta série." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joker ready: one missed day won’t break your streak."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Joker prêt : un jour manqué ne casse pas ta série."
+          }
+        }
+      }
+    },
+    "Joker utilisé : de retour dans %lld jours." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Joker used: back in %lld day."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Joker used: back in %lld days."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Joker utilisé : de retour dans %lld jour."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Joker utilisé : de retour dans %lld jours."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Jouer sans compte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play without an account"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jouer sans compte"
+          }
+        }
+      }
+    },
+    "Jour %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Day %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jour %lld"
+          }
+        }
+      }
+    },
+    "La connexion avec Apple n’a pas abouti. Réessaie dans un instant." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing in with Apple didn’t work. Try again in a moment."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connexion avec Apple n’a pas abouti. Réessaie dans un instant."
+          }
+        }
+      }
+    },
+    "La connexion n’a pas abouti. Réessaie dans un instant." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing in didn’t work. Try again in a moment."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connexion n’a pas abouti. Réessaie dans un instant."
+          }
+        }
+      }
+    },
+    "La marée est haute" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The tide is in"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La marée est haute"
+          }
+        }
+      }
+    },
+    "La marée remonte…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The tide is coming back in…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La marée remonte…"
+          }
+        }
+      }
+    },
+    "La suppression n’a pas abouti. Vérifie ta connexion et réessaie, ou écris-nous." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleting didn’t work. Check your connection and try again, or email us."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La suppression n’a pas abouti. Vérifie ta connexion et réessaie, ou écris-nous."
+          }
+        }
+      }
+    },
+    "Langue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langue"
+          }
+        }
+      }
+    },
+    "Le code contient 6 chiffres." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The code has 6 digits."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le code contient 6 chiffres."
+          }
+        }
+      }
+    },
+    "Les notifications de Pearl Inc. sont coupées dans les Réglages d’iOS. Les rallumer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl Inc. notifications are off in iOS Settings. Turn them back on"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notifications de Pearl Inc. sont coupées dans les Réglages d’iOS. Les rallumer"
+          }
+        }
+      }
+    },
+    "Les trois récupérées : + %lld ✦ de bonus." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collect all three: + %lld ✦ bonus."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les trois récupérées : + %lld ✦ de bonus."
+          }
+        }
+      }
+    },
+    "Lustre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lustre"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lustre"
+          }
+        }
+      }
+    },
+    "Ma collection" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My collection"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ma collection"
+          }
+        }
+      }
+    },
+    "Me prévenir quand elles reviennent" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notify me when they’re back"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me prévenir quand elles reviennent"
+          }
+        }
+      }
+    },
+    "Mentions légales" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legal notice"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mentions légales"
+          }
+        }
+      }
+    },
+    "Mes perles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My pearls"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes perles"
+          }
+        }
+      }
+    },
+    "Missions du jour" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily missions"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missions du jour"
+          }
+        }
+      }
+    },
+    "N°" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N°"
+          }
+        }
+      }
+    },
+    "N° %@" : {
+      "comment" : "Numéro de série d'une carte",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N° %@"
+          }
+        }
+      }
+    },
+    "Nouvelles missions dans %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New missions in %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvelles missions dans %@"
+          }
+        }
+      }
+    },
+    "Obtenir %lld lustres A ou S" : {
+      "comment" : "Mission du jour",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Get %lld A or S lustre"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Get %lld A or S lustres"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Obtenir %lld lustre A ou S"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Obtenir %lld lustres A ou S"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Obtenir %lld lustres S" : {
+      "comment" : "Mission du jour",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Get %lld S lustre"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Get %lld S lustres"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Obtenir %lld lustre S"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Obtenir %lld lustres S"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "On garde la plus belle de chaque sorte et toutes les perles à marque rare." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We keep the finest of each kind and every pearl with a rare mark."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On garde la plus belle de chaque sorte et toutes les perles à marque rare."
+          }
+        }
+      }
+    },
+    "On t’envoie un code à 6 chiffres. Inscrit avant la sortie ? Utilise la même adresse pour récupérer ta coquille Première marée." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We’ll send you a 6-digit code. Signed up before launch? Use the same address to get your First Tide shell."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On t’envoie un code à 6 chiffres. Inscrit avant la sortie ? Utilise la même adresse pour récupérer ta coquille Première marée."
+          }
+        }
+      }
+    },
+    "Ouvre des huîtres,\ntrouve la perle rare." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open oysters,\nfind the rare pearl."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre des huîtres,\ntrouve la perle rare."
+          }
+        }
+      }
+    },
+    "Ouvre doucement le téléphone : ta première huître s’ouvre avec lui." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open your phone gently: your first oyster opens with it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre doucement le téléphone : ta première huître s’ouvre avec lui."
+          }
+        }
+      }
+    },
+    "Ouvre le téléphone doucement" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open your phone gently"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre le téléphone doucement"
+          }
+        }
+      }
+    },
+    "Ouvrir %lld huîtres" : {
+      "comment" : "Mission du jour",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Open %lld oyster"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Open %lld oysters"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ouvrir %lld huître"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ouvrir %lld huîtres"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Ouvrir %lld huîtres d’affilée sans fêlure" : {
+      "comment" : "Mission du jour",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Open %lld oyster without a crack"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Open %lld oysters in a row without a crack"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ouvrir %lld huître sans fêlure"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ouvrir %lld huîtres d’affilée sans fêlure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Ouvrir l'huître" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the oyster"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir l'huître"
+          }
+        }
+      }
+    },
+    "Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres et la poussière d’or restent dans ta partie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paid with your Apple account. Shells you buy can be restored on a new phone; oysters and gold dust stay in your game."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres et la poussière d’or restent dans ta partie."
+          }
+        }
+      }
+    },
+    "Parfois, rien. C’est la mer. La prochaine sera peut-être la bonne." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sometimes, nothing. That’s the sea. The next one might be it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parfois, rien. C’est la mer. La prochaine sera peut-être la bonne."
+          }
+        }
+      }
+    },
+    "Partager" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager"
+          }
+        }
+      }
+    },
+    "Partager une carte" : {
+      "comment" : "Mission du jour",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share a card"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager une carte"
+          }
+        }
+      }
+    },
+    "Pas de connexion internet. Vérifie ton réseau puis réessaie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No internet connection. Check your network and try again."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de connexion internet. Vérifie ton réseau puis réessaie."
+          }
+        }
+      }
+    },
+    "Pas de pub AdMob prête (version de développement)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No AdMob ad ready (development build)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de pub AdMob prête (version de développement)."
+          }
+        }
+      }
+    },
+    "Pearl Inc." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl Inc."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl Inc."
+          }
+        }
+      }
+    },
+    "Pearl Inc. (identifiant %@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl Inc. (ID %@)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl Inc. (identifiant %@)"
+          }
+        }
+      }
+    },
+    "Pearl Inc. %@ · iPhone et iPhone Duo sont des marques d’Apple Inc. Pearl Inc. n’est pas affilié à Apple." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl Inc. %@ · iPhone and iPhone Duo are trademarks of Apple Inc. Pearl Inc. is not affiliated with Apple."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl Inc. %@ · iPhone et iPhone Duo sont des marques d’Apple Inc. Pearl Inc. n’est pas affilié à Apple."
+          }
+        }
+      }
+    },
+    "Pêche" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fishing"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pêche"
+          }
+        }
+      }
+    },
+    "Perle pas encore trouvée, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl not found yet, %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perle pas encore trouvée, %@"
+          }
+        }
+      }
+    },
+    "Plus de pub aujourd’hui : reviens demain" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No more ads today: come back tomorrow"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus de pub aujourd’hui : reviens demain"
+          }
+        }
+      }
+    },
+    "Plus une perle est rare, plus elle se fait attendre. Les plus précieuses tremblent avant même qu’on les touche. Bonne pêche !" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The rarer the pearl, the longer it makes you wait. The most precious ones tremble before you even touch them. Happy fishing!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus une perle est rare, plus elle se fait attendre. Les plus précieuses tremblent avant même qu’on les touche. Bonne pêche !"
+          }
+        }
+      }
+    },
+    "Politique de confidentialité" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Politique de confidentialité"
+          }
+        }
+      }
+    },
+    "Poussière d’or" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gold dust"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poussière d’or"
+          }
+        }
+      }
+    },
+    "prenom@exemple.fr" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "name@example.com"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "prenom@exemple.fr"
+          }
+        }
+      }
+    },
+    "Probabilités" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odds"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probabilités"
+          }
+        }
+      }
+    },
+    "Probabilités des perles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl odds"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probabilités des perles"
+          }
+        }
+      }
+    },
+    "Prochaine huître dans %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next oyster in %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prochaine huître dans %@"
+          }
+        }
+      }
+    },
+    "Pub en préparation…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Getting an ad ready…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pub en préparation…"
+          }
+        }
+      }
+    },
+    "PUBLICITÉ (SIMULÉE)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AD (SIMULATED)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PUBLICITÉ (SIMULÉE)"
+          }
+        }
+      }
+    },
+    "Purement cosmétiques : elles ne changent ni les perles ni les chances." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purely cosmetic: they change neither the pearls nor the odds."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purement cosmétiques : elles ne changent ni les perles ni les chances."
+          }
+        }
+      }
+    },
+    "Recevoir le code" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get the code"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recevoir le code"
+          }
+        }
+      }
+    },
+    "Récompense dans %lld s" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reward in %lld s"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récompense dans %lld s"
+          }
+        }
+      }
+    },
+    "Récompense gagnée !" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reward earned!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récompense gagnée !"
+          }
+        }
+      }
+    },
+    "Récupéré" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collected"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récupéré"
+          }
+        }
+      }
+    },
+    "Récupéré ! Reviens demain pour la case suivante." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collected! Come back tomorrow for the next one."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récupéré ! Reviens demain pour la case suivante."
+          }
+        }
+      }
+    },
+    "Récupérée" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collected"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récupérée"
+          }
+        }
+      }
+    },
+    "Récupérer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collect"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récupérer"
+          }
+        }
+      }
+    },
+    "Referme le téléphone pour l’huître suivante" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close your phone for the next oyster"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Referme le téléphone pour l’huître suivante"
+          }
+        }
+      }
+    },
+    "Referme le téléphone, puis ouvre-le" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close your phone, then open it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Referme le téléphone, puis ouvre-le"
+          }
+        }
+      }
+    },
+    "Referme le téléphone, puis ouvre-le doucement : ta première huître s’ouvre avec lui." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close your phone, then open it gently: your first oyster opens with it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Referme le téléphone, puis ouvre-le doucement : ta première huître s’ouvre avec lui."
+          }
+        }
+      }
+    },
+    "Regarder une pub · + %lld huîtres" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watch an ad · + %lld oysters"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regarder une pub · + %lld huîtres"
+          }
+        }
+      }
+    },
+    "Réglages" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages"
+          }
+        }
+      }
+    },
+    "Rendez-vous du jour" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily rendezvous"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rendez-vous du jour"
+          }
+        }
+      }
+    },
+    "Renvoyer le code" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resend the code"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renvoyer le code"
+          }
+        }
+      }
+    },
+    "Réservée aux inscrits" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Early sign-ups only"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réservée aux inscrits"
+          }
+        }
+      }
+    },
+    "Restaurer les achats" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore purchases"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurer les achats"
+          }
+        }
+      }
+    },
+    "Retour" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retour"
+          }
+        }
+      }
+    },
+    "Revendre · + %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sell · + %lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revendre · + %lld ✦"
+          }
+        }
+      }
+    },
+    "Revendre %lld doublons · + %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@n@ · + %2$lld ✦"
           },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "Revendre %arg perle"
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Sell %arg duplicate"
                     }
                   },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "Revendre %arg perles"
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Sell %arg duplicates"
                     }
                   }
                 }
@@ -2106,27 +2673,27 @@
             }
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%#@n@ for %2$lld ✦"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@n@ · + %2$lld ✦"
           },
-          "substitutions": {
-            "n": {
-              "argNum": 1,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "Sell %arg pearl"
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Revendre %arg doublon"
                     }
                   },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "Sell %arg pearls"
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Revendre %arg doublons"
                     }
                   }
                 }
@@ -2136,525 +2703,70 @@
         }
       }
     },
-    "Revendre les doublons ?": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Revendre les doublons ?"
+    "Revendre %lld doublons au comptoir" : {
+      "comment" : "Mission du jour",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sell %lld duplicate at the counter"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sell %lld duplicates at the counter"
+                }
+              }
+            }
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sell duplicates?"
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Revendre %lld doublon au comptoir"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Revendre %lld doublons au comptoir"
+                }
+              }
+            }
           }
         }
       }
     },
-    "Revendre · + %lld ✦": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Revendre · + %lld ✦"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sell · + %lld ✦"
-          }
-        }
-      }
-    },
-    "Revends tes doublons contre de la poussière d’or. On garde toujours un exemplaire de chaque sorte.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Revends tes doublons contre de la poussière d’or. On garde toujours un exemplaire de chaque sorte."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sell your duplicates for gold dust. We always keep one of each kind."
-          }
-        }
-      }
-    },
-    "Récompense dans %lld s": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Récompense dans %lld s"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reward in %lld s"
-          }
-        }
-      }
-    },
-    "Récompense gagnée !": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Récompense gagnée !"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reward earned!"
-          }
-        }
-      }
-    },
-    "Récupérer": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Récupérer"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Collect"
-          }
-        }
-      }
-    },
-    "Récupérée": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Récupérée"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Collected"
-          }
-        }
-      }
-    },
-    "Réglages": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Réglages"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Settings"
-          }
-        }
-      }
-    },
-    "Réservée aux inscrits": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Réservée aux inscrits"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Early sign-ups only"
-          }
-        }
-      }
-    },
-    "Sans compte": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sans compte"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No account"
-          }
-        }
-      }
-    },
-    "Sans compte, ta partie reste sur cet iPhone.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sans compte, ta partie reste sur cet iPhone."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Without an account, your game stays on this iPhone."
-          }
-        }
-      }
-    },
-    "Sans compte, ta progression reste sur cet iPhone jusqu’à ce que tu ajoutes Apple ou un e-mail.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sans compte, ta progression reste sur cet iPhone jusqu’à ce que tu ajoutes Apple ou un e-mail."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Without an account, your progress stays on this iPhone until you add Apple or an email."
-          }
-        }
-      }
-    },
-    "Sans compte, tu ne pourras plus revenir sur ce compte. Ta partie reste sur cet iPhone.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sans compte, tu ne pourras plus revenir sur ce compte. Ta partie reste sur cet iPhone."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Without an account, you won’t be able to come back to this account. Your game stays on this iPhone."
-          }
-        }
-      }
-    },
-    "Se déconnecter": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se déconnecter"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign out"
-          }
-        }
-      }
-    },
-    "Se déconnecter ?": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se déconnecter ?"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign out?"
-          }
-        }
-      }
-    },
-    "Supprimer définitivement": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Supprimer définitivement"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete permanently"
-          }
-        }
-      }
-    },
-    "Supprimer mon compte": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Supprimer mon compte"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete my account"
-          }
-        }
-      }
-    },
-    "Supprimer ton compte ?": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Supprimer ton compte ?"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete your account?"
-          }
-        }
-      }
-    },
-    "Ta partie reste sur cet iPhone. Tu pourras te reconnecter avec le même compte.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ta partie reste sur cet iPhone. Tu pourras te reconnecter avec le même compte."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your game stays on this iPhone. You can sign back in with the same account."
-          }
-        }
-      }
-    },
-    "Ta seule %@ : on la garde.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ta seule %@ : on la garde."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your only %@: we’re keeping it."
-          }
-        }
-      }
-    },
-    "Taille": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Taille"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Size"
-          }
-        }
-      }
-    },
-    "Ton adresse e-mail": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ton adresse e-mail"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your email address"
-          }
-        }
-      }
-    },
-    "Ton compte et les données liées sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ton compte et les données liées sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your account and its data are erased for good. The game on this iPhone (collection, oysters, gold dust) starts over. Shells you bought come back with “Restore purchases”. Purchases aren’t refunded: for that, go through Apple."
-          }
-        }
-      }
-    },
-    "Touche la carte pour l'huître suivante": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Touche la carte pour l'huître suivante"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tap the card for the next oyster"
-          }
-        }
-      }
-    },
-    "Touche la carte pour l’huître suivante": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Touche la carte pour l’huître suivante"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tap the card for the next oyster"
-          }
-        }
-      }
-    },
-    "Trop de demandes d’affilée. Attends une minute avant de réessayer.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trop de demandes d’affilée. Attends une minute avant de réessayer."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Too many requests in a row. Wait a minute before trying again."
-          }
-        }
-      }
-    },
-    "Trop vite !": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trop vite !"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Too fast!"
-          }
-        }
-      }
-    },
-    "Trouvaille": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trouvaille"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Find"
-          }
-        }
-      }
-    },
-    "Trouvaille, à la place de la perle": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trouvaille, à la place de la perle"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Find, instead of the pearl"
-          }
-        }
-      }
-    },
-    "Trouvailles": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trouvailles"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Finds"
-          }
-        }
-      }
-    },
-    "Trouver une perle ◆◆ ou plus rare": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trouver une perle ◆◆ ou plus rare"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Find a ◆◆ pearl or rarer"
-          }
-        }
-      }
-    },
-    "Trésor : %lld · %lld perles": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trésor : %1$lld · %#@n@"
+    "Revendre %lld perles pour %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@n@ for %2$lld ✦"
           },
-          "substitutions": {
-            "n": {
-              "argNum": 2,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg perle"
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Sell %arg pearl"
                     }
                   },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg perles"
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Sell %arg pearls"
                     }
                   }
                 }
@@ -2662,27 +2774,27 @@
             }
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Treasure: %1$lld · %#@n@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@n@ pour %2$lld ✦"
           },
-          "substitutions": {
-            "n": {
-              "argNum": 2,
-              "formatSpecifier": "lld",
-              "variations": {
-                "plural": {
-                  "one": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg pearl"
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Revendre %arg perle"
                     }
                   },
-                  "other": {
-                    "stringUnit": {
-                      "state": "translated",
-                      "value": "%arg pearls"
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "Revendre %arg perles"
                     }
                   }
                 }
@@ -2692,695 +2804,411 @@
         }
       }
     },
-    "Tu as %lld ✦. Revends tes perles en double dans la collection, ou recharge tes huîtres dans la boutique.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tu as %lld ✦. Revends tes perles en double dans la collection, ou recharge tes huîtres dans la boutique."
+    "Revendre les doublons ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sell duplicates?"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You have %lld ✦. Sell duplicate pearls in your collection, or top up your oysters in the shop."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revendre les doublons ?"
           }
         }
       }
     },
-    "Une huître pour %lld ✦": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Une huître pour %lld ✦"
+    "Revends tes doublons contre de la poussière d’or. On garde toujours un exemplaire de chaque sorte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sell your duplicates for gold dust. We always keep one of each kind."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "One oyster for %lld ✦"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revends tes doublons contre de la poussière d’or. On garde toujours un exemplaire de chaque sorte."
           }
         }
       }
     },
-    "Une huître · %lld ✦": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Une huître · %lld ✦"
+    "Reviens demain pour la case suivante." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come back tomorrow for the next one."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "One oyster · %lld ✦"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reviens demain pour la case suivante."
           }
         }
       }
     },
-    "Valeur": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Valeur"
+    "Sans compte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No account"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Value"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans compte"
           }
         }
       }
     },
-    "Valider": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Valider"
+    "Sans compte, ta partie reste sur cet iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without an account, your game stays on this iPhone."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confirm"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans compte, ta partie reste sur cet iPhone."
           }
         }
       }
     },
-    "Vibrations": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vibrations"
+    "Sans compte, ta progression reste sur cet iPhone jusqu’à ce que tu ajoutes Apple ou un e-mail." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without an account, your progress stays on this iPhone until you add Apple or an email."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Haptics"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans compte, ta progression reste sur cet iPhone jusqu’à ce que tu ajoutes Apple ou un e-mail."
           }
         }
       }
     },
-    "Zone fragile : doucement": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zone fragile : doucement"
+    "Sans compte, tu ne pourras plus revenir sur ce compte. Ta partie reste sur cet iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without an account, you won’t be able to come back to this account. Your game stays on this iPhone."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fragile zone: gently"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans compte, tu ne pourras plus revenir sur ce compte. Ta partie reste sur cet iPhone."
           }
         }
       }
     },
-    "prenom@exemple.fr": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "prenom@exemple.fr"
+    "Se déconnecter" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign out"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "name@example.com"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se déconnecter"
           }
         }
       }
     },
-    "version %@ (%@)": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "version %@ (%@)"
+    "Se déconnecter ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign out?"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "version %1$@ (%2$@)"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se déconnecter ?"
           }
         }
       }
     },
-    "Écrire au support": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Écrire au support"
+    "Supprimer définitivement" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete permanently"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Email support"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer définitivement"
           }
         }
       }
     },
-    "Équiper": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Équiper"
+    "Supprimer mon compte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete my account"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Equip"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer mon compte"
           }
         }
       }
     },
-    "Équipée": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Équipée"
+    "Supprimer ton compte ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete your account?"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Equipped"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer ton compte ?"
           }
         }
       }
     },
-    "✦": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✦"
+    "Ta partie reste sur cet iPhone. Tu pourras te reconnecter avec le même compte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your game stays on this iPhone. You can sign back in with the same account."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✦"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta partie reste sur cet iPhone. Tu pourras te reconnecter avec le même compte."
           }
         }
       }
     },
-    "✦ %lld": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✦ %lld"
+    "Ta première perle ! Elle rejoint ta collection." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your first pearl! It joins your collection."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✦ %lld"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta première perle ! Elle rejoint ta collection."
           }
         }
       }
     },
-    "✦ %lld de poussière d’or": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✦ %lld de poussière d’or"
+    "Ta seule %@ : on la garde." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your only %@: we’re keeping it."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✦ %lld gold dust"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta seule %@ : on la garde."
           }
         }
       }
     },
-    "Attention : à mi-ouverture, la perle est fragile. Si tu vas trop vite, elle se fêle et perd la moitié de sa valeur.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Attention : à mi-ouverture, la perle est fragile. Si tu vas trop vite, elle se fêle et perd la moitié de sa valeur."
+    "Taille" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Careful: halfway open, the pearl is fragile. Go too fast and it cracks, losing half its value."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille"
           }
         }
       }
     },
-    "Bien joué : ouverte en douceur, perle intacte.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bien joué : ouverte en douceur, perle intacte."
+    "Tes huîtres sont en haut : %lld au maximum, une revient toutes les %lld min. Tes perles t’attendent dans l’onglet Collection." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your oysters are up top: %1$lld at most, one comes back every %2$lld min. Your pearls are waiting in the Collection tab."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Well done: opened gently, pearl intact."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes huîtres sont en haut : %lld au maximum, une revient toutes les %lld min. Tes perles t’attendent dans l’onglet Collection."
           }
         }
       }
     },
-    "Doucement…": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Doucement…"
+    "Tes huîtres sont revenues : %lld t’attendent sur le ponton." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your oysters are back: %lld are waiting on the jetty."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gently…"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes huîtres sont revenues : %lld t’attendent sur le ponton."
           }
         }
       }
     },
-    "Elle résiste… continue, elle va céder.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elle résiste… continue, elle va céder."
+    "Ton adresse e-mail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your email address"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "It’s resisting… keep going, it’s about to give."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton adresse e-mail"
           }
         }
       }
     },
-    "Fêlée… La prochaine fois, ralentis à mi-ouverture.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fêlée… La prochaine fois, ralentis à mi-ouverture."
+    "Ton compte et les données liées sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your account and its data are erased for good. The game on this iPhone (collection, oysters, gold dust) starts over. Shells you bought come back with “Restore purchases”. Purchases aren’t refunded: for that, go through Apple."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cracked… Next time, slow down halfway."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton compte et les données liées sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple."
           }
         }
       }
     },
-    "Glisse le pouce vers le haut pour ouvrir ta première huître.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Glisse le pouce vers le haut pour ouvrir ta première huître."
+    "Touche la carte pour l'huître suivante" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the card for the next oyster"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Slide your thumb up to open your first oyster."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touche la carte pour l'huître suivante"
           }
         }
       }
     },
-    "Huîtres revenues": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Huîtres revenues"
+    "Touche la carte pour l’huître suivante" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the card for the next oyster"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oysters back"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touche la carte pour l’huître suivante"
           }
         }
       }
     },
-    "Je te préviens quand la marée est haute": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Je te préviens quand la marée est haute"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "I’ll let you know when the tide is in"
-          }
-        }
-      }
-    },
-    "La marée est haute": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La marée est haute"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The tide is in"
-          }
-        }
-      }
-    },
-    "Les notifications de Pearl Inc. sont coupées dans les Réglages d’iOS. Les rallumer": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les notifications de Pearl Inc. sont coupées dans les Réglages d’iOS. Les rallumer"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pearl Inc. notifications are off in iOS Settings. Turn them back on"
-          }
-        }
-      }
-    },
-    "Me prévenir quand elles reviennent": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Me prévenir quand elles reviennent"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notify me when they’re back"
-          }
-        }
-      }
-    },
-    "Ouvre doucement le téléphone : ta première huître s’ouvre avec lui.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ouvre doucement le téléphone : ta première huître s’ouvre avec lui."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open your phone gently: your first oyster opens with it."
-          }
-        }
-      }
-    },
-    "Parfois, rien. C’est la mer. La prochaine sera peut-être la bonne.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parfois, rien. C’est la mer. La prochaine sera peut-être la bonne."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sometimes, nothing. That’s the sea. The next one might be it."
-          }
-        }
-      }
-    },
-    "Plus une perle est rare, plus elle se fait attendre. Les plus précieuses tremblent avant même qu’on les touche. Bonne pêche !": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plus une perle est rare, plus elle se fait attendre. Les plus précieuses tremblent avant même qu’on les touche. Bonne pêche !"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The rarer the pearl, the longer it makes you wait. The most precious ones tremble before you even touch them. Happy fishing!"
-          }
-        }
-      }
-    },
-    "Referme le téléphone, puis ouvre-le doucement : ta première huître s’ouvre avec lui.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Referme le téléphone, puis ouvre-le doucement : ta première huître s’ouvre avec lui."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Close your phone, then open it gently: your first oyster opens with it."
-          }
-        }
-      }
-    },
-    "Ta première perle ! Elle rejoint ta collection.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ta première perle ! Elle rejoint ta collection."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your first pearl! It joins your collection."
-          }
-        }
-      }
-    },
-    "Tes huîtres sont en haut : %lld au maximum, une revient toutes les %lld min. Tes perles t’attendent dans l’onglet Collection.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tes huîtres sont en haut : %lld au maximum, une revient toutes les %lld min. Tes perles t’attendent dans l’onglet Collection."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your oysters are up top: %1$lld at most, one comes back every %2$lld min. Your pearls are waiting in the Collection tab."
-          }
-        }
-      }
-    },
-    "Tes huîtres sont revenues : %lld t’attendent sur le ponton.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tes huîtres sont revenues : %lld t’attendent sur le ponton."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your oysters are back: %lld are waiting on the jetty."
-          }
-        }
-      }
-    },
-    "Voilà ! Ouvre-la jusqu’au bout.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voilà ! Ouvre-la jusqu’au bout."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "There! Open it all the way."
-          }
-        }
-      }
-    },
-    "Rendez-vous du jour": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rendez-vous du jour"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Daily rendezvous"
-          }
-        }
-      }
-    },
-    "Case à récupérer": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Case à récupérer"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reward to collect"
-          }
-        }
-      }
-    },
-    "Récupéré ! Reviens demain pour la case suivante.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Récupéré ! Reviens demain pour la case suivante."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Collected! Come back tomorrow for the next one."
-          }
-        }
-      }
-    },
-    "Reviens demain pour la case suivante.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reviens demain pour la case suivante."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Come back tomorrow for the next one."
-          }
-        }
-      }
-    },
-    "Joker prêt : un jour manqué ne casse pas ta série.": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Joker prêt : un jour manqué ne casse pas ta série."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Joker ready: one missed day won’t break your streak."
-          }
-        }
-      }
-    },
-    "Récupéré": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Récupéré"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Collected"
-          }
-        }
-      }
-    },
-    "À récupérer aujourd’hui": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "À récupérer aujourd’hui"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "To collect today"
-          }
-        }
-      }
-    },
-    "%lld jours d’affilée": {
-      "localizations": {
-        "fr": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld jour d’affilée"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld jours d’affilée"
+    "Trésor : %lld · %lld perles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Treasure: %1$lld · %#@n@"
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg pearl"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg pearls"
+                    }
+                  }
                 }
               }
             }
           }
         },
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld day in a row"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld days in a row"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trésor : %1$lld · %#@n@"
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg perle"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg perles"
+                    }
+                  }
                 }
               }
             }
@@ -3388,62 +3216,247 @@
         }
       }
     },
-    "Joker utilisé : de retour dans %lld jours.": {
-      "localizations": {
-        "fr": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Joker utilisé : de retour dans %lld jour."
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Joker utilisé : de retour dans %lld jours."
-                }
-              }
-            }
+    "Trop de demandes d’affilée. Attends une minute avant de réessayer." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Too many requests in a row. Wait a minute before trying again."
           }
         },
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Joker used: back in %lld day."
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Joker used: back in %lld days."
-                }
-              }
-            }
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trop de demandes d’affilée. Attends une minute avant de réessayer."
           }
         }
       }
     },
-    "Jour %lld": {
-      "localizations": {
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jour %lld"
+    "Trop vite !" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Too fast!"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Day %lld"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trop vite !"
+          }
+        }
+      }
+    },
+    "Trouvaille" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trouvaille"
+          }
+        }
+      }
+    },
+    "Trouvaille, à la place de la perle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find, instead of the pearl"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trouvaille, à la place de la perle"
+          }
+        }
+      }
+    },
+    "Trouvailles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finds"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trouvailles"
+          }
+        }
+      }
+    },
+    "Trouver une perle ◆◆ ou plus rare" : {
+      "comment" : "Mission du jour",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find a ◆◆ pearl or rarer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trouver une perle ◆◆ ou plus rare"
+          }
+        }
+      }
+    },
+    "Tu as %lld ✦. Revends tes perles en double dans la collection, ou recharge tes huîtres dans la boutique." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have %lld ✦. Sell duplicate pearls in your collection, or top up your oysters in the shop."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as %lld ✦. Revends tes perles en double dans la collection, ou recharge tes huîtres dans la boutique."
+          }
+        }
+      }
+    },
+    "Une huître · %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One oyster · %lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une huître · %lld ✦"
+          }
+        }
+      }
+    },
+    "Une huître pour %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One oyster for %lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une huître pour %lld ✦"
+          }
+        }
+      }
+    },
+    "Valeur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Value"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valeur"
+          }
+        }
+      }
+    },
+    "Valider" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valider"
+          }
+        }
+      }
+    },
+    "version %@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "version %1$@ (%2$@)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "version %@ (%@)"
+          }
+        }
+      }
+    },
+    "Vibrations" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haptics"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vibrations"
+          }
+        }
+      }
+    },
+    "Voilà ! Ouvre-la jusqu’au bout." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There! Open it all the way."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voilà ! Ouvre-la jusqu’au bout."
+          }
+        }
+      }
+    },
+    "Zone fragile : doucement" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fragile zone: gently"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zone fragile : doucement"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
