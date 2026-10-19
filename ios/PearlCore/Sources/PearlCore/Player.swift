@@ -65,6 +65,8 @@ public struct PlayerState: Codable, Sendable, Equatable {
     public var noCrackStreak: Int
     /// Pubs récompensées regardées aujourd'hui.
     public var adRewards: DailyCount?
+    /// Calendrier de connexion et série de jours.
+    public var login: LoginState
 
     /// Nouvelle partie : stock plein, skin de départ, première huître (celle du tutoriel) déjà posée.
     public static func new(_ rng: Rng, _ tuning: Tuning, now: Double, catalog: Catalog = .shared) -> PlayerState {
@@ -73,7 +75,8 @@ public struct PlayerState: Codable, Sendable, Equatable {
         return PlayerState(
             oyster: first.oyster, drawState: first.drawState, nextSerial: 1, pearlCards: [], findCards: [], oystersOpened: 0,
             dust: 0, stock: StockState(count: tuning.oysterStockMax, lastRefillAt: now),
-            ownedSkins: starters, equippedSkin: starters.first ?? "", missions: nil, noCrackStreak: 0, adRewards: nil
+            ownedSkins: starters, equippedSkin: starters.first ?? "", missions: nil, noCrackStreak: 0, adRewards: nil,
+            login: .initial
         )
     }
 
@@ -233,6 +236,30 @@ public struct PlayerState: Codable, Sendable, Equatable {
         return catalog.economy.rewardedAdOysters
     }
 
+    // MARK: - Calendrier de connexion
+
+    /// La case du jour peut être récupérée : une fois par jour, après le tutoriel.
+    public func canClaimDaily(day: String, catalog: Catalog = .shared) -> Bool {
+        !isInTutorial(catalog: catalog) && login.lastClaimDay != day
+    }
+
+    /// La case que donnerait le calendrier aujourd'hui.
+    public func dailyReward(catalog: Catalog = .shared) -> CalendarReward {
+        let calendar = catalog.economy.calendar
+        return calendar[login.calendarIndex % calendar.count]
+    }
+
+    /// Récupère la case du jour (huîtres au-delà du maximum si besoin, poussière d'or) et fait avancer la série.
+    /// nil si elle a déjà été récupérée aujourd'hui, ou pendant le tutoriel.
+    public mutating func claimDaily(day: String, catalog: Catalog = .shared) -> CalendarReward? {
+        guard canClaimDaily(day: day, catalog: catalog) else { return nil }
+        let reward = dailyReward(catalog: catalog)
+        login.claim(day: day, calendarLength: catalog.economy.calendar.count, jokerDays: catalog.economy.calendarJokerDays)
+        stock.count += reward.oysters
+        dust += reward.dust
+        return reward
+    }
+
     // MARK: - Missions
 
     public mutating func recordShare() {
@@ -258,7 +285,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
 extension PlayerState {
     private enum CodingKeys: String, CodingKey {
         case oyster, drawState, nextSerial, pearlCards, findCards, oystersOpened
-        case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak, adRewards
+        case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak, adRewards, login
     }
 
     /// Les anciennes sauvegardes (sans poussière, stock ni skins) se chargent avec des valeurs de départ.
@@ -279,6 +306,7 @@ extension PlayerState {
         missions = try container.decodeIfPresent(DailyMissions.self, forKey: .missions)
         noCrackStreak = try container.decodeIfPresent(Int.self, forKey: .noCrackStreak) ?? 0
         adRewards = try container.decodeIfPresent(DailyCount.self, forKey: .adRewards)
+        login = try container.decodeIfPresent(LoginState.self, forKey: .login) ?? .initial
     }
 }
 

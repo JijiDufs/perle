@@ -65,6 +65,8 @@ final class GameModel {
     @ObservationIgnored private let haptics = Haptics()
     @ObservationIgnored private let rng: Rng = systemRng()
     @ObservationIgnored private var lastTickDistance = 0.0
+    /// Le calendrier ne s'ouvre pas tout seul le jour de la toute première séance (comme la webapp).
+    @ObservationIgnored private var calendarQuietDay: String?
 
     init() {
         let catalog = Catalog.shared
@@ -77,6 +79,7 @@ final class GameModel {
         thumb.onSample = { [weak self] sample, distance in self?.handle(sample, distance: distance) }
         thumb.onRelease = { [weak self] in self?.handleRelease() }
         shapeSeed = player.nextSerial
+        if saved.isInTutorial() { calendarQuietDay = Clock.dayKey() }
         refresh()
         store.onDeliver = { [weak self] productId in self?.deliver(productId) }
         store.start(productIds: catalog.economy.consumables.map(\.id) + catalog.economy.skins.compactMap(\.productId))
@@ -250,6 +253,7 @@ final class GameModel {
     /// Les skins achetés reviennent tout seuls (droits relus auprès d'Apple).
     func eraseLocalGame() {
         player = PlayerState.new(rng, tuning, now: Clock.nowMs)
+        calendarQuietDay = Clock.dayKey()
         step = 0
         engine = OpeningEngine(tuning: tuning, crackProtected: catalog.isCrackProtected(oystersOpened: 0))
         thumb.reset()
@@ -310,6 +314,20 @@ final class GameModel {
             player.grantSkin(skin.id)
             save()
         }
+    }
+
+    // MARK: - Calendrier de connexion
+
+    var canClaimDaily: Bool { player.canClaimDaily(day: Clock.dayKey()) }
+
+    /// Au lancement ou au retour dans l'app : ouvrir le calendrier tout seul, une fois par jour.
+    var shouldOfferCalendar: Bool { canClaimDaily && Clock.dayKey() != calendarQuietDay }
+
+    func claimDaily() {
+        guard let reward = player.claimDaily(day: Clock.dayKey()) else { return }
+        if reward.dust > 0 { dustBump += 1 }
+        haptics.reveal(tier: 1)
+        save()
     }
 
     func claimMission(at index: Int) {

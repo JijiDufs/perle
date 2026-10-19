@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 10) · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : huître fermée plus grande, et calendrier de connexion sur 7 jours.
+
+**Fait**
+- `Art/OysterArt.swift` (pose « pouce ») : l'huître fermée prend ≈ 85 % de la largeur (L = min(0,7 × largeur, 0,48 × hauteur visible)), centrée un peu sous le milieu. Vérifié sur iPhone 17 Pro, fermée et à mi-ouverture. Le Duo ne change pas.
+- `src/core/appEconomy.ts` : `APP_CALENDAR` (7 cases, voir §6) et `calendarJokerDays` (7), exportés.
+- `PearlCore/Daily.swift` : `LoginState` (série, joker, case suivante), miroir de `src/core/daily.ts` ; `PlayerState.claimDaily(day:)`, jamais pendant le tutoriel ; ancienne sauvegarde = calendrier vierge. Cas de référence `logins` (série, joker, changement d'année) produits par le TypeScript + `DailyTests`.
+- `Features/CalendarView.swift` : « Rendez-vous du jour », 7 cases, série prévue, état du joker, « Récupérer » (la fenêtre se ferme toute seule). Ouverte tout seule au lancement (après le formulaire de consentement des pubs) et au retour dans l'app ; aussi depuis les missions du jour ; pastille dorée sur le bouton des missions quand une case attend. FR + EN (pluriels).
+- Vérifié : `npm test`, `npm run build`, `swift test` (41), build Xcode ; au simulateur, ouverture automatique, récupération (+ 3 huîtres), case cochée.
+
+**À faire**
+- Non vérifié à l'écran : le passage au jour suivant et le joker (couverts par les tests).
+- Reste de la 1.0 (`duo-gadget.md` §4) : image story pour le partage, Game Center, iCloud, skin Première marée, mesure d'usage.
+
+**Fragile**
+- `calendarJokerDays` (7) double la valeur écrite dans `src/core/daily.ts` (`jokerAvailable`) : changer les deux ensemble.
+- Le jour de la toute première séance, le calendrier ne s'ouvre pas tout seul ; il reste accessible depuis les missions.
+
 ## 2026-10-19 (suite 9) · Jules · Claude Code · branche `jules/ios-app`
 
 App iOS : sur l'iPhone Duo, l'huître est posée **dans le même sens que le prototype de pearl-inc.app** (demande de Jules).

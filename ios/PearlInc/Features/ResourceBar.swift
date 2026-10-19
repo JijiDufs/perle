@@ -19,7 +19,7 @@ struct ResourceBar: View {
                     Button { showMissions = true } label: {
                         Chip {
                             Image(systemName: "checklist")
-                            if game.player.missions?.hasReward == true {
+                            if game.player.missions?.hasReward == true || game.canClaimDaily {
                                 Circle().fill(Palette.gold).frame(width: 8, height: 8)
                             }
                         }

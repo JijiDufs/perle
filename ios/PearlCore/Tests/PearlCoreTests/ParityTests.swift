@@ -41,6 +41,15 @@ private struct Parity: Decodable {
         let value: Double
     }
     let values: [Value]
+    struct Login: Decodable {
+        let day: String
+        let lastClaimDay: String?
+        let calendarIndex: Int
+        let streak: Int
+        let bestStreak: Int
+        let jokerUsedDay: String?
+    }
+    let logins: [Login]
 }
 
 private let parity: Parity = {
@@ -88,6 +97,16 @@ private let tuning = Catalog.shared.tuning
         #expect(oyster.traits == expected.traits, "huître \(index)")
         #expect(player.drawState.sinceGoldenOrBetter == expected.sinceGoldenOrBetter, "huître \(index)")
         _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning)
+    }
+}
+
+@Test func memeCalendrierQueLeWeb() {
+    let economy = Catalog.shared.economy
+    var login = LoginState.initial
+    for expected in parity.logins {
+        login.claim(day: expected.day, calendarLength: economy.calendar.count, jokerDays: economy.calendarJokerDays)
+        #expect(login == LoginState(lastClaimDay: expected.lastClaimDay, calendarIndex: expected.calendarIndex, streak: expected.streak,
+                                    bestStreak: expected.bestStreak, jokerUsedDay: expected.jokerUsedDay), "\(expected.day)")
     }
 }
 

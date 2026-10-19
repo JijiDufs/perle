@@ -6,8 +6,9 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { APP_CONSUMABLES, APP_ECONOMY, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS } from '../src/core/catalog';
+import { INITIAL_LOGIN, streakIfClaimed, type LoginState } from '../src/core/daily';
 import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
 import { RARITY_SYMBOLS } from '../src/core/jewels';
 import { INITIAL_DRAW_STATE } from '../src/core/draw';
@@ -55,6 +56,7 @@ function catalog() {
       missions: APP_MISSIONS,
       skins: APP_SKINS,
       consumables: APP_CONSUMABLES,
+      calendar: APP_CALENDAR,
     },
     markWeights: pairs(Object.fromEntries(Object.entries(MARKS).map(([id, mark]) => [id, mark.weight]))),
     english: CATALOG_ENGLISH,
@@ -124,7 +126,28 @@ function parity() {
     return { ...result.oyster, sinceGoldenOrBetter: tutorialDraw.sinceGoldenOrBetter };
   });
 
-  return { rngSeed: 2026, rngValues, oysterSeed: 42, oysters, tutorialSeed: 7, tutorialOysters, openings, thumbAngles, values };
+  // Calendrier de connexion : série et joker jour après jour (même règle que la webapp, src/core/daily.ts).
+  // Midi heure locale : dayKey(now) donne bien le jour voulu.
+  const noon = (day: string) => {
+    const [y, m, d] = day.split('-').map(Number);
+    return new Date(y, m - 1, d, 12).getTime();
+  };
+  let login: LoginState = INITIAL_LOGIN;
+  const loginDays = ['2026-10-01', '2026-10-02', '2026-10-03', '2026-10-05', '2026-10-06', '2026-10-09', '2026-10-10',
+    '2026-10-12', '2026-10-14', '2026-10-15', '2026-10-31', '2026-11-01', '2026-12-31', '2027-01-01', '2027-01-03'];
+  const logins = loginDays.map((day) => {
+    const { streak, jokerUsed } = streakIfClaimed(login, noon(day));
+    login = {
+      lastClaimDay: day,
+      calendarIndex: (login.calendarIndex + 1) % APP_CALENDAR.length,
+      streak,
+      bestStreak: Math.max(login.bestStreak, streak),
+      jokerUsedDay: jokerUsed ? day : login.jokerUsedDay,
+    };
+    return { day, ...login };
+  });
+
+  return { rngSeed: 2026, rngValues, oysterSeed: 42, oysters, tutorialSeed: 7, tutorialOysters, openings, thumbAngles, values, logins };
 }
 
 function check(path: string, data: unknown) {

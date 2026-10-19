@@ -27,6 +27,7 @@ struct PearlIncApp: App {
 struct RootView: View {
     @Environment(GameModel.self) private var game
     @Environment(\.scenePhase) private var scenePhase
+    @State private var showCalendar = false
 
     var body: some View {
         TabView {
@@ -44,12 +45,21 @@ struct RootView: View {
         .fullScreenCover(isPresented: Binding(get: { game.ads.isShowing }, set: { if !$0 && game.ads.isShowing { game.ads.finish(rewarded: false) } })) {
             SimulatedAdView(ads: game.ads)
         }
-        // Consentement RGPD (formulaire de Google si besoin), puis première pub récompensée.
-        .task { await game.ads.start() }
+        // Consentement RGPD (formulaire de Google si besoin), puis première pub récompensée,
+        // puis le calendrier de connexion s'il y a une case à récupérer aujourd'hui.
+        .task {
+            await game.ads.start()
+            if game.shouldOfferCalendar { showCalendar = true }
+        }
         // « Tes huîtres sont revenues » : programmée en partant, retirée en revenant.
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { game.scheduleRefillNotification() }
-            if phase == .active { Notifications.cancel() }
+            if phase == .active {
+                Notifications.cancel()
+                game.refresh()
+                if game.shouldOfferCalendar { showCalendar = true }
+            }
         }
+        .sheet(isPresented: $showCalendar) { CalendarView() }
     }
 }

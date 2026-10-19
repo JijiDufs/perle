@@ -40,6 +40,9 @@ public struct Economy: Codable, Sendable {
     /// Pub récompensée : huîtres données par pub regardée, et nombre de pubs par jour.
     public let rewardedAdOysters: Int
     public let rewardedAdsPerDay: Int
+    /// Calendrier de connexion : les 7 cases, et la fréquence du joker (jours).
+    public let calendar: [CalendarReward]
+    public let calendarJokerDays: Int
     public let sellDustByTier: [Int]
     public let rareMissionTier: Int
     public let missions: [MissionTemplate]

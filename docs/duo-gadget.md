@@ -196,7 +196,7 @@ Choix de Jules (2026-10-08) : on peut **recharger ses huîtres** et **acheter de
 | Trouvaille « pièce d'or engloutie » | 5 ✦ |
 | Chaque mission du jour | 5 ✦ |
 | Les trois missions du jour terminées | + 10 ✦ |
-| Calendrier de connexion | 10 à 25 ✦ certains jours (les autres : des huîtres) |
+| Calendrier de connexion (jours 1 à 7) | 3 huîtres · 10 ✦ · 5 huîtres · 15 ✦ · 5 huîtres · 20 ✦ · 10 huîtres + 25 ✦ (`APP_CALENDAR`) |
 
 **Ce que ça donne par jour** (une fois les doublons arrivés : environ 2,5 ✦ par huître revendue en moyenne)
 
@@ -265,7 +265,7 @@ ios/
       Random, Tuning, Catalog, Oyster (tirage, garantie, traits), Opening (moteur + lustre),
       ThumbMapping (pouce → angle), Player (cartes, valeurs, comptoir, achats en poussière, skins),
       Stock (huîtres et recharge), Missions (missions du jour), Economy (barèmes, skins, produits),
-      Tutorial (premières huîtres écrites à l'avance)
+      Tutorial (premières huîtres écrites à l'avance), Daily (calendrier de connexion, série, joker)
     Tests/PearlCoreTests/
       Resources/parity.json    Cas de référence produits par le TypeScript
       ParityTests              Le Swift doit donner exactement les mêmes résultats

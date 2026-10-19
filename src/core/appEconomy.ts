@@ -17,7 +17,24 @@ export const APP_ECONOMY = {
   /** Pub récompensée (choix de Jules, 2026-10-13) : huîtres par pub regardée, et pubs par jour. */
   rewardedAdOysters: 3,
   rewardedAdsPerDay: 3,
+  /** Calendrier de connexion : le joker rattrape un jour manqué s'il n'a pas servi depuis ce nombre de jours (comme la webapp). */
+  calendarJokerDays: 7,
 } as const;
+
+/**
+ * Calendrier de connexion de l'app (docs/duo-gadget.md §6 quater) : une case par jour où l'on vient,
+ * on recommence après la 7e. Des huîtres, et 10 à 25 ✦ certains jours : moins que la webapp
+ * (src/core/daily.ts), qui donne aussi un écrin le 7e jour (pas d'écrin dans l'app).
+ */
+export const APP_CALENDAR: readonly { oysters: number; dust: number }[] = [
+  { oysters: 3, dust: 0 },
+  { oysters: 0, dust: 10 },
+  { oysters: 5, dust: 0 },
+  { oysters: 0, dust: 15 },
+  { oysters: 5, dust: 0 },
+  { oysters: 0, dust: 20 },
+  { oysters: 10, dust: 25 },
+];
 
 export type AppMissionKind = 'open' | 'lustreA' | 'lustreS' | 'rare' | 'noCrack' | 'sell' | 'share';
 

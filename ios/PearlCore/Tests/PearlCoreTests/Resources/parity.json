@@ -5945,5 +5945,127 @@
       },
       "value": 45
     }
+  ],
+  "logins": [
+    {
+      "day": "2026-10-01",
+      "lastClaimDay": "2026-10-01",
+      "calendarIndex": 1,
+      "streak": 1,
+      "bestStreak": 1,
+      "jokerUsedDay": null
+    },
+    {
+      "day": "2026-10-02",
+      "lastClaimDay": "2026-10-02",
+      "calendarIndex": 2,
+      "streak": 2,
+      "bestStreak": 2,
+      "jokerUsedDay": null
+    },
+    {
+      "day": "2026-10-03",
+      "lastClaimDay": "2026-10-03",
+      "calendarIndex": 3,
+      "streak": 3,
+      "bestStreak": 3,
+      "jokerUsedDay": null
+    },
+    {
+      "day": "2026-10-05",
+      "lastClaimDay": "2026-10-05",
+      "calendarIndex": 4,
+      "streak": 4,
+      "bestStreak": 4,
+      "jokerUsedDay": "2026-10-05"
+    },
+    {
+      "day": "2026-10-06",
+      "lastClaimDay": "2026-10-06",
+      "calendarIndex": 5,
+      "streak": 5,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-05"
+    },
+    {
+      "day": "2026-10-09",
+      "lastClaimDay": "2026-10-09",
+      "calendarIndex": 6,
+      "streak": 1,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-05"
+    },
+    {
+      "day": "2026-10-10",
+      "lastClaimDay": "2026-10-10",
+      "calendarIndex": 0,
+      "streak": 2,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-05"
+    },
+    {
+      "day": "2026-10-12",
+      "lastClaimDay": "2026-10-12",
+      "calendarIndex": 1,
+      "streak": 3,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-12"
+    },
+    {
+      "day": "2026-10-14",
+      "lastClaimDay": "2026-10-14",
+      "calendarIndex": 2,
+      "streak": 1,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-12"
+    },
+    {
+      "day": "2026-10-15",
+      "lastClaimDay": "2026-10-15",
+      "calendarIndex": 3,
+      "streak": 2,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-12"
+    },
+    {
+      "day": "2026-10-31",
+      "lastClaimDay": "2026-10-31",
+      "calendarIndex": 4,
+      "streak": 1,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-12"
+    },
+    {
+      "day": "2026-11-01",
+      "lastClaimDay": "2026-11-01",
+      "calendarIndex": 5,
+      "streak": 2,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-12"
+    },
+    {
+      "day": "2026-12-31",
+      "lastClaimDay": "2026-12-31",
+      "calendarIndex": 6,
+      "streak": 1,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-12"
+    },
+    {
+      "day": "2027-01-01",
+      "lastClaimDay": "2027-01-01",
+      "calendarIndex": 0,
+      "streak": 2,
+      "bestStreak": 5,
+      "jokerUsedDay": "2026-10-12"
+    },
+    {
+      "day": "2027-01-03",
+      "lastClaimDay": "2027-01-03",
+      "calendarIndex": 1,
+      "streak": 3,
+      "bestStreak": 5,
+      "jokerUsedDay": "2027-01-03"
+    }
   ]
 }

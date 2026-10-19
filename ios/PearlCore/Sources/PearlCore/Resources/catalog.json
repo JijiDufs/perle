@@ -874,6 +874,7 @@
     "missionBonusDust": 10,
     "rewardedAdOysters": 3,
     "rewardedAdsPerDay": 3,
+    "calendarJokerDays": 7,
     "sellDustByTier": [
       0,
       1,
@@ -999,6 +1000,36 @@
         "name": "Malle de poussière d’or",
         "oysters": 0,
         "dust": 3000
+      }
+    ],
+    "calendar": [
+      {
+        "oysters": 3,
+        "dust": 0
+      },
+      {
+        "oysters": 0,
+        "dust": 10
+      },
+      {
+        "oysters": 5,
+        "dust": 0
+      },
+      {
+        "oysters": 0,
+        "dust": 15
+      },
+      {
+        "oysters": 5,
+        "dust": 0
+      },
+      {
+        "oysters": 0,
+        "dust": 20
+      },
+      {
+        "oysters": 10,
+        "dust": 25
       }
     ]
   },

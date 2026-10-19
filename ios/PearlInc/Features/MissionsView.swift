@@ -8,6 +8,22 @@ struct MissionsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    NavigationLink {
+                        ScrollView { CalendarContent().padding(20) }
+                            .navigationTitle("Rendez-vous du jour")
+                    } label: {
+                        HStack {
+                            Label("Rendez-vous du jour", systemImage: "calendar")
+                            if game.canClaimDaily {
+                                Spacer()
+                                Circle().fill(Palette.gold).frame(width: 8, height: 8)
+                                    .accessibilityLabel("Case à récupérer")
+                            }
+                        }
+                    }
+                }
+                .listRowBackground(Color.white.opacity(0.08))
                 if let daily = game.player.missions {
                     Section {
                         ForEach(Array(daily.missions.enumerated()), id: \.offset) { index, mission in
