@@ -4,6 +4,29 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 2) · Jules · Claude Code · branche `jules/ios-app`
+
+L'app iOS en anglais pour le premier build.
+
+**Fait**
+- Contenu du jeu : `src/core/catalogEnglish.ts` (8 perles, 3 albums, 25 trouvailles, messages en bouteille, formes, reflets, marques, coquilles, produits), exporté dans `catalog.json` ; `Catalog.localized("en")` dans PearlCore (textes seulement) ; tests TS (complétude) et Swift (traduction, règles inchangées).
+- Interface : `ios/PearlInc/Localizable.xcstrings` (161 chaînes, pluriels « one/other » en français et en anglais) et `InfoPlist.xcstrings`. Textes composés réécrits (`Platform/AppLanguage.swift` : langue, n° de série, nom fêlé, traits, missions, compte à rebours) ; texte des missions sorti du Core ; pourcentages et tailles au format de la région de l'iPhone.
+- Langue : suit l'iPhone ; anglais pour les autres langues (`developmentRegion = en` ; le français est écrit en clair dans le catalogue, sinon un iPhone français retombait sur l'anglais). Ligne « Langue » dans les Réglages (ouvre les réglages iOS de l'app). Liens confidentialité / conditions / aide / mentions vers `/en/…` en anglais.
+- Vérifié dans le simulateur : français, anglais, et allemand (→ anglais) ; connexion, Pêche, carte, missions, collection, boutique, réglages.
+- Build avec **Xcode 27.1** (RC, SDK iOS 27.1) désormais dans Applications ; simulateur iOS 27.0 supprimé (place disque).
+
+**À faire**
+- Relecture de l'anglais par un anglophone (trouvailles humoristiques surtout).
+- Fiche App Store en anglais (localisation « English » dans App Store Connect) + captures anglaises ; noms et descriptions anglais des 7 achats intégrés.
+- E-mail du code de connexion (modèle Supabase) : encore en français seulement.
+- Pages `/en/terms/` et `/en/support/` : à mettre en ligne avec les pages françaises (médiateur).
+
+**Fragile**
+- Ajouter un texte d'interface : l'écrire en français dans le code, puis ajouter son anglais dans `Localizable.xcstrings` (Xcode le signale). Les textes construits en `String` doivent passer par `String(localized:)`.
+- Ajouter un élément au catalogue (perle, trouvaille, skin, produit) : ajouter aussi son anglais dans `catalogEnglish.ts` (le test le rappelle), puis `npm run ios:export`.
+
+---
+
 ## 2026-10-19 (suite) · Jules · Claude Code · branche `jules/ios-app`
 
 Mesure d'audience du site avec Vercel Web Analytics.

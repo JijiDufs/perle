@@ -8,20 +8,6 @@ public struct Mission: Codable, Sendable, Equatable {
     public var claimed: Bool
 
     public var isDone: Bool { progress >= goal }
-
-    /// Texte affiché.
-    public var text: String {
-        let plural = goal > 1 ? "s" : ""
-        switch kind {
-        case .open: return "Ouvrir \(goal) huîtres"
-        case .lustreA: return "Obtenir \(goal) lustre\(plural) A ou S"
-        case .lustreS: return "Obtenir \(goal) lustre\(plural) S"
-        case .rare: return "Trouver une perle ◆◆ ou plus rare"
-        case .noCrack: return "Ouvrir \(goal) huîtres d’affilée sans fêlure"
-        case .sell: return "Revendre \(goal) doublon\(plural) au comptoir"
-        case .share: return "Partager une carte"
-        }
-    }
 }
 
 public struct DailyMissions: Codable, Sendable, Equatable {

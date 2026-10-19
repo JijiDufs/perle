@@ -101,7 +101,7 @@
 				};
 			};
 			buildConfigurationList = A1B2C3D4000000000000000D /* Build configuration list for PBXProject "PearlInc" */;
-			developmentRegion = fr;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				fr,

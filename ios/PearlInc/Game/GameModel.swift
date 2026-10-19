@@ -16,7 +16,8 @@ final class GameModel {
         case card(Reveal)
     }
 
-    let catalog = Catalog.shared
+    /// Le catalogue dans la langue de l'app (les textes seulement : les règles sont les mêmes).
+    let catalog = Catalog.shared.localized(AppLanguage.code)
     var tuning: Tuning { catalog.tuning }
     var economy: Economy { catalog.economy }
 

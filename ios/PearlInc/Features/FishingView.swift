@@ -74,14 +74,15 @@ struct FishingView: View {
         }
     }
 
-    private var statusText: String {
-        if game.stage != .playing { return " " }
-        if game.cracked { return "Fêlée…" }
-        if game.tooFast { return "Trop vite !" }
-        if game.inFragileZone { return "Zone fragile : doucement" }
-        if game.angle == 0 && game.isTideOut(at: Date()) { return " " }
-        if game.angle == 0 { return "Glisse vers le haut pour ouvrir" }
-        return " "
+    /// Le message sous l'huître ; nil = rien à dire.
+    private var statusText: String? {
+        if game.stage != .playing { return nil }
+        if game.cracked { return String(localized: "Fêlée…") }
+        if game.tooFast { return String(localized: "Trop vite !") }
+        if game.inFragileZone { return String(localized: "Zone fragile : doucement") }
+        if game.angle == 0 && game.isTideOut(at: Date()) { return nil }
+        if game.angle == 0 { return String(localized: "Glisse vers le haut pour ouvrir") }
+        return nil
     }
 
     private func art(at date: Date) -> OysterArt {
@@ -109,16 +110,16 @@ struct FishingView: View {
 }
 
 private struct StatusPill: View {
-    let text: String
+    let text: String?
     let warning: Bool
 
     var body: some View {
-        Text(text)
+        Text(text ?? " ")
             .font(.headline)
             .padding(.horizontal, 18)
             .padding(.vertical, 10)
             .glass(Capsule())
             .foregroundStyle(warning ? Color(hex: "#FF5A5F") : .white)
-            .opacity(text == " " ? 0 : 1)
+            .opacity(text == nil ? 0 : 1)
     }
 }

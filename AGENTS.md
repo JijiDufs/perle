@@ -82,6 +82,7 @@ src/
     dust.ts         Poussière d'or : fonte des doublons, achat d'une pièce manquante ou d'un écrin
     finds.ts        Trouvailles : objets à la place de la perle, albums, tirage, messages des bouteilles
     pearlTraits.ts  Ce qui rend chaque perle unique : forme, reflet, marque rare
+    catalogEnglish.ts Textes anglais du contenu (perles, trouvailles, traits, coquilles, produits) pour l'app iOS
     appEconomy.ts   Économie de l'app iOS seulement : barème de revente, missions du jour, skins, produits de la boutique
   input/            Sources du geste → produisent des OpeningSample
     thumb.ts        Pouce vers le haut (iPhone classique)
@@ -241,6 +242,7 @@ Ne pas revenir sur une décision sans en discuter entre associés. Ajouter les n
 | 2026-10-14 | **Régie publicitaire de l'app iOS : AdMob (Google)**, avec le formulaire de consentement RGPD de Google (UMP), demandé à l'arrivée dans le jeu ; « Confidentialité des pubs » dans les Réglages quand la loi l'exige. **Pubs non personnalisées seulement** (`publisherPrivacyPersonalizationState = .disabled`), pas de demande de suivi (ATT) : rien à déclarer comme pistage à Apple (choix de Jules, moins de revenus). Nouvelles dépendances Swift : `swift-package-manager-google-mobile-ads` et `…-google-user-messaging-platform`. Tout passe par `Platform/RewardedAds.swift`. App ID et bloc d'annonces de Pearl Inc. ; en Debug, bloc de **test** de Google (ne jamais voir ses propres vraies pubs) et pub simulée en secours. `site/app-ads.txt` déclare l'éditeur | Choix de Jules : brancher AdMob |
 | 2026-10-19 | **App Store : pas de sortie en Belgique** pour la 1.0 (174 pays) : les huîtres achetées sont des tirages payants, que la Belgique traite comme des jeux de hasard. Les Pays-Bas restent ouverts. À revoir avec l'avis d'un juriste | Choix de Jules (`docs/app-store-juridique.md` §6.2) |
 | 2026-10-19 | **Mesure d'audience du site pearl-inc.app : Vercel Web Analytics** (script `/_vercel/insights/script.js` sur chaque page, pas de paquet npm). Sans cookie ni adresse IP conservée, chiffres globaux : pas de bandeau de consentement. Politiques de confidentialité (site et app) mises à jour. Le jeu (webapp, app iOS) n'est pas concerné | Choix de Jules : savoir combien de visiteurs amène la campagne |
+| 2026-10-19 | **App iOS en français et en anglais dès la 1.0.** La langue suit l'iPhone (français pour les francophones, **anglais pour tous les autres** : langue de développement du projet = `en`) ; on en change dans Réglages iOS → Pearl Inc. → Langue (ligne « Langue » dans les Réglages du jeu). Interface : catalogue de chaînes `ios/PearlInc/Localizable.xcstrings` (source française, pluriels dans les deux langues). Contenu du jeu : `src/core/catalogEnglish.ts`, exporté avec le catalogue, appliqué par `Catalog.localized` (les textes seulement, jamais les règles) ; un test échoue si un élément n'a pas son anglais. La webapp reste en français. Clins d'œil : jamais de nom d'œuvre ni de marque, dans les deux langues. **Relecture par un anglophone souhaitée** | Choix de Jules : toucher les anglophones dès la sortie (campagne bilingue) |
 
 ## 7. Limites connues du prototype web
 

@@ -62,8 +62,7 @@ struct PearlCardView: View {
     private var title: String {
         switch content {
         case .pearl(let card):
-            let name = game.catalog.pearl(card.pearlId).name
-            return card.cracked ? "\(name) fêlée" : name
+            return GameText.pearlName(game.catalog.pearl(card.pearlId).name, cracked: card.cracked)
         case .find(let card, _): return game.catalog.find(card.findId).name
         case .empty: return game.catalog.pearl("empty").name
         }
@@ -121,10 +120,10 @@ struct PearlCardView: View {
             let pearl = game.catalog.pearl(card.pearlId)
             VStack(alignment: .leading, spacing: 10 * s) {
                 HStack(alignment: .top, spacing: 10 * s) {
-                    stat("Taille", String(format: "%.1f mm", card.sizeMm).replacingOccurrences(of: ".", with: ","))
+                    stat("Taille", card.sizeMm.formatted(.number.precision(.fractionLength(1))) + " mm")
                     stat("Lustre", card.lustre.rawValue)
                     stat("Valeur", "\(Int(card.value))")
-                    stat("N°", serialLabel(card.serial).replacingOccurrences(of: "N° ", with: "#"))
+                    stat("N°", GameText.serialTag(card.serial))
                 }
                 if let traits = card.traits {
                     Text(traitsLabel(traits)).font(.system(size: 20 * s, weight: .medium)).opacity(0.75).lineLimit(1).minimumScaleFactor(0.7)
@@ -141,7 +140,7 @@ struct PearlCardView: View {
                 HStack {
                     Text("Trouvaille").font(.system(size: 22 * s, weight: .bold)).opacity(0.75)
                     Spacer()
-                    Text(serialLabel(card.serial).replacingOccurrences(of: "N° ", with: "#")).font(.system(size: 22 * s, weight: .bold))
+                    Text(GameText.serialTag(card.serial)).font(.system(size: 22 * s, weight: .bold))
                 }
                 Text(find.flavor).font(.system(size: 23 * s)).opacity(0.88).lineLimit(4).minimumScaleFactor(0.8)
                 if dust > 0 { Text("+ \(dust) ✦ de poussière d’or").font(.system(size: 24 * s, weight: .bold)) }
@@ -149,14 +148,14 @@ struct PearlCardView: View {
         case .empty(let serial):
             VStack(spacing: 10 * s) {
                 Text(game.catalog.pearl("empty").flavor).font(.system(size: 25 * s)).multilineTextAlignment(.center)
-                Text(serialLabel(serial).replacingOccurrences(of: "N° ", with: "#")).font(.system(size: 20 * s, weight: .semibold)).opacity(0.6)
+                Text(GameText.serialTag(serial)).font(.system(size: 20 * s, weight: .semibold)).opacity(0.6)
             }
             .frame(maxWidth: .infinity)
             .padding(.top, 24 * s)
         }
     }
 
-    private func stat(_ label: String, _ value: String) -> some View {
+    private func stat(_ label: LocalizedStringKey, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 2 * s) {
             Text(label).font(.system(size: 19 * s, weight: .medium)).opacity(0.7)
             Text(value).font(.system(size: 26 * s, weight: .bold)).lineLimit(1).minimumScaleFactor(0.6)
@@ -167,8 +166,8 @@ struct PearlCardView: View {
     private func traitsLabel(_ traits: PearlTraits) -> String {
         let shape = game.catalog.shapes[traits.shape]?.label ?? traits.shape
         let overtone = game.catalog.overtones[traits.overtone]?.label ?? traits.overtone
-        let mark = traits.mark.flatMap { game.catalog.marks[$0]?.label }.map { " · \($0)" } ?? ""
-        return "\(shape) · reflet \(overtone)\(mark)"
+        let mark = traits.mark.flatMap { game.catalog.marks[$0]?.label }
+        return GameText.traits(shape: shape, overtone: overtone, mark: mark)
     }
 
     /// Reflet holographique qui balaie la carte (perles ◆◆◆ et plus).

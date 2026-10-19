@@ -3,8 +3,8 @@
 
 public struct AppSkin: Codable, Sendable, Identifiable, Equatable {
     public let id: String
-    public let name: String
-    public let description: String
+    public internal(set) var name: String
+    public internal(set) var description: String
     /// Silhouette : « oyster » ou « clam » (bénitier). Les couleurs vivent avec le dessin de l'app.
     public let style: String
     /// Prix en poussière d'or ; nil = pas à vendre en poussière.
@@ -17,7 +17,7 @@ public struct AppSkin: Codable, Sendable, Identifiable, Equatable {
 
 public struct AppConsumable: Codable, Sendable, Identifiable, Equatable {
     public let id: String
-    public let name: String
+    public internal(set) var name: String
     public let oysters: Int
     public let dust: Int
 }
@@ -43,8 +43,8 @@ public struct Economy: Codable, Sendable {
     public let sellDustByTier: [Int]
     public let rareMissionTier: Int
     public let missions: [MissionTemplate]
-    public let skins: [AppSkin]
-    public let consumables: [AppConsumable]
+    public internal(set) var skins: [AppSkin]
+    public internal(set) var consumables: [AppConsumable]
 
     public func skin(_ id: String) -> AppSkin? { skins.first { $0.id == id } }
 }

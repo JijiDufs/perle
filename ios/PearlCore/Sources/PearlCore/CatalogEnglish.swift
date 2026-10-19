@@ -1,0 +1,76 @@
+// Le contenu du jeu en anglais (src/core/catalogEnglish.ts, exporté dans catalog.json).
+// Seuls les textes changent : identifiants, probabilités et valeurs restent ceux du catalogue.
+
+public struct CatalogEnglish: Codable, Sendable {
+    public struct NameFlavor: Codable, Sendable { public let name: String; public let flavor: String }
+    public struct NameDescription: Codable, Sendable { public let name: String; public let description: String }
+    public struct Mark: Codable, Sendable { public let label: String; public let description: String }
+
+    public let pearls: [String: NameFlavor]
+    public let findAlbums: [String: NameDescription]
+    public let finds: [String: NameFlavor]
+    /// Même ordre que `Catalog.bottleMessages`.
+    public let bottleMessages: [String]
+    public let shapes: [String: String]
+    public let overtones: [String: String]
+    public let marks: [String: Mark]
+    public let skins: [String: NameDescription]
+    public let consumables: [String: String]
+}
+
+extension Catalog {
+    /// Le catalogue dans la langue de l'app : « en » pour l'anglais, le français sinon.
+    /// Un texte sans traduction garde son français.
+    public func localized(_ language: String) -> Catalog {
+        guard language == "en", let english else { return self }
+        var catalog = self
+        catalog.pearls = pearls.map { pearl in
+            var pearl = pearl
+            if let text = english.pearls[pearl.id] { pearl.name = text.name; pearl.flavor = text.flavor }
+            return pearl
+        }
+        catalog.findAlbums = findAlbums.map { album in
+            var album = album
+            if let text = english.findAlbums[album.id] { album.name = text.name; album.description = text.description }
+            return album
+        }
+        catalog.finds = finds.map { find in
+            var find = find
+            if let text = english.finds[find.id] { find.name = text.name; find.flavor = text.flavor }
+            return find
+        }
+        if english.bottleMessages.count == bottleMessages.count { catalog.bottleMessages = english.bottleMessages }
+        catalog.shapes = shapes.mapValuesWithKeys { id, trait in
+            var trait = trait
+            if let label = english.shapes[id] { trait.label = label }
+            return trait
+        }
+        catalog.overtones = overtones.mapValuesWithKeys { id, trait in
+            var trait = trait
+            if let label = english.overtones[id] { trait.label = label }
+            return trait
+        }
+        catalog.marks = marks.mapValuesWithKeys { id, trait in
+            var trait = trait
+            if let text = english.marks[id] { trait.label = text.label; trait.description = text.description }
+            return trait
+        }
+        catalog.economy.skins = economy.skins.map { skin in
+            var skin = skin
+            if let text = english.skins[skin.id] { skin.name = text.name; skin.description = text.description }
+            return skin
+        }
+        catalog.economy.consumables = economy.consumables.map { product in
+            var product = product
+            if let name = english.consumables[product.id] { product.name = name }
+            return product
+        }
+        return catalog
+    }
+}
+
+private extension Dictionary {
+    func mapValuesWithKeys(_ transform: (Key, Value) -> Value) -> [Key: Value] {
+        Dictionary(uniqueKeysWithValues: map { ($0.key, transform($0.key, $0.value)) })
+    }
+}

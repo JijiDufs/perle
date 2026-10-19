@@ -14,7 +14,7 @@ struct ResourceBar: View {
                     Image(systemName: "drop.fill").foregroundStyle(Lagoon.surface)
                     Text("\(game.oystersAvailable(at: timeline.date))").monospacedDigit()
                     if let next = game.nextOysterIn(at: timeline.date) {
-                        Text(Clock.countdown(next)).font(.caption.monospacedDigit()).foregroundStyle(.white.opacity(0.65))
+                        Text(GameText.countdown(next)).font(.caption.monospacedDigit()).foregroundStyle(.white.opacity(0.65))
                     }
                 }
                 .accessibilityElement(children: .combine)
