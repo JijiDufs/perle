@@ -4,6 +4,23 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 14) · Jules · Claude Code · branche `jules/ios-app`
+
+App Store Connect rempli (dans le Chrome de Jules), **soumission prête mais pas envoyée** (choix de Jules).
+
+**Fait**
+- Supabase : fournisseur **Apple activé**, Client IDs = `app.pearlinc.PearlInc`, sans secret (inutile en natif). Vérifié : `apple: true`.
+- **Build 2** archivé (20 h 01) et envoyé, attaché à la version 1.0. Il est antérieur à la musique et aux sons (suite 13) : **il ne les contient pas**.
+- 7 achats intégrés : capture de revue (`docs/app-store/achats/`, 1320 × 2868 : Apple refuse les tailles qui ne sont pas celles d'un écran) et nom / description en anglais. Disponibilité qui manquait sur `dust.400` et `skin.or` : 174 pays, sans la Belgique.
+- Version 1.0 : description FR à jour (Duo, rendez-vous du jour), notes de revue en anglais, contact de revue (Mathys), publication **manuelle** ; fiche **English (U.S.)** complète (sous-titre « Find the rare pearl », texte, mots-clés, URLs, politique `/en/privacy/`) ; 8 visuels FR et 8 EN en 1206 × 2622 (le seul format demandé, iPhone 6,3″).
+- Brouillon de soumission : app 1.0 (2) + 7 achats. Il reste à cliquer « Envoyer pour vérification ».
+
+**À savoir**
+- Pour sortir avec la musique : build 3 (incrémenter `CURRENT_PROJECT_VERSION`), l'envoyer, le choisir à la place du 2 dans la version, puis envoyer.
+- Prix réels dans App Store Connect (≠ `ios/PearlInc.storekit`, qui ne sert qu'aux tests Xcode) : poussière 1,99 / 3,99 / 8,99 $, huître d'or 8,99 $.
+- Partage familial des skins non activé (irréversible une fois activé ; le fichier StoreKit le met à « oui »).
+- Chrome remplit tout seul certains formulaires (Supabase, coordonnées) avec des identifiants enregistrés : relire avant d'enregistrer.
+
 ## 2026-10-19 (suite 13) · Jules · Claude Code · branche `jules/ios-app`
 
 Musique d'ambiance et effets sonores dans l'app iOS (demande de Jules), **générés par code** comme la webapp (choix de Jules), sans aucun fichier audio.
