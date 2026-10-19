@@ -13,14 +13,14 @@
 | Mentions légales | `/mentions-legales/` | `/en/legal-notice/` | — (obligation française, loi LCEN) |
 | Site | `/` | `/?lang=en` | **Marketing URL** (facultatif) |
 
-Les pages sont au même style que l'accueil (`site/legal.css`). **Aujourd'hui, seules les mentions légales et une confidentialité courte (prototype + inscription) sont sur le site** ; les versions de l'app (confidentialité complète, conditions, aide) attendent dans `docs/pages-app/` et reviennent dans `site/` à la soumission. **Ne rien mettre en ligne tant que les champs jaunes « À compléter » ne sont pas remplis** :
+Les pages sont au même style que l'accueil (`site/legal.css`). **Depuis le 2026-10-19, toutes les pages de l'app sont dans `site/`** (confidentialité complète avec le pixel X du site, conditions, aide ; FR et EN, bannière de cookies sur chacune). Les champs ci-dessous sont remplis, **sauf le médiateur** : sa phrase est retirée des conditions (choix de Jules, pour la soumission) et doit revenir dès que Mathys a adhéré :
 
 - prénom et nom de l'entrepreneur, adresse postale, numéro de téléphone (mentions légales), SIREN et registre (RNE ou RCS) ;
 - TVA : numéro intracommunautaire, ou « TVA non applicable, art. 293 B du CGI » en franchise ;
 - directeur de la publication (la même personne) ;
 - **médiateur de la consommation** (voir §6).
 
-L'app affiche les liens « conditions d'utilisation » et « politique de confidentialité » sur l'écran de connexion (Apple veut la politique accessible depuis l'app). Ils pointent vers la version française ; à doubler quand l'app sera traduite.
+L'app affiche les liens « conditions d'utilisation » et « politique de confidentialité » sur l'écran de connexion (Apple veut la politique accessible depuis l'app). Ils suivent la langue de l'app (français ou anglais).
 
 ## 2. Ce que l'app collecte aujourd'hui (et l'étiquette « App Privacy »)
 
@@ -65,11 +65,11 @@ Le manifeste de confidentialité de l'app (`ios/PearlInc/PrivacyInfo.xcprivacy`)
 | 3.1.1 Probabilités affichées avant achat | ✅ Collection et Boutique | — |
 | 3.1.1 Restaurer les achats | ✅ Boutique | — |
 | 2.1 Pas de fonction factice | ✅ pub AdMob (la pub simulée ne reste qu'en Debug) | Publier le message RGPD dans AdMob |
-| 2.1 L'app marche pour le testeur d'Apple | ❌ « Jouer sans compte » échoue : connexions anonymes désactivées dans Supabase (`anonymous_provider_disabled`, vu le 2026-10-14) | Activer « Allow anonymous sign-ins » dans Supabase |
+| 2.1 L'app marche pour le testeur d'Apple | ✅ « Jouer sans compte » : connexions anonymes activées (vérifié le 2026-10-19). ❌ « Se connecter avec Apple » : fournisseur Apple désactivé dans Supabase (`apple: false`, vu le 2026-10-19) | Supabase → Authentication → Providers → Apple : activer, Client IDs = `app.pearlinc.PearlInc` |
 | 4.8 Connexion avec Apple proposée | ✅ | — |
 | 5.1.2 Pas de pistage sans ATT | ✅ aucun pistage (pubs non personnalisées) | — |
 | Manifeste de confidentialité | ✅ | Tenir à jour (§2) |
-| « Ta collection te suit sur tous tes iPhone » | ❌ promesse non tenue | Sauvegarde en ligne, ou changer la phrase |
+| « Ta collection te suit sur tous tes iPhone » | ✅ phrase retirée de l'app | — |
 
 ## 5. Les promesses faites aux joueurs (à garder cohérentes)
 

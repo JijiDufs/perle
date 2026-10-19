@@ -24,6 +24,26 @@ Visuels de la fiche App Store, en français et en anglais.
 
 ---
 
+## 2026-10-19 (suite 12) · Jules · Claude Code · branche `jules/ios-app`
+
+Préparation de la soumission App Store.
+
+**Fait**
+- Pages de l'app remises dans `site/` (depuis `docs/pages-app/`, supprimé) : `/support/`, `/conditions/`, `/en/support/`, `/en/terms/`, et la **confidentialité complète** FR / EN (app + site) à la place de la version courte, avec la section du pixel X et X dans la liste des destinataires. Bannière de cookies (`consent.js`) et lien « Cookies » sur chaque page ; liens Aide et Conditions ajoutés au pied des mentions légales ; accueil anglais = `/en`.
+- **Médiateur de la consommation retiré des conditions** (FR / EN) en attendant l'adhésion de Mathys (choix de Jules).
+- `docs/app-store/fiche.md` : fiche anglaise complète, achats intégrés en deux langues, notes de revue à jour (app bilingue, tutoriel, charnière du Duo, notifications), iPhone Duo dans la description.
+- Build iOS passé à 2.
+- Vérifié en ligne : connexions anonymes Supabase activées ; `/support/` et `/conditions/` étaient en 404 sur pearl-inc.app.
+
+**À faire (Jules, avant d'envoyer)**
+- Supabase : activer le fournisseur **Apple** (aujourd'hui `apple: false` : « Se connecter avec Apple » échoue).
+- Fusionner dans `main` et vérifier que les 4 pages répondent sur pearl-inc.app.
+- Captures des achats intégrés **plein écran** (≥ 640 × 920) ; prix de l'huître d'or à confirmer (8,99 $ dans TestFlight, 9,99 dans `PearlInc.storekit`).
+- Mathys : adhérer à un médiateur, puis remettre la phrase dans les conditions.
+
+**Fragile**
+- Suppression du compte : le jeton « Se connecter avec Apple » n'est pas révoqué (règle 5.1.1 v).
+
 ## 2026-10-19 (suite 11) · Jules · Claude Code · branche `jules/ios-app`
 
 Retours de Jules sur l'écran extérieur du Duo et la bulle du stock.

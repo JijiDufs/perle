@@ -18,9 +18,11 @@
 <!-- Mesure d'audience Vercel Web Analytics : sans cookie, chiffres globaux seulement (voir /confidentialite/) -->
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
 <script defer src="/_vercel/insights/script.js"></script>
+<!-- Consentement aux cookies + pixel de conversion X (rh65t), chargé seulement après « Accepter » : voir /consent.js -->
+<script defer src="/consent.js"></script>
 </head>
 <body>
-<nav class="nav"><div class="nav-in"><a class="brand" href="/?lang=en"><img src="/favicon.svg" alt="" width="22" height="22">Pearl Inc.</a><a class="lang" href="/support/" hreflang="fr" lang="fr">FR</a></div></nav>
+<nav class="nav"><div class="nav-in"><a class="brand" href="/en"><img src="/favicon.svg" alt="" width="22" height="22">Pearl Inc.</a><a class="lang" href="/support/" hreflang="fr" lang="fr">FR</a></div></nav>
 <main>
 <h1>Help & contact</h1>
 <p class="updated">Pearl Inc.</p>
@@ -52,6 +54,6 @@
 <h2>See also</h2>
 <p><a href="/en/privacy/">Privacy policy</a> · <a href="/en/terms/">Terms of use</a> · <a href="/en/legal-notice/">Legal notice</a></p>
 </main>
-<footer><nav><a href="/?lang=en">Pearl Inc.</a><a href="/en/support/">Help &amp; contact</a><a href="/en/privacy/">Privacy</a><a href="/en/terms/">Terms of use</a><a href="/en/legal-notice/">Legal notice</a></nav><p>© 2026 Pearl Inc. · iPhone and iPhone Duo are trademarks of Apple Inc. Pearl Inc. is not affiliated with Apple.</p></footer>
+<footer><nav><a href="/en">Pearl Inc.</a><a href="/en/support/">Help &amp; contact</a><a href="/en/privacy/">Privacy</a><a href="/en/terms/">Terms of use</a><a href="/en/legal-notice/">Legal notice</a><a href="#" data-consent-open>Cookies</a></nav><p>© 2026 Pearl Inc. · iPhone and iPhone Duo are trademarks of Apple Inc. Pearl Inc. is not affiliated with Apple.</p></footer>
 </body>
 </html>

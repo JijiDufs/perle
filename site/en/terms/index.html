@@ -18,9 +18,11 @@
 <!-- Mesure d'audience Vercel Web Analytics : sans cookie, chiffres globaux seulement (voir /confidentialite/) -->
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
 <script defer src="/_vercel/insights/script.js"></script>
+<!-- Consentement aux cookies + pixel de conversion X (rh65t), chargé seulement après « Accepter » : voir /consent.js -->
+<script defer src="/consent.js"></script>
 </head>
 <body>
-<nav class="nav"><div class="nav-in"><a class="brand" href="/?lang=en"><img src="/favicon.svg" alt="" width="22" height="22">Pearl Inc.</a><a class="lang" href="/conditions/" hreflang="fr" lang="fr">FR</a></div></nav>
+<nav class="nav"><div class="nav-in"><a class="brand" href="/en"><img src="/favicon.svg" alt="" width="22" height="22">Pearl Inc.</a><a class="lang" href="/conditions/" hreflang="fr" lang="fr">FR</a></div></nav>
 <main>
 <h1>Terms of Use</h1>
 <p class="updated">Pearl Inc. · Last updated: October 13, 2026</p>
@@ -73,11 +75,11 @@
 <p>See the <a href="/en/privacy/">privacy policy</a>.</p>
 
 <h2>13. Disputes</h2>
-<p>These terms are governed by French law, without depriving you of the protection of the mandatory rules of your country of residence. In case of disagreement, write to us first: <a href="mailto:laplateformemjh@gmail.com">laplateformemjh@gmail.com</a>. If we cannot find a solution, you can use the consumer mediator free of charge: <span class="todo">[To complete: name, address and website of the mediator]</span>.</p>
+<p>These terms are governed by French law, without depriving you of the protection of the mandatory rules of your country of residence. In case of disagreement, write to us first: <a href="mailto:laplateformemjh@gmail.com">laplateformemjh@gmail.com</a>.</p>
 
 <h2>14. Changes</h2>
 <p>If these terms change, we update the date at the top of the page and let you know in the app for an important change.</p>
 </main>
-<footer><nav><a href="/?lang=en">Pearl Inc.</a><a href="/en/support/">Help &amp; contact</a><a href="/en/privacy/">Privacy</a><a href="/en/terms/">Terms of use</a><a href="/en/legal-notice/">Legal notice</a></nav><p>© 2026 Pearl Inc. · iPhone and iPhone Duo are trademarks of Apple Inc. Pearl Inc. is not affiliated with Apple.</p></footer>
+<footer><nav><a href="/en">Pearl Inc.</a><a href="/en/support/">Help &amp; contact</a><a href="/en/privacy/">Privacy</a><a href="/en/terms/">Terms of use</a><a href="/en/legal-notice/">Legal notice</a><a href="#" data-consent-open>Cookies</a></nav><p>© 2026 Pearl Inc. · iPhone and iPhone Duo are trademarks of Apple Inc. Pearl Inc. is not affiliated with Apple.</p></footer>
 </body>
 </html>
