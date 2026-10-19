@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 · Jules · Claude Code (Chrome) · branche `jules/ios-app`
+
+Fiche App Store Connect remplie dans Chrome (app 6822782842, compte de Mathys).
+
+**Fait**
+- Informations sur l'app : sous-catégorie « Parties rapides » (au lieu de « Cartes »), secondaire « Divertissement », droits sur le contenu « oui » (pubs). Classification 9+, statut de commerçant, gratuit, sans Mac ni Vision Pro : déjà en place.
+- Confidentialité publiée : e-mail **lié** à l'identité (corrigé), « Interaction avec le produit » ajoutée ; 9 types, aucun suivi.
+- Achats intégrés : nom affiché et description FR pour les 7 ; prix vérifiés (0,99 / 2,99 / 1,99 / 4,99 / 9,99 / 2,99 / 9,99 €). Le prix de la Bourse (1,99 €) a été confirmé par Jules.
+- Version 1.0 : texte promotionnel, description, mots-clés, URL, copyright, notes de revue (anglais), « Connexion requise » décochée, publication manuelle. Enregistrée.
+- Disponibilité : **Belgique retirée** (174 pays).
+
+**À faire**
+- Jules : coordonnées de contact pour la revue (page de la version).
+- Captures : la section n'apparaît pas encore sur la page de la version (sans doute après l'envoi d'un build). Les 5 JPEG sont dans `docs/app-store/captures/`.
+- Captures de la Boutique pour la revue de chaque achat intégré (depuis TestFlight).
+- Envoyer un build (Xcode → Archive), puis TestFlight ; pages légales complètes en ligne (médiateur) avant de soumettre.
+
+---
+
 ## 2026-10-14 (suite) · Jules · Claude Code · branche `jules/ios-app`
 
 Préparation de la fiche App Store Connect.
@@ -15,6 +34,7 @@ Préparation de la fiche App Store Connect.
 
 **À faire**
 - ~~Connexion anonyme~~ activée par Jules ; **captures App Store** faites : `docs/app-store/captures/` (5 JPEG 1320 × 2868, iPhone 17 Pro Max, barre d'état 9:41) : pêche, ouverture, révélation (perle rosée), collection, missions. Pas de capture de la Boutique : hors de Xcode les prix StoreKit sont « Indisponible » (à refaire depuis TestFlight).
+- **Fiche App Store** rédigée : `docs/app-store/fiche.md` (nom, sous-titre, texte promotionnel, mots-clés, description, achats intégrés, notes pour la revue), d'après ce que contient vraiment l'app (pas de Duo, Game Center, iCloud, notifications ni anglais dans la 1.0).
 - **AdMob vérifié de bout en bout** dans le simulateur : pub de test Google affichée, récompense comptée (« Encore 2 aujourd'hui »).
 - Mathys : choisir un **médiateur de la consommation**. Ensuite seulement, mettre en ligne **ensemble** confidentialité, aide et conditions (`docs/pages-app/` → `site/`) : les pages d'aide renvoient vers `/conditions/`, qui ne doit pas sortir avec un champ « À compléter ».
 
