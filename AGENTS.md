@@ -129,6 +129,7 @@ Relâcher pendant `resisting` → retour à `closed` (la coquille se referme). R
 | Vitesse max sans fêlure dans la zone fragile | 380 °/s | relevée avec la course raccourcie (§6) |
 | Angle de révélation | 140° | à régler |
 | Ouverture automatique en lâchant au-delà de | 115° (écrin : 121°) | une main (§6) |
+| iPhone Duo : charnière « fermée » sous | 8° | à régler sur un Duo |
 | Suspense avant la carte, par rareté | 250 / 700 / 1200 / 2000 ms | à régler (note de Mathys : révélation à la FUT / Clash Royale) |
 | Garantie perle dorée+ | 25 huîtres | cahier §5 |
 | Stock d'huîtres maximum | 10 | cahier §5 |

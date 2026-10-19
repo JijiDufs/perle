@@ -265,7 +265,8 @@ ios/
       ParityTests              Le Swift doit donner exactement les mêmes résultats
   PearlInc/             L'app SwiftUI
     Game/GameModel      Relie moteur, geste, haptique, sauvegarde (aucune règle)
-    Input/ThumbSource   Pouce vers le haut → OpeningSample (HingeSource viendra avec iOS 27.1)
+    Input/ThumbSource   Pouce vers le haut → OpeningSample
+    Input/HingeSource   Charnière du Duo (UIHingeInteraction, iOS 27.1+) → angle ; PearlCore/Hinge (HingeTracker) décide quand elle pilote l'huître
     Art/                Lagon, coquille, nacre, perle, halo : dessinés par code
     Platform/           Haptique, sauvegarde
     Features/           Pêche (barre de ressources, marée basse), carte, missions, collection (comptoir), boutique (skins)

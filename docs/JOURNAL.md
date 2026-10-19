@@ -4,6 +4,26 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 3) · Jules · Claude Code · branche `jules/ios-app`
+
+La charnière de l'iPhone Duo dans l'app iOS (docs/duo-gadget.md §7).
+
+**Fait**
+- `PearlCore/Hinge.swift` : `HingeTracker` transforme l'angle du téléphone en `OpeningSample` (invariant n° 2). Il ne pilote l'huître qu'une fois « armé » (téléphone refermé depuis l'arrivée de l'huître) : un téléphone déjà ouvert n'ouvre rien d'un coup. Refermer = huître suivante sur la carte, coquille qui se referme pendant la résistance. Nouveau réglage `hingeClosedAngle` (8°) dans `src/tuning.ts`, exporté. 6 tests (`HingeTests`).
+- `Input/HingeSource.swift` : `UIHingeInteraction` (iOS 27.1+, donne aussi l'état de départ), rien sur un iPhone sans charnière. En Debug, l'argument de lancement `-SimulatedHinge` affiche un curseur 0–180° sur la Pêche.
+- Pêche et carte : messages « Referme le téléphone, puis ouvre-le », « Ouvre le téléphone doucement », « Referme le téléphone pour l'huître suivante » (FR + EN). Le pouce reste possible tant que la charnière n'a pas pris la main.
+- Corrigé dans `GameModel` : tics de résistance espacés comme au pouce (angle ramené à la course équivalente) ; le pop ne verrouille plus le pouce quand c'est la charnière qui ouvre ; refermer le téléphone pendant l'ouverture laisse la main à la charnière (rouvrir reprend l'huître au lieu de la bloquer).
+- `npm test`, `npm run build`, `swift test` (30 tests) et build Xcode 27.1 passent.
+
+**À faire**
+- Essayer dans le simulateur « iPhone Duo » (iOS 27.1) et avec `-SimulatedHinge` : non vérifié à l'écran (l'écran de connexion demande un compte ou une partie anonyme Supabase).
+- Points ouverts de duo-gadget §7 : fréquence des mesures (≥ 30/s pour la zone fragile), passage écran extérieur → intérieur, plage réelle des angles, `hingeClosedAngle` à régler.
+
+**Fragile**
+- La règle « armer en refermant » est une proposition : à valider avec Mathys et sur un vrai Duo.
+
+---
+
 ## 2026-10-19 (suite 2) · Jules · Claude Code · branche `jules/ios-app`
 
 L'app iOS en anglais pour le premier build.

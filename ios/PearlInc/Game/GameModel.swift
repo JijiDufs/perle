@@ -140,7 +140,8 @@ final class GameModel {
             } else if stage == .playing, engine.phase == .resisting {
                 handleRelease()
             }
-            hingeDriving = false
+            // Refermé pendant l'ouverture : la charnière garde la main, rouvrir reprend l'huître.
+            if engine.phase != .opening { hingeDriving = false }
         case .sample(let angle):
             guard stage == .playing, thumb.distance == 0 || hingeDriving else { return }
             if engine.phase == .closed {
@@ -148,7 +149,9 @@ final class GameModel {
                 haptics.prepare()
             }
             hingeDriving = true
-            handle(OpeningSample(angle: angle, time: ThumbSource.now), distance: angle)
+            // Tics de résistance espacés comme au pouce : l'angle est ramené à la course équivalente.
+            let distance = angle / tuning.popAngle * tuning.resistanceDistance
+            handle(OpeningSample(angle: angle, time: ThumbSource.now), distance: distance)
         }
     }
 
@@ -311,7 +314,7 @@ final class GameModel {
             switch event {
             case .pop:
                 haptics.pop()
-                thumb.lockAfterPop(tuning: tuning)
+                if !hingeDriving { thumb.lockAfterPop(tuning: tuning) }
             case .crack:
                 cracked = true
                 haptics.crack()
