@@ -15,6 +15,7 @@ Préparation de la fiche App Store Connect.
 
 **À faire**
 - ~~Connexion anonyme~~ activée par Jules ; **captures App Store** faites : `docs/app-store/captures/` (5 JPEG 1320 × 2868, iPhone 17 Pro Max, barre d'état 9:41) : pêche, ouverture, révélation (perle rosée), collection, missions. Pas de capture de la Boutique : hors de Xcode les prix StoreKit sont « Indisponible » (à refaire depuis TestFlight).
+- **Fiche App Store** rédigée : `docs/app-store/fiche.md` (nom, sous-titre, texte promotionnel, mots-clés, description, achats intégrés, notes pour la revue), d'après ce que contient vraiment l'app (pas de Duo, Game Center, iCloud, notifications ni anglais dans la 1.0).
 - **AdMob vérifié de bout en bout** dans le simulateur : pub de test Google affichée, récompense comptée (« Encore 2 aujourd'hui »).
 - Mathys : choisir un **médiateur de la consommation**. Ensuite seulement, mettre en ligne **ensemble** confidentialité, aide et conditions (`docs/pages-app/` → `site/`) : les pages d'aide renvoient vers `/conditions/`, qui ne doit pas sortir avec un champ « À compléter ».
 
