@@ -6,6 +6,44 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ## 2026-10-19 (suite 3) · Jules · Claude Code · branche `jules/ios-app`
 
+La charnière de l'iPhone Duo dans l'app iOS.
+
+**Fait**
+- `PearlCore/Hinge.swift` : `HingeTracker` (armée après une fermeture, `closed` / `sample(angle)`), 6 tests ; réglage `hingeClosedAngle` (8°) dans `src/tuning.ts`, exporté.
+- `PearlInc/Input/HingeSource.swift` : lecture par `UIHingeInteraction` (état de départ compris), modificateur `.hingeInput` sur la Pêche ; `GameModel.hingeChanged` : ouvrir le téléphone ouvre l'huître, le refermer passe à la suivante ; le pouce reste possible tant que la charnière ne pilote pas.
+- Messages : « Ouvre le téléphone doucement », « Referme le téléphone, puis ouvre-le », « Referme le téléphone pour l’huître suivante » (FR/EN).
+- Debug : `-SimulatedHinge` (argument de lancement) affiche un curseur 0–180° par-dessus la carte ; journal `app.pearlinc / charniere` des angles reçus.
+- Vérifié : dans le simulateur Duo, l'app reçoit la vraie charnière (0°, fermé) et s'affiche sur l'écran extérieur ; parcours complet au curseur simulé sur iPhone 17 Pro.
+
+**À faire**
+- Régler sur de vrais Duo (inscrits équipés, TestFlight externe) : fréquence des angles, vitesse max sans fêlure à la charnière (peut-être un réglage à part), angle de bascule écran extérieur → intérieur, haptique pendant la résistance (aujourd'hui calée sur des points de pouce).
+- Captures App Store spéciales Duo (obligatoires en avril 2027 pour le SDK 27.1).
+
+**Fragile**
+- Mac de Jules à 8 Go : un seul simulateur à la fois (deux Duo + Xcode ont saturé la mémoire et fait quitter l'app).
+- DeviceHub n'affichait pas le Duo : on n'a pas pu bouger la vraie charnière du simulateur.
+
+---
+
+## 2026-10-19 (suite 4) · Jules · Claude Code · branche `jules/ios-app`
+
+Pixel de conversion X sur le site pearl-inc.app (campagne X).
+
+**Fait**
+- `site/consent.js`, inclus avant `</head>` sur les 5 pages : bannière FR / EN (suit la langue de la page d'accueil), « Refuser » et « Accepter » au même niveau. Le code de base X (`twq('config','rh65t')`) ne se charge qu'après « Accepter ». Choix gardé 6 mois ; lien « Cookies » dans chaque pied de page pour le changer (retirer son accord recharge la page sans le pixel).
+- Confidentialité FR / EN : section « Les cookies publicitaires (X) », fin de la mention « pas de cookie publicitaire ». Décision §6.
+
+**À faire**
+- Déployer sur Vercel, puis vérifier avec l'extension X Pixel Helper que `rh65t` se déclenche après « Accepter », et rien avant.
+- API de conversion côté serveur (`X_PIXEL_TOKEN`) : pas faite. Il faudrait un webhook Tally → fonction Vercel ; choisir d'abord l'événement (`tw-rh65t-…`) dans l'Events Manager.
+
+**Fragile**
+- Seuls les visiteurs qui acceptent sont comptés : les chiffres X seront en dessous de la réalité.
+
+---
+
+## 2026-10-19 (suite 3) · Jules · Claude Code · branche `jules/ios-app`
+
 La charnière de l'iPhone Duo dans l'app iOS (docs/duo-gadget.md §7).
 
 **Fait**

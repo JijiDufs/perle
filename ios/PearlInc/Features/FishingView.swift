@@ -43,12 +43,6 @@ struct FishingView: View {
                 StatusPill(text: statusText, warning: game.tooFast)
                     .padding(.bottom, 24)
                     .allowsHitTesting(false)
-                #if DEBUG
-                if SimulatedHingeSlider.isEnabled {
-                    SimulatedHingeSlider { game.hingeChanged(degrees: $0) }
-                        .padding(.horizontal, 24).padding(.bottom, 96)
-                }
-                #endif
             }
 
             TimelineView(.periodic(from: .now, by: 1)) { timeline in
@@ -68,6 +62,15 @@ struct FishingView: View {
             }
         }
         .animation(.spring(duration: 0.45, bounce: 0.35), value: game.stage)
+        #if DEBUG
+        // Outil de test : par-dessus la carte, pour essayer « refermer = huître suivante ».
+        .overlay(alignment: .bottom) {
+            if SimulatedHingeSlider.isEnabled {
+                SimulatedHingeSlider { game.hingeChanged(degrees: $0) }
+                    .padding(.horizontal, 24).padding(.bottom, 96)
+            }
+        }
+        #endif
         // iPhone Duo : ouvrir le téléphone ouvre l'huître, le refermer passe à la suivante.
         .hingeInput { game.hingeChanged(degrees: $0) }
         .sheet(isPresented: $showMissions) { MissionsView() }
