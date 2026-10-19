@@ -15,6 +15,8 @@ Retours de Jules sur l'écran extérieur du Duo et la bulle du stock.
 
 - Corrigé : le calendrier se rouvrait à chaque lancement et à chaque retour tant que la case n'était pas prise. Il ne s'ouvre plus tout seul qu'une fois par jour (`pearlinc.calendar.offeredDay`) ; il reste dans les missions du jour.
 
+- Calendrier sur l'écran extérieur du Duo : la fenêtre s'ouvrait à mi-hauteur et coupait « Récupérer » ; elle prend maintenant la hauteur de son contenu (`.height`, plafonnée par iOS), et le contenu se centre sous la barre d'état verticale du Duo au lieu d'être décalé à gauche. Debug : `-ShowCalendar` l'ouvre à chaque lancement. Vérifié sur le Duo ; pas revu sur iPhone classique (le simulateur ne prenait plus les touchers).
+
 **Fragile**
 - La bulle du stock réapparaît 7 s à chaque lancement tant que la 1re huître après le tutoriel n'est pas ouverte.
 

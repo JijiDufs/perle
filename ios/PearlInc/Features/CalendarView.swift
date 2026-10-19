@@ -5,17 +5,30 @@ import PearlCore
 /// S'ouvre tout seul une fois par jour ; aussi depuis les missions du jour.
 struct CalendarView: View {
     @Environment(\.dismiss) private var dismiss
+    /// Hauteur du contenu : la fenêtre s'y ajuste, pour que « Récupérer » soit toujours visible
+    /// (l'écran extérieur du Duo est moins haut qu'un iPhone : à mi-hauteur, le bouton était coupé).
+    @State private var contentHeight: CGFloat = 480
 
     var body: some View {
         NavigationStack {
-            ScrollView { CalendarContent(onClaimed: { dismiss() }).padding(20) }
+            ScrollView {
+                CalendarContent(onClaimed: { dismiss() })
+                    .padding(20)
+                    .frame(maxWidth: 520)
+                    .frame(maxWidth: .infinity)
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
+            }
+            // Écran extérieur du Duo : la barre d'état est verticale, à droite ; sous elle, la fenêtre
+            // n'a rien à éviter. Sans ça, le contenu serait décalé vers la gauche.
+            .ignoresSafeArea(.container, edges: .horizontal)
                 .navigationTitle("Rendez-vous du jour")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) { Button("OK") { dismiss() } }
                 }
         }
-        .presentationDetents([.medium, .large])
+        // Contenu + barre de titre ; plafonné par iOS à la hauteur de l'écran (on fait alors défiler).
+        .presentationDetents([.height(contentHeight + 72)])
         .presentationBackground(.ultraThinMaterial)
     }
 }

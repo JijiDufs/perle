@@ -64,6 +64,10 @@ struct RootView: View {
     }
 
     private func offerCalendar() {
+        #if DEBUG
+        // Outil de test (`-ShowCalendar`) : ouvrir le calendrier à chaque lancement.
+        if ProcessInfo.processInfo.arguments.contains("-ShowCalendar") { showCalendar = true; return }
+        #endif
         guard game.shouldOfferCalendar else { return }
         game.calendarOffered()
         showCalendar = true
