@@ -320,8 +320,19 @@ final class GameModel {
 
     var canClaimDaily: Bool { player.canClaimDaily(day: Clock.dayKey()) }
 
-    /// Au lancement ou au retour dans l'app : ouvrir le calendrier tout seul, une fois par jour.
-    var shouldOfferCalendar: Bool { canClaimDaily && Clock.dayKey() != calendarQuietDay }
+    /// Au lancement ou au retour dans l'app : ouvrir le calendrier tout seul, une seule fois par jour
+    /// (même si on le referme sans récupérer : il reste dans les missions du jour).
+    var shouldOfferCalendar: Bool {
+        let today = Clock.dayKey()
+        return canClaimDaily && today != calendarQuietDay && UserDefaults.standard.string(forKey: Self.calendarOfferedKey) != today
+    }
+
+    /// Le calendrier vient de s'ouvrir tout seul aujourd'hui.
+    func calendarOffered() {
+        UserDefaults.standard.set(Clock.dayKey(), forKey: Self.calendarOfferedKey)
+    }
+
+    private static let calendarOfferedKey = "pearlinc.calendar.offeredDay"
 
     func claimDaily() {
         guard let reward = player.claimDaily(day: Clock.dayKey()) else { return }

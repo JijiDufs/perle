@@ -13,8 +13,10 @@ Retours de Jules sur l'écran extérieur du Duo et la bulle du stock.
 - Bulle « Tes huîtres sont en haut… » (1re huître après le tutoriel) : elle s'efface toute seule au bout de `coachTipMs` (7 s, nouveau réglage dans `src/tuning.ts`, exporté) ; avant, elle restait jusqu'à ce qu'on ouvre l'huître.
 - Vérifié au simulateur iPhone Duo (écran extérieur) ; `npm test`, `npm run build`, `swift test`.
 
+- Corrigé : le calendrier se rouvrait à chaque lancement et à chaque retour tant que la case n'était pas prise. Il ne s'ouvre plus tout seul qu'une fois par jour (`pearlinc.calendar.offeredDay`) ; il reste dans les missions du jour.
+
 **Fragile**
-- Le calendrier se rouvre à chaque lancement tant que la case du jour n'est pas récupérée (voulu : une fois par jour… jusqu'à ce qu'on la prenne).
+- La bulle du stock réapparaît 7 s à chaque lancement tant que la 1re huître après le tutoriel n'est pas ouverte.
 
 ## 2026-10-19 (suite 10) · Jules · Claude Code · branche `jules/ios-app`
 

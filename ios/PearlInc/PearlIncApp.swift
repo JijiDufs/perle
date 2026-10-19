@@ -49,7 +49,7 @@ struct RootView: View {
         // puis le calendrier de connexion s'il y a une case à récupérer aujourd'hui.
         .task {
             await game.ads.start()
-            if game.shouldOfferCalendar { showCalendar = true }
+            offerCalendar()
         }
         // « Tes huîtres sont revenues » : programmée en partant, retirée en revenant.
         .onChange(of: scenePhase) { _, phase in
@@ -57,9 +57,15 @@ struct RootView: View {
             if phase == .active {
                 Notifications.cancel()
                 game.refresh()
-                if game.shouldOfferCalendar { showCalendar = true }
+                offerCalendar()
             }
         }
         .sheet(isPresented: $showCalendar) { CalendarView() }
+    }
+
+    private func offerCalendar() {
+        guard game.shouldOfferCalendar else { return }
+        game.calendarOffered()
+        showCalendar = true
     }
 }
