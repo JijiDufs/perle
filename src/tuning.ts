@@ -301,3 +301,151 @@ export function revealSuspenseMs(tuning: Tuning, tier: 0 | 1 | 2 | 3): number {
 export function dustForTier(tuning: Tuning, tier: number): number {
   return [tuning.dustTier0, tuning.dustTier1, tuning.dustTier2, tuning.dustTier3, tuning.dustTier4, tuning.dustTier5][Math.max(0, Math.min(5, tier))];
 }
+
+// ── App iOS : musique d'ambiance et effets sonores, générés par code (ios/PearlInc/Platform/Audio.swift),
+// sans aucun fichier audio (AGENTS.md §6). Les effets reprennent ceux de la webapp (src/platform/audio.ts,
+// features/oyster/oysterScreen.ts) : mêmes fréquences, mêmes durées. Volumes : 0…1 ; fréquences : Hz.
+
+/** Bruit bref filtré (craquement, pop, fêlure) : un bruit blanc qui s'éteint, passé dans un filtre passe-bande. */
+export interface NoiseSound {
+  durationMs: number;
+  /** Centre du filtre (Hz). */
+  frequency: number;
+  gain: number;
+}
+
+/** Notes égrenées (carillons, tintements) : jouées l'une après l'autre, chacune monte puis s'éteint. */
+export interface ToneSound {
+  notes: readonly number[];
+  wave: 'sine' | 'triangle' | 'sawtooth' | 'square';
+  /** Écart entre deux notes (ms). */
+  gapMs: number;
+  /** Montée de chaque note (ms), puis extinction jusqu'au silence en decayMs. */
+  attackMs: number;
+  decayMs: number;
+  gain: number;
+}
+
+export interface AppAudio {
+  sampleRate: number;
+  /** Volume général des effets et de la musique (avant le volume de l'iPhone). */
+  effectsVolume: number;
+  musicVolume: number;
+  /** Part de réverbération (0…100 %) : un peu d'espace, comme sous une voûte. */
+  effectsReverbMix: number;
+  musicReverbMix: number;
+  /** Largeur du filtre des bruits (facteur Q, comme la webapp). */
+  noiseQ: number;
+  /** Tic de résistance ; la fréquence monte de tickFrequencyStep à chaque tic (comme la webapp). */
+  tick: NoiseSound;
+  tickFrequencyStep: number;
+  /** La coquille cède. */
+  pop: NoiseSound;
+  /** La perle se fêle. */
+  crack: NoiseSound;
+  /** Le couvercle s'ouvre en grand (début du suspense). */
+  lid: NoiseSound;
+  /** Battement du suspense : un son grave qui descend, plus fort pour les perles rares. */
+  pulseStartFrequency: number;
+  pulseEndFrequency: number;
+  pulseDurationMs: number;
+  /** Montée du battement (ms), pour qu'il ne claque pas. */
+  pulseAttackMs: number;
+  pulseGain: number;
+  pulseGainPerTier: number;
+  /** Écart entre deux battements du suspense (ms), comme l'haptique. */
+  pulseEveryMs: number;
+  /** Carillon de révélation : chimeBaseNotes notes, plus une par niveau de rareté (revealTier). */
+  chime: ToneSound;
+  chimeBaseNotes: number;
+  /** La perle maudite grince ; l'huître vide descend ; une trouvaille sautille. */
+  cursedChime: ToneSound;
+  emptyChime: ToneSound;
+  findChime: ToneSound;
+  /** Poussière d'or gagnée (revente, mission) : le tintement cristallin de la fonte (webapp). */
+  ding: ToneSound;
+  /** Bouton, onglet, coquille équipée : un « toc » doux. */
+  tap: ToneSound;
+  /** Récompense (calendrier, pub, huître achetée) et achat (coquille, boutique) : niveau du carillon (0…3). */
+  rewardChimeLevel: number;
+  purchaseChimeLevel: number;
+  /** Musique d'ambiance du lagon : une nappe d'accords lente, le ressac, et quelques notes de carillon. */
+  musicFadeMs: number;
+  /** Pendant le suspense, la musique baisse (part du volume) pour laisser la place au carillon. */
+  musicSuspenseDuck: number;
+  /** Accords de la nappe (Hz), chacun tenu chordSeconds, enchaînés en fondu sur chordCrossfadeSeconds. */
+  chords: readonly (readonly number[])[];
+  chordSeconds: number;
+  chordCrossfadeSeconds: number;
+  /** Volume de chaque note de la nappe, part de l'harmonique (octave), lente ondulation du volume. */
+  padGain: number;
+  padHarmonic: number;
+  padTremoloHz: number;
+  padTremoloDepth: number;
+  /** Ressac : bruit adouci (filtre passe-bas) qui enfle et retombe, sur deux vagues de périodes différentes. */
+  waveGain: number;
+  waveCutoffHz: number;
+  wavePeriodsSeconds: readonly number[];
+  /** Notes de carillon au hasard (gamme pentatonique), espacées de sparkleGapMin à sparkleGapMax secondes. */
+  sparkleNotes: readonly number[];
+  sparkleGapMinSeconds: number;
+  sparkleGapMaxSeconds: number;
+  sparkleDecaySeconds: number;
+  sparkleGain: number;
+}
+
+/** Enveloppe des carillons de la webapp : montée 20 ms, extinction en 900 ms, une note toutes les 90 ms. */
+const WEB_CHIME = { gapMs: 90, attackMs: 20, decayMs: 900 } as const;
+
+export const APP_AUDIO: Readonly<AppAudio> = {
+  sampleRate: 44_100,
+  effectsVolume: 1,
+  musicVolume: 0.7,
+  effectsReverbMix: 18,
+  musicReverbMix: 35,
+  noiseQ: 2.5,
+  tick: { durationMs: 30, frequency: 700, gain: 0.12 },
+  tickFrequencyStep: 60,
+  pop: { durationMs: 90, frequency: 1400, gain: 0.6 },
+  crack: { durationMs: 150, frequency: 3200, gain: 0.5 },
+  lid: { durationMs: 400, frequency: 600, gain: 0.12 },
+  pulseStartFrequency: 150,
+  pulseEndFrequency: 75,
+  pulseDurationMs: 180,
+  pulseAttackMs: 5,
+  pulseGain: 0.12,
+  pulseGainPerTier: 0.04,
+  pulseEveryMs: 350,
+  chime: { notes: [523, 659, 784, 988, 1175, 1568], wave: 'sine', ...WEB_CHIME, gain: 0.12 },
+  chimeBaseNotes: 3,
+  cursedChime: { notes: [220, 233, 311, 207], wave: 'sawtooth', ...WEB_CHIME, gain: 0.05 },
+  emptyChime: { notes: [330, 262], wave: 'sine', ...WEB_CHIME, gain: 0.12 },
+  findChime: { notes: [392, 587, 494, 784, 988, 1175], wave: 'triangle', ...WEB_CHIME, gain: 0.12 },
+  ding: { notes: [1568, 2093, 2637], wave: 'sine', gapMs: 60, attackMs: 10, decayMs: 700, gain: 0.08 },
+  tap: { notes: [880], wave: 'sine', gapMs: 0, attackMs: 4, decayMs: 90, gain: 0.07 },
+  rewardChimeLevel: 1,
+  purchaseChimeLevel: 2,
+  musicFadeMs: 1500,
+  musicSuspenseDuck: 0.35,
+  // Do majeur doux : Do maj7, La m7, Fa maj7, Sol 6 (sous les carillons, eux aussi en do majeur).
+  chords: [
+    [130.81, 196.0, 246.94, 329.63],
+    [110.0, 164.81, 261.63, 392.0],
+    [87.31, 220.0, 261.63, 329.63],
+    [98.0, 146.83, 246.94, 329.63],
+  ],
+  chordSeconds: 9,
+  chordCrossfadeSeconds: 3,
+  padGain: 0.04,
+  padHarmonic: 0.15,
+  padTremoloHz: 0.09,
+  padTremoloDepth: 0.3,
+  waveGain: 0.02,
+  waveCutoffHz: 450,
+  wavePeriodsSeconds: [9, 13.5],
+  sparkleNotes: [1046.5, 1174.66, 1318.51, 1567.98, 1760.0, 2093.0],
+  sparkleGapMinSeconds: 2.5,
+  sparkleGapMaxSeconds: 7,
+  sparkleDecaySeconds: 2.2,
+  sparkleGain: 0.05,
+};

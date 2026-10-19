@@ -19,7 +19,7 @@ import { pearlValue } from '../src/core/player';
 import { MARKS, OVERTONES, OVERTONE_WEIGHTS, SHAPES, SHAPE_WEIGHTS } from '../src/core/pearlTraits';
 import { seededRng } from '../src/core/rng';
 import { scriptedPearl, TUTORIAL_PEARLS } from '../src/core/tutorial';
-import { DEFAULT_TUNING } from '../src/tuning';
+import { APP_AUDIO, DEFAULT_TUNING } from '../src/tuning';
 import { thumbDistanceToAngle } from '../src/input/thumb';
 
 const ROOT = resolve(__dirname, '..');
@@ -36,6 +36,7 @@ const perPearl = (table: Readonly<Record<string, Readonly<Record<string, number 
 function catalog() {
   return {
     tuning: DEFAULT_TUNING,
+    audio: APP_AUDIO,
     pearls: PEARLS,
     findProbability: FIND_PROBABILITY,
     findTierWeights: pairs(FIND_TIER_WEIGHTS),

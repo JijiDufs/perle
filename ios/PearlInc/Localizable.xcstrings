@@ -1677,6 +1677,22 @@
         }
       }
     },
+    "Musique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Music"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Musique"
+          }
+        }
+      }
+    },
     "N°" : {
       "localizations" : {
         "en" : {
@@ -2944,6 +2960,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Se déconnecter ?"
+          }
+        }
+      }
+    },
+    "Sons" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sound effects"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sons"
           }
         }
       }

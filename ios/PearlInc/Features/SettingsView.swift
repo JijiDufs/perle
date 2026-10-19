@@ -1,13 +1,15 @@
 import SwiftUI
 import PearlCore
 
-/// Réglages : le compte (déconnexion, suppression), les vibrations, les probabilités, les achats,
+/// Réglages : le compte (déconnexion, suppression), la musique, les sons, les vibrations, les probabilités, les achats,
 /// l'aide et les informations légales. Exigences d'Apple : suppression du compte dans l'app (5.1.1 (v)),
 /// politique de confidentialité accessible depuis l'app, « Restaurer les achats ».
 struct SettingsView: View {
     @Environment(GameModel.self) private var game
     @EnvironmentObject private var auth: AuthViewModel
     @Environment(\.dismiss) private var dismiss
+    @AppStorage(Audio.musicKey) private var music = true
+    @AppStorage(Audio.soundsKey) private var sounds = true
     @AppStorage(Haptics.settingKey) private var haptics = true
     @AppStorage(Notifications.settingKey) private var notify = false
     @State private var notificationsDenied = false
@@ -20,6 +22,11 @@ struct SettingsView: View {
             List {
                 account
                 Section("Jeu") {
+                    Toggle(isOn: $music) { Label("Musique", systemImage: "music.note") }
+                        .tint(Palette.gold)
+                        .onChange(of: music) { game.audio.settingsChanged() }
+                    Toggle(isOn: $sounds) { Label("Sons", systemImage: "speaker.wave.2") }
+                        .tint(Palette.gold)
                     Toggle(isOn: $haptics) { Label("Vibrations", systemImage: "iphone.radiowaves.left.and.right") }
                         .tint(Palette.gold)
                     Toggle(isOn: Binding(get: { notify }, set: { on in

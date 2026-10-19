@@ -2,7 +2,7 @@ import Foundation
 import Observation
 import PearlCore
 
-/// Relie le moteur (PearlCore), la source de geste, l'haptique et la sauvegarde.
+/// Relie le moteur (PearlCore), la source de geste, l'haptique, le son et la sauvegarde.
 /// Les règles restent dans PearlCore ; les vues affichent cet état et transmettent les gestes.
 @MainActor
 @Observable
@@ -63,6 +63,8 @@ final class GameModel {
     /// iPhone Duo, écran intérieur : abscisse du pli (points, dans la fenêtre) ; nil sur l'écran extérieur.
     private(set) var foldX: Double?
     @ObservationIgnored private let haptics = Haptics()
+    /// Musique d'ambiance et effets sonores (aux mêmes moments que l'haptique).
+    @ObservationIgnored let audio = Audio(settings: Catalog.shared.audio)
     @ObservationIgnored private let rng: Rng = systemRng()
     @ObservationIgnored private var lastTickDistance = 0.0
     /// Le calendrier ne s'ouvre pas tout seul le jour de la toute première séance (comme la webapp).
@@ -236,15 +238,15 @@ final class GameModel {
     }
 
     func buyOyster() {
-        if player.buyOyster() { haptics.pop(); save() }
+        if player.buyOyster() { haptics.pop(); audio.purchase(); save() }
     }
 
     func buySkin(_ skinId: String) {
-        if player.buySkin(skinId) { _ = player.equip(skinId); haptics.reveal(tier: 2); save() }
+        if player.buySkin(skinId) { _ = player.equip(skinId); haptics.reveal(tier: 2); audio.purchase(); save() }
     }
 
     func equip(_ skinId: String) {
-        if player.equip(skinId) { haptics.tick(); save() }
+        if player.equip(skinId) { haptics.tick(); audio.tap(); save() }
     }
 
     // MARK: - Compte supprimé
@@ -282,9 +284,13 @@ final class GameModel {
     /// Regarder une pub jusqu'au bout : des huîtres en plus (limite par jour dans le Core).
     func watchAd() {
         guard adRewardsLeft() > 0 else { return }
+        // La pub a son propre son : la musique se tait pendant qu'elle passe.
+        audio.setAdShowing(true)
         ads.show { [weak self] rewarded in
+            self?.audio.setAdShowing(false)
             guard let self, rewarded, self.player.claimAdReward(day: Clock.dayKey()) != nil else { return }
             self.haptics.reveal(tier: 1)
+            self.audio.reward()
             self.save()
         }
     }
@@ -309,6 +315,7 @@ final class GameModel {
             player.grant(product)
             if product.dust > 0 { dustBump += 1 }
             haptics.reveal(tier: 2)
+            audio.purchase()
             save()
         } else if let skin = economy.skins.first(where: { $0.productId == productId }), !player.ownedSkins.contains(skin.id) {
             player.grantSkin(skin.id)
@@ -338,6 +345,7 @@ final class GameModel {
         guard let reward = player.claimDaily(day: Clock.dayKey()) else { return }
         if reward.dust > 0 { dustBump += 1 }
         haptics.reveal(tier: 1)
+        audio.reward()
         save()
     }
 
@@ -354,6 +362,7 @@ final class GameModel {
         guard amount > 0 else { return }
         dustBump += 1
         haptics.tick()
+        audio.dust()
         save()
     }
 
@@ -372,15 +381,19 @@ final class GameModel {
         if engine.phase == .resisting, distance - lastTickDistance >= tuning.resistanceTickDistance {
             lastTickDistance = distance
             haptics.tick()
+            audio.tick(step: Int(distance / tuning.resistanceTickDistance))
         }
         for event in events {
             switch event {
             case .pop:
                 haptics.pop()
+                audio.pop()
                 if !hingeDriving { thumb.lockAfterPop(tuning: tuning) }
             case .crack:
                 cracked = true
                 haptics.crack()
+                // Comme la webapp : une huître vide n'a rien à fêler.
+                if pearl.glow != nil { audio.crack() }
             case .reveal(let lustre, let wasCracked):
                 startReveal(lustre: lustre, cracked: wasCracked)
             }
@@ -410,17 +423,23 @@ final class GameModel {
         if case .find(_, let dust) = reveal, dust > 0 { dustBump += 1 }
         save()
         let suspense = tuning.revealSuspenseMs(tier: tier)
+        let style: Audio.RevealStyle = find != nil ? .find : pearl.id == "cursed" ? .cursed : pearl.glow == nil ? .empty : .pearl
+        audio.lid()
+        audio.setSuspense(true)
         Task { [weak self] in
             var elapsed = 0.0
-            let pulse = 350.0
+            let pulse = self?.catalog.audio.pulseEveryMs ?? suspense
             while elapsed + pulse < suspense {
                 try? await Task.sleep(for: .milliseconds(Int(pulse)))
                 elapsed += pulse
                 self?.haptics.suspensePulse(tier: tier)
+                self?.audio.suspensePulse(tier: tier)
             }
             try? await Task.sleep(for: .milliseconds(Int(max(0, suspense - elapsed))))
             guard let self else { return }
             self.haptics.reveal(tier: tier)
+            self.audio.setSuspense(false)
+            self.audio.reveal(style, tier: tier)
             if tier >= 3 { self.flashAt = Date() }
             self.stage = .card(reveal)
         }
