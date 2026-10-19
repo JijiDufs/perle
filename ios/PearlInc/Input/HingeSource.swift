@@ -7,15 +7,27 @@ import os
 /// (PearlCore/Hinge.swift). On passe par UIHingeInteraction, qui donne aussi l'état de départ
 /// (`onHingeChange` de SwiftUI ne prévient qu'aux changements).
 /// En Debug, l'argument de lancement `-SimulatedHinge` remplace la charnière par un curseur.
+/// Donne aussi la position du pli de l'écran intérieur (abscisse en points dans la fenêtre, nil sur
+/// l'écran extérieur ou sans charnière) : la charnière de l'huître s'y aligne, comme sur pearl-inc.app.
 struct HingeInput: ViewModifier {
     let onChange: (Double?) -> Void
+    let onFold: (Double?) -> Void
 
     func body(content: Content) -> some View {
         if #available(iOS 27.1, *), !HingeInput.simulated {
-            content.background(HingeObserver(onChange: onChange).allowsHitTesting(false))
+            content.background(HingeObserver(onChange: onChange, onFold: onFold).allowsHitTesting(false))
         } else {
             content
         }
+    }
+
+    /// Debug, `-SimulatedFold` : un pli au milieu de l'écran, comme l'écran intérieur du Duo.
+    static var simulatedFold: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.arguments.contains("-SimulatedFold")
+        #else
+        false
+        #endif
     }
 
     static var simulated: Bool {
@@ -28,22 +40,25 @@ struct HingeInput: ViewModifier {
 }
 
 extension View {
-    func hingeInput(_ onChange: @escaping (Double?) -> Void) -> some View {
-        modifier(HingeInput(onChange: onChange))
+    func hingeInput(_ onChange: @escaping (Double?) -> Void, fold onFold: @escaping (Double?) -> Void) -> some View {
+        modifier(HingeInput(onChange: onChange, onFold: onFold))
     }
 }
 
 @available(iOS 27.1, *)
 private struct HingeObserver: UIViewRepresentable {
     let onChange: (Double?) -> Void
+    let onFold: (Double?) -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(onChange: onChange) }
 
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
+    func makeUIView(context: Context) -> FoldView {
+        let view = FoldView()
+        view.onFold = onFold
         view.isUserInteractionEnabled = false
         let coordinator = context.coordinator
-        view.addInteraction(UIHingeInteraction { _, update in
+        view.addInteraction(UIHingeInteraction { [weak view] _, update in
+            view?.reportFold()
             let degrees = update.hinge.map { Double($0.angle) * 180 / .pi }
             #if DEBUG
             Logger(subsystem: "app.pearlinc", category: "charniere")
@@ -54,8 +69,37 @@ private struct HingeObserver: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ view: UIView, context: Context) {
+    func updateUIView(_ view: FoldView, context: Context) {
         context.coordinator.onChange = onChange
+        view.onFold = onFold
+    }
+
+    /// Lit le pli (zone réservée « division ») à chaque mise en page, donc à chaque changement d'écran.
+    final class FoldView: UIView {
+        var onFold: ((Double?) -> Void)?
+        private var lastFold: Double??
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            reportFold()
+        }
+
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            reportFold()
+        }
+
+        func reportFold() {
+            guard let window else { return }
+            // Pli vertical seulement (téléphone ouvert comme un livre), même à plat (zone inactive).
+            let fold = reservedRegions(kind: .division, options: .includeInactive)
+                .map { convert($0.frame, to: window) }
+                .first { $0.height > $0.width }
+                .map { Double($0.midX) }
+            guard lastFold != .some(fold) else { return }
+            lastFold = .some(fold)
+            onFold?(fold)
+        }
     }
 
     @MainActor

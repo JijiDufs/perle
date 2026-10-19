@@ -15,8 +15,8 @@ struct FishingView: View {
             TimelineView(.animation(paused: reduceMotion && game.stage == .playing)) { timeline in
                 Canvas { context, size in
                     let oyster = art(at: timeline.date)
-                    let layout = OysterArt.layout(size: size, look: oyster.look)
-                    let lagoon = LagoonArt(time: reduceMotion ? 0 : oyster.time, focus: .init(x: layout.hx, y: layout.hy, size: layout.L))
+                    let layout = OysterArt.layout(size: size, look: oyster.look, pose: oyster.pose)
+                    let lagoon = LagoonArt(time: reduceMotion ? 0 : oyster.time, focus: layout.focus)
                     lagoon.draw(&context, size: size)
                     oyster.draw(&context, size: size)
                     lagoon.drawOverlay(&context, size: size)
@@ -24,6 +24,10 @@ struct FishingView: View {
                 }
             }
             .ignoresSafeArea()
+            // Outil de test (`-SimulatedFold`) : un pli au milieu de l'écran, comme l'écran intérieur du Duo.
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
+                if HingeInput.simulatedFold { game.foldChanged(x: width / 2) }
+            }
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0)
@@ -50,15 +54,17 @@ struct FishingView: View {
                 ResourceBar(showMissions: $showMissions, showSettings: $showSettings)
                     .padding(.horizontal)
                     .padding(.top, 8)
-                if let coach = coachText {
-                    CoachBubble(text: coach)
-                        .padding(.horizontal, 24)
-                        .allowsHitTesting(false)
+                VStack(spacing: 14) {
+                    if let coach = coachText {
+                        CoachBubble(text: coach)
+                            .padding(.horizontal, 24)
+                    }
+                    Spacer()
+                    StatusPill(text: statusText, warning: game.tooFast)
+                        .padding(.bottom, 24)
                 }
-                Spacer()
-                StatusPill(text: statusText, warning: game.tooFast)
-                    .padding(.bottom, 24)
-                    .allowsHitTesting(false)
+                .besideFold(game.foldX)
+                .allowsHitTesting(false)
             }
 
             TimelineView(.periodic(from: .now, by: 1)) { timeline in
@@ -73,6 +79,7 @@ struct FishingView: View {
                     .transition(.opacity)
                     .allowsHitTesting(false)
                 RevealCardView(reveal: reveal)
+                    .besideFold(game.foldX)
                     .transition(.scale(scale: 0.3).combined(with: .opacity))
                     .onTapGesture { withAnimation(.snappy) { game.nextOyster() } }
             }
@@ -93,7 +100,7 @@ struct FishingView: View {
         }
         #endif
         // iPhone Duo : ouvrir le téléphone ouvre l'huître, le refermer passe à la suivante.
-        .hingeInput { game.hingeChanged(degrees: $0) }
+        .hingeInput({ game.hingeChanged(degrees: $0) }, fold: { if !HingeInput.simulatedFold { game.foldChanged(x: $0) } })
         .sheet(isPresented: $showMissions) { MissionsView() }
         .sheet(isPresented: $showSettings) { SettingsView() }
         .onChange(of: scenePhase) { _, phase in if phase == .active { game.refresh() } }
@@ -153,8 +160,17 @@ struct FishingView: View {
             flash: progress.flash,
             time: date.timeIntervalSinceReferenceDate,
             look: SkinLook(skinId: game.player.equippedSkin),
-            shapeSeed: game.shapeSeed
+            shapeSeed: game.shapeSeed,
+            pose: pose
         )
+    }
+
+    /// Au pouce, l'huître est vue de dessus, charnière en haut. Sur l'iPhone Duo, elle est couchée comme
+    /// sur pearl-inc.app : charnière au bord gauche de l'écran extérieur, puis sur le pli de l'écran intérieur.
+    private var pose: OysterArt.Pose {
+        guard game.hasHinge || game.foldX != nil else { return .thumb }
+        if let x = game.foldX { return .fold(x: x) }
+        return .cover
     }
 }
 
@@ -170,5 +186,31 @@ private struct StatusPill: View {
             .glass(Capsule())
             .foregroundStyle(warning ? Color(hex: "#FF5A5F") : .white)
             .opacity(text == nil ? 0 : 1)
+    }
+}
+
+extension View {
+    /// Écran intérieur du Duo : rien sur le pli (docs/duo-gadget.md §5). La vue se centre sur la moitié
+    /// droite, celle de la perle. `foldX` : abscisse du pli dans la fenêtre ; nil = toute la largeur.
+    func besideFold(_ foldX: Double?) -> some View {
+        modifier(BesideFold(foldX: foldX))
+    }
+}
+
+private struct BesideFold: ViewModifier {
+    let foldX: Double?
+
+    func body(content: Content) -> some View {
+        if let foldX {
+            GeometryReader { proxy in
+                let frame = proxy.frame(in: .global)
+                let left = min(max(0, foldX - frame.minX), frame.width)
+                content
+                    .frame(width: max(0, frame.width - left))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+            }
+        } else {
+            content
+        }
     }
 }

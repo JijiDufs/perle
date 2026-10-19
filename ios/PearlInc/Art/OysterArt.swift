@@ -31,21 +31,60 @@ struct OysterArt {
     var shapeSeed = 1
     /// Taille de la valve (L) : nil = calculée d'après la place disponible.
     var length: Double?
+    var pose: Pose = .thumb
 
-    /// Où se pose la coquille : charnière (hx, hy) et longueur L. Le lagon s'en sert pour son horizon et l'ombre.
+    /// Comment l'huître est posée. Au pouce : vue de dessus, charnière en haut, le couvercle se soulève
+    /// vers le haut de l'écran. Sur l'iPhone Duo, comme le prototype de pearl-inc.app : couchée,
+    /// sa charnière du côté de celle du téléphone.
+    enum Pose: Equatable {
+        case thumb
+        /// Écran extérieur (téléphone fermé) : charnière au bord gauche, la coquille part vers la droite.
+        case cover
+        /// Écran intérieur : charnière de l'huître sur le pli du téléphone (abscisse x) ; le couvercle,
+        /// ouvert à plat, occupe la moitié gauche (c'est le téléphone qui le soulève), la perle la droite.
+        case fold(x: Double)
+    }
+
+    /// Où se pose la coquille : charnière (hx, hy), longueur L et direction de la valve du bas.
     struct Layout {
         var hx: Double
         var hy: Double
         var L: Double
+        /// Direction de la valve du bas depuis la charnière (π/2 : vers le bas ; 0 : vers la droite).
+        var dir = Double.pi / 2
+
+        /// Centre de la perle (ou de la trouvaille), au milieu de la valve du bas.
+        var pearlCenter: CGPoint { CGPoint(x: hx + L * 0.5 * cos(dir), y: hy + L * 0.5 * sin(dir)) }
+
+        /// Repère du lagon (horizon, ombre sur le sable) : la charnière quand l'huître est vue de dessus,
+        /// le milieu de la coquille quand elle est couchée.
+        var focus: LagoonArt.Focus {
+            if dir == Double.pi / 2 { return LagoonArt.Focus(x: hx, y: hy, size: L) }
+            let center = pearlCenter
+            return LagoonArt.Focus(x: center.x, y: center.y - L * 0.32, size: L * 0.75)
+        }
     }
 
-    static func layout(size: CGSize, look: SkinLook, length: Double? = nil) -> Layout {
-        let top = Double(size.height) * 0.08
-        let visible = Double(size.height) * 0.84
-        var L = length ?? min(Double(size.width) * 0.6, visible * 0.42)
-        if case .clam = look { L *= ClamArt.lengthFactor }
-        let hy = length != nil ? Double(size.height) / 2 - L * 0.5 : top + visible * 0.52
-        return Layout(hx: Double(size.width) / 2, hy: hy, L: L)
+    static func layout(size: CGSize, look: SkinLook, length: Double? = nil, pose: Pose = .thumb) -> Layout {
+        let width = Double(size.width), height = Double(size.height)
+        let top = height * 0.08
+        let visible = height * 0.84
+        let clam = if case .clam = look { ClamArt.lengthFactor } else { 1.0 }
+        switch pose {
+        case .thumb:
+            let L = (length ?? min(width * 0.6, visible * 0.42)) * clam
+            let hy = length != nil ? height / 2 - L * 0.5 : top + visible * 0.52
+            return Layout(hx: width / 2, hy: hy, L: L)
+        case .cover:
+            // Comme drawCover du prototype : la charnière déborde un peu à gauche.
+            let L = min(width * 0.9, visible * 0.62) * clam
+            return Layout(hx: -width * 0.06, hy: height * 0.42, L: L, dir: 0)
+        case .fold(let x):
+            // Comme drawInner du prototype : chaque valve tient dans sa moitié d'écran.
+            let half = min(x, width - x)
+            let L = min(half * 0.86, visible * 0.62) * clam
+            return Layout(hx: x, hy: top + visible * 0.5, L: L, dir: 0)
+        }
     }
 
     private var isClam: Bool { if case .clam = look { true } else { false } }
@@ -54,18 +93,17 @@ struct OysterArt {
     func draw(_ c: inout GraphicsContext, size: CGSize) {
         let t = time
         let theta = angle * .pi / 180
-        let layout = Self.layout(size: size, look: look, length: length)
+        var layout = Self.layout(size: size, look: look, length: length, pose: pose)
         let L = layout.L
-        var hx = layout.hx
-        var hy = layout.hy
         let ph = ShellArt.phases(seed: shapeSeed)
-        let down = Double.pi / 2
+        let down = layout.dir
 
         // Tremblement des plus rares.
         if trembles && angle == 0 && !revealed && t.truncatingRemainder(dividingBy: 2.4) < 0.45 {
-            hx += sin(t * 90) * 3
-            hy += cos(t * 70) * 2
+            layout.hx += sin(t * 90) * 3
+            layout.hy += cos(t * 70) * 2
         }
+        let hx = layout.hx, hy = layout.hy
 
         // Valve du bas : extérieur, nacre (ou porcelaine et manteau), chair, perle.
         let interior: Path
@@ -81,7 +119,7 @@ struct OysterArt {
             ClamArt.drawInterior(&c, hx, hy, down, L, ph, t, mantle: true)
             interior = ClamArt.interiorPath(hx, hy, down, L, ph)
         }
-        let pearlCenter = CGPoint(x: hx, y: hy + L * 0.5)
+        let pearlCenter = layout.pearlCenter
 
         let flicker = isFind ? 0.8 + 0.2 * sin(t * 9) * sin(t * 2.3) : pearl?.id == "cursed" ? 0.75 + 0.25 * sin(t * 6) : 1
         let tier = min(max(revealTier, 0), 3)
@@ -97,6 +135,9 @@ struct OysterArt {
             PearlArt.draw(&c, pearlCenter.x, pearlCenter.y, radius, pearl, cracked: cracked)
         }
 
+        // Sur le pli du Duo, le couvercle est ouvert à plat sur l'autre moitié : on voit son intérieur.
+        if case .fold = pose { drawFlatLid(&c, hx, hy, L, ph, t, dim: revealed ? 0 : 1 - smoothstep(4, 140, angle)) }
+
         // L'intérieur reste dans l'ombre tant que la coquille est peu ouverte.
         let dim = revealed ? 0 : 1 - smoothstep(4, 140, angle)
         if dim > 0.001 { c.fill(interior, with: .color(rgba(0, 6, 8, dim * 0.94))) }
@@ -106,10 +147,13 @@ struct OysterArt {
         PearlArt.glow(&c, pearlCenter.x, pearlCenter.y, radius * (4 + Double(tier) * 0.8), glowColor,
                       (revealed ? 1 : smoothstep(1, 25, angle)) * strength, additive: false)
 
+        if case .fold = pose { return }
+
+        // Le couvercle se replie vers sa charnière : vers le haut au pouce, vers la gauche sur l'écran extérieur du Duo.
         let lift = cos(theta)
         var lid = c
         lid.translateBy(x: hx, y: hy)
-        lid.scaleBy(x: 1, y: lift)
+        lid.scaleBy(x: pose == .cover ? lift : 1, y: pose == .cover ? 1 : lift)
         lid.translateBy(x: -hx, y: -hy)
         switch look {
         case .oyster(let palette, let rim, let sparkles):
@@ -135,18 +179,40 @@ struct OysterArt {
         // La lumière filtre par l'entrebâillement, au bord du couvercle.
         if lift > 0 && !revealed {
             let leak = smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle))
-            PearlArt.glow(&c, hx, hy + L * 0.98 * lift, L * 0.8, glowColor, leak * strength * 0.9)
+            PearlArt.glow(&c, hx + L * 0.98 * lift * cos(down), hy + L * 0.98 * lift * sin(down), L * 0.8, glowColor, leak * strength * 0.9)
         }
     }
+
+    /// Le couvercle ouvert à plat de l'autre côté du pli (prototype : valve gauche), intérieur visible,
+    /// dans l'ombre tant que le téléphone est peu ouvert.
+    private func drawFlatLid(_ c: inout GraphicsContext, _ hx: Double, _ hy: Double, _ L: Double, _ ph: ShellArt.Phases, _ t: Double, dim: Double) {
+        let left = layoutDir + Double.pi
+        let interior: Path
+        switch look {
+        case .oyster(let palette, let rim, _):
+            ShellArt.drawExterior(&c, hx, hy, left, L * 0.98, ph, palette)
+            if let rim { c.stroke(ShellArt.path(ShellArt.outline(hx, hy, left, L * 0.98, ph, frill: 0.045)), with: .color(rim), lineWidth: max(1.5, L * 0.012)) }
+            ShellArt.drawNacre(&c, hx, hy, left, L * 0.98 * 0.88, ph, t, palette)
+            interior = ShellArt.path(ShellArt.outline(hx, hy, left, L * 0.98 * 0.88, ph, frill: 0))
+        case .clam:
+            ClamArt.drawExterior(&c, hx, hy, left, L * 0.98, ph)
+            ClamArt.drawInterior(&c, hx, hy, left, L * 0.98, ph, t, mantle: false)
+            interior = ClamArt.interiorPath(hx, hy, left, L * 0.98, ph)
+        }
+        if dim > 0.001 { c.fill(interior, with: .color(rgba(0, 6, 8, dim * 0.94))) }
+    }
+
+    private var layoutDir: Double { if case .thumb = pose { Double.pi / 2 } else { 0 } }
 
     /// Par-dessus le décor (après la vignette du lagon) : le halo qui envahit l'écran pendant la révélation,
     /// et l'éclair blanc des ★.
     func drawRevealEffects(_ c: inout GraphicsContext, size: CGSize) {
         guard revealed else { return }
-        let layout = Self.layout(size: size, look: look, length: length)
+        let layout = Self.layout(size: size, look: look, length: length, pose: pose)
         let tier = Double(min(max(revealTier, 0), 3))
         let flicker = isFind ? 0.8 + 0.2 * sin(time * 9) * sin(time * 2.3) : pearl?.id == "cursed" ? 0.75 + 0.25 * sin(time * 6) : 1
-        PearlArt.glow(&c, layout.hx, layout.hy + layout.L * 0.5, layout.L * (1.4 + tier * 0.5), glowColor, suspense * 0.5 * flicker, additive: false)
+        let center = layout.pearlCenter
+        PearlArt.glow(&c, center.x, center.y, layout.L * (1.4 + tier * 0.5), glowColor, suspense * 0.5 * flicker, additive: false)
         if flash > 0 { c.fill(Path(CGRect(origin: .zero, size: size)), with: .color(rgba(255, 250, 235, flash * 0.7))) }
     }
 

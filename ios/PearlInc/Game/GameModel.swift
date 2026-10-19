@@ -60,6 +60,8 @@ final class GameModel {
     private(set) var hasHinge = false
     /// La charnière peut ouvrir l'huître (téléphone refermé depuis son arrivée).
     private(set) var hingeArmed = false
+    /// iPhone Duo, écran intérieur : abscisse du pli (points, dans la fenêtre) ; nil sur l'écran extérieur.
+    private(set) var foldX: Double?
     @ObservationIgnored private let haptics = Haptics()
     @ObservationIgnored private let rng: Rng = systemRng()
     @ObservationIgnored private var lastTickDistance = 0.0
@@ -175,6 +177,11 @@ final class GameModel {
             let distance = angle / tuning.popAngle * tuning.resistanceDistance
             handle(OpeningSample(angle: angle, time: ThumbSource.now), distance: distance)
         }
+    }
+
+    /// Le pli de l'écran intérieur a bougé (on est passé d'un écran à l'autre).
+    func foldChanged(x: Double?) {
+        foldX = x
     }
 
     /// VoiceOver : ouverture lente et régulière, sans fêlure.

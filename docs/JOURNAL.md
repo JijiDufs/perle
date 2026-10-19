@@ -4,6 +4,24 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 9) · Jules · Claude Code · branche `jules/ios-app`
+
+App iOS : sur l'iPhone Duo, l'huître est posée **dans le même sens que le prototype de pearl-inc.app** (demande de Jules).
+
+**Fait**
+- `Art/OysterArt.swift` : la scène prend une pose (`Pose`). **Au pouce** (iPhone classique) : rien ne change, vue de dessus, charnière en haut. **Écran extérieur du Duo** (`cover`) : couchée, charnière au bord gauche, coquille vers la droite, à 42 % de la hauteur (comme `drawCover` du prototype) ; le couvercle se replie vers la gauche en s'ouvrant. **Écran intérieur** (`fold`) : charnière de l'huître sur le pli, couvercle ouvert à plat sur la moitié gauche (nacre visible), fond, chair et perle sur la moitié droite (comme `drawInner`) ; c'est le téléphone qui soulève le couvercle, seule la lumière suit l'angle.
+- `Input/HingeSource.swift` : lit le pli avec `reservedRegions(kind: .division, options: .includeInactive)` (iOS 27.1), à chaque mise en page et à chaque mesure de la charnière ; `GameModel.foldX`.
+- Écran intérieur : carte, bulles et message se centrent sur la moitié droite (`besideFold`), rien sur le pli.
+- Debug : `-SimulatedFold` simule un pli au milieu de l'écran.
+- Vérifié au simulateur iPhone Duo : écran extérieur (couchée, charnière à gauche) et pli simulé ; comparé au prototype en ligne (écrans extérieur et intérieur).
+
+**À faire**
+- Vérifier sur un vrai Duo ou dans Device Hub : que la zone « division » est bien donnée sur l'écran intérieur (sinon l'app garde la pose de l'écran extérieur), sa position, et le passage d'un écran à l'autre pendant l'ouverture.
+- Main fantôme : absente sur le Duo (elle montre le geste du pouce).
+
+**Fragile**
+- Le pli est converti dans les coordonnées de la fenêtre ; on suppose que la Pêche occupe toute la fenêtre (vrai aujourd'hui, onglets en surimpression).
+
 ## 2026-10-19 (suite 8) · Jules · Claude Code · branche `jules/ios-app`
 
 App iOS : les premières minutes (cahier §15, `docs/duo-gadget.md` §4) et la notification « tes huîtres sont revenues ».
