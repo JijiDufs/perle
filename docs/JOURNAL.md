@@ -4,6 +4,23 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 5) · Jules · Claude Code · branche `jules/ios-app`
+
+Événement X « Inscription » sur pearl-inc.app.
+
+**Fait**
+- Pages de fin du formulaire `site/merci/` et `site/en/thanks/` (texte de remerciement de Tally, `noindex`). Leur `<body data-x-event="tw-rh65t-rhkic">` fait envoyer l'événement par `site/consent.js`, après « Accepter » seulement, une fois par visite.
+- Confidentialité FR / EN : X apprend aussi qu'on s'est inscrit (jamais l'e-mail). Décision §6 complétée.
+
+**À faire**
+- Dans Tally, formulaires FR et EN : rediriger à la fin vers `https://pearl-inc.app/merci/` et `https://pearl-inc.app/en/thanks/` (réglage peut-être réservé à Tally Pro), puis publier.
+- Après le déploiement : une inscription de test avec l'extension X Pixel Helper, et vérifier que l'événement apparaît dans l'Events Manager.
+
+**Fragile**
+- Sans la redirection Tally, l'événement ne part jamais. Seules les inscriptions de visiteurs qui ont accepté les cookies sont comptées.
+
+---
+
 ## 2026-10-19 (suite 3) · Jules · Claude Code · branche `jules/ios-app`
 
 La charnière de l'iPhone Duo dans l'app iOS.

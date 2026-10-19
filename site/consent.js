@@ -2,6 +2,7 @@
    Le pixel de conversion de X (Twitter) dépose des cookies publicitaires : il ne se charge
    qu'après « Accepter » (CNIL). Refuser est aussi simple qu'accepter ; le choix est gardé
    6 mois sur l'appareil, puis redemandé. Un lien [data-consent-open] rouvre la bannière.
+   Une page de conversion le dit avec <body data-x-event="tw-rh65t-…"> (voir sendPageEvent).
    Pas de bannière pour Vercel Web Analytics : il ne dépose aucun cookie. */
 (function(){
   var KEY='pearl-consent-v1';
@@ -45,6 +46,18 @@
     a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
     twq('config','rh65t');
     // End X conversion tracking base code
+    sendPageEvent();
+  }
+
+  // Événement de conversion de la page (<body data-x-event="tw-rh65t-…">, ex. /merci/ = inscription).
+  // Une fois par visite : recharger la page ne compte pas une deuxième inscription.
+  function sendPageEvent(){
+    var id=document.body&&document.body.getAttribute('data-x-event');
+    if(!id)return;
+    try{if(sessionStorage.getItem('pearl-x-event:'+id))return;sessionStorage.setItem('pearl-x-event:'+id,'1');}catch(e){}
+    // X conversion tracking event code
+    twq('event', id, {});
+    // End X conversion tracking event code
   }
 
   var CSS='.pc-banner{position:fixed;z-index:1000;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);max-width:560px;margin:0 auto;'
