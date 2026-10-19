@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 7) · Jules · Claude Code · branche `jules/ios-app`
+
+Tests qui échouaient par intermittence quand la machine est chargée (juste après un build Xcode).
+
+**Cause confirmée** : le délai par défaut de Vitest (5 s), pas le hasard (graines fixes). Reproduit avec 160 processus `yes` + les simulateurs iOS ouverts : `Test timed out in 5000ms` sur `ecrin.test.ts` « respecte les probabilités (sans garantie) » et `variety.test.ts` « chaque rareté donne des bijoux nommés… » ; les autres tests lourds (≈ 50 à 200 ms d'habitude) montaient à 3 à 26 s. Lors d'un passage plus chargé, même un test de 22 ms (« offre le premier écrin… ») a dépassé 5 s : le processus est mis en attente, ce ne sont pas les calculs qui sont lents.
+
+**Fait**
+- `vitest.config.ts` (nouveau, seul réglage) : `testTimeout: 60_000` pour tous les tests. Un délai par test aurait laissé passer les tests légers privés de processeur. Aucune règle, probabilité ni réglage du jeu ne change ; nombre de tirages inchangé.
+- Vérifié : `npm test` et `npm run build` passent ; sous la même charge, les 163 tests passent (jusqu'à 6,8 s pour un seul test).
+
+**À faire**
+- Rien.
+
+**Fragile**
+- Un vrai blocage dans un test met maintenant 60 s à être signalé au lieu de 5 s.
+- `vitest.config.ts` est pris par Vitest seulement : la build Vite n'a toujours pas de fichier de configuration.
+
+---
+
 ## 2026-10-19 (suite 6) · Jules · Claude Code · branche `jules/ios-app`
 
 La page anglaise du site a sa propre adresse : **pearl-inc.app/en** (mesure de la campagne par langue).
