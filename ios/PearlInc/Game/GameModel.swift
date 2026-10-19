@@ -48,6 +48,13 @@ final class GameModel {
 
     @ObservationIgnored private var engine: OpeningEngine
     @ObservationIgnored private let thumb = ThumbSource()
+    /// iPhone Duo : la charnière, et si c'est elle qui ouvre l'huître posée (le pouce attend alors son tour).
+    @ObservationIgnored private var hinge: HingeTracker
+    @ObservationIgnored private var hingeDriving = false
+    /// L'iPhone a une charnière (Duo) : messages « ouvre / referme le téléphone ».
+    private(set) var hasHinge = false
+    /// La charnière peut ouvrir l'huître (téléphone refermé depuis son arrivée).
+    private(set) var hingeArmed = false
     @ObservationIgnored private let haptics = Haptics()
     @ObservationIgnored private let rng: Rng = systemRng()
     @ObservationIgnored private var lastTickDistance = 0.0
@@ -58,6 +65,7 @@ final class GameModel {
         player = saved
         current = saved.oyster
         engine = OpeningEngine(tuning: catalog.tuning)
+        hinge = HingeTracker(tuning: catalog.tuning)
         thumb.onSample = { [weak self] sample, distance in self?.handle(sample, distance: distance) }
         thumb.onRelease = { [weak self] in self?.handleRelease() }
         shapeSeed = player.nextSerial
@@ -103,7 +111,7 @@ final class GameModel {
     // MARK: - Gestes
 
     func drag(translation: Double) {
-        guard stage == .playing else { return }
+        guard stage == .playing, !hingeDriving else { return }
         if engine.phase == .closed {
             guard player.oystersAvailable(now: Clock.nowMs, tuning: tuning) > 0 else { return }
             haptics.prepare()
@@ -112,8 +120,36 @@ final class GameModel {
     }
 
     func endDrag() {
-        guard stage == .playing else { return }
+        guard stage == .playing, !hingeDriving else { return }
         thumb.end(tuning: tuning, autoOpenFrom: engine.phase == .opening ? tuning.autoOpenFromAngle : nil)
+    }
+
+    /// iPhone Duo : nouvel angle de la charnière en degrés (nil = pas de charnière).
+    /// Ouvrir le téléphone ouvre l'huître ; le refermer passe à la suivante (docs/duo-gadget.md §7).
+    func hingeChanged(degrees: Double?) {
+        guard let degrees else { hasHinge = false; return }
+        hasHinge = true
+        let action = hinge.update(degrees: degrees)
+        hingeArmed = hinge.armed
+        switch action {
+        case .none:
+            break
+        case .closed:
+            if case .card = stage {
+                nextOyster()
+            } else if stage == .playing, engine.phase == .resisting {
+                handleRelease()
+            }
+            hingeDriving = false
+        case .sample(let angle):
+            guard stage == .playing, thumb.distance == 0 || hingeDriving else { return }
+            if engine.phase == .closed {
+                guard player.oystersAvailable(now: Clock.nowMs, tuning: tuning) > 0 else { return }
+                haptics.prepare()
+            }
+            hingeDriving = true
+            handle(OpeningSample(angle: angle, time: ThumbSource.now), distance: angle)
+        }
     }
 
     /// VoiceOver : ouverture lente et régulière, sans fêlure.
@@ -127,6 +163,9 @@ final class GameModel {
         guard case .card = stage else { return }
         engine = OpeningEngine(tuning: tuning)
         thumb.reset()
+        hinge.disarmIfOpen()
+        hingeArmed = hinge.armed
+        hingeDriving = false
         lastTickDistance = 0
         angle = 0
         cracked = false
@@ -179,6 +218,7 @@ final class GameModel {
         player = PlayerState.new(rng, tuning, now: Clock.nowMs)
         engine = OpeningEngine(tuning: tuning)
         thumb.reset()
+        hingeDriving = false
         lastTickDistance = 0
         angle = 0
         cracked = false

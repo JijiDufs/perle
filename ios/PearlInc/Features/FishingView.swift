@@ -43,6 +43,12 @@ struct FishingView: View {
                 StatusPill(text: statusText, warning: game.tooFast)
                     .padding(.bottom, 24)
                     .allowsHitTesting(false)
+                #if DEBUG
+                if SimulatedHingeSlider.isEnabled {
+                    SimulatedHingeSlider { game.hingeChanged(degrees: $0) }
+                        .padding(.horizontal, 24).padding(.bottom, 96)
+                }
+                #endif
             }
 
             TimelineView(.periodic(from: .now, by: 1)) { timeline in
@@ -62,6 +68,8 @@ struct FishingView: View {
             }
         }
         .animation(.spring(duration: 0.45, bounce: 0.35), value: game.stage)
+        // iPhone Duo : ouvrir le téléphone ouvre l'huître, le refermer passe à la suivante.
+        .hingeInput { game.hingeChanged(degrees: $0) }
         .sheet(isPresented: $showMissions) { MissionsView() }
         .sheet(isPresented: $showSettings) { SettingsView() }
         .onChange(of: scenePhase) { _, phase in if phase == .active { game.refresh() } }
@@ -81,7 +89,12 @@ struct FishingView: View {
         if game.tooFast { return String(localized: "Trop vite !") }
         if game.inFragileZone { return String(localized: "Zone fragile : doucement") }
         if game.angle == 0 && game.isTideOut(at: Date()) { return nil }
-        if game.angle == 0 { return String(localized: "Glisse vers le haut pour ouvrir") }
+        if game.angle == 0 {
+            if game.hasHinge {
+                return game.hingeArmed ? String(localized: "Ouvre le téléphone doucement") : String(localized: "Referme le téléphone, puis ouvre-le")
+            }
+            return String(localized: "Glisse vers le haut pour ouvrir")
+        }
         return nil
     }
 

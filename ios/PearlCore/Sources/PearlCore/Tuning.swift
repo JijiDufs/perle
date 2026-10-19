@@ -24,6 +24,8 @@ public struct Tuning: Codable, Sendable, Equatable {
     public var revealAngle: Double
     /// Au-delà de cet angle (°), lâcher le pouce laisse le couvercle finir seul.
     public var autoOpenFromAngle: Double
+    /// iPhone Duo : sous cet angle (°) de la charnière, le téléphone est fermé.
+    public var hingeClosedAngle: Double
     /// Coefficient de variation de la vitesse max pour chaque note de lustre.
     public var lustreMaxVariationS: Double
     public var lustreMaxVariationA: Double

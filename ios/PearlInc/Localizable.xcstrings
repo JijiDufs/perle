@@ -1448,6 +1448,22 @@
         }
       }
     },
+    "Ouvre le téléphone doucement": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre le téléphone doucement"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open your phone gently"
+          }
+        }
+      }
+    },
     "Ouvrir %lld huîtres": {
       "localizations": {
         "fr": {
@@ -1860,6 +1876,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Get the code"
+          }
+        }
+      }
+    },
+    "Referme le téléphone pour l’huître suivante": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referme le téléphone pour l’huître suivante"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close your phone for the next oyster"
+          }
+        }
+      }
+    },
+    "Referme le téléphone, puis ouvre-le": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referme le téléphone, puis ouvre-le"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close your phone, then open it"
           }
         }
       }

@@ -25,6 +25,8 @@ export interface Tuning {
   revealAngle: number;
   /** Au-delà de cet angle (°), lâcher le pouce laisse le couvercle finir de s'ouvrir seul (ouverture à une main). */
   autoOpenFromAngle: number;
+  /** iPhone Duo : sous cet angle (°) de la charnière, le téléphone est fermé (huître suivante, prêt à pêcher). */
+  hingeClosedAngle: number;
   /** Coefficient de variation de la vitesse max pour chaque note de lustre (plus bas = plus régulier). */
   lustreMaxVariationS: number;
   lustreMaxVariationA: number;
@@ -162,6 +164,7 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   velocityWindowMs: 60,
   revealAngle: 140,
   autoOpenFromAngle: 115,
+  hingeClosedAngle: 8,
   lustreMaxVariationS: 0.25,
   lustreMaxVariationA: 0.45,
   lustreMaxVariationB: 0.7,

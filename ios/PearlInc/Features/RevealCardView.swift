@@ -14,7 +14,9 @@ struct RevealCardView: View {
                 .accessibilityHint("Touche la carte pour l'huître suivante")
 
             VStack(spacing: 10) {
-                Text("Touche la carte pour l’huître suivante")
+                Group {
+                    if game.hasHinge { Text("Referme le téléphone pour l’huître suivante") } else { Text("Touche la carte pour l’huître suivante") }
+                }
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.25), radius: 3)

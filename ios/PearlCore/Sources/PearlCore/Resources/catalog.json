@@ -11,6 +11,7 @@
     "velocityWindowMs": 60,
     "revealAngle": 140,
     "autoOpenFromAngle": 115,
+    "hingeClosedAngle": 8,
     "lustreMaxVariationS": 0.25,
     "lustreMaxVariationA": 0.45,
     "lustreMaxVariationB": 0.7,
