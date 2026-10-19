@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800;900&family=Young+Serif&display=block" rel="stylesheet">
+<style>
+:root{
+  --gold1:#FFF1C1; --gold2:#F7CB5C; --gold3:#C98B1E;
+  --ink:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1320px;height:2868px;overflow:hidden;background:#06202b}
+body{font-family:Figtree,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.panel{position:absolute;inset:0;overflow:hidden;display:none}
+.panel.on{display:block}
+
+/* ---------- Fonds ---------- */
+.bg{position:absolute;inset:0}
+.rays{position:absolute;inset:-200px -300px auto -300px;height:2200px;
+  background:repeating-linear-gradient(100deg,rgba(255,255,255,0) 0 90px,rgba(190,255,250,.07) 90px 150px,rgba(255,255,255,0) 150px 260px,rgba(190,255,250,.045) 260px 300px);
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.6) 45%,transparent 90%);filter:blur(6px);transform:skewX(-6deg)}
+.bubbles i{position:absolute;border-radius:50%;border:3px solid rgba(220,255,255,.35);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.35),rgba(255,255,255,0) 60%)}
+.spark{position:absolute;width:var(--s,60px);height:var(--s,60px);
+  background:radial-gradient(circle,#fff 0 6%,rgba(255,255,255,0) 7%),
+  conic-gradient(from 0deg,transparent 0 40deg,transparent 0);
+  filter:drop-shadow(0 0 14px var(--c,#ffe39a)) drop-shadow(0 0 30px var(--c,#ffe39a))}
+.spark::before,.spark::after{content:"";position:absolute;left:50%;top:50%;background:#fff;border-radius:50%;transform:translate(-50%,-50%)}
+.spark::before{width:8%;height:100%;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.spark::after{width:100%;height:8%;clip-path:polygon(0 50%,50% 0,100% 50%,50% 100%)}
+
+/* ---------- Texte ---------- */
+.copy{position:absolute;left:0;right:0;top:150px;text-align:center;padding:0 80px;z-index:20}
+.eyebrow{display:inline-flex;align-items:center;gap:18px;font-weight:800;font-size:40px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold2);padding:16px 34px;border-radius:999px;background:rgba(255,215,120,.10);border:2px solid rgba(255,215,120,.35);margin-bottom:40px}
+h1{font-weight:900;font-size:142px;line-height:.98;letter-spacing:-.025em;text-shadow:0 8px 40px rgba(0,0,0,.35)}
+h1 .g{background:linear-gradient(180deg,var(--gold1) 0%,var(--gold2) 45%,var(--gold3) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 24px rgba(0,0,0,.35))}
+h1 .s{display:block}
+.sub{margin-top:38px;font-size:52px;font-weight:600;line-height:1.25;color:rgba(255,255,255,.86)}
+
+/* ---------- Téléphone ---------- */
+.phone{position:absolute;--w:940px;width:calc(var(--w) + 52px);padding:26px;border-radius:calc(var(--w)*.137 + 26px);
+  background:linear-gradient(145deg,#5b6068 0%,#1d1f23 18%,#0b0c0e 50%,#2a2d33 82%,#6b7078 100%);
+  box-shadow:0 0 0 3px rgba(255,255,255,.12) inset,0 60px 120px rgba(0,0,0,.55),0 20px 40px rgba(0,0,0,.4);z-index:10}
+.phone .scr{position:relative;width:var(--w);aspect-ratio:1206/2622;border-radius:calc(var(--w)*.137);overflow:hidden;background:#000}
+.phone .scr img{width:100%;height:100%;display:block}
+.phone .scr::after{content:"";position:absolute;left:50%;top:calc(var(--w)*.035);width:calc(var(--w)*.31);height:calc(var(--w)*.09);transform:translateX(-50%);
+  background:#000;border-radius:999px}
+.halo{position:absolute;border-radius:50%;filter:blur(40px);z-index:1}
+
+.chip{position:absolute;z-index:30;display:flex;align-items:center;gap:20px;padding:26px 40px;border-radius:999px;font-weight:800;font-size:46px;
+  background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.35);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);white-space:nowrap}
+.chip.gold{background:linear-gradient(180deg,#FFE8A3,#E9B44C);color:#3a2604;border-color:rgba(255,255,255,.6)}
+.chip.red{background:linear-gradient(180deg,#ff6b8f,#c81d4f);border-color:rgba(255,255,255,.5)}
+.chip.dark{background:rgba(6,25,35,.72)}
+.float{position:absolute;z-index:25;filter:drop-shadow(0 30px 40px rgba(0,0,0,.45))}
+
+/* Geste : le pouce qui glisse */
+.swipe{position:absolute;z-index:26;width:150px;transform:translateX(-50%)}
+.swipe .trail{position:absolute;left:50%;transform:translateX(-50%);width:34px;border-radius:20px;
+  background:linear-gradient(0deg,rgba(255,255,255,.0),rgba(255,255,255,.85));}
+.swipe .dot{position:absolute;left:50%;transform:translate(-50%,-50%);width:130px;height:130px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.95) 0 34%,rgba(255,255,255,.35) 36% 60%,rgba(255,255,255,0) 62%);
+  box-shadow:0 0 60px rgba(255,240,200,.8)}
+.swipe .arrow{position:absolute;left:50%;transform:translateX(-50%);width:0;height:0;border-left:44px solid transparent;border-right:44px solid transparent;border-bottom:56px solid #fff;
+  filter:drop-shadow(0 0 20px rgba(255,240,200,.9))}
+
+.traits{position:absolute;left:30px;top:1080px;width:440px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:12}
+.traits div{display:flex;flex-direction:column;align-items:center;margin-bottom:22px}
+.traits img{width:340px;height:340px;margin:-40px 0 -70px}
+.traits span{font-size:42px;font-weight:800;text-align:center;line-height:1.1;padding:14px 26px;border-radius:999px;background:rgba(6,25,35,.6);border:2px solid rgba(255,255,255,.22)}
+/* Échelle des raretés */
+.ladder{position:absolute;left:80px;right:80px;top:790px;display:flex;flex-direction:column;gap:24px;z-index:10}
+.row{display:flex;align-items:center;gap:34px;padding:24px 50px 24px 24px;border-radius:44px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12)}
+.row img{width:270px;height:270px;margin:-45px -30px;flex:none}
+.row .n{flex:1;font-size:64px;font-weight:800;line-height:1.05}
+.row .n small{display:block;font-size:42px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.06em;margin-top:6px}
+.row .p{font-size:66px;font-weight:900;font-variant-numeric:tabular-nums}
+.row.top{background:linear-gradient(90deg,rgba(255,47,114,.32),rgba(255,47,114,.08));border-color:rgba(255,120,160,.6);box-shadow:0 0 80px rgba(255,47,114,.35)}
+.row.top .p{color:#ff8fb0}
+.row.gold{background:linear-gradient(90deg,rgba(247,203,92,.22),rgba(247,203,92,.05));border-color:rgba(247,203,92,.45)}
+.row.gold .p{color:var(--gold2)}
+.note{position:absolute;left:0;right:0;bottom:150px;text-align:center;font-size:46px;font-weight:700;color:rgba(255,255,255,.75);z-index:10}
+.note b{color:var(--gold2)}
+</style></head>
+<body>
+
+<!-- 1 · HÉROS -->
+<section class="panel" id="p1">
+  <img class="bg" src="a/hero-golden-34.png" style="width:1320px;height:2868px">
+  <div class="bg" style="background:linear-gradient(180deg,rgba(3,28,38,.78) 0%,rgba(3,28,38,.35) 26%,rgba(3,28,38,0) 42%)"></div>
+  <div class="bg" style="background:radial-gradient(ellipse 620px 380px at 660px 2290px,rgba(255,214,100,.85),rgba(255,190,60,.35) 45%,rgba(255,190,60,0) 75%);mix-blend-mode:screen"></div>
+  <div class="bg" style="background:conic-gradient(from 180deg at 660px 2250px,transparent 0 60deg,rgba(255,230,150,.22) 70deg,transparent 80deg,rgba(255,230,150,.16) 95deg,transparent 105deg,rgba(255,230,150,.22) 120deg,transparent 130deg,rgba(255,230,150,.14) 150deg,transparent 160deg,rgba(255,230,150,.2) 175deg,transparent 185deg,rgba(255,230,150,.14) 200deg,transparent 210deg,rgba(255,230,150,.22) 228deg,transparent 240deg,rgba(255,230,150,.16) 258deg,transparent 268deg,rgba(255,230,150,.22) 285deg,transparent 295deg,transparent 360deg);
+     -webkit-mask-image:radial-gradient(circle 1100px at 660px 2250px,#000 20%,transparent 80%);mix-blend-mode:screen;filter:blur(4px)"></div>
+  <div class="copy" style="top:190px"><style>#p1 h1{font-size:128px}</style>
+    <div class="eyebrow" data-t="hero_eyebrow"></div>
+    <h1 data-t="hero_h"></h1>
+    <p class="sub" data-t="hero_sub"></p>
+  </div>
+  <div class="swipe" style="left:660px;top:1250px;height:560px">
+    <div class="arrow" style="top:0"></div>
+    <div class="trail" style="top:70px;height:420px"></div>
+    <div class="dot" style="top:520px"></div>
+  </div>
+  <i class="spark" style="left:300px;top:2080px;--s:90px"></i>
+  <i class="spark" style="left:950px;top:2010px;--s:70px"></i>
+  <i class="spark" style="left:1050px;top:2350px;--s:110px"></i>
+  <i class="spark" style="left:180px;top:2430px;--s:60px"></i>
+  <i class="spark" style="left:760px;top:2560px;--s:54px"></i>
+</section>
+
+<!-- 2 · LE GESTE -->
+<section class="panel" id="p2">
+  <div class="bg" style="background:linear-gradient(180deg,#0f6a7a 0%,#0a4352 40%,#062430 100%)"></div>
+  <div class="rays"></div>
+  <div class="halo" style="left:210px;top:1500px;width:900px;height:900px;background:rgba(255,205,90,.45)"></div>
+  <div class="copy">
+    <div class="eyebrow" data-t="g_eyebrow"></div>
+    <h1 data-t="g_h"></h1>
+    <p class="sub" data-t="g_sub"></p>
+  </div>
+  <div class="phone" style="left:164px;top:930px"><div class="scr"><img src="a/raw_golden_open.png"></div></div>
+  <div class="chip red" style="left:60px;top:2330px" data-t="g_chip1"></div>
+  <div class="chip gold" style="right:60px;top:2520px" data-t="g_chip2"></div>
+</section>
+
+<!-- 3 · LA PERLE MAUDITE -->
+<section class="panel" id="p3">
+  <div class="bg" style="background:radial-gradient(circle 1400px at 660px 1500px,#6b0f35 0%,#2a0718 45%,#0d0409 100%)"></div>
+  <div class="halo" style="left:160px;top:1200px;width:1000px;height:1000px;background:rgba(255,47,114,.35)"></div>
+  <div class="copy">
+    <div class="eyebrow" style="color:#ff8fb0;background:rgba(255,47,114,.12);border-color:rgba(255,120,160,.45)" data-t="c_eyebrow"></div>
+    <h1 data-t="c_h"></h1>
+    <p class="sub" data-t="c_sub"></p>
+  </div>
+  <div class="phone" style="left:164px;top:960px"><div class="scr"><img src="a/raw_cursed_card.png"></div></div>
+  <div class="halo" style="left:400px;top:1350px;width:520px;height:520px;background:rgba(255,47,114,.55)"></div>
+  <i class="spark" style="left:150px;top:900px;--s:80px;--c:#ff6f9a"></i>
+  <i class="spark" style="left:1180px;top:1500px;--s:60px;--c:#ff6f9a"></i>
+  <i class="spark" style="left:80px;top:1900px;--s:100px;--c:#ff6f9a"></i>
+  <div class="chip red" style="left:70px;top:2640px" data-t="c_chip"></div>
+</section>
+
+<!-- 4 · ÉCHELLE DES RARETÉS -->
+<section class="panel" id="p4">
+  <div class="bg" style="background:radial-gradient(circle 1200px at 660px 700px,#173a55 0%,#0b1b2b 55%,#060d16 100%)"></div>
+  <div class="rays" style="opacity:.5"></div>
+  <div class="copy">
+    <div class="eyebrow" data-t="l_eyebrow"></div>
+    <h1 data-t="l_h"></h1>
+  </div>
+  <div class="ladder" id="ladder"></div>
+  <div class="note" data-t="l_note"></div>
+</section>
+
+<!-- 5 · COLLECTION -->
+<section class="panel" id="p5">
+  <div class="bg" style="background:linear-gradient(180deg,#0e5a69 0%,#0a3442 45%,#071c27 100%)"></div>
+  <div class="rays"></div>
+  <div class="copy">
+    <div class="eyebrow" data-t="u_eyebrow"></div>
+    <h1 data-t="u_h"></h1>
+    <p class="sub" data-t="u_sub"></p>
+  </div>
+  <div class="halo" style="left:500px;top:1500px;width:800px;height:800px;background:rgba(120,230,240,.25)"></div>
+  <div class="phone" style="--w:800px;left:470px;top:1010px"><div class="scr"><img src="a/raw_collection.png"></div></div>
+  <div class="traits">
+    <div><img src="a/pearl-black.png"><span data-t="u_t1"></span></div>
+    <div><img src="a/pearl-baroque.png"><span data-t="u_t2"></span></div>
+    <div><img src="a/pearl-giant.png"><span data-t="u_t3"></span></div>
+    <div><img src="a/pearl-golden.png"><span data-t="u_t4"></span></div>
+  </div>
+</section>
+
+<!-- 6 · TROUVAILLES -->
+<section class="panel" id="p6">
+  <div class="bg" style="background:radial-gradient(circle 1400px at 660px 1600px,#1d4f86 0%,#0f2547 50%,#070f22 100%)"></div>
+  <div class="rays" style="opacity:.6"></div>
+  <div class="halo" style="left:260px;top:1350px;width:800px;height:800px;background:rgba(95,184,255,.35)"></div>
+  <div class="copy">
+    <div class="eyebrow" style="color:#9fd6ff;background:rgba(95,184,255,.12);border-color:rgba(95,184,255,.4)" data-t="f_eyebrow"></div>
+    <h1 data-t="f_h"></h1>
+    <p class="sub" data-t="f_sub"></p>
+  </div>
+  <div class="phone" style="left:164px;top:1020px"><div class="scr"><img src="a/raw_find_card.png"></div></div>
+  <img class="float" src="a/find-canard.png" style="left:-90px;top:1080px;width:470px;transform:rotate(-12deg)">
+  <img class="float" src="a/find-champignon.png" style="left:960px;top:1000px;width:440px;transform:rotate(10deg)">
+  <img class="float" src="a/find-cartouche.png" style="left:-110px;top:1830px;width:480px;transform:rotate(-8deg)">
+  <img class="float" src="a/find-piece-or.png" style="left:990px;top:1720px;width:400px;transform:rotate(14deg)">
+  <img class="float" src="a/find-dentier.png" style="left:-60px;top:2420px;width:420px;transform:rotate(8deg)">
+  <img class="float" src="a/find-bouteille.png" style="left:930px;top:2400px;width:480px;transform:rotate(-16deg)">
+</section>
+
+<!-- 7 · COQUILLES -->
+<section class="panel" id="p7">
+  <div class="bg" style="background:linear-gradient(180deg,#0d6476 0%,#0a3c4a 45%,#06202b 100%)"></div>
+  <div class="rays"></div>
+  <div class="halo" style="left:40px;top:1500px;width:700px;height:700px;background:rgba(150,240,255,.35)"></div>
+  <div class="halo" style="left:640px;top:1600px;width:700px;height:700px;background:rgba(255,205,90,.4)"></div>
+  <div class="copy">
+    <div class="eyebrow" data-t="s_eyebrow"></div>
+    <h1 data-t="s_h"></h1>
+    <p class="sub" data-t="s_sub"></p>
+  </div>
+  <div class="phone" style="--w:700px;left:-10px;top:1130px;transform:rotate(-7deg)"><div class="scr"><img src="a/raw_benitier_glow.png"></div></div>
+  <div class="phone" style="--w:700px;left:580px;top:1230px;transform:rotate(7deg)"><div class="scr"><img src="a/raw_or_glow.png"></div></div>
+  <div class="chip dark" style="left:60px;top:2620px" data-t="s_chip1"></div>
+  <div class="chip gold" style="right:60px;top:2700px" data-t="s_chip2"></div>
+</section>
+
+<!-- 8 · CHAQUE JOUR -->
+<section class="panel" id="p8">
+  <div class="bg" style="background:linear-gradient(180deg,#0f6a7a 0%,#0a4352 40%,#062430 100%)"></div>
+  <div class="rays"></div>
+  <div class="halo" style="left:260px;top:1700px;width:800px;height:800px;background:rgba(255,205,90,.3)"></div>
+  <div class="copy">
+    <div class="eyebrow" data-t="d_eyebrow"></div>
+    <h1 data-t="d_h"></h1>
+    <p class="sub" data-t="d_sub"></p>
+  </div>
+  <div class="phone" style="--w:800px;left:234px;top:1010px"><div class="scr"><img src="a/raw_calendar.png"></div></div>
+  <div class="chip gold" style="right:40px;top:1240px" data-t="d_chip1"></div>
+  <div class="chip dark" style="left:40px;top:1480px" data-t="d_chip2"></div>
+  <div class="chip dark" style="right:40px;top:1720px" data-t="d_chip3"></div>
+</section>
+
+<script>
+const T = {
+fr:{
+  hero_eyebrow:"Pearl Inc.",
+  hero_h:'Ouvre l’huître.<span class="s g">Trouve la perle rare.</span>',
+  hero_sub:"Du bout du pouce, tout doucement…",
+  g_eyebrow:"Un geste, pas un bouton",
+  g_h:'Elle résiste…<span class="s g">puis elle cède.</span>',
+  g_sub:"Glisse le pouce et regarde la lumière filtrer.",
+  g_chip1:"Trop vite ? Elle se fêle !",
+  g_chip2:"Geste parfait · Lustre S",
+  c_eyebrow:"3 chances sur 1 000",
+  c_h:'La perle<span class="s" style="background:linear-gradient(180deg,#ffd0de,#ff4f86 55%,#b3123f);-webkit-background-clip:text;background-clip:text;color:transparent">maudite</span>',
+  c_sub:"Elle était là avant l’huître.",
+  c_chip:"★★ La plus rare du lagon",
+  l_eyebrow:"Chaque huître est un tirage",
+  l_h:'7 perles.<span class="s g">Une obsession.</span>',
+  l_note:"Perle dorée ou mieux <b>garantie</b> avant la 26<sup>e</sup> huître",
+  u_eyebrow:"Ta collection",
+  u_h:'Chaque perle<span class="s g">est unique.</span>',
+  u_sub:"Forme, reflet, taille, marque rare : jamais deux pareilles.",
+  u_t1:"Reflet vert paon",u_t2:"Forme baroque",u_t3:"Reflet arc-en-ciel",u_t4:"♥ Marque rare",d_chip3:"3 missions du jour",
+  u_chip1:"Reflet vert paon",
+  u_chip2:"♥ Marque en cœur",
+  u_chip3:"Revends tes doublons ✦",
+  f_eyebrow:"25 trouvailles insolites",
+  f_h:'Et parfois…<span class="s g">tout autre chose.</span>',
+  f_sub:"Une huître sur vingt cache une surprise.",
+  s_eyebrow:"Coquilles de légende",
+  s_h:'Choisis<span class="s g">ta coquille.</span>',
+  s_sub:"Bénitier géant, huître d’or… à toi de briller.",
+  s_chip1:"Bénitier géant",
+  s_chip2:"Huître d’or",
+  d_eyebrow:"Chaque jour au lagon",
+  d_h:'Reviens à<span class="s g">chaque marée.</span>',
+  d_sub:"Une huître toutes les 20 min, des missions et des cadeaux chaque jour.",
+  d_chip1:"🔥 Série de jours",
+  d_chip2:"+1 huître / 20 min",
+  ladder:[["cursed","Perle maudite","★★","0,3 %","top"],["giant","Perle géante","★★","1,2 %","gold"],["golden","Perle dorée","★","4,5 %","gold"],
+          ["black","Perle noire","◆◆◆","8 %",""],["baroque","Perle baroque","◆◆","12 %",""],["rose","Perle rosée","◆","22 %",""],["white","Perle blanche","◆","38 %",""]],
+},
+en:{
+  hero_eyebrow:"Pearl Inc.",
+  hero_h:'Open the oyster.<span class="s g">Find the rare pearl.</span>',
+  hero_sub:"With your thumb, nice and slow…",
+  g_eyebrow:"A gesture, not a button",
+  g_h:'It resists…<span class="s g">then it gives.</span>',
+  g_sub:"Swipe up and watch the light seep out.",
+  g_chip1:"Too fast? It cracks!",
+  g_chip2:"Perfect swipe · S lustre",
+  c_eyebrow:"3 in 1,000",
+  c_h:'The cursed<span class="s" style="background:linear-gradient(180deg,#ffd0de,#ff4f86 55%,#b3123f);-webkit-background-clip:text;background-clip:text;color:transparent">pearl</span>',
+  c_sub:"It was there before the oyster.",
+  c_chip:"★★ Rarest in the lagoon",
+  l_eyebrow:"Every oyster is a draw",
+  l_h:'7 pearls.<span class="s g">One obsession.</span>',
+  l_note:"Golden pearl or better <b>guaranteed</b> by your 26th oyster",
+  u_eyebrow:"Your collection",
+  u_h:'Every pearl<span class="s g">is one of a kind.</span>',
+  u_sub:"Shape, overtone, size, rare marks: never two alike.",
+  u_t1:"Peacock overtone",u_t2:"Baroque shape",u_t3:"Rainbow overtone",u_t4:"♥ Rare mark",d_chip3:"3 daily missions",
+  u_chip1:"Peacock overtone",
+  u_chip2:"♥ Heart mark",
+  u_chip3:"Sell your duplicates ✦",
+  f_eyebrow:"25 quirky finds",
+  f_h:'And sometimes…<span class="s g">something else.</span>',
+  f_sub:"One oyster in twenty hides a surprise.",
+  s_eyebrow:"Legendary shells",
+  s_h:'Pick<span class="s g">your shell.</span>',
+  s_sub:"Giant clam, golden oyster… time to shine.",
+  s_chip1:"Giant clam",
+  s_chip2:"Golden oyster",
+  d_eyebrow:"Every day in the lagoon",
+  d_h:'Come back<span class="s g">with every tide.</span>',
+  d_sub:"A new oyster every 20 min, missions and gifts every day.",
+  d_chip1:"🔥 Daily streak",
+  d_chip2:"+1 oyster / 20 min",
+  ladder:[["cursed","Cursed pearl","★★","0.3%","top"],["giant","Giant pearl","★★","1.2%","gold"],["golden","Golden pearl","★","4.5%","gold"],
+          ["black","Black pearl","◆◆◆","8%",""],["baroque","Baroque pearl","◆◆","12%",""],["rose","Rosé pearl","◆","22%",""],["white","White pearl","◆","38%",""]],
+}};
+const q = new URLSearchParams(location.search);
+const lang = q.get('lang') || 'fr', p = q.get('p') || '1', sfx = q.get('sfx') || '';
+const t = T[lang];
+document.documentElement.lang = lang;
+document.querySelectorAll('[data-t]').forEach(el => el.innerHTML = t[el.dataset.t]);
+document.getElementById('ladder').innerHTML = t.ladder.map(([id,n,r,pr,c]) =>
+  `<div class="row ${c}"><img src="a/pearl-${id}.png"><div class="n">${n}<small>${r}</small></div><div class="p">${pr}</div></div>`).join('');
+if (sfx) document.querySelectorAll('img[src^="a/raw_"]').forEach(im => im.src = im.src.replace('.png', sfx + '.png'));
+document.getElementById('p' + p).classList.add('on');
+</script>
+</body></html>

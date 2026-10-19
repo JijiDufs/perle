@@ -4,6 +4,26 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 (suite 12) · Jules · Claude Code · branche `jules/ios-app`
+
+Visuels de la fiche App Store, en français et en anglais.
+
+**Fait**
+- `docs/app-store/visuels/{fr,en}/` : 8 visuels 1320 × 2868 (iPhone 6,9 pouces, JPEG) : ouvre l'huître (héros), le geste, la perle maudite, les 7 perles et leurs probabilités, la collection, les trouvailles, les coquilles, chaque jour. Titres courts et gros pour être lisibles en vignette ; téléphones avec les vraies captures de l'app.
+- `scripts/app-store-visuels/` : `seed.py` écrit une partie « vitrine » dans le simulateur (37 perles, 6 trouvailles, 1 240 ✦, et l'huître posée contient la perle voulue : maudite, dorée, une trouvaille…) ; `art.swift` dessine perles, objets et la scène du héros en haute définition avec le code de `ios/PearlInc/Art` ; `index.html` compose les visuels (textes FR / EN) ; `render.sh` fait le tout avec Chrome sans fenêtre.
+- `docs/app-store/fiche.md` §6 : ordre et contenu des visuels.
+
+**À faire**
+- Fiche : l'en-tête (« l'app n'est qu'en français ») et le §5 (calendrier « pas dans la 1.0 ») sont dépassés ; à relire, et rédiger la fiche anglaise.
+- Vidéo d'aperçu (le geste en mouvement) : pas faite.
+
+**Fragile**
+- Les captures brutes (`raw_*.png`) ne sont pas dans le dépôt (trop lourdes) : pour refaire les visuels, les reprendre au simulateur (iPhone 17 Pro, `xcrun simctl status_bar booted override --time 9:41`), voir l'en-tête de `render.sh`.
+- Les probabilités du visuel 4 et « 3 chances sur 1 000 » sont écrites dans `index.html` : à changer si le catalogue change.
+- Vu au simulateur : une ouverture lâchée au-delà de 115° est restée grande ouverte sans carte jusqu'au toucher suivant (une fois, avec un geste simulé ; pas reproduit ensuite).
+
+---
+
 ## 2026-10-19 (suite 11) · Jules · Claude Code · branche `jules/ios-app`
 
 Retours de Jules sur l'écran extérieur du Duo et la bulle du stock.

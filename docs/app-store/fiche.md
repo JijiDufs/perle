@@ -111,4 +111,19 @@ Account deletion: Settings (gear icon on the fishing screen) > "Supprimer mon co
 
 ## 6. Captures
 
-`docs/app-store/captures/` : 5 captures 6,9 pouces (1320 × 2868), dans l'ordre : pêche, ouverture, révélation, collection, missions.
+**Visuels de la fiche** (à téléverser, dans cet ordre) : `docs/app-store/visuels/fr/` pour la fiche française, `docs/app-store/visuels/en/` pour l'anglaise. 8 visuels 6,9 pouces (1320 × 2868, JPEG) ; l'app est iPhone seulement, Apple n'exige pas d'autre taille.
+
+1. **Ouvre l'huître. Trouve la perle rare.** — le lagon et l'huître entrouverte, lumière dorée, geste du pouce
+2. **Elle résiste… puis elle cède.** — l'huître ouverte et sa perle ; « Trop vite ? Elle se fêle ! », « Geste parfait · Lustre S »
+3. **La perle maudite** — sa carte (3 chances sur 1 000)
+4. **7 perles. Une obsession.** — les 7 perles et leurs probabilités, garantie de la 26e huître
+5. **Chaque perle est unique.** — la collection, formes et reflets
+6. **Et parfois… tout autre chose.** — une trouvaille (1 huître sur 20, 25 objets)
+7. **Choisis ta coquille.** — bénitier et huître d'or
+8. **Reviens à chaque marée.** — calendrier, missions, 1 huître / 20 min
+
+Les écrans sont de vraies captures de l'app ; perles, objets et décor du 1er visuel sont dessinés par le code de l'app. Pour les refaire : `scripts/app-store-visuels/render.sh` (mode d'emploi en tête du fichier). Les 3 premiers visuels sont ceux qu'on voit dans les résultats de recherche : ils racontent à eux seuls le geste, le suspense et la rareté.
+
+`docs/app-store/captures/` : les anciennes captures brutes du 14 octobre (sans légende), remplacées par les visuels.
+
+> À jour le 2026-10-19 : l'app parle aussi anglais et a son calendrier de connexion (§6 d'AGENTS.md). Le visuel 8 le montre ; l'en-tête et le §5 de cette fiche datent d'avant et sont à relire avant de remplir App Store Connect.
