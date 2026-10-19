@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-19 · Jules · Claude Code (Chrome) · branche `jules/ios-app`
+
+Fiche App Store Connect remplie dans Chrome (app 6822782842, compte de Mathys).
+
+**Fait**
+- Informations sur l'app : sous-catégorie « Parties rapides » (au lieu de « Cartes »), secondaire « Divertissement », droits sur le contenu « oui » (pubs). Classification 9+, statut de commerçant, gratuit, sans Mac ni Vision Pro : déjà en place.
+- Confidentialité publiée : e-mail **lié** à l'identité (corrigé), « Interaction avec le produit » ajoutée ; 9 types, aucun suivi.
+- Achats intégrés : nom affiché et description FR pour les 7 ; prix vérifiés (0,99 / 2,99 / 1,99 / 4,99 / 9,99 / 2,99 / 9,99 €). Le prix de la Bourse (1,99 €) a été confirmé par Jules.
+- Version 1.0 : texte promotionnel, description, mots-clés, URL, copyright, notes de revue (anglais), « Connexion requise » décochée, publication manuelle. Enregistrée.
+- Disponibilité : **Belgique retirée** (174 pays).
+
+**À faire**
+- Jules : coordonnées de contact pour la revue (page de la version).
+- Captures : la section n'apparaît pas encore sur la page de la version (sans doute après l'envoi d'un build). Les 5 JPEG sont dans `docs/app-store/captures/`.
+- Captures de la Boutique pour la revue de chaque achat intégré (depuis TestFlight).
+- Envoyer un build (Xcode → Archive), puis TestFlight ; pages légales complètes en ligne (médiateur) avant de soumettre.
+
+---
+
 ## 2026-10-14 (suite) · Jules · Claude Code · branche `jules/ios-app`
 
 Préparation de la fiche App Store Connect.
