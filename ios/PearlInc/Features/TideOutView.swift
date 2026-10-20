@@ -7,6 +7,8 @@ struct TideOutView: View {
     @Environment(GameModel.self) private var game
     @AppStorage(Notifications.settingKey) private var notify = false
     let date: Date
+    /// Écran intérieur du Duo, à moitié ouvert : le panneau tient dans une moitié (rien sur le pli).
+    private var compact: Bool { game.foldX != nil }
 
     var body: some View {
         VStack(spacing: 14) {
@@ -23,7 +25,10 @@ struct TideOutView: View {
             }
             .buttonStyle(GlassButtonStyle())
             .disabled(game.player.dust < game.economy.oysterDustPrice)
-            Text("Tu as \(game.player.dust) ✦. Revends tes perles en double dans la collection, ou recharge tes huîtres dans la boutique.")
+            Group {
+                if compact { Text("Tu as \(game.player.dust) ✦") }
+                else { Text("Tu as \(game.player.dust) ✦. Revends tes perles en double dans la collection, ou recharge tes huîtres dans la boutique.") }
+            }
                 .font(.footnote).multilineTextAlignment(.center).foregroundStyle(.white.opacity(0.8))
             // Le bon moment pour proposer la notification : le joueur attend ses huîtres.
             if notify {
@@ -38,12 +43,13 @@ struct TideOutView: View {
                 .buttonStyle(GlassButtonStyle(compact: true))
             }
         }
-        .padding(24)
+        .environment(\.buttonLabelWraps, compact)
+        .padding(compact ? 14 : 20)
         .frame(maxWidth: 340)
         .glassPanel(cornerRadius: 28, shade: 0.35)
         .foregroundStyle(.white)
         .shadow(color: .black.opacity(0.2), radius: 2)
-        .padding(.horizontal, 24)
+        .padding(.horizontal, compact ? 8 : 16)
     }
 }
 
@@ -58,7 +64,12 @@ struct AdRewardButton: View {
             Button {
                 game.watchAd()
             } label: {
-                Label("Regarder une pub · + \(game.economy.rewardedAdOysters) huîtres", systemImage: "play.rectangle.fill")
+                // Moitié d'écran du Duo : libellé court.
+                if game.foldX != nil {
+                    Label("Pub · + \(game.economy.rewardedAdOysters) huîtres", systemImage: "play.rectangle.fill")
+                } else {
+                    Label("Regarder une pub · + \(game.economy.rewardedAdOysters) huîtres", systemImage: "play.rectangle.fill")
+                }
             }
             .buttonStyle(PearlButtonStyle())
             .disabled(left == 0 || !game.ads.canShow)

@@ -6,13 +6,20 @@ import PearlCore
 struct RevealCardView: View {
     @Environment(GameModel.self) private var game
     let reveal: Reveal
-
     var body: some View {
+        // Largeur disponible : sur l'écran intérieur du Duo, la moitié droite est plus étroite que la carte.
+        GeometryReader { proxy in
+            layout(available: proxy.size.width)
+                .frame(width: proxy.size.width, height: proxy.size.height)
+        }
+    }
+
+    private func layout(available: CGFloat) -> some View {
         VStack(spacing: 18) {
             if let coach = Coach.afterReveal(step: game.step, cracked: game.cracked) {
                 CoachBubble(text: coach)
             }
-            PearlCardView(content: content, width: 300)
+            PearlCardView(content: content, width: min(300, available - 48))
                 // Au-dessus de la rareté, et sous la carte : les badges ne cachent rien de la carte.
                 .overlay(alignment: .topTrailing) {
                     if game.revealIsNew { badge(Text("Nouvelle !"), color: Palette.gold).rotationEffect(.degrees(6)).offset(x: 12, y: -24) }
@@ -27,6 +34,8 @@ struct RevealCardView: View {
                 .background { RevealBurst(glow: glow, tier: tier).frame(width: 700, height: 900) }
                 .accessibilityAddTraits(.isButton)
                 .accessibilityHint("Touche la carte pour l'huître suivante")
+                // Place pour le badge « Nouvelle ! », qui dépasse au-dessus de la carte (sinon il mord sur la bulle).
+                .padding(.top, game.revealIsNew ? 12 : 0)
                 .accessibilityAction { withAnimation(.snappy) { game.nextOyster() } }
 
             VStack(spacing: 10) {
@@ -36,11 +45,15 @@ struct RevealCardView: View {
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.25), radius: 3)
-                    .lineLimit(1)
+                    // Sur plusieurs lignes si la place manque (moitié d’écran du Duo).
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
                     .minimumScaleFactor(0.8)
                     .padding(.horizontal, 18)
+                    .padding(.vertical, 6)
                     .frame(minHeight: 38)
-                    .glass(Capsule())
+                    .glass(RoundedRectangle(cornerRadius: 19, style: .continuous))
                 if let message = shareMessage {
                     ShareLink(item: message) {
                         Label("Partager", systemImage: "square.and.arrow.up")

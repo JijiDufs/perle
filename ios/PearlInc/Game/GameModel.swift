@@ -85,8 +85,6 @@ final class GameModel {
         return systemRng()
     }()
     @ObservationIgnored private var lastTickDistance = 0.0
-    /// Le calendrier ne s'ouvre pas tout seul le jour de la toute première séance (comme la webapp).
-    @ObservationIgnored private var calendarQuietDay: String?
 
     init() {
         let catalog = Catalog.shared
@@ -101,7 +99,8 @@ final class GameModel {
         thumb.onSample = { [weak self] sample, distance in self?.handle(sample, distance: distance) }
         thumb.onRelease = { [weak self] in self?.handleRelease() }
         shapeSeed = player.nextSerial
-        if saved.isInTutorial() { calendarQuietDay = Clock.dayKey() }
+        // Le calendrier ne s'ouvre pas tout seul le jour de la toute première séance, même si l'app est relancée.
+        if saved.isInTutorial() { calendarOffered() }
         refresh()
         store.onDeliver = { [weak self] productId in self?.deliver(productId) }
         store.start(productIds: catalog.economy.consumables.map(\.id) + catalog.economy.skins.compactMap(\.productId))
@@ -304,7 +303,7 @@ final class GameModel {
     /// Les skins achetés reviennent tout seuls (droits relus auprès d'Apple).
     func eraseLocalGame() {
         player = PlayerState.new(rng, tuning, now: Clock.nowMs)
-        calendarQuietDay = Clock.dayKey()
+        calendarOffered()
         step = 0
         engine = OpeningEngine(tuning: tuning, crackProtected: catalog.isCrackProtected(oystersOpened: 0))
         thumb.reset()
@@ -382,8 +381,7 @@ final class GameModel {
     /// Au lancement ou au retour dans l'app : ouvrir le calendrier tout seul, une seule fois par jour
     /// (même si on le referme sans récupérer : il reste dans les missions du jour).
     var shouldOfferCalendar: Bool {
-        let today = Clock.dayKey()
-        return canClaimDaily && today != calendarQuietDay && UserDefaults.standard.string(forKey: Self.calendarOfferedKey) != today
+        canClaimDaily && UserDefaults.standard.string(forKey: Self.calendarOfferedKey) != Clock.dayKey()
     }
 
     /// Le calendrier vient de s'ouvrir tout seul aujourd'hui.

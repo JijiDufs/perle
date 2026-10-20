@@ -3633,6 +3633,38 @@
           }
         }
       }
+    },
+    "Tu as %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have %lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as %lld ✦"
+          }
+        }
+      }
+    },
+    "Pub · + %lld huîtres" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ad · + %lld oysters"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pub · + %lld huîtres"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

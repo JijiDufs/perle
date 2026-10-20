@@ -81,6 +81,7 @@ struct FishingView: View {
             TimelineView(.periodic(from: .now, by: 1)) { timeline in
                 if game.isTideOut(at: timeline.date) {
                     TideOutView(date: timeline.date)
+                        .besideFold(game.foldX)
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
@@ -154,7 +155,8 @@ struct FishingView: View {
 
     /// La bulle d'accompagnement des premières huîtres ; nil = rien à dire.
     private var coachText: String? {
-        guard game.stage == .playing, !game.cracked else { return nil }
+        // Marée basse : le panneau prend la place, la bulle passerait dessous.
+        guard game.stage == .playing, !game.cracked, !game.isTideOut(at: Date()) else { return nil }
         if stockTipExpired && game.step == game.catalog.tutorialPearls.count { return nil }
         return Coach.duringGesture(step: game.step, phase: game.phase, hinge: game.hasHinge, hingeArmed: game.hingeArmed, tuning: game.tuning)
     }
