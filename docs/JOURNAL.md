@@ -4,6 +4,18 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-20 (envoi) · Jules · Claude Code · branche `jules/ios-app`
+
+Vérification avant l'envoi en revue. `npm test`, `npm run build`, `swift test` : verts.
+
+**Fait**
+- **Build 4** (avec la revue ci-dessous) archivé après un build propre et envoyé ; il remplace le build 2 dans la version 1.0 (la version était restée sur le 2, sans la musique, pas sur le 3).
+- Notes de revue dans App Store Connect : ajout du paragraphe « Thief fish » (`fiche.md` §4), qui manquait.
+- Vérifié dans App Store Connect : confidentialité (données AdMob déclarées, non liées, pas de pistage), 7 achats « Prêts pour la vérification » (identifiants = `appEconomy.ts`), 174 pays sans la Belgique, classification 9+, commerçant DSA, publication manuelle.
+
+**À savoir**
+- La Chine continentale fait partie des 174 pays alors qu'on n'a pas de numéro d'agrément de jeu : Apple ne l'y publiera pas, mais la retirer de la disponibilité serait plus propre.
+
 ## 2026-10-20 (revue) · Jules · Claude Code · branche `jules/ios-app`
 
 Revue complète de l'app au simulateur, iPhone classique (17 Pro, 17e) et iPhone Duo (charnière et pli simulés `-SimulatedHinge -SimulatedFold` ; le simulateur iPhone Duo iOS 27.1 a figé le service des simulateurs, à refaire sur un vrai Duo). Fusion de la passe précédente dans `main`.
