@@ -158,7 +158,8 @@ struct FishingView: View {
         #endif
         // iPhone Duo : ouvrir le téléphone ouvre l'huître, le refermer passe à la suivante.
         .hingeInput({ game.hingeChanged(degrees: $0) }, fold: { if !HingeInput.simulatedFold { game.foldChanged(x: $0) } })
-        .task(id: game.step) {
+        // La bulle sur le stock ne commence à s'effacer qu'une fois la fête de niveau refermée.
+        .task(id: "\(game.step)-\(game.levelUpToShow == nil)") {
             stockTipExpired = false
             guard game.step == game.catalog.tutorialPearls.count else { return }
             try? await Task.sleep(for: .milliseconds(Int(game.tuning.coachTipMs)))
@@ -178,8 +179,8 @@ struct FishingView: View {
 
     /// La bulle d'accompagnement des premières huîtres ; nil = rien à dire.
     private var coachText: String? {
-        // Marée basse : le panneau prend la place, la bulle passerait dessous.
-        guard game.stage == .playing, !game.cracked, !game.isTideOut(at: Date()) else { return nil }
+        // Marée basse ou fête de niveau : le panneau prend la place, la bulle passerait dessous.
+        guard game.stage == .playing, !game.cracked, !game.isTideOut(at: Date()), game.levelUpToShow == nil else { return nil }
         if stockTipExpired && game.step == game.catalog.tutorialPearls.count { return nil }
         return Coach.duringGesture(step: game.step, phase: game.phase, hinge: game.hasHinge, hingeArmed: game.hingeArmed, tuning: game.tuning)
     }
