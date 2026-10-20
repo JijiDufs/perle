@@ -80,8 +80,8 @@ Durée indicative : 1 à 2 semaines par lot, revue d'Apple comprise. Une seule v
 
 | Avant | Question | Proposition |
 |---|---|---|
-| 1.1 | Barème de réputation de l'app : le même que la webapp ? | Le même barème (il vise le niveau 50 en 4 à 6 mois), mais les récompenses de niveau en économie lente (huîtres plutôt que ✦) |
-| 1.1 | Joueurs de la 1.0 : repartent du niveau 1, ou réputation rétroactive d'après leur collection ? | Rétroactive, sans célébrations en rafale (une seule fenêtre « Tu es niveau N ») |
+| 1.1 | Barème de réputation de l'app : le même que la webapp ? | **Tranché (Jules, 2026-10-20) : plus rapide au début.** Les 10 premiers niveaux vont plus vite pour accrocher, puis la courbe rejoint celle de la webapp (niveau 50 en 4 à 6 mois). Récompenses de niveau en économie lente (surtout des huîtres, peu de ✦) |
+| 1.1 | Joueurs de la 1.0 : repartent du niveau 1, ou réputation rétroactive d'après leur collection ? | **Tranché (Jules, 2026-10-20) : rétroactive**, calculée d'après la collection, avec une seule fenêtre « Tu es niveau N » (pas de célébrations en rafale) |
 | 1.4 | D'où viennent les écrins dans l'app ? | Niveaux, 7e jour du calendrier, bonus des trois missions, poussière d'or. **Jamais vendus contre de l'argent réel** (tirage payant, cf. la Belgique) |
 | 1.4 | La charnière ouvre l'écrin comme l'huître ? | Oui : tenir le téléphone immobile dans l'angle d'éclat, c'est le geste le plus naturel du Duo |
 | 1.6 | Textes des lettres de Rose en anglais | Traduction relue par un anglophone |
