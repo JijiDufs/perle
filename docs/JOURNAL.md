@@ -25,6 +25,22 @@ Revue complète de l'app au simulateur, iPhone classique (17 Pro, 17e) et iPhone
 - Au simulateur, les touchers très brefs (outil d'automatisation) ne changent pas d'onglet : un vrai doigt, si. Ne pas le prendre pour un bug.
 - Un build incrémental corrompu a fait planter la collection (`swift_retain`) ; un build propre non. En cas de plantage inexpliqué : supprimer DerivedData.
 
+## 2026-10-20 (suite) · Jules · Claude Code · branche `jules/ios-app`
+
+Visuels paysage de la page produit App Store (« Informations de la page produit » : en-tête et résultats de recherche), qui mettent en avant l'iPhone Duo (demande de Jules).
+
+**Fait**
+- `docs/app-store/visuels/{fr,en}/bannieres/` : en-tête `entete-5244x2950.png` et `entete-3840x1646.png` ; résultats de recherche `recherche-5244x2950.png`, `recherche-3840x2560.png`, `recherche-1920x1280.png`. Une seule ressource par emplacement : en choisir une de chaque.
+- Le Duo est celui de la page pearl-inc.app (3D, `site/index.html`), à moitié ouvert à 118° sur une perle dorée ; perles par `art.swift`. Textes : « Conçu pour iPhone Duo · Ouvre ton iPhone. Ouvre l'huître. » (EN : « Designed for iPhone Duo · Open your iPhone. Open the oyster. »).
+- Générateur : `sh scripts/app-store-visuels/render-bannieres.sh` (≈ 8 min), mise en page `banniere.html` (une seule, en vh / vw, pour les trois proportions).
+
+**À faire**
+- Charger dans App Store Connect (FR et EN), vérifier l'« Aperçu » : on ne connaît pas les zones que l'App Store recouvre (titre, bouton Obtenir) ; le texte est centré verticalement à gauche pour rester loin des bords.
+
+**Fragile**
+- `render-bannieres.sh` patche une copie du site par remplacements exacts (`roll()`, `yaw`, `?h=`, `glassPill`) : il s'arrête avec une erreur si ces lignes changent dans `site/index.html`.
+- « iPhone Duo » est une marque d'Apple : utilisée seulement comme « Conçu pour… », comme le prévoit `docs/duo-gadget.md` §5.
+
 ## 2026-10-20 · Jules · Claude Code · branche `jules/ios-app`
 
 Dernières touches de la 1.0 avant l'envoi en vérification (demande de Jules) : le poisson voleur, la carte qu'on fait jouer dans la lumière, et une vérification d'AdMob. **Build 4.**
