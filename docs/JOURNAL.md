@@ -4,6 +4,15 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-20 (feuille de route) · Jules · Claude Code · branche `jules/app-1.0.1`
+
+**Fait**
+- Tag `v1.0-build4` sur le commit envoyé à Apple (`d9aefc1`) : en cas de refus, on corrige à partir de là.
+- `docs/ios-feuille-de-route.md` : les mises à jour de l'app iOS lot par lot (1.0.1 lancement, 1.1 niveaux, 1.2 collection, 1.3 succès et missions, 1.4 écrins, 1.5 expertise, 1.6 Maison, 1.7 atelier, 1.8+ lagons), la définition de « fini » d'un lot (parité, sauvegarde, FR / EN, Duo, tests) et les questions à trancher. Décision ajoutée en §6.
+
+**À faire**
+- Trancher les questions du lot 1.1 (§4 de la feuille de route), puis lancer sa session.
+
 ## 2026-10-20 (envoi) · Jules · Claude Code · branche `jules/ios-app`
 
 Vérification avant l'envoi en revue. `npm test`, `npm run build`, `swift test` : verts.
