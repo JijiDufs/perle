@@ -15,6 +15,7 @@ Lot 1.2 de l'app iOS, « Collection enrichie » (`docs/ios-feuille-de-route.md`)
 
 **À faire**
 - Jules : iPhone réel (VoiceOver sur les cases et le carnet, partage depuis la collection), TestFlight Duo, numéro de version 1.2, texte « Nouveautés », envoi.
+- Après la fusion dans `jules/app-1.0.1` : `graphify update .` dans le dossier principal (le graphe y vit, pas dans le worktree du lot ; code seulement, sans LLM).
 
 **Fragile**
 - Toucher une perle fait défiler jusqu'aux cartes : si ça déroute, garder le filtre sans défilement.
