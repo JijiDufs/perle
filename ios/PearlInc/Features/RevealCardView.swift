@@ -54,7 +54,7 @@ struct RevealCardView: View {
                     .padding(.vertical, 6)
                     .frame(minHeight: 38)
                     .glass(RoundedRectangle(cornerRadius: 19, style: .continuous))
-                if let message = shareMessage {
+                if let message = content.shareMessage(game.catalog) {
                     ShareLink(item: message) {
                         Label("Partager", systemImage: "square.and.arrow.up")
                     }
@@ -103,16 +103,18 @@ struct RevealCardView: View {
         case .empty(let serial): .empty(serial: serial)
         }
     }
+}
 
-    /// Texte partagé (l'image story viendra ensuite).
-    private var shareMessage: String? {
-        switch reveal {
+extension PearlCardView.Content {
+    /// Texte partagé (l'image story viendra ensuite) ; nil pour une huître vide.
+    func shareMessage(_ catalog: Catalog) -> String? {
+        switch self {
         case .pearl(let card):
-            let pearl = game.catalog.pearl(card.pearlId)
+            let pearl = catalog.pearl(card.pearlId)
             let name = pearl.name.lowercased(), rarity = pearl.rarity, serial = GameText.serial(card.serial)
             return String(localized: "J’ai trouvé une \(name) \(rarity) dans Pearl Inc. (\(serial)) 🦪 pearl-inc.app", comment: "Message partagé")
         case .find(let card, _):
-            let name = game.catalog.find(card.findId).name
+            let name = catalog.find(card.findId).name
             return String(localized: "Il y avait « \(name) » dans mon huître. Pearl Inc. 🦪 pearl-inc.app", comment: "Message partagé")
         case .empty:
             return nil

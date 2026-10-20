@@ -16,7 +16,8 @@ import { INITIAL_DRAW_STATE } from '../src/core/draw';
 import { FIND_TIER_WEIGHTS, FINDS, FIND_ALBUMS, BOTTLE_MESSAGES } from '../src/core/finds';
 import { OpeningEngine, type OpeningSample } from '../src/core/opening';
 import { createOyster, oysterWith } from '../src/core/oyster';
-import { pearlValue } from '../src/core/player';
+import { rarityRank, sortCards } from '../src/core/collection';
+import { pearlValue, type PearlCard } from '../src/core/player';
 import { MARKS, OVERTONES, OVERTONE_WEIGHTS, SHAPES, SHAPE_WEIGHTS } from '../src/core/pearlTraits';
 import { seededRng } from '../src/core/rng';
 import { scriptedPearl, TUTORIAL_PEARLS } from '../src/core/tutorial';
@@ -169,9 +170,18 @@ function parity() {
     }))),
   ];
 
+  // Tri de la collection : les cartes des valeurs ci-dessus, plus dix doublons de même valeur (départage par la plus récente).
+  const sortable = values.filter((v) => v.pearlId !== 'empty').map((v, i) => ({ serial: i + 1, pearlId: v.pearlId, value: v.value }));
+  const collectionCards = [...sortable, ...sortable.slice(0, 10).map((card, i) => ({ ...card, serial: 200 + i }))];
+  const cardSorts = (['rarity', 'recent', 'value'] as const).map((sort) => ({
+    sort,
+    serials: sortCards(collectionCards as unknown as PearlCard[], sort).map((card) => card.serial),
+  }));
+  const rarityRanks = PEARLS.map((pearl) => ({ pearlId: pearl.id, rank: rarityRank(pearl.id) }));
+
   return {
     rngSeed: 2026, rngValues, oysterSeed: 42, oysters, tutorialSeed: 7, tutorialOysters, openings, thumbAngles, values, logins,
-    xpToNextLevels, levelProgress, reputations,
+    xpToNextLevels, levelProgress, reputations, collectionCards, cardSorts, rarityRanks,
   };
 }
 

@@ -68,6 +68,22 @@ private struct Parity: Decodable {
         let reputation: Int
     }
     let reputations: [Reputation]
+    struct SortableCard: Decodable {
+        let serial: Int
+        let pearlId: String
+        let value: Double
+    }
+    struct Sorted: Decodable {
+        let sort: String
+        let serials: [Int]
+    }
+    struct RarityRank: Decodable {
+        let pearlId: String
+        let rank: Int
+    }
+    let collectionCards: [SortableCard]
+    let cardSorts: [Sorted]
+    let rarityRanks: [RarityRank]
 }
 
 private let parity: Parity = {
@@ -167,6 +183,19 @@ private let tuning = Catalog.shared.tuning
             ? catalog.reputationForFind(tier: expected.tier!, discovery: expected.discovery)
             : catalog.reputationForPearl(expected.pearlId!, lustre: expected.lustre!, cracked: expected.cracked!, discovery: expected.discovery)
         #expect(reputation == expected.reputation, "\(expected)")
+    }
+}
+
+@Test func memeTriDeLaCollectionQueLeWeb() {
+    let catalog = Catalog.shared
+    for expected in parity.rarityRanks {
+        #expect(catalog.rarityRank(expected.pearlId) == expected.rank, "\(expected.pearlId)")
+    }
+    let cards = parity.collectionCards.map {
+        PearlCard(serial: $0.serial, pearlId: $0.pearlId, sizeMm: 0, value: $0.value, lustre: .B, cracked: false, foundAt: 0, traits: nil)
+    }
+    for expected in parity.cardSorts {
+        #expect(catalog.sortCards(cards, CardSort(rawValue: expected.sort)!).map(\.serial) == expected.serials, "\(expected.sort)")
     }
 }
 
