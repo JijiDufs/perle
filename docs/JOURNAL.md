@@ -13,8 +13,12 @@ Vérification avant l'envoi en revue. `npm test`, `npm run build`, `swift test` 
 - Notes de revue dans App Store Connect : ajout du paragraphe « Thief fish » (`fiche.md` §4), qui manquait.
 - Vérifié dans App Store Connect : confidentialité (données AdMob déclarées, non liées, pas de pistage), 7 achats « Prêts pour la vérification » (identifiants = `appEconomy.ts`), 174 pays sans la Belgique, classification 9+, commerçant DSA, publication manuelle.
 
-**À savoir**
-- La Chine continentale fait partie des 174 pays alors qu'on n'a pas de numéro d'agrément de jeu : Apple ne l'y publiera pas, mais la retirer de la disponibilité serait plus propre.
+- Chine continentale retirée de la disponibilité (pas de numéro d'agrément de jeu) : **173 pays**, sans la Belgique ni la Chine.
+- **Envoyé en vérification** le 20 octobre à 13 h 57 : version 1.0 (build 4) + 7 achats intégrés. Publication manuelle après l'accord d'Apple.
+
+**À faire**
+- Attendre l'e-mail d'Apple (jusqu'à 48 h) ; en cas de rejet, lire le motif dans « Vérification de l'app ».
+- Une fois l'app publiée : l'associer à sa fiche dans AdMob (vraies pubs), cliquer « Publier » à la main.
 
 ## 2026-10-20 (revue) · Jules · Claude Code · branche `jules/ios-app`
 
