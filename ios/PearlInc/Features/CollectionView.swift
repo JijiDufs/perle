@@ -223,20 +223,12 @@ struct CollectionView: View {
                 .accessibilityHidden(true)
             GeometryReader { proxy in
                 VStack(spacing: 18) {
-                    PearlCardView(content: content, width: min(300, proxy.size.width - 48, (proxy.size.height - 110) * 63 / 88))
+                    PearlCardView(content: content, width: min(300, proxy.size.width - 48, (proxy.size.height - 160) * 63 / 88))
                         .cardTilt()
-                    HStack(spacing: 12) {
-                        if let message = content.shareMessage(game.catalog) {
-                            ShareLink(item: message) {
-                                Label("Partager", systemImage: "square.and.arrow.up")
-                            }
-                            .buttonStyle(GlassButtonStyle(compact: true))
-                            .fixedSize()
-                            .simultaneousGesture(TapGesture().onEnded { game.recordShare() })
-                        }
-                        Button("Fermer") { close() }
-                            .buttonStyle(GlassButtonStyle(compact: true))
-                            .fixedSize()
+                    // Moitié d'écran du Duo : les boutons l'un sous l'autre si la place manque.
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 12) { zoomButtons(content) }
+                        VStack(spacing: 10) { zoomButtons(content) }
                     }
                 }
                 .frame(width: proxy.size.width, height: proxy.size.height)
@@ -246,6 +238,21 @@ struct CollectionView: View {
         .transition(reduceMotion ? .opacity : .scale(scale: 0.4).combined(with: .opacity))
         .accessibilityAddTraits(.isModal)
         .accessibilityAction(.escape) { close() }
+    }
+
+    @ViewBuilder
+    private func zoomButtons(_ content: PearlCardView.Content) -> some View {
+        if let message = content.shareMessage(game.catalog) {
+            ShareLink(item: message) {
+                Label("Partager", systemImage: "square.and.arrow.up")
+            }
+            .buttonStyle(GlassButtonStyle(compact: true))
+            .fixedSize()
+            .simultaneousGesture(TapGesture().onEnded { game.recordShare() })
+        }
+        Button("Fermer") { close() }
+            .buttonStyle(GlassButtonStyle(compact: true))
+            .fixedSize()
     }
 
     // MARK: - Outils

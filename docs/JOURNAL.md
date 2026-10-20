@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-20 (lot 1.2) · Jules · Claude Code · branche `claude/ios-1-2-collection-0dfa32`
+
+Lot 1.2 de l'app iOS, « Collection enrichie » (`docs/ios-feuille-de-route.md`). Décision en `AGENTS.md` §6.
+
+**Fait**
+- **PearlCore** : `Collection.swift` (miroir de `collection.ts`) : `rarityRank`, `sortCards` (rareté / récentes / valeur, mêmes départages), formes et reflets possibles d'une perle, marques, trouvées par le joueur (`foundTraits`), trouvailles d'un album. Cas de référence `collectionCards`, `cardSorts`, `rarityRanks` dans `parity.json` (exportés par `tests/ios-export.test.ts`) ; `CollectionTests` (carnet, albums).
+- **App** (`CollectionView.swift`) : encyclopédie qui filtre (case dorée, VoiceOver « sélectionnée »), défilement jusqu'aux cartes ; tri en contrôle segmenté (`@AppStorage`) ; barre « Perle rosée seulement · 12 sur 50 · Tout afficher » ; carnet des variantes en cases 2 colonnes (pastille de couleur des reflets, ✓) ; liste complète des perles (avant : les 40 dernières), paresseuse ; carte agrandie avec Partager (le message de partage passe sur `PearlCardView.Content`, partagé avec la révélation) et Fermer, à droite du pli sur le Duo, taille limitée par la hauteur ; volet Trouvailles : 3 albums en 4 colonnes (2 au très grand texte), « ??? » + rareté pour les objets cachés. Au très grand texte, le nom des perles passe au-dessus du nombre (il était tronqué en 1.0). FR / EN (18 textes, pluriel « albums complets »).
+- **Simulateur** : iPhone 17 Pro avec une partie 1.1 (50 perles, 6 trouvailles) : filtre, carnet, tri, carte agrandie, partage, albums ; iPhone 17e : collection vide (en anglais), même partie en anglais au très grand texte ; Duo simulé (`-SimulatedHinge -SimulatedFold`, partie du 17 Pro) : l'espace entre les deux colonnes tombe sur le pli, filtre et carnet, carte agrandie à droite du pli avec Partager et Fermer l'un sous l'autre (ils dépassaient de la moitié d'écran). Charnière simulée à 85° : nacre et perle visibles ; à 0° l'intérieur est noir, c'est voulu (pénombre de `OysterArt`, l'écran intérieur ne s'allume pas fermé en vrai). Dessin de la coquille et charnière inchangés depuis `v1.0-build4`.
+
+**À faire**
+- Jules : iPhone réel (VoiceOver sur les cases et le carnet, partage depuis la collection), TestFlight Duo, numéro de version 1.2, texte « Nouveautés », envoi.
+
+**Fragile**
+- Toucher une perle fait défiler jusqu'aux cartes : si ça déroute, garder le filtre sans défilement.
+- La liste des perles est complète : à surveiller sur une très grosse collection (liste paresseuse, mais tri recalculé à chaque affichage).
+- Au simulateur, une capture prise juste après un toucher montre l'écran d'avant l'animation : attendre une seconde avant de juger.
+- Sur le Duo, le formulaire de consentement de Google ne répond pas aux touchers de l'outil de simulateur : copier les clés `IABTCF_*` / `UMP_*` d'un autre simulateur où il a été refusé.
+- Les trois simulateurs ont servi avec la partie de test du 17 Pro ; la partie d'origine du 17e est perdue (pas de sauvegarde après le redémarrage), celle du Duo est remise.
+
 ## 2026-10-20 (lot 1.1) · Jules · Claude Code · branche `claude/ios-1-1-niveaux-bdacb1`
 
 Lot 1.1 de l'app iOS, « Niveaux et réputation » (`docs/ios-feuille-de-route.md`). Décision en `AGENTS.md` §6.
