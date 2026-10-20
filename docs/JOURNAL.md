@@ -4,6 +4,27 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-20 (revue) · Jules · Claude Code · branche `jules/ios-app`
+
+Revue complète de l'app au simulateur, iPhone classique (17 Pro, 17e) et iPhone Duo (charnière et pli simulés `-SimulatedHinge -SimulatedFold` ; le simulateur iPhone Duo iOS 27.1 a figé le service des simulateurs, à refaire sur un vrai Duo). Fusion de la passe précédente dans `main`.
+
+**Vu et bon** : connexion, consentement Google, tutoriel complet (bulles, main fantôme), arrivée des onglets et compteurs, collection, comptoir, missions, réglages, probabilités (ligne du poisson), boutique, pub de test AdMob jusqu'à la récompense (+ 3 huîtres), achat d'une huître en poussière, poisson voleur (fuite et capture), charnière : ouvrir = huître, refermer = suivante.
+
+**Corrigé**
+- Écrans qui défilent (collection, boutique) : le texte passait sous l'heure et la Dynamic Island → voile d'eau profonde sous la barre d'état (`statusBarFade`, `Glass.swift`).
+- Bulle « Tes huîtres sont en haut… » visible derrière le panneau « La marée remonte… » → masquée à marée basse.
+- Badge « Nouvelle ! » qui mordait sur la bulle du tutoriel (petit écran) → place réservée au-dessus de la carte.
+- Écran blanc au lancement → écran de lancement couleur lagon (`LaunchBackground`).
+- Le calendrier pouvait s'ouvrir tout seul le jour de la toute première séance si l'app était relancée → le jour est mémorisé.
+- **Duo, écran intérieur** : la carte (300 pt) était coupée par la moitié d'écran → elle prend la largeur disponible ; « Referme le téléphone… » sur plusieurs lignes ; panneau « La marée remonte… » posé sur le pli (interdit, `duo-gadget.md` §5) → à droite du pli, version compacte (boutons sur plusieurs lignes, `buttonLabelWraps`, libellé « Pub · + 3 huîtres »).
+
+**À faire**
+- Sur un vrai iPhone Duo (inscrits TestFlight) : l'écran intérieur, la moitié fait ≈ 233 pt (201 au simulateur).
+
+**Fragile**
+- Au simulateur, les touchers très brefs (outil d'automatisation) ne changent pas d'onglet : un vrai doigt, si. Ne pas le prendre pour un bug.
+- Un build incrémental corrompu a fait planter la collection (`swift_retain`) ; un build propre non. En cas de plantage inexpliqué : supprimer DerivedData.
+
 ## 2026-10-20 · Jules · Claude Code · branche `jules/ios-app`
 
 Dernières touches de la 1.0 avant l'envoi en vérification (demande de Jules) : le poisson voleur, la carte qu'on fait jouer dans la lumière, et une vérification d'AdMob. **Build 4.**

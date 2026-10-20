@@ -68,6 +68,7 @@ struct ShopView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 28)
         }
+        .statusBarFade()
         .background(LagoonBackground(dim: 0.82))
     }
 }

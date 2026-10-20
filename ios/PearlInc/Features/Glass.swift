@@ -83,6 +83,7 @@ struct GlassButtonStyle: ButtonStyle {
 /// Mise en forme commune des boutons : taille, appui qui s'enfonce, bouton désactivé estompé.
 private struct PressableLabel<Background: View>: View {
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.buttonLabelWraps) private var wraps
     let configuration: ButtonStyleConfiguration
     let compact: Bool
     @ViewBuilder let background: Background
@@ -90,9 +91,11 @@ private struct PressableLabel<Background: View>: View {
     var body: some View {
         configuration.label
             .font(.system(size: compact ? 14 : 17, weight: .semibold))
-            .lineLimit(1)
+            .lineLimit(wraps ? 3 : 1)
+            .multilineTextAlignment(.center)
             .minimumScaleFactor(0.8)
             .padding(.horizontal, compact ? 14 : 20)
+            .padding(.vertical, wraps ? 6 : 0)
             .frame(maxWidth: compact ? nil : .infinity, minHeight: compact ? 36 : 54)
             .background(background)
             .opacity(isEnabled ? 1 : 0.45)
@@ -114,4 +117,28 @@ struct GlassField: ViewModifier {
             .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(.black.opacity(0.18)))
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(.white.opacity(0.3), lineWidth: 1))
     }
+}
+
+// MARK: - Barre d'état
+
+extension View {
+    /// Les écrans qui défilent sans barre de navigation : un voile d'eau profonde sous l'heure et la
+    /// Dynamic Island, pour que le texte qui remonte ne passe pas dessous.
+    func statusBarFade() -> some View {
+        overlay {
+            GeometryReader { proxy in
+                let bar = proxy.safeAreaInsets.top, deep = Color(hex: 0x021218)
+                LinearGradient(stops: [.init(color: deep, location: 0), .init(color: deep.opacity(0.9), location: bar / (bar + 28)),
+                                       .init(color: deep.opacity(0), location: 1)], startPoint: .top, endPoint: .bottom)
+                    .frame(height: bar + 28)
+            }
+            .ignoresSafeArea()
+            .allowsHitTesting(false)
+        }
+    }
+}
+
+extension EnvironmentValues {
+    /// Les boutons passent sur plusieurs lignes au lieu de rétrécir (moitié d'écran du Duo).
+    @Entry var buttonLabelWraps = false
 }
