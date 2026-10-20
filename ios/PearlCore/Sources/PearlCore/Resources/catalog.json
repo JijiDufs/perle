@@ -202,6 +202,19 @@
       "decayMs": 90,
       "gain": 0.07
     },
+    "fishChime": {
+      "notes": [
+        784,
+        659,
+        988,
+        784
+      ],
+      "wave": "triangle",
+      "gapMs": 85,
+      "attackMs": 4,
+      "decayMs": 160,
+      "gain": 0.1
+    },
     "rewardChimeLevel": 1,
     "purchaseChimeLevel": 2,
     "musicFadeMs": 1500,
@@ -1199,7 +1212,15 @@
         "oysters": 10,
         "dust": 25
       }
-    ]
+    ],
+    "fishThief": {
+      "chance": 0.1,
+      "maxTier": 1,
+      "catchBonusDust": 2,
+      "arriveMs": 750,
+      "fleeMs": 2800,
+      "hitRadius": 0.2
+    }
   },
   "markWeights": [
     {

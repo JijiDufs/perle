@@ -71,6 +71,7 @@ struct CollectionView: View {
                     .transition(.opacity)
                 VStack(spacing: 18) {
                     PearlCardView(content: .pearl(shown), width: 300)
+                        .cardTilt()
                     Button("Fermer") { withAnimation(.snappy) { self.shown = nil } }
                         .buttonStyle(GlassButtonStyle())
                         .frame(maxWidth: 200)
@@ -230,6 +231,9 @@ struct OddsList: View {
                 row(Text(verbatim: "\(pearl.name)  \(pearl.rarity)"), pearl.probability)
             }
             row(Text("Trouvaille, à la place de la perle"), game.catalog.findProbability)
+            row(Text("Poisson voleur, sur une perle ◆"), game.economy.fishThief.chance)
+            Text("Il emporte la perle qu’on vient de trouver : touche-le pendant qu’il s’enfuit pour la récupérer.")
+                .font(.caption).foregroundStyle(.white.opacity(0.65)).frame(maxWidth: .infinity, alignment: .leading)
             Text("Garantie : une perle dorée ou plus rare au plus tard à la \(game.tuning.pityThreshold + 1)ᵉ huître.")
                 .font(.caption).foregroundStyle(.white.opacity(0.65)).frame(maxWidth: .infinity, alignment: .leading)
         }

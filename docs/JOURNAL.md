@@ -4,6 +4,28 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-20 · Jules · Claude Code · branche `jules/ios-app`
+
+Dernières touches de la 1.0 avant l'envoi en vérification (demande de Jules) : le poisson voleur, la carte qu'on fait jouer dans la lumière, et une vérification d'AdMob. **Build 4.**
+
+**Fait**
+- **Poisson voleur** (décision §6) : `APP_FISH_THIEF` dans `src/core/appEconomy.ts` (exporté, `Economy.fishThief`) ; Core : `PlayerState.reveal(…, thiefRng:)` décide du vol avec son propre générateur (les cas de référence des huîtres restent ceux de la webapp : un tirage partagé les décalait), `stolenCard` sauvegardé, `resolveTheft(caught:)` ; 7 tests Swift (`FishThiefTests`) et 1 test d'économie. App : étapes `.theft` / `.stolen` dans `GameModel` (le poisson arrive en 0,75 s, s'enfuit en 2,8 s ; toucher = `catchFish()`), dessin `Art/ThiefFishArt.swift` (poisson orange à rayures, perle dans la bouche, sillage de bulles, plouf), bulle « Un poisson ! Touche-le vite… », panneau `StolenView` s'il file, son `fishChime` (`APP_AUDIO`), ligne dans les probabilités (boutique, réglages, collection), action VoiceOver « Attraper le poisson ». Outil de test Debug : `-AlwaysFishThief`.
+- **Carte qu'on fait jouer** (`Features/CardTilt.swift`) : rester appuyé et bouger le doigt incline la carte sous le doigt (reflet qui suit, holo des rares piloté par le doigt), elle reste au milieu et revient à plat avec un rebond ; toucher bref = huître suivante. Aussi sur la carte agrandie de la collection.
+- **Arrivée de la carte** : gerbe d'étincelles de la couleur de la perle (`RevealBurst`, rayons dès ◆◆◆), badge « Nouvelle ! » (première de sa sorte), badge « Rattrapée au vol ! + 2 ✦ ».
+- **AdMob vérifié** : App ID et bloc d'annonces du même éditeur (`pub-1299710250358184`) ; la build Release ne contient que le vrai bloc (pas celui de test) ; `app-ads.txt` en ligne (pearl-inc.app → www, 200) et identique à `site/app-ads.txt` ; 50 SKAdNetwork ; pas d'ATT (pubs non personnalisées). **Corrigé** : au lancement, le calendrier s'ouvrait avant le formulaire de consentement de Google, qui passait alors par-dessus (le retour au premier plan l'ouvrait sans attendre) ; il attend maintenant le consentement (`RewardedAds.consentAnswered`).
+- Textes FR / EN dans `Localizable.xcstrings` ; notes de revue (`docs/app-store/fiche.md`) : le poisson voleur.
+- Vérifié au simulateur (iPhone 17 Pro) : vol puis fuite (panneau), vol puis poisson touché (carte « Rattrapée », + 2 ✦), carte inclinée au doigt ; `npm test`, `npm run build`, `swift test`, builds Debug et Release.
+
+**À faire**
+- Archiver et envoyer le **build 4**, le choisir à la place du 3 dans la version 1.0, puis envoyer en vérification.
+- App Store Connect, « Confidentialité de l'app » : vérifier que les données collectées par AdMob sont déclarées (identifiant de l'appareil, données publicitaires, interactions, diagnostics, position approximative ; « publicité tierce », non liées, pas de pistage).
+- AdMob : tant que l'app n'est pas publiée et associée à sa fiche dans AdMob, les vraies pubs peuvent manquer (« Pub en préparation… », bouton grisé, pas de blocage).
+- Essayer sur un vrai iPhone : la fenêtre pour toucher le poisson (2,8 s, tolérance 0,2 × la taille de l'huître), l'inclinaison de la carte (16°), le son du poisson.
+
+**Fragile**
+- Le vol ne doit jamais consommer le générateur des huîtres (`rng`) : sinon le test `memesPremieresHuitresQueLeWeb` casse.
+- Le texte « Un poisson a filé avec ta … » suppose un nom de perle féminin (toutes les perles ◆ le sont).
+
 ## 2026-10-19 (suite 14) · Jules · Claude Code · branche `jules/ios-app`
 
 App Store Connect rempli (dans le Chrome de Jules), **soumission prête mais pas envoyée** (choix de Jules).

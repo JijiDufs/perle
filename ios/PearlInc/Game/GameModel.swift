@@ -14,6 +14,10 @@ final class GameModel {
         case suspense
         /// La carte est affichée.
         case card(Reveal)
+        /// Un poisson a chipé la perle et s'enfuit avec : le toucher à temps la rend.
+        case theft(Reveal)
+        /// Il a filé : la perle est perdue.
+        case stolen(Reveal)
     }
 
     /// Le catalogue dans la langue de l'app (les textes seulement : les règles sont les mêmes).
@@ -46,6 +50,12 @@ final class GameModel {
     private(set) var suspenseMs = 0.0
     /// Éclair blanc des ★, au moment où la carte arrive.
     private(set) var flashAt: Date?
+    /// Début du vol de la perle par le poisson.
+    private(set) var theftStartedAt: Date?
+    /// La carte affichée est celle d'une perle rattrapée au vol (avec la poussière d'or gagnée).
+    private(set) var rescuedDust: Int?
+    /// La carte affichée est la première de sa sorte (perle ou trouvaille).
+    private(set) var revealIsNew = false
 
     /// Achats intégrés et pub récompensée (plateforme).
     let store = Store()
@@ -66,13 +76,23 @@ final class GameModel {
     /// Musique d'ambiance et effets sonores (aux mêmes moments que l'haptique).
     @ObservationIgnored let audio = Audio(settings: Catalog.shared.audio)
     @ObservationIgnored private let rng: Rng = systemRng()
+    /// Le poisson voleur a son propre tirage (le tirage des huîtres reste celui de la webapp).
+    /// Outil de test (`-AlwaysFishThief`, Debug) : il vole toutes les perles qu'il peut.
+    @ObservationIgnored private let thiefRng: Rng = {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-AlwaysFishThief") { return { 0 } }
+        #endif
+        return systemRng()
+    }()
     @ObservationIgnored private var lastTickDistance = 0.0
     /// Le calendrier ne s'ouvre pas tout seul le jour de la toute première séance (comme la webapp).
     @ObservationIgnored private var calendarQuietDay: String?
 
     init() {
         let catalog = Catalog.shared
-        let saved = Storage.load() ?? PlayerState.new(systemRng(), catalog.tuning, now: Clock.nowMs)
+        var saved = Storage.load() ?? PlayerState.new(systemRng(), catalog.tuning, now: Clock.nowMs)
+        // App fermée pendant la fuite du poisson : on rend la perle.
+        _ = saved.resolveTheft(caught: true)
         player = saved
         current = saved.oyster
         step = saved.oystersOpened
@@ -98,6 +118,19 @@ final class GameModel {
     var trembles: Bool { find.map { $0.tier >= 4 } ?? pearl.trembles }
     var revealTier: Int { find.map { min(3, $0.tier - 1) } ?? pearl.revealTier }
     var equippedSkin: AppSkin { economy.skin(player.equippedSkin) ?? economy.skins[0] }
+    var fishThief: FishThief { economy.fishThief }
+
+    /// Millisecondes depuis que le poisson a chipé la perle ; nil s'il n'y a pas de vol en cours.
+    func theftElapsedMs(at date: Date) -> Double? {
+        guard case .theft = stage, let start = theftStartedAt else { return nil }
+        return date.timeIntervalSince(start) * 1000
+    }
+
+    /// La perle n'est plus dans l'huître : le poisson l'a dans la bouche, ou il a filé avec.
+    func pearlTaken(at date: Date) -> Bool {
+        if case .stolen = stage { return true }
+        return theftElapsedMs(at: date).map { $0 >= fishThief.arriveMs } ?? false
+    }
 
     /// Premières minutes : l'huître à l'écran est une de celles du tutoriel. Les fonctions
     /// (onglets, missions, compteurs) n'apparaissent qu'après (cahier §15 : une à une).
@@ -164,7 +197,7 @@ final class GameModel {
         case .none:
             break
         case .closed:
-            if case .card = stage {
+            if stage.showsResult {
                 nextOyster()
             } else if stage == .playing, engine.phase == .resisting {
                 handleRelease()
@@ -195,9 +228,22 @@ final class GameModel {
         thumb.openSlowly(tuning: tuning, durationMs: 2600)
     }
 
+    /// Toucher le poisson pendant qu'il s'enfuit : la perle revient (avec un peu de poussière d'or).
+    func catchFish() {
+        guard case .theft(let reveal) = stage, let elapsed = theftElapsedMs(at: Date()), fishThief.canCatch(elapsedMs: elapsed) else { return }
+        let gained = player.resolveTheft(caught: true)
+        rescuedDust = gained
+        if gained > 0 { dustBump += 1 }
+        save()
+        haptics.reveal(tier: 1)
+        audio.reveal(.pearl, tier: 1)
+        theftStartedAt = nil
+        stage = .card(reveal)
+    }
+
     /// Toucher la carte (sur le Duo : refermer le téléphone) : huître suivante.
     func nextOyster() {
-        guard case .card = stage else { return }
+        guard stage.showsResult else { return }
         step = player.oystersOpened
         engine = OpeningEngine(tuning: tuning, crackProtected: catalog.isCrackProtected(oystersOpened: step))
         thumb.reset()
@@ -214,6 +260,9 @@ final class GameModel {
         current = player.oyster
         revealStartedAt = nil
         flashAt = nil
+        theftStartedAt = nil
+        rescuedDust = nil
+        revealIsNew = false
         stage = .playing
     }
 
@@ -270,6 +319,9 @@ final class GameModel {
         shapeSeed = player.nextSerial
         revealStartedAt = nil
         flashAt = nil
+        theftStartedAt = nil
+        rescuedDust = nil
+        revealIsNew = false
         stage = .playing
         refresh()
         store.refreshEntitlements()
@@ -419,7 +471,12 @@ final class GameModel {
         revealAngle = engine.angle
         suspenseMs = tuning.revealSuspenseMs(tier: tier)
         player.refresh(now: Clock.nowMs, day: Clock.dayKey(), tuning: tuning)
-        let reveal = player.reveal(lustre: lustre, cracked: cracked, now: Clock.nowMs, rng: rng, tuning: tuning)
+        if let findId = current.findId {
+            revealIsNew = !player.findCards.contains { $0.findId == findId }
+        } else {
+            revealIsNew = current.pearlId != "empty" && player.count(of: current.pearlId) == 0
+        }
+        let reveal = player.reveal(lustre: lustre, cracked: cracked, now: Clock.nowMs, rng: rng, thiefRng: thiefRng, tuning: tuning)
         if case .find(_, let dust) = reveal, dust > 0 { dustBump += 1 }
         save()
         let suspense = tuning.revealSuspenseMs(tier: tier)
@@ -441,7 +498,43 @@ final class GameModel {
             self.audio.setSuspense(false)
             self.audio.reveal(style, tier: tier)
             if tier >= 3 { self.flashAt = Date() }
-            self.stage = .card(reveal)
+            if case .pearl(let card) = reveal, self.player.stolenCard?.serial == card.serial {
+                self.beginTheft(reveal)
+            } else {
+                self.stage = .card(reveal)
+            }
+        }
+    }
+
+    /// Le poisson fond sur la perle, la happe, puis s'enfuit avec ; s'il n'est pas touché à temps, elle est perdue.
+    private func beginTheft(_ reveal: Reveal) {
+        theftStartedAt = Date()
+        stage = .theft(reveal)
+        audio.lid()
+        let fish = fishThief
+        Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(Int(fish.arriveMs)))
+            guard let self, case .theft = self.stage else { return }
+            self.haptics.pop()
+            self.audio.fish()
+            try? await Task.sleep(for: .milliseconds(Int(fish.fleeMs)))
+            guard case .theft = self.stage else { return }
+            _ = self.player.resolveTheft(caught: false)
+            self.save()
+            self.haptics.crack()
+            self.audio.reveal(.empty, tier: 0)
+            self.theftStartedAt = nil
+            self.stage = .stolen(reveal)
+        }
+    }
+}
+
+extension GameModel.Stage {
+    /// La carte (ou le message du poisson qui a filé) est à l'écran : toucher passe à l'huître suivante.
+    var showsResult: Bool {
+        switch self {
+        case .card, .stolen: true
+        default: false
         }
     }
 }

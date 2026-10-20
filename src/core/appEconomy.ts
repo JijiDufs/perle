@@ -89,6 +89,26 @@ export const APP_SKINS: readonly AppSkin[] = [
   },
 ];
 
+/**
+ * Le poisson voleur (choix de Jules, 2026-10-20) : de temps en temps, juste après la révélation, un poisson
+ * fond sur la perle et l'emporte. Seulement les perles ordinaires (◆ au plus) sans marque rare, jamais pendant
+ * le tutoriel. Le toucher pendant sa fuite la rend (avec un peu de poussière d'or pour la peine) ; sinon elle est
+ * perdue. Affiché dans les probabilités de la collection. **Provisoire, à valider avec Mathys.**
+ */
+export const APP_FISH_THIEF = {
+  /** Chance qu'une perle qui peut être volée le soit (≈ 6 % des huîtres : blanches et rosées font 60 %). */
+  chance: 0.1,
+  /** Rareté maximale (niveau, 1 = ◆) d'une perle qu'un poisson peut voler. */
+  maxTier: 1,
+  /** Poussière d'or quand on rattrape le poisson. */
+  catchBonusDust: 2,
+  /** Le poisson arrive sur la perle (ms), puis s'enfuit avec : le temps pour le toucher (ms). */
+  arriveMs: 750,
+  fleeMs: 2800,
+  /** Tolérance autour du poisson pour le toucher, en part de la taille de l'huître. */
+  hitRadius: 0.2,
+} as const;
+
 /** Produits consommables de la boutique Apple (le prix affiché vient de StoreKit). */
 export const APP_CONSUMABLES: readonly { id: string; name: string; oysters: number; dust: number }[] = [
   { id: 'app.pearlinc.oysters.10', name: 'Marée haute', oysters: 10, dust: 0 },

@@ -180,6 +180,9 @@ final class Audio {
     /// Un achat : huître, coquille, produit de la boutique.
     func purchase() { chime(settings.chime, level: settings.purchaseChimeLevel, key: "chime") }
 
+    /// Le poisson voleur file avec la perle.
+    func fish() { play(cached("fish") { SoundSynth.tones(settings.fishChime, notes: settings.fishChime.notes, sampleRate: settings.sampleRate) }) }
+
     /// Bouton, onglet.
     func tap() { play(cached("tap") { SoundSynth.tones(settings.tap, notes: settings.tap.notes, sampleRate: settings.sampleRate) }) }
 

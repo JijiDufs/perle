@@ -366,6 +366,8 @@ export interface AppAudio {
   ding: ToneSound;
   /** Bouton, onglet, coquille équipée : un « toc » doux. */
   tap: ToneSound;
+  /** Le poisson voleur file avec la perle (« bloup-bloup » moqueur) ; perdue : on reprend la descente de l'huître vide. */
+  fishChime: ToneSound;
   /** Récompense (calendrier, pub, huître achetée) et achat (coquille, boutique) : niveau du carillon (0…3). */
   rewardChimeLevel: number;
   purchaseChimeLevel: number;
@@ -423,6 +425,7 @@ export const APP_AUDIO: Readonly<AppAudio> = {
   findChime: { notes: [392, 587, 494, 784, 988, 1175], wave: 'triangle', ...WEB_CHIME, gain: 0.12 },
   ding: { notes: [1568, 2093, 2637], wave: 'sine', gapMs: 60, attackMs: 10, decayMs: 700, gain: 0.08 },
   tap: { notes: [880], wave: 'sine', gapMs: 0, attackMs: 4, decayMs: 90, gain: 0.07 },
+  fishChime: { notes: [784, 659, 988, 784], wave: 'triangle', gapMs: 85, attackMs: 4, decayMs: 160, gain: 0.1 },
   rewardChimeLevel: 1,
   purchaseChimeLevel: 2,
   musicFadeMs: 1500,

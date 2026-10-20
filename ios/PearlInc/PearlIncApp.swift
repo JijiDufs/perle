@@ -64,7 +64,9 @@ struct RootView: View {
                 game.audio.start()
                 Notifications.cancel()
                 game.refresh()
-                offerCalendar()
+                // Au lancement, le formulaire de consentement de Google passe d'abord (la tâche ci-dessus) :
+                // sinon il s'ouvrirait par-dessus le calendrier.
+                if game.ads.consentAnswered { offerCalendar() }
             }
         }
         .sheet(isPresented: $showCalendar) { CalendarView() }

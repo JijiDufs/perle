@@ -155,6 +155,8 @@ iPhone Duo: on iPhone Duo (iOS 27.1), the hinge angle opens the oyster; fold the
 
 Odds: the probability of every pearl is shown before any purchase, in the Shop ("Every oyster is a draw: see the odds") and in Settings > "Pearl odds". A golden pearl or better is guaranteed within 26 oysters. Shells and purchases never change the odds.
 
+Thief fish: now and then (shown in the odds: 10% of common ◆ pearls), a fish snatches the common pearl that was just revealed. Tapping the fish while it swims away gets the pearl back (+2 gold dust). Rare pearls are never stolen. It is random: it may take 15 to 20 oysters to see it.
+
 Ads: rewarded ads only (Google AdMob, non-personalised, no tracking, no ATT prompt), always optional: "Watch an ad" gives 3 oysters, up to 3 times a day. Google's consent form appears where required (EU); "Ad privacy" in Settings lets the player change it.
 
 In-app purchases: oysters and gold dust (consumables), two cosmetic shells (non-consumables, restorable with "Restore purchases" in the Shop and in Settings).

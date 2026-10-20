@@ -50,6 +50,7 @@ public struct AudioTuning: Codable, Sendable, Equatable {
     public var findChime: ToneSound
     public var ding: ToneSound
     public var tap: ToneSound
+    public var fishChime: ToneSound
     public var rewardChimeLevel: Int
     public var purchaseChimeLevel: Int
 
