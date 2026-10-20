@@ -1047,6 +1047,38 @@
     "empty",
     "baroque"
   ],
+  "ranks": [
+    {
+      "id": "pecheur",
+      "title": "Pêcheur",
+      "level": 1
+    },
+    {
+      "id": "perlier",
+      "title": "Perlier",
+      "level": 5
+    },
+    {
+      "id": "artisan",
+      "title": "Artisan",
+      "level": 10
+    },
+    {
+      "id": "joaillier",
+      "title": "Joaillier",
+      "level": 20
+    },
+    {
+      "id": "maitre",
+      "title": "Maître joaillier",
+      "level": 35
+    },
+    {
+      "id": "maison",
+      "title": "Maison de haute joaillerie",
+      "level": 50
+    }
+  ],
   "economy": {
     "oysterDustPrice": 20,
     "goldCoinDust": 5,
@@ -1220,6 +1252,18 @@
       "arriveMs": 750,
       "fleeMs": 2800,
       "hitRadius": 0.2
+    },
+    "levels": {
+      "fastStart": {
+        "levels": 10,
+        "factor": 0.5
+      },
+      "rewardOysters": 5,
+      "rewardDust": 5,
+      "rankRewardOysters": 10,
+      "rankRewardDust": 20,
+      "missionReputation": 30,
+      "calendarReputation": 15
     }
   },
   "markWeights": [
@@ -1464,6 +1508,14 @@
       "app.pearlinc.dust.400": "Pouch of gold dust",
       "app.pearlinc.dust.1200": "Casket of gold dust",
       "app.pearlinc.dust.3000": "Trunk of gold dust"
+    },
+    "ranks": {
+      "pecheur": "Fisher",
+      "perlier": "Pearler",
+      "artisan": "Artisan",
+      "joaillier": "Jeweller",
+      "maitre": "Master jeweller",
+      "maison": "High jewellery house"
     }
   }
 }

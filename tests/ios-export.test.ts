@@ -6,11 +6,12 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_LEVELS, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS } from '../src/core/catalog';
 import { INITIAL_LOGIN, streakIfClaimed, type LoginState } from '../src/core/daily';
 import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
 import { RARITY_SYMBOLS } from '../src/core/jewels';
+import { levelFromXp, RANKS, reputationFor, xpToNext } from '../src/core/levels';
 import { INITIAL_DRAW_STATE } from '../src/core/draw';
 import { FIND_TIER_WEIGHTS, FINDS, FIND_ALBUMS, BOTTLE_MESSAGES } from '../src/core/finds';
 import { OpeningEngine, type OpeningSample } from '../src/core/opening';
@@ -50,6 +51,8 @@ function catalog() {
     overtoneWeights: perPearl(OVERTONE_WEIGHTS),
     raritySymbols: RARITY_SYMBOLS,
     tutorialPearls: TUTORIAL_PEARLS,
+    // Ce que le rang ouvre (`opens`) n'est pas exporté : l'app ne parle pas des fonctions à venir (règle Apple 2.1).
+    ranks: RANKS.map(({ id, title, level }) => ({ id, title, level })),
     economy: {
       ...APP_ECONOMY,
       sellDustByTier: APP_SELL_DUST_BY_TIER,
@@ -59,6 +62,7 @@ function catalog() {
       consumables: APP_CONSUMABLES,
       calendar: APP_CALENDAR,
       fishThief: APP_FISH_THIEF,
+      levels: APP_LEVELS,
     },
     markWeights: pairs(Object.fromEntries(Object.entries(MARKS).map(([id, mark]) => [id, mark.weight]))),
     english: CATALOG_ENGLISH,
@@ -149,7 +153,26 @@ function parity() {
     return { day, ...login };
   });
 
-  return { rngSeed: 2026, rngValues, oysterSeed: 42, oysters, tutorialSeed: 7, tutorialOysters, openings, thumbAngles, values, logins };
+  // Niveaux de l'app : courbe accélérée au début (APP_LEVELS), réputation de chaque huître et trouvaille.
+  const fast = APP_LEVELS.fastStart;
+  const xpToNextLevels = Array.from({ length: 60 }, (_, i) => xpToNext(i + 1, DEFAULT_TUNING, fast));
+  const levelProgress = [0, 1, 37, 38, 94, 95, 500, 1756, 1757, 5000, 20000, 106000, 1e9].map((xp) => ({ xp, ...levelFromXp(xp, DEFAULT_TUNING, fast) }));
+  const lustres = ['S', 'A', 'B', 'C'] as const;
+  const reputations = [
+    ...PEARLS.flatMap((pearl, i) => [
+      { pearlId: pearl.id, lustre: lustres[i % 4], cracked: false, discovery: true },
+      { pearlId: pearl.id, lustre: lustres[(i + 1) % 4], cracked: i % 2 === 0, discovery: false },
+      { pearlId: pearl.id, lustre: 'S' as const, cracked: true, discovery: false },
+    ]).map((event) => ({ kind: 'oyster', ...event, reputation: reputationFor({ kind: 'oyster', ...event }, DEFAULT_TUNING) })),
+    ...[1, 2, 3, 4, 5].flatMap((tier) => [true, false].map((discovery) => ({
+      kind: 'find', tier, discovery, reputation: reputationFor({ kind: 'find', tier, discovery }, DEFAULT_TUNING),
+    }))),
+  ];
+
+  return {
+    rngSeed: 2026, rngValues, oysterSeed: 42, oysters, tutorialSeed: 7, tutorialOysters, openings, thumbAngles, values, logins,
+    xpToNextLevels, levelProgress, reputations,
+  };
 }
 
 function check(path: string, data: unknown) {

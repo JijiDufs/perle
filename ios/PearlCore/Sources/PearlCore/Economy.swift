@@ -67,6 +67,8 @@ public struct Economy: Codable, Sendable {
     public let rareMissionTier: Int
     public let missions: [MissionTemplate]
     public let fishThief: FishThief
+    /// Niveaux : courbe accélérée au début, récompenses, réputation des missions et du calendrier.
+    public let levels: LevelEconomy
     public internal(set) var skins: [AppSkin]
     public internal(set) var consumables: [AppConsumable]
 

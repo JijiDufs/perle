@@ -16,6 +16,7 @@ public struct CatalogEnglish: Codable, Sendable {
     public let marks: [String: Mark]
     public let skins: [String: NameDescription]
     public let consumables: [String: String]
+    public let ranks: [String: String]
 }
 
 extension Catalog {
@@ -64,6 +65,11 @@ extension Catalog {
             var product = product
             if let name = english.consumables[product.id] { product.name = name }
             return product
+        }
+        catalog.ranks = ranks.map { rank in
+            var rank = rank
+            if let title = english.ranks[rank.id] { rank.title = title }
+            return rank
         }
         return catalog
     }

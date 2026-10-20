@@ -4,6 +4,25 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-20 (lot 1.1) · Jules · Claude Code · branche `claude/ios-1-1-niveaux-bdacb1`
+
+Lot 1.1 de l'app iOS, « Niveaux et réputation » (`docs/ios-feuille-de-route.md`). Décision en `AGENTS.md` §6.
+
+**Fait**
+- **TypeScript** : `xpToNext` / `levelFromXp` acceptent un départ accéléré (`FastStart`, `levels.ts`) ; `APP_LEVELS` dans `appEconomy.ts` (courbe ×0,5 au niveau 1 qui rejoint la webapp au niveau 10, 5 huîtres + 5 ✦ par niveau, + 10 huîtres + 20 ✦ par rang, réputation des missions et du calendrier) ; rangs anglais dans `catalogEnglish.ts`. Exportés (`ranks`, `economy.levels`, réglages de réputation) ; cas de référence : `xpToNextLevels`, `levelProgress`, `reputations`. Tests d'économie : 10 premiers niveaux plus rapides puis courbe de la webapp, niveau 50 en 4 à 6 mois, récompenses surtout en huîtres.
+- **PearlCore** : `Levels.swift` (rangs, courbe, récompenses, réputation d'une huître ou trouvaille, `gainReputation` avec `rewardedLevel` et `levelUp` à fêter, réputation rétroactive). `PlayerState` : `reputation`, `rewardedLevel`, `levelUp` ; gains à l'ouverture (perle, vide, trouvaille ; découverte), aux missions et au calendrier. Sauvegarde 1.0 sans réputation → rétroactive au décodage, une seule fête marquée `retroactive`. Tests : `LevelsTests` (dont `save-1.0.json`, une vraie sauvegarde du code 1.0), parité niveaux et réputation.
+- **App** : `LevelRing` (anneau dans la barre du haut, « +N » à l'arrivée de la carte), `LevelUpView` (fête : niveau, nouveau rang, récompenses, prochain rang ; « Tu es niveau N » pour la 1.0), `ProgressPanel` (« Ma progression » : niveau, barre, 4 statistiques en 2 colonnes, chemin des rangs, barème). Panneaux posés à droite du pli sur le Duo (`besideFold`), version compacte. FR / EN (29 textes).
+- **Simulateur** : iPhone 17 Pro avec une vraie partie 1.0 (231 huîtres → niveau 12, + 75 huîtres + 95 ✦, une fenêtre) et avec `save-1.0.json` (niveau 6) ; iPhone 17e : partie 1.0 (13 huîtres → niveau 3), partie neuve (aucune fête pendant le tutoriel, « Niveau 3 ! » en refermant la 4e carte), anglais ; Duo simulé (`-SimulatedHinge`, `-SimulatedFold`) : fête et fiche à droite du pli, ouvrir le téléphone referme la fête et ouvre l'huître, « +N » quand la carte arrive.
+
+**À faire**
+- Jules : iPhone réel (premier lancement après mise à jour, une montée de niveau, VoiceOver sur l'anneau et la fête), TestFlight Duo, numéro de version 1.1, texte « Nouveautés », envoi.
+- Valider avec Mathys : courbe, récompenses, réputation rétroactive (montants provisoires).
+
+**Fragile**
+- Pendant la toute fin du tutoriel, la bulle « Tes huîtres sont en haut… » reste visible (assombrie) derrière la fête de niveau.
+- La réputation rétroactive ne compte pas les missions et calendriers passés (pas d'historique dans la 1.0).
+- Au simulateur, `simctl spawn defaults write` n'atteint pas la sauvegarde de l'app : écrire dans `Library/Preferences/app.pearlinc.PearlInc.plist` du conteneur (app arrêtée), puis relancer `cfprefsd`.
+
 ## 2026-10-20 (feuille de route) · Jules · Claude Code · branche `jules/app-1.0.1`
 
 **Fait**

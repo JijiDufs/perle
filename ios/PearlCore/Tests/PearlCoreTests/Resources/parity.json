@@ -6067,5 +6067,401 @@
       "bestStreak": 5,
       "jokerUsedDay": "2027-01-03"
     }
+  ],
+  "xpToNextLevels": [
+    38,
+    57,
+    84,
+    120,
+    164,
+    218,
+    282,
+    355,
+    439,
+    534,
+    607,
+    684,
+    763,
+    846,
+    931,
+    1020,
+    1111,
+    1206,
+    1302,
+    1402,
+    1504,
+    1608,
+    1715,
+    1824,
+    1935,
+    2049,
+    2164,
+    2282,
+    2403,
+    2525,
+    2649,
+    2775,
+    2904,
+    3034,
+    3166,
+    3300,
+    3436,
+    3574,
+    3713,
+    3855,
+    3998,
+    4143,
+    4290,
+    4438,
+    4588,
+    4740,
+    4893,
+    5048,
+    5205,
+    5363,
+    5523,
+    5685,
+    5848,
+    6012,
+    6178,
+    6346,
+    6515,
+    6686,
+    6858,
+    7031
+  ],
+  "levelProgress": [
+    {
+      "xp": 0,
+      "level": 1,
+      "into": 0,
+      "needed": 38
+    },
+    {
+      "xp": 1,
+      "level": 1,
+      "into": 1,
+      "needed": 38
+    },
+    {
+      "xp": 37,
+      "level": 1,
+      "into": 37,
+      "needed": 38
+    },
+    {
+      "xp": 38,
+      "level": 2,
+      "into": 0,
+      "needed": 57
+    },
+    {
+      "xp": 94,
+      "level": 2,
+      "into": 56,
+      "needed": 57
+    },
+    {
+      "xp": 95,
+      "level": 3,
+      "into": 0,
+      "needed": 84
+    },
+    {
+      "xp": 500,
+      "level": 6,
+      "into": 37,
+      "needed": 218
+    },
+    {
+      "xp": 1756,
+      "level": 9,
+      "into": 438,
+      "needed": 439
+    },
+    {
+      "xp": 1757,
+      "level": 10,
+      "into": 0,
+      "needed": 534
+    },
+    {
+      "xp": 5000,
+      "level": 14,
+      "into": 655,
+      "needed": 846
+    },
+    {
+      "xp": 20000,
+      "level": 25,
+      "into": 1186,
+      "needed": 1935
+    },
+    {
+      "xp": 106000,
+      "level": 50,
+      "into": 79,
+      "needed": 5363
+    },
+    {
+      "xp": 1000000000,
+      "level": 100,
+      "into": 0,
+      "needed": 0
+    }
+  ],
+  "reputations": [
+    {
+      "kind": "oyster",
+      "pearlId": "empty",
+      "lustre": "S",
+      "cracked": false,
+      "discovery": true,
+      "reputation": 10
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "empty",
+      "lustre": "A",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 10
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "empty",
+      "lustre": "S",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 10
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "white",
+      "lustre": "A",
+      "cracked": false,
+      "discovery": true,
+      "reputation": 50
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "white",
+      "lustre": "B",
+      "cracked": false,
+      "discovery": false,
+      "reputation": 15
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "white",
+      "lustre": "S",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 15
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "rose",
+      "lustre": "B",
+      "cracked": false,
+      "discovery": true,
+      "reputation": 45
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "rose",
+      "lustre": "C",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 15
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "rose",
+      "lustre": "S",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 15
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "baroque",
+      "lustre": "C",
+      "cracked": false,
+      "discovery": true,
+      "reputation": 50
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "baroque",
+      "lustre": "S",
+      "cracked": false,
+      "discovery": false,
+      "reputation": 30
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "baroque",
+      "lustre": "S",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 20
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "black",
+      "lustre": "S",
+      "cracked": false,
+      "discovery": true,
+      "reputation": 65
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "black",
+      "lustre": "A",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 25
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "black",
+      "lustre": "S",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 25
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "golden",
+      "lustre": "A",
+      "cracked": false,
+      "discovery": true,
+      "reputation": 65
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "golden",
+      "lustre": "B",
+      "cracked": false,
+      "discovery": false,
+      "reputation": 30
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "golden",
+      "lustre": "S",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 30
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "giant",
+      "lustre": "B",
+      "cracked": false,
+      "discovery": true,
+      "reputation": 65
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "giant",
+      "lustre": "C",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 35
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "giant",
+      "lustre": "S",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 35
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "cursed",
+      "lustre": "C",
+      "cracked": false,
+      "discovery": true,
+      "reputation": 65
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "cursed",
+      "lustre": "S",
+      "cracked": false,
+      "discovery": false,
+      "reputation": 45
+    },
+    {
+      "kind": "oyster",
+      "pearlId": "cursed",
+      "lustre": "S",
+      "cracked": true,
+      "discovery": false,
+      "reputation": 35
+    },
+    {
+      "kind": "find",
+      "tier": 1,
+      "discovery": true,
+      "reputation": 45
+    },
+    {
+      "kind": "find",
+      "tier": 1,
+      "discovery": false,
+      "reputation": 15
+    },
+    {
+      "kind": "find",
+      "tier": 2,
+      "discovery": true,
+      "reputation": 50
+    },
+    {
+      "kind": "find",
+      "tier": 2,
+      "discovery": false,
+      "reputation": 20
+    },
+    {
+      "kind": "find",
+      "tier": 3,
+      "discovery": true,
+      "reputation": 55
+    },
+    {
+      "kind": "find",
+      "tier": 3,
+      "discovery": false,
+      "reputation": 25
+    },
+    {
+      "kind": "find",
+      "tier": 4,
+      "discovery": true,
+      "reputation": 60
+    },
+    {
+      "kind": "find",
+      "tier": 4,
+      "discovery": false,
+      "reputation": 30
+    },
+    {
+      "kind": "find",
+      "tier": 5,
+      "discovery": true,
+      "reputation": 65
+    },
+    {
+      "kind": "find",
+      "tier": 5,
+      "discovery": false,
+      "reputation": 35
+    }
   ]
 }

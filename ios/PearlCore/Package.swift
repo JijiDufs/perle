@@ -18,7 +18,7 @@ let package = Package(
         .testTarget(
             name: "PearlCoreTests",
             dependencies: ["PearlCore"],
-            resources: [.copy("Resources/parity.json")]
+            resources: [.copy("Resources/parity.json"), .copy("Resources/save-1.0.json")]
         ),
     ]
 )

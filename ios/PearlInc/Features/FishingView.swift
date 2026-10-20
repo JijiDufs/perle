@@ -8,6 +8,8 @@ struct FishingView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var showMissions = false
     @State private var showSettings = false
+    /// « Ma progression » (toucher l'anneau de niveau).
+    @State private var showProgress = false
     /// La bulle sur le stock (première huître après le tutoriel) s'efface toute seule.
     @State private var stockTipExpired = false
     /// Taille de la scène, pour savoir si le doigt touche le poisson voleur.
@@ -62,7 +64,7 @@ struct FishingView: View {
             }
 
             VStack(spacing: 14) {
-                ResourceBar(showMissions: $showMissions, showSettings: $showSettings)
+                ResourceBar(showMissions: $showMissions, showSettings: $showSettings, showProgress: $showProgress)
                     .padding(.horizontal)
                     .padding(.top, 8)
                 VStack(spacing: 14) {
@@ -117,8 +119,29 @@ struct FishingView: View {
                     .transition(.scale(scale: 0.3).combined(with: .opacity))
                     .onTapGesture { withAnimation(.snappy) { game.nextOyster() } }
             }
+
+            // Montée de niveau : au moment calme suivant (huître posée, hors tutoriel).
+            if let levelUp = game.levelUpToShow {
+                Color(hex: 0x02141A).opacity(0.45).ignoresSafeArea()
+                    .transition(.opacity)
+                LevelUpView(levelUp: levelUp)
+                    .besideFold(game.foldX)
+                    .transition(reduceMotion ? .opacity : .scale(scale: 0.5).combined(with: .opacity))
+            }
+
+            if showProgress {
+                Color(hex: 0x02141A).opacity(0.35).ignoresSafeArea()
+                    .transition(.opacity)
+                    .onTapGesture { showProgress = false }
+                    .accessibilityHidden(true)
+                ProgressPanel(close: { showProgress = false })
+                    .besideFold(game.foldX)
+                    .transition(.move(edge: .bottom))
+            }
         }
         .animation(.spring(duration: 0.45, bounce: 0.35), value: game.stage)
+        .animation(.spring(duration: 0.5, bounce: 0.3), value: game.levelUpToShow)
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(duration: 0.4, bounce: 0.1), value: showProgress)
         .animation(.easeInOut(duration: 0.3), value: coachText)
         .animation(.easeInOut(duration: 0.3), value: showsGhostHand)
         // Pendant le tutoriel, rien que l'huître : les onglets arrivent avec la première huître libre.

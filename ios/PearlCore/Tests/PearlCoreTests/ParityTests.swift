@@ -50,6 +50,24 @@ private struct Parity: Decodable {
         let jokerUsedDay: String?
     }
     let logins: [Login]
+    let xpToNextLevels: [Int]
+    struct Progress: Decodable {
+        let xp: Double
+        let level: Int
+        let into: Int
+        let needed: Int
+    }
+    let levelProgress: [Progress]
+    struct Reputation: Decodable {
+        let kind: String
+        let pearlId: String?
+        let lustre: Lustre?
+        let cracked: Bool?
+        let tier: Int?
+        let discovery: Bool
+        let reputation: Int
+    }
+    let reputations: [Reputation]
 }
 
 private let parity: Parity = {
@@ -130,6 +148,25 @@ private let tuning = Catalog.shared.tuning
 @Test func memesValeursQueLeWeb() {
     for expected in parity.values {
         #expect(pearlValue(expected.pearlId, sizeMm: expected.sizeMm, cracked: expected.cracked, traits: expected.traits) == expected.value)
+    }
+}
+
+@Test func memesNiveauxQueLeWeb() {
+    let catalog = Catalog.shared
+    #expect(parity.xpToNextLevels == (1...parity.xpToNextLevels.count).map { catalog.xpToNext($0) })
+    for expected in parity.levelProgress {
+        let progress = catalog.levelProgress(reputation: Int(min(expected.xp, Double(Int32.max))))
+        #expect(progress == LevelProgress(level: expected.level, into: expected.into, needed: expected.needed), "réputation \(expected.xp)")
+    }
+}
+
+@Test func memeReputationQueLeWeb() {
+    let catalog = Catalog.shared
+    for expected in parity.reputations {
+        let reputation = expected.kind == "find"
+            ? catalog.reputationForFind(tier: expected.tier!, discovery: expected.discovery)
+            : catalog.reputationForPearl(expected.pearlId!, lustre: expected.lustre!, cracked: expected.cracked!, discovery: expected.discovery)
+        #expect(reputation == expected.reputation, "\(expected)")
     }
 }
 

@@ -36,6 +36,25 @@ export const APP_CALENDAR: readonly { oysters: number; dust: number }[] = [
   { oysters: 10, dust: 25 },
 ];
 
+/**
+ * Niveaux et réputation de l'app (lot 1.1, docs/ios-feuille-de-route.md §4) : mêmes gains de réputation que la
+ * webapp (src/tuning.ts), mais les 10 premiers niveaux vont plus vite, et les récompenses suivent l'économie lente
+ * (surtout des huîtres, peu de poussière d'or, pas d'écrin). **Provisoire, à valider avec Mathys.**
+ */
+export const APP_LEVELS = {
+  /** Niveau 1 : moitié de la réputation de la webapp ; l'écart se referme jusqu'au niveau 10 (voir `xpToNext`). */
+  fastStart: { levels: 10, factor: 0.5 },
+  /** À chaque niveau (huîtres au-delà du maximum si besoin). */
+  rewardOysters: 5,
+  rewardDust: 5,
+  /** En plus, en arrivant à un nouveau rang (Perlier, Artisan…). */
+  rankRewardOysters: 10,
+  rankRewardDust: 20,
+  /** Réputation d'une mission du jour récupérée, et de la case du calendrier (comme la webapp). */
+  missionReputation: 30,
+  calendarReputation: 15,
+} as const;
+
 export type AppMissionKind = 'open' | 'lustreA' | 'lustreS' | 'rare' | 'noCrack' | 'sell' | 'share';
 
 /** Les missions possibles ; chaque jour en tire `missionsPerDay`, avec un objectif parmi `goals`. */

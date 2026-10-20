@@ -1,15 +1,17 @@
 import SwiftUI
 import PearlCore
 
-/// Barre du haut : huîtres (avec le minuteur de recharge), poussière d'or, missions du jour, réglages.
+/// Barre du haut : niveau, huîtres (avec le minuteur de recharge), poussière d'or, missions du jour, réglages.
 struct ResourceBar: View {
     @Environment(GameModel.self) private var game
     @Binding var showMissions: Bool
     @Binding var showSettings: Bool
+    @Binding var showProgress: Bool
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { timeline in
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
+                if !game.inTutorial { LevelRing { showProgress = true } }
                 // Pendant le tutoriel, les huîtres sont offertes : les compteurs arrivent après.
                 if !game.inTutorial { counters(at: timeline.date) }
 

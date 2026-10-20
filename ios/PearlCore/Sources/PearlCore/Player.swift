@@ -70,6 +70,12 @@ public struct PlayerState: Codable, Sendable, Equatable {
     /// La perle qu'un poisson vient de chiper : elle n'est pas dans la collection tant que le joueur
     /// ne l'a pas rattrapé (`resolveTheft`).
     public var stolenCard: PearlCard?
+    /// Réputation totale ; le niveau s'en déduit (`Catalog.levelProgress`).
+    public var reputation: Int
+    /// Dernier niveau dont la récompense a été donnée (une seule fois par niveau).
+    public var rewardedLevel: Int
+    /// Montée de niveau pas encore fêtée à l'écran (attend un moment calme, jamais pendant le tutoriel).
+    public var levelUp: LevelUp?
 
     /// Nouvelle partie : stock plein, skin de départ, première huître (celle du tutoriel) déjà posée.
     public static func new(_ rng: Rng, _ tuning: Tuning, now: Double, catalog: Catalog = .shared) -> PlayerState {
@@ -79,7 +85,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
             oyster: first.oyster, drawState: first.drawState, nextSerial: 1, pearlCards: [], findCards: [], oystersOpened: 0,
             dust: 0, stock: StockState(count: tuning.oysterStockMax, lastRefillAt: now),
             ownedSkins: starters, equippedSkin: starters.first ?? "", missions: nil, noCrackStreak: 0, adRewards: nil,
-            login: .initial, stolenCard: nil
+            login: .initial, stolenCard: nil, reputation: 0, rewardedLevel: 1, levelUp: nil
         )
     }
 
@@ -117,14 +123,18 @@ public struct PlayerState: Codable, Sendable, Equatable {
         let result: Reveal
         if let findId = opened.findId {
             let find = catalog.find(findId)
+            gainReputation(catalog.reputationForFind(tier: find.tier, discovery: !findCards.contains { $0.findId == findId }), catalog: catalog)
             let card = FindCard(serial: serial, findId: findId, value: find.value, foundAt: now)
             findCards.append(card)
             let bonus = find.effect == "dust" ? catalog.economy.goldCoinDust : 0
             dust += bonus
             result = .find(card, dust: bonus)
         } else if opened.pearlId == "empty" {
+            gainReputation(catalog.reputationForPearl("empty", lustre: lustre, cracked: cracked, discovery: false), catalog: catalog)
             result = .empty(serial: serial)
         } else {
+            gainReputation(catalog.reputationForPearl(opened.pearlId, lustre: lustre, cracked: cracked,
+                                                      discovery: count(of: opened.pearlId) == 0), catalog: catalog)
             let card = PearlCard(
                 serial: serial, pearlId: opened.pearlId, sizeMm: opened.sizeMm,
                 value: pearlValue(opened.pearlId, sizeMm: opened.sizeMm, cracked: cracked, traits: opened.traits, catalog: catalog),
@@ -289,6 +299,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
         login.claim(day: day, calendarLength: catalog.economy.calendar.count, jokerDays: catalog.economy.calendarJokerDays)
         stock.count += reward.oysters
         dust += reward.dust
+        gainReputation(catalog.economy.levels.calendarReputation, catalog: catalog)
         return reward
     }
 
@@ -310,6 +321,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
         }
         missions = daily
         dust += gained
+        gainReputation(catalog.economy.levels.missionReputation, catalog: catalog)
         return gained
     }
 }
@@ -318,6 +330,7 @@ extension PlayerState {
     private enum CodingKeys: String, CodingKey {
         case oyster, drawState, nextSerial, pearlCards, findCards, oystersOpened
         case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak, adRewards, login, stolenCard
+        case reputation, rewardedLevel, levelUp
     }
 
     /// Les anciennes sauvegardes (sans poussière, stock ni skins) se chargent avec des valeurs de départ.
@@ -340,6 +353,17 @@ extension PlayerState {
         adRewards = try container.decodeIfPresent(DailyCount.self, forKey: .adRewards)
         login = try container.decodeIfPresent(LoginState.self, forKey: .login) ?? .initial
         stolenCard = try container.decodeIfPresent(PearlCard.self, forKey: .stolenCard)
+        levelUp = try container.decodeIfPresent(LevelUp.self, forKey: .levelUp)
+        rewardedLevel = try container.decodeIfPresent(Int.self, forKey: .rewardedLevel) ?? 1
+        if let reputation = try container.decodeIfPresent(Int.self, forKey: .reputation) {
+            self.reputation = reputation
+        } else {
+            // Partie de la 1.0 (avant les niveaux) : réputation rétroactive, d'après la collection, fêtée en une fois.
+            reputation = 0
+            gainReputation(Self.retroactiveReputation(pearlCards: pearlCards, findCards: findCards, oystersOpened: oystersOpened,
+                                                      catalog: .shared))
+            levelUp?.retroactive = true
+        }
     }
 }
 

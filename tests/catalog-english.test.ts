@@ -3,6 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { APP_CONSUMABLES, APP_SKINS } from '../src/core/appEconomy';
 import { PEARLS } from '../src/core/catalog';
+import { RANKS } from '../src/core/levels';
 import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
 import { BOTTLE_MESSAGES, FINDS, FIND_ALBUMS } from '../src/core/finds';
 import { MARKS, OVERTONES, SHAPES } from '../src/core/pearlTraits';
@@ -30,5 +31,9 @@ describe('textes anglais du catalogue', () => {
   it('coquilles et produits de la boutique', () => {
     for (const skin of APP_SKINS) expect(filled(CATALOG_ENGLISH.skins[skin.id]?.name), skin.id).toBe(true);
     for (const product of APP_CONSUMABLES) expect(filled(CATALOG_ENGLISH.consumables[product.id]), product.id).toBe(true);
+  });
+
+  it('rangs', () => {
+    for (const rank of RANKS) expect(filled(CATALOG_ENGLISH.ranks[rank.id]), rank.id).toBe(true);
   });
 });

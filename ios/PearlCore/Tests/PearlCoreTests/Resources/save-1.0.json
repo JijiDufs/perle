@@ -1,0 +1,137 @@
+{
+  "drawState" : {
+    "sinceGoldenOrBetter" : 1
+  },
+  "dust" : 65,
+  "equippedSkin" : "lagon",
+  "findCards" : [
+    {
+      "findId" : "tong",
+      "foundAt" : 1760000360000,
+      "serial" : 7,
+      "value" : 6
+    }
+  ],
+  "login" : {
+    "bestStreak" : 1,
+    "calendarIndex" : 1,
+    "lastClaimDay" : "2026-10-21",
+    "streak" : 1
+  },
+  "missions" : {
+    "bonusClaimed" : false,
+    "day" : "2026-10-21",
+    "missions" : [
+      {
+        "claimed" : false,
+        "goal" : 3,
+        "kind" : "noCrack",
+        "progress" : 3
+      },
+      {
+        "claimed" : false,
+        "goal" : 1,
+        "kind" : "lustreS",
+        "progress" : 1
+      },
+      {
+        "claimed" : false,
+        "goal" : 1,
+        "kind" : "rare",
+        "progress" : 1
+      }
+    ]
+  },
+  "nextSerial" : 41,
+  "noCrackStreak" : 1,
+  "ownedSkins" : [
+    "lagon"
+  ],
+  "oyster" : {
+    "pearlId" : "rose",
+    "sizeMm" : 7.1,
+    "traits" : {
+      "overtone" : "lavande",
+      "seed" : 0.249,
+      "shape" : "presque-ronde"
+    }
+  },
+  "oystersOpened" : 40,
+  "pearlCards" : [
+    {
+      "cracked" : false,
+      "foundAt" : 1760000480000,
+      "lustre" : "S",
+      "pearlId" : "baroque",
+      "serial" : 9,
+      "sizeMm" : 7.6,
+      "traits" : {
+        "overtone" : "arc-en-ciel",
+        "seed" : 0.79,
+        "shape" : "baroque"
+      },
+      "value" : 38
+    },
+    {
+      "cracked" : false,
+      "foundAt" : 1760000540000,
+      "lustre" : "A",
+      "pearlId" : "white",
+      "serial" : 10,
+      "sizeMm" : 6.5,
+      "traits" : {
+        "mark" : "lune",
+        "overtone" : "creme",
+        "seed" : 0.719,
+        "shape" : "goutte"
+      },
+      "value" : 15
+    },
+    {
+      "cracked" : false,
+      "foundAt" : 1760000780000,
+      "lustre" : "A",
+      "pearlId" : "golden",
+      "serial" : 14,
+      "sizeMm" : 12.2,
+      "traits" : {
+        "overtone" : "dore",
+        "seed" : 0.74,
+        "shape" : "ronde"
+      },
+      "value" : 175
+    },
+    {
+      "cracked" : false,
+      "foundAt" : 1760000840000,
+      "lustre" : "B",
+      "pearlId" : "black",
+      "serial" : 15,
+      "sizeMm" : 12.4,
+      "traits" : {
+        "overtone" : "vert-paon",
+        "seed" : 0.978,
+        "shape" : "presque-ronde"
+      },
+      "value" : 88
+    },
+    {
+      "cracked" : false,
+      "foundAt" : 1760001260000,
+      "lustre" : "A",
+      "pearlId" : "rose",
+      "serial" : 22,
+      "sizeMm" : 8,
+      "traits" : {
+        "overtone" : "rose",
+        "seed" : 0.501,
+        "shape" : "ronde"
+      },
+      "value" : 27
+    }
+  ],
+  "stock" : {
+    "count" : 12,
+    "lastRefillAt" : 1760002340000
+  }
+}

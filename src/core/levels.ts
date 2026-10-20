@@ -45,9 +45,21 @@ export const MILESTONES: readonly Milestone[] = [
   { level: 50, label: 'Maison de haute joaillerie, collections signées', available: false },
 ];
 
+/**
+ * Départ accéléré (app iOS, `APP_LEVELS`) : au niveau 1, il ne faut que `factor` de la réputation habituelle ;
+ * l'écart se referme niveau après niveau, et à partir du niveau `levels` la courbe est celle de la webapp.
+ */
+export interface FastStart {
+  levels: number;
+  factor: number;
+}
+
 /** Réputation pour passer du niveau `level` au suivant. */
-export function xpToNext(level: number, tuning: Tuning): number {
-  return Math.round(tuning.levelBaseXp + tuning.levelGrowthXp * Math.pow(level, tuning.levelGrowthPower));
+export function xpToNext(level: number, tuning: Tuning, fastStart?: FastStart): number {
+  const factor = fastStart && level < fastStart.levels
+    ? fastStart.factor + ((1 - fastStart.factor) * (level - 1)) / (fastStart.levels - 1)
+    : 1;
+  return Math.round((tuning.levelBaseXp + tuning.levelGrowthXp * Math.pow(level, tuning.levelGrowthPower)) * factor);
 }
 
 export interface LevelProgress {
@@ -58,14 +70,14 @@ export interface LevelProgress {
   needed: number;
 }
 
-export function levelFromXp(xp: number, tuning: Tuning): LevelProgress {
+export function levelFromXp(xp: number, tuning: Tuning, fastStart?: FastStart): LevelProgress {
   let level = 1;
   let rest = Math.max(0, xp);
-  while (level < tuning.maxLevel && rest >= xpToNext(level, tuning)) {
-    rest -= xpToNext(level, tuning);
+  while (level < tuning.maxLevel && rest >= xpToNext(level, tuning, fastStart)) {
+    rest -= xpToNext(level, tuning, fastStart);
     level++;
   }
-  return { level, into: level >= tuning.maxLevel ? 0 : rest, needed: level >= tuning.maxLevel ? 0 : xpToNext(level, tuning) };
+  return { level, into: level >= tuning.maxLevel ? 0 : rest, needed: level >= tuning.maxLevel ? 0 : xpToNext(level, tuning, fastStart) };
 }
 
 export function rankForLevel(level: number): Rank {

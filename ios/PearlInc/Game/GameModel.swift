@@ -56,6 +56,12 @@ final class GameModel {
     private(set) var rescuedDust: Int?
     /// La carte affichée est la première de sa sorte (perle ou trouvaille).
     private(set) var revealIsNew = false
+    /// Réputation montrée par l'anneau de niveau : elle ne bouge qu'à l'arrivée de la carte (pendant le
+    /// suspense, l'anneau trahirait la rareté de la perle).
+    private(set) var shownReputation = 0
+    /// Dernier gain de réputation, pour le « +N » de l'anneau.
+    private(set) var reputationGain = 0
+    private(set) var reputationBump = 0
 
     /// Achats intégrés et pub récompensée (plateforme).
     let store = Store()
@@ -92,6 +98,7 @@ final class GameModel {
         // App fermée pendant la fuite du poisson : on rend la perle.
         _ = saved.resolveTheft(caught: true)
         player = saved
+        shownReputation = saved.reputation
         current = saved.oyster
         step = saved.oystersOpened
         engine = OpeningEngine(tuning: catalog.tuning, crackProtected: catalog.isCrackProtected(oystersOpened: saved.oystersOpened))
@@ -147,6 +154,29 @@ final class GameModel {
     /// Secondes avant la prochaine huître, nil si le stock est plein.
     func nextOysterIn(at date: Date) -> TimeInterval? {
         nextRefillIn(player.stock, now: date.timeIntervalSince1970 * 1000, tuning).map { $0 / 1000 }
+    }
+
+    var levelProgress: LevelProgress { catalog.levelProgress(reputation: shownReputation) }
+
+    /// La montée de niveau à fêter, seulement à un moment calme : huître posée, fermée, hors du tutoriel
+    /// (jamais pendant la révélation ni la carte).
+    var levelUpToShow: LevelUp? {
+        guard stage == .playing, phase == .closed, angle == 0, !inTutorial else { return nil }
+        return player.levelUp
+    }
+
+    /// La fête commence : haptique et son de récompense.
+    func celebrateLevelUp() {
+        haptics.reveal(tier: 2)
+        audio.reward()
+    }
+
+    /// La montée de niveau a été fêtée (bouton, ou sur le Duo : ouvrir le téléphone).
+    func acknowledgeLevelUp() {
+        guard player.levelUp != nil else { return }
+        player.acknowledgeLevelUp()
+        save()
+        audio.tap()
     }
 
     /// Le stock est vide : la marée remonte.
@@ -205,6 +235,8 @@ final class GameModel {
             if engine.phase != .opening { hingeDriving = false }
         case .sample(let angle):
             guard stage == .playing, thumb.distance == 0 || hingeDriving else { return }
+            // La fête s'est affichée téléphone fermé : l'ouvrir la referme, et ouvre l'huître.
+            if levelUpToShow != nil { acknowledgeLevelUp() }
             if engine.phase == .closed {
                 guard canOpen else { return }
                 haptics.prepare()
@@ -303,6 +335,7 @@ final class GameModel {
     /// Les skins achetés reviennent tout seuls (droits relus auprès d'Apple).
     func eraseLocalGame() {
         player = PlayerState.new(rng, tuning, now: Clock.nowMs)
+        shownReputation = 0
         calendarOffered()
         step = 0
         engine = OpeningEngine(tuning: tuning, crackProtected: catalog.isCrackProtected(oystersOpened: 0))
@@ -394,13 +427,14 @@ final class GameModel {
     func claimDaily() {
         guard let reward = player.claimDaily(day: Clock.dayKey()) else { return }
         if reward.dust > 0 { dustBump += 1 }
+        showReputation()
         haptics.reveal(tier: 1)
         audio.reward()
         save()
     }
 
     func claimMission(at index: Int) {
-        if let gained = player.claimMission(at: index) { gainedDust(gained) }
+        if let gained = player.claimMission(at: index) { gainedDust(gained); showReputation() }
     }
 
     func recordShare() {
@@ -417,6 +451,15 @@ final class GameModel {
     }
 
     private func save() { Storage.save(player) }
+
+    /// L'anneau rattrape la réputation du joueur, avec un « +N ».
+    private func showReputation() {
+        let gain = player.reputation - shownReputation
+        shownReputation = player.reputation
+        guard gain > 0 else { return }
+        reputationGain = gain
+        reputationBump += 1
+    }
 
     // MARK: - Moteur
 
@@ -496,6 +539,7 @@ final class GameModel {
             self.audio.setSuspense(false)
             self.audio.reveal(style, tier: tier)
             if tier >= 3 { self.flashAt = Date() }
+            self.showReputation()
             if case .pearl(let card) = reveal, self.player.stolenCard?.serial == card.serial {
                 self.beginTheft(reveal)
             } else {

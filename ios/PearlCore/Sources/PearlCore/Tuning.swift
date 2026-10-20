@@ -56,6 +56,17 @@ public struct Tuning: Codable, Sendable, Equatable {
     public var dustTier3: Int
     public var dustTier4: Int
     public var dustTier5: Int
+    /// Réputation : par huître ouverte, + par niveau de rareté, bonus de lustre S / A, première perle d'une sorte.
+    public var repOyster: Int
+    public var repPerTier: Int
+    public var repLustreS: Int
+    public var repLustreA: Int
+    public var repDiscovery: Int
+    /// Réputation pour passer du niveau n au suivant : base + croissance × n^puissance (voir `Catalog.xpToNext`).
+    public var levelBaseXp: Double
+    public var levelGrowthXp: Double
+    public var levelGrowthPower: Double
+    public var maxLevel: Int
 
     public func revealSuspenseMs(tier: Int) -> Double {
         switch tier {

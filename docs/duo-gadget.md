@@ -197,6 +197,7 @@ Choix de Jules (2026-10-08) : on peut **recharger ses huîtres** et **acheter de
 | Chaque mission du jour | 5 ✦ |
 | Les trois missions du jour terminées | + 10 ✦ |
 | Calendrier de connexion (jours 1 à 7) | 3 huîtres · 10 ✦ · 5 huîtres · 15 ✦ · 5 huîtres · 20 ✦ · 10 huîtres + 25 ✦ (`APP_CALENDAR`) |
+| Montée de niveau (1.1) | 5 ✦ (+ 5 huîtres) ; nouveau rang : + 20 ✦ (+ 10 huîtres) (`APP_LEVELS`) |
 
 **Ce que ça donne par jour** (une fois les doublons arrivés : environ 2,5 ✦ par huître revendue en moyenne)
 

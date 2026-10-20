@@ -17,6 +17,8 @@ export interface CatalogEnglish {
   marks: Readonly<Record<PearlMark, { label: string; description: string }>>;
   skins: Readonly<Record<string, { name: string; description: string }>>;
   consumables: Readonly<Record<string, string>>;
+  /** Titres des rangs (src/core/levels.ts). */
+  ranks: Readonly<Record<string, string>>;
 }
 
 export const CATALOG_ENGLISH: CatalogEnglish = {
@@ -111,5 +113,13 @@ export const CATALOG_ENGLISH: CatalogEnglish = {
     'app.pearlinc.dust.400': 'Pouch of gold dust',
     'app.pearlinc.dust.1200': 'Casket of gold dust',
     'app.pearlinc.dust.3000': 'Trunk of gold dust',
+  },
+  ranks: {
+    pecheur: 'Fisher',
+    perlier: 'Pearler',
+    artisan: 'Artisan',
+    joaillier: 'Jeweller',
+    maitre: 'Master jeweller',
+    maison: 'High jewellery house',
   },
 };
