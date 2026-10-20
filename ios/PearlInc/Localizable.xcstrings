@@ -1677,6 +1677,22 @@
         }
       }
     },
+    "Musique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Music"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Musique"
+          }
+        }
+      }
+    },
     "N°" : {
       "localizations" : {
         "en" : {
@@ -2948,6 +2964,22 @@
         }
       }
     },
+    "Sons" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sound effects"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sons"
+          }
+        }
+      }
+    },
     "Supprimer définitivement" : {
       "localizations" : {
         "en" : {
@@ -3453,6 +3485,151 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zone fragile : doucement"
+          }
+        }
+      }
+    },
+    "Un poisson ! Touche-le vite pour récupérer ta perle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fish! Tap it quickly to get your pearl back"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un poisson ! Touche-le vite pour récupérer ta perle"
+          }
+        }
+      }
+    },
+    "Un poisson a filé avec ta %@ !" : {
+      "comment" : "Le poisson voleur a emporté la perle",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fish swam off with your %@!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un poisson a filé avec ta %@ !"
+          }
+        }
+      }
+    },
+    "Ça arrive aux meilleurs pêcheurs. La prochaine fois, touche-le pendant qu’il s’enfuit." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It happens to the best of us. Next time, tap it while it gets away."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ça arrive aux meilleurs pêcheurs. La prochaine fois, touche-le pendant qu’il s’enfuit."
+          }
+        }
+      }
+    },
+    "Touche pour l’huître suivante" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap for the next oyster"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touche pour l’huître suivante"
+          }
+        }
+      }
+    },
+    "Nouvelle !" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvelle !"
+          }
+        }
+      }
+    },
+    "Rattrapée au vol ! + %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caught it! + %lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rattrapée au vol ! + %lld ✦"
+          }
+        }
+      }
+    },
+    "Poisson voleur, sur une perle ◆" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thief fish, on a ◆ pearl"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poisson voleur, sur une perle ◆"
+          }
+        }
+      }
+    },
+    "Il emporte la perle qu’on vient de trouver : touche-le pendant qu’il s’enfuit pour la récupérer." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It snatches the pearl you just found: tap it while it gets away to get it back."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il emporte la perle qu’on vient de trouver : touche-le pendant qu’il s’enfuit pour la récupérer."
+          }
+        }
+      }
+    },
+    "Attraper le poisson" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catch the fish"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attraper le poisson"
           }
         }
       }

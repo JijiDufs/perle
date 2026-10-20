@@ -13,6 +13,8 @@ struct PearlCardView: View {
 
     @Environment(GameModel.self) private var game
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Le doigt qui fait jouer la carte dans la lumière (`CardTilt`).
+    @Environment(\.cardLight) private var light
     let content: Content
     var width: CGFloat = 300
 
@@ -44,6 +46,7 @@ struct PearlCardView: View {
         .frame(width: width, height: height)
         .background(LinearGradient(colors: frame.colors.map { Color(hex: $0) }, startPoint: .topLeading, endPoint: .bottomTrailing))
         .overlay { if showsHolo { holo } }
+        .overlay { if let light { glare(light) } }
         .clipShape(RoundedRectangle(cornerRadius: 30 * s, style: .continuous))
         .shadow(color: .black.opacity(0.45), radius: 22 * s, y: 18 * s)
         .accessibilityElement(children: .combine)
@@ -170,11 +173,19 @@ struct PearlCardView: View {
         return GameText.traits(shape: shape, overtone: overtone, mark: mark)
     }
 
-    /// Reflet holographique qui balaie la carte (perles ◆◆◆ et plus).
+    /// Le reflet du doigt : une tache de lumière qui glisse sur la carte quand on l'incline.
+    private func glare(_ point: CGPoint) -> some View {
+        RadialGradient(colors: [.white.opacity(0.38), .white.opacity(0.1), .white.opacity(0)],
+                       center: UnitPoint(x: point.x, y: point.y), startRadius: 0, endRadius: width * 0.7)
+            .blendMode(.plusLighter)
+            .allowsHitTesting(false)
+    }
+
+    /// Reflet holographique qui balaie la carte (perles ◆◆◆ et plus) ; il suit le doigt quand on fait jouer la carte.
     private var holo: some View {
-        TimelineView(.animation(paused: reduceMotion)) { timeline in
+        TimelineView(.animation(paused: reduceMotion || light != nil)) { timeline in
             let t = timeline.date.timeIntervalSinceReferenceDate
-            let q = (t * 0.35).truncatingRemainder(dividingBy: 1.6) - 0.3
+            let q = light.map { ($0.x + $0.y) / 2 * 1.3 - 0.15 } ?? (t * 0.35).truncatingRemainder(dividingBy: 1.6) - 0.3
             let st = { (v: Double) in min(1, max(0, v)) }
             LinearGradient(stops: [
                 .init(color: .white.opacity(0), location: st(q - 0.15)),

@@ -67,6 +67,9 @@ public struct PlayerState: Codable, Sendable, Equatable {
     public var adRewards: DailyCount?
     /// Calendrier de connexion et série de jours.
     public var login: LoginState
+    /// La perle qu'un poisson vient de chiper : elle n'est pas dans la collection tant que le joueur
+    /// ne l'a pas rattrapé (`resolveTheft`).
+    public var stolenCard: PearlCard?
 
     /// Nouvelle partie : stock plein, skin de départ, première huître (celle du tutoriel) déjà posée.
     public static func new(_ rng: Rng, _ tuning: Tuning, now: Double, catalog: Catalog = .shared) -> PlayerState {
@@ -76,7 +79,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
             oyster: first.oyster, drawState: first.drawState, nextSerial: 1, pearlCards: [], findCards: [], oystersOpened: 0,
             dust: 0, stock: StockState(count: tuning.oysterStockMax, lastRefillAt: now),
             ownedSkins: starters, equippedSkin: starters.first ?? "", missions: nil, noCrackStreak: 0, adRewards: nil,
-            login: .initial
+            login: .initial, stolenCard: nil
         )
     }
 
@@ -100,9 +103,15 @@ public struct PlayerState: Codable, Sendable, Equatable {
     }
 
     /// L'huître en cours est ouverte : consomme une huître du stock (sauf celles du tutoriel, offertes),
-    /// crée sa carte, fait avancer les missions et pose la suivante.
-    public mutating func reveal(lustre: Lustre, cracked: Bool, now: Double, rng: Rng, tuning: Tuning, catalog: Catalog = .shared) -> Reveal {
-        if !isInTutorial(catalog: catalog), let consumed = consumeOyster(stock, now: now, tuning) { stock = consumed }
+    /// crée sa carte, fait avancer les missions et pose la suivante. Parfois, un poisson chipe la perle
+    /// (`stolenCard`) : elle n'entre dans la collection que si le joueur le rattrape. Le vol a son propre
+    /// générateur (`thiefRng`, nil = pas de poisson) : le tirage des huîtres reste celui de la webapp.
+    public mutating func reveal(lustre: Lustre, cracked: Bool, now: Double, rng: Rng, thiefRng: Rng? = nil, tuning: Tuning,
+                                catalog: Catalog = .shared) -> Reveal {
+        // Un vol resté en suspens (app fermée pendant la fuite) : on rend la perle.
+        _ = resolveTheft(caught: true, catalog: catalog)
+        let tutorial = isInTutorial(catalog: catalog)
+        if !tutorial, let consumed = consumeOyster(stock, now: now, tuning) { stock = consumed }
         let serial = nextSerial
         let opened = oyster
         let result: Reveal
@@ -139,7 +148,30 @@ public struct PlayerState: Codable, Sendable, Equatable {
         let next = nextOyster(oystersOpened: oystersOpened, drawState, rng, tuning, catalog: catalog)
         oyster = next.oyster
         drawState = next.drawState
+
+        if !tutorial, let thiefRng, case .pearl(let card) = result, Self.canBeStolen(card, catalog: catalog),
+           thiefRng() < catalog.economy.fishThief.chance {
+            pearlCards.removeLast()
+            stolenCard = card
+        }
         return result
+    }
+
+    /// Un poisson peut voler une perle ordinaire, sans marque rare.
+    static func canBeStolen(_ card: PearlCard, catalog: Catalog) -> Bool {
+        card.traits?.mark == nil && catalog.tier(of: card.pearlId) <= catalog.economy.fishThief.maxTier
+    }
+
+    /// Le joueur a touché le poisson à temps (la perle rejoint la collection, avec un peu de poussière d'or)
+    /// ou l'a laissé filer (elle est perdue). Renvoie la poussière d'or gagnée.
+    public mutating func resolveTheft(caught: Bool, catalog: Catalog = .shared) -> Int {
+        guard let card = stolenCard else { return 0 }
+        stolenCard = nil
+        guard caught else { return 0 }
+        pearlCards.append(card)
+        let bonus = catalog.economy.fishThief.catchBonusDust
+        dust += bonus
+        return bonus
     }
 
     // MARK: - Collection et comptoir
@@ -285,7 +317,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
 extension PlayerState {
     private enum CodingKeys: String, CodingKey {
         case oyster, drawState, nextSerial, pearlCards, findCards, oystersOpened
-        case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak, adRewards, login
+        case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak, adRewards, login, stolenCard
     }
 
     /// Les anciennes sauvegardes (sans poussière, stock ni skins) se chargent avec des valeurs de départ.
@@ -307,6 +339,7 @@ extension PlayerState {
         noCrackStreak = try container.decodeIfPresent(Int.self, forKey: .noCrackStreak) ?? 0
         adRewards = try container.decodeIfPresent(DailyCount.self, forKey: .adRewards)
         login = try container.decodeIfPresent(LoginState.self, forKey: .login) ?? .initial
+        stolenCard = try container.decodeIfPresent(PearlCard.self, forKey: .stolenCard)
     }
 }
 

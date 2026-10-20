@@ -31,6 +31,26 @@ public enum MissionKind: String, Codable, Sendable {
     case open, lustreA, lustreS, rare, noCrack, sell, share
 }
 
+/// Le poisson voleur : il chipe parfois une perle ordinaire juste après la révélation (src/core/appEconomy.ts).
+public struct FishThief: Codable, Sendable, Equatable {
+    /// Chance qu'une perle qui peut être volée le soit.
+    public let chance: Double
+    /// Rareté maximale (niveau) d'une perle qu'un poisson peut voler.
+    public let maxTier: Int
+    /// Poussière d'or quand on rattrape le poisson.
+    public let catchBonusDust: Int
+    /// Le poisson arrive sur la perle (ms), puis s'enfuit avec (ms) : le temps pour le toucher.
+    public let arriveMs: Double
+    public let fleeMs: Double
+    /// Tolérance autour du poisson pour le toucher, en part de la taille de l'huître.
+    public let hitRadius: Double
+
+    /// Le poisson peut encore être touché, `elapsedMs` après le début du vol.
+    public func canCatch(elapsedMs: Double) -> Bool {
+        elapsedMs >= 0 && elapsedMs <= arriveMs + fleeMs
+    }
+}
+
 public struct Economy: Codable, Sendable {
     public let oysterDustPrice: Int
     public let goldCoinDust: Int
@@ -46,6 +66,7 @@ public struct Economy: Codable, Sendable {
     public let sellDustByTier: [Int]
     public let rareMissionTier: Int
     public let missions: [MissionTemplate]
+    public let fishThief: FishThief
     public internal(set) var skins: [AppSkin]
     public internal(set) var consumables: [AppConsumable]
 

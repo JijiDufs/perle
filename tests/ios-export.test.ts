@@ -6,7 +6,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS } from '../src/core/catalog';
 import { INITIAL_LOGIN, streakIfClaimed, type LoginState } from '../src/core/daily';
 import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
@@ -19,7 +19,7 @@ import { pearlValue } from '../src/core/player';
 import { MARKS, OVERTONES, OVERTONE_WEIGHTS, SHAPES, SHAPE_WEIGHTS } from '../src/core/pearlTraits';
 import { seededRng } from '../src/core/rng';
 import { scriptedPearl, TUTORIAL_PEARLS } from '../src/core/tutorial';
-import { DEFAULT_TUNING } from '../src/tuning';
+import { APP_AUDIO, DEFAULT_TUNING } from '../src/tuning';
 import { thumbDistanceToAngle } from '../src/input/thumb';
 
 const ROOT = resolve(__dirname, '..');
@@ -36,6 +36,7 @@ const perPearl = (table: Readonly<Record<string, Readonly<Record<string, number 
 function catalog() {
   return {
     tuning: DEFAULT_TUNING,
+    audio: APP_AUDIO,
     pearls: PEARLS,
     findProbability: FIND_PROBABILITY,
     findTierWeights: pairs(FIND_TIER_WEIGHTS),
@@ -57,6 +58,7 @@ function catalog() {
       skins: APP_SKINS,
       consumables: APP_CONSUMABLES,
       calendar: APP_CALENDAR,
+      fishThief: APP_FISH_THIEF,
     },
     markWeights: pairs(Object.fromEntries(Object.entries(MARKS).map(([id, mark]) => [id, mark.weight]))),
     english: CATALOG_ENGLISH,

@@ -32,6 +32,8 @@ struct OysterArt {
     /// Taille de la valve (L) : nil = calculée d'après la place disponible.
     var length: Double?
     var pose: Pose = .thumb
+    /// Un poisson a emporté la perle : la valve est vide, il ne reste qu'un reste de lumière.
+    var pearlTaken = false
 
     /// Comment l'huître est posée. Au pouce : vue de dessus, charnière en haut, le couvercle se soulève
     /// vers le haut de l'écran. Sur l'iPhone Duo, comme le prototype de pearl-inc.app : couchée,
@@ -90,6 +92,11 @@ struct OysterArt {
     }
 
     private var isClam: Bool { if case .clam = look { true } else { false } }
+
+    /// Rayon de la perle (le poisson voleur la dessine à la même taille dans sa bouche).
+    func pearlRadius(_ L: Double) -> Double {
+        L * (0.05 + sizeMm * 0.0055) * (isClam ? 1.1 : 1)
+    }
     private var isFind: Bool { findId != nil }
 
     func draw(_ c: inout GraphicsContext, size: CGSize) {
@@ -125,12 +132,13 @@ struct OysterArt {
 
         let flicker = isFind ? 0.8 + 0.2 * sin(t * 9) * sin(t * 2.3) : pearl?.id == "cursed" ? 0.75 + 0.25 * sin(t * 6) : 1
         let tier = min(max(revealTier, 0), 3)
-        var radius = isFind ? L * 0.12 : L * (0.05 + sizeMm * 0.0055)
-        if isClam { radius *= 1.1 }
+        var radius = isFind ? L * 0.12 : pearlRadius(L)
         // Suspense : la perle palpite, de plus en plus vite selon la rareté.
         let pulse = revealed && suspense < 1 ? 1 + 0.1 * suspense * max(0, sin(t * (6 + Double(tier) * 3))) : 1
         radius *= pulse
-        if let findId {
+        if pearlTaken {
+            // Le poisson l'a prise.
+        } else if let findId {
             // Une trouvaille ne se fêle pas (comme la webapp : drawFind à 0,2 L).
             FindArt.draw(c, pearlCenter.x, pearlCenter.y, L * 0.2 * pulse, id: findId, t: t)
         } else if let pearl {
@@ -145,7 +153,7 @@ struct OysterArt {
         if dim > 0.001 { c.fill(interior, with: .color(rgba(0, 6, 8, dim * 0.94))) }
 
         // Halo de la perle, puis couvercle par-dessus.
-        let strength = Self.glowStrength[tier] * flicker * (cracked && !isFind ? 0.35 : 1)
+        let strength = Self.glowStrength[tier] * flicker * (cracked && !isFind ? 0.35 : 1) * (pearlTaken ? 0.2 : 1)
         PearlArt.glow(&c, pearlCenter.x, pearlCenter.y, radius * (4 + Double(tier) * 0.8), glowColor,
                       (revealed ? 1 : smoothstep(1, 25, angle)) * strength, additive: false)
 
@@ -214,7 +222,7 @@ struct OysterArt {
         let tier = Double(min(max(revealTier, 0), 3))
         let flicker = isFind ? 0.8 + 0.2 * sin(time * 9) * sin(time * 2.3) : pearl?.id == "cursed" ? 0.75 + 0.25 * sin(time * 6) : 1
         let center = layout.pearlCenter
-        PearlArt.glow(&c, center.x, center.y, layout.L * (1.4 + tier * 0.5), glowColor, suspense * 0.5 * flicker, additive: false)
+        PearlArt.glow(&c, center.x, center.y, layout.L * (1.4 + tier * 0.5), glowColor, suspense * 0.5 * flicker * (pearlTaken ? 0.25 : 1), additive: false)
         if flash > 0 { c.fill(Path(CGRect(origin: .zero, size: size)), with: .color(rgba(255, 250, 235, flash * 0.7))) }
     }
 

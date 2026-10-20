@@ -4,6 +4,66 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-20 · Jules · Claude Code · branche `jules/ios-app`
+
+Dernières touches de la 1.0 avant l'envoi en vérification (demande de Jules) : le poisson voleur, la carte qu'on fait jouer dans la lumière, et une vérification d'AdMob. **Build 4.**
+
+**Fait**
+- **Poisson voleur** (décision §6) : `APP_FISH_THIEF` dans `src/core/appEconomy.ts` (exporté, `Economy.fishThief`) ; Core : `PlayerState.reveal(…, thiefRng:)` décide du vol avec son propre générateur (les cas de référence des huîtres restent ceux de la webapp : un tirage partagé les décalait), `stolenCard` sauvegardé, `resolveTheft(caught:)` ; 7 tests Swift (`FishThiefTests`) et 1 test d'économie. App : étapes `.theft` / `.stolen` dans `GameModel` (le poisson arrive en 0,75 s, s'enfuit en 2,8 s ; toucher = `catchFish()`), dessin `Art/ThiefFishArt.swift` (poisson orange à rayures, perle dans la bouche, sillage de bulles, plouf), bulle « Un poisson ! Touche-le vite… », panneau `StolenView` s'il file, son `fishChime` (`APP_AUDIO`), ligne dans les probabilités (boutique, réglages, collection), action VoiceOver « Attraper le poisson ». Outil de test Debug : `-AlwaysFishThief`.
+- **Carte qu'on fait jouer** (`Features/CardTilt.swift`) : rester appuyé et bouger le doigt incline la carte sous le doigt (reflet qui suit, holo des rares piloté par le doigt), elle reste au milieu et revient à plat avec un rebond ; toucher bref = huître suivante. Aussi sur la carte agrandie de la collection.
+- **Arrivée de la carte** : gerbe d'étincelles de la couleur de la perle (`RevealBurst`, rayons dès ◆◆◆), badge « Nouvelle ! » (première de sa sorte), badge « Rattrapée au vol ! + 2 ✦ ».
+- **AdMob vérifié** : App ID et bloc d'annonces du même éditeur (`pub-1299710250358184`) ; la build Release ne contient que le vrai bloc (pas celui de test) ; `app-ads.txt` en ligne (pearl-inc.app → www, 200) et identique à `site/app-ads.txt` ; 50 SKAdNetwork ; pas d'ATT (pubs non personnalisées). **Corrigé** : au lancement, le calendrier s'ouvrait avant le formulaire de consentement de Google, qui passait alors par-dessus (le retour au premier plan l'ouvrait sans attendre) ; il attend maintenant le consentement (`RewardedAds.consentAnswered`).
+- Textes FR / EN dans `Localizable.xcstrings` ; notes de revue (`docs/app-store/fiche.md`) : le poisson voleur.
+- Vérifié au simulateur (iPhone 17 Pro) : vol puis fuite (panneau), vol puis poisson touché (carte « Rattrapée », + 2 ✦), carte inclinée au doigt ; `npm test`, `npm run build`, `swift test`, builds Debug et Release.
+
+**À faire**
+- Archiver et envoyer le **build 4**, le choisir à la place du 3 dans la version 1.0, puis envoyer en vérification.
+- App Store Connect, « Confidentialité de l'app » : vérifier que les données collectées par AdMob sont déclarées (identifiant de l'appareil, données publicitaires, interactions, diagnostics, position approximative ; « publicité tierce », non liées, pas de pistage).
+- AdMob : tant que l'app n'est pas publiée et associée à sa fiche dans AdMob, les vraies pubs peuvent manquer (« Pub en préparation… », bouton grisé, pas de blocage).
+- Essayer sur un vrai iPhone : la fenêtre pour toucher le poisson (2,8 s, tolérance 0,2 × la taille de l'huître), l'inclinaison de la carte (16°), le son du poisson.
+
+**Fragile**
+- Le vol ne doit jamais consommer le générateur des huîtres (`rng`) : sinon le test `memesPremieresHuitresQueLeWeb` casse.
+- Le texte « Un poisson a filé avec ta … » suppose un nom de perle féminin (toutes les perles ◆ le sont).
+
+## 2026-10-19 (suite 14) · Jules · Claude Code · branche `jules/ios-app`
+
+App Store Connect rempli (dans le Chrome de Jules), **soumission prête mais pas envoyée** (choix de Jules).
+
+**Fait**
+- Supabase : fournisseur **Apple activé**, Client IDs = `app.pearlinc.PearlInc`, sans secret (inutile en natif). Vérifié : `apple: true`.
+- **Build 2** archivé (20 h 01) et envoyé, attaché à la version 1.0. Il est antérieur à la musique et aux sons (suite 13) : **il ne les contient pas**.
+- 7 achats intégrés : capture de revue (`docs/app-store/achats/`, 1320 × 2868 : Apple refuse les tailles qui ne sont pas celles d'un écran) et nom / description en anglais. Disponibilité qui manquait sur `dust.400` et `skin.or` : 174 pays, sans la Belgique.
+- Version 1.0 : description FR à jour (Duo, rendez-vous du jour), notes de revue en anglais, contact de revue (Mathys), publication **manuelle** ; fiche **English (U.S.)** complète (sous-titre « Find the rare pearl », texte, mots-clés, URLs, politique `/en/privacy/`) ; 8 visuels FR et 8 EN en 1206 × 2622 (le seul format demandé, iPhone 6,3″).
+- Brouillon de soumission : app 1.0 (2) + 7 achats. Il reste à cliquer « Envoyer pour vérification ».
+
+**À savoir**
+- Pour sortir avec la musique : build 3 (incrémenter `CURRENT_PROJECT_VERSION`), l'envoyer, le choisir à la place du 2 dans la version, puis envoyer.
+- Prix réels dans App Store Connect (≠ `ios/PearlInc.storekit`, qui ne sert qu'aux tests Xcode) : poussière 1,99 / 3,99 / 8,99 $, huître d'or 8,99 $.
+- Partage familial des skins non activé (irréversible une fois activé ; le fichier StoreKit le met à « oui »).
+- Chrome remplit tout seul certains formulaires (Supabase, coordonnées) avec des identifiants enregistrés : relire avant d'enregistrer.
+
+## 2026-10-19 (suite 13) · Jules · Claude Code · branche `jules/ios-app`
+
+Musique d'ambiance et effets sonores dans l'app iOS (demande de Jules), **générés par code** comme la webapp (choix de Jules), sans aucun fichier audio.
+
+**Fait**
+- `src/tuning.ts` : `APP_AUDIO` (volumes, durées, fréquences, accords de la musique), exporté dans `catalog.json` (`audio`) ; `PearlCore/AudioTuning.swift` le lit (+ 2 tests). Les effets reprennent les sons de la webapp (`src/platform/audio.ts`) : mêmes fréquences, mêmes durées.
+- `Platform/SoundSynth.swift` : bruit filtré (tic, pop, fêlure, couvercle), carillons, battement du suspense. `Platform/AmbientMusic.swift` : musique du lagon fabriquée en continu (nappe Do maj7 → La m7 → Fa maj7 → Sol 6, ressac, notes de carillon au hasard), oscillateurs à rotation (pas de `sin()` par échantillon). `Platform/Audio.swift` : session **ambient** (muet en mode silencieux, se mêle à la musique du joueur ; notre musique se tait si le joueur écoute déjà quelque chose), réverbération légère, relance après interruption ou changement d'écouteurs.
+- Moments (`GameModel`, aux mêmes endroits que l'haptique) : tic de résistance (monte d'un ton à chaque tic), pop, fêlure (pas sur une huître vide), couvercle, battements du suspense gradués, carillon de révélation par rareté (maudite qui grince, vide qui descend, trouvaille qui sautille) ; poussière d'or (revente, mission), récompenses (calendrier, pub), achats, coquille équipée, changement d'onglet. La musique baisse pendant le suspense et se coupe pendant une pub. Le rythme des battements (`pulseEveryMs`, 350 ms) sert aussi à l'haptique (c'était un nombre écrit dans `GameModel`).
+- Réglages : interrupteurs **Musique** et **Sons** (FR / EN), mémorisés (`pearlinc.settings.music`, `pearlinc.settings.sounds`), activés par défaut.
+- Vérifié : rendu hors ligne des niveaux (musique ≈ moitié du carillon, rien ne sature) ; au simulateur iPhone 17 Pro, ouverture jusqu'à la carte sans erreur, Réglages ; processeur : ≈ +1 % pour la musique en Release (≈ +15 % en Debug, non optimisé) ; `npm test`, `npm run build`, `swift test`, build Xcode.
+
+**À faire**
+- **Écouter** sur un vrai iPhone (je n'entends pas le simulateur) : équilibre musique / effets, volume du ressac, battement du suspense. Tout se règle dans `APP_AUDIO` puis `npm run ios:export`.
+- Webapp : pas de musique (inchangée).
+
+**Fragile**
+- Le rendu de la musique tourne sur le fil audio : ne rien y allouer ni appeler du fil principal (`AmbientMusic.render`).
+- Une vraie pub AdMob peut changer la session audio : `setAdShowing(false)` la remet en « ambient » au retour.
+
+---
+
 ## 2026-10-19 (suite 12) · Jules · Claude Code · branche `jules/ios-app`
 
 Visuels de la fiche App Store, en français et en anglais.

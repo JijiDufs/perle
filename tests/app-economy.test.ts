@@ -1,6 +1,6 @@
 // Garde-fous de l'économie de l'app iOS (docs/duo-gadget.md §6 quater).
 import { describe, expect, it } from 'vitest';
-import { APP_CONSUMABLES, APP_ECONOMY, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS, pearlTier } from '../src/core/catalog';
 
 /** Poussière moyenne par huître si tout est en double. */
@@ -20,6 +20,18 @@ describe('économie de l’app iOS', () => {
     const days = benitier.dustPrice! / regularDay;
     expect(days).toBeGreaterThan(14);
     expect(days).toBeLessThan(35);
+  });
+
+  it('le poisson voleur ne prend que des perles ordinaires, de temps en temps', () => {
+    expect(APP_FISH_THIEF.maxTier).toBeLessThanOrEqual(1);
+    const stealable = PEARLS.filter((p) => p.glow !== null && pearlTier(p.id) <= APP_FISH_THIEF.maxTier);
+    expect(stealable.every((p) => !p.goldenOrBetter)).toBe(true);
+    // Une huître sur 12 à 25 environ : une surprise, pas une punition.
+    const share = stealable.reduce((sum, p) => sum + p.probability, 0) * (1 - FIND_PROBABILITY) * APP_FISH_THIEF.chance;
+    expect(share).toBeGreaterThan(0.04);
+    expect(share).toBeLessThan(0.085);
+    // On a le temps de le toucher.
+    expect(APP_FISH_THIEF.fleeMs).toBeGreaterThanOrEqual(2000);
   });
 
   it('les pubs d’une journée rapportent moins que « Marée haute »', () => {

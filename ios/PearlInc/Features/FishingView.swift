@@ -10,6 +10,8 @@ struct FishingView: View {
     @State private var showSettings = false
     /// La bulle sur le stock (première huître après le tutoriel) s'efface toute seule.
     @State private var stockTipExpired = false
+    /// Taille de la scène, pour savoir si le doigt touche le poisson voleur.
+    @State private var sceneSize = CGSize.zero
 
     var body: some View {
         ZStack {
@@ -23,9 +25,13 @@ struct FishingView: View {
                     oyster.draw(&context, size: size)
                     lagoon.drawOverlay(&context, size: size)
                     oyster.drawRevealEffects(&context, size: size)
+                    if let fish = thief(at: timeline.date, size: size, oyster: oyster, layout: layout) {
+                        fish.draw(&context, pearl: oyster.pearl, pearlRadius: oyster.pearlRadius(layout.L), glow: oyster.glowColor)
+                    }
                 }
             }
             .ignoresSafeArea()
+            .onGeometryChange(for: CGSize.self) { $0.size } action: { sceneSize = $0 }
             // Outil de test (`-SimulatedFold`) : un pli au milieu de l'écran, comme l'écran intérieur du Duo.
             .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
                 if HingeInput.simulatedFold { game.foldChanged(x: width / 2) }
@@ -33,13 +39,16 @@ struct FishingView: View {
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0)
-                    .onChanged { game.drag(translation: $0.translation.height) }
+                    .onChanged { value in
+                        if case .theft = game.stage { tryToCatch(at: value.location) } else { game.drag(translation: value.translation.height) }
+                    }
                     .onEnded { _ in game.endDrag() }
             )
             .accessibilityElement()
             .accessibilityLabel("Huître fermée")
             .accessibilityHint("Glisse le doigt vers le haut pour l'ouvrir doucement.")
             .accessibilityAction(named: "Ouvrir l'huître") { game.openForAccessibility() }
+            .accessibilityAction(named: "Attraper le poisson") { game.catchFish() }
 
             // Premières minutes : la main fantôme montre le geste sur la toute première huître.
             if showsGhostHand {
@@ -74,6 +83,28 @@ struct FishingView: View {
                     TideOutView(date: timeline.date)
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
+            }
+
+            if case .theft = game.stage {
+                VStack {
+                    CoachBubble(text: String(localized: "Un poisson ! Touche-le vite pour récupérer ta perle"))
+                        .padding(.horizontal, 24)
+                        .padding(.top, 70)
+                    Spacer()
+                }
+                .besideFold(game.foldX)
+                .allowsHitTesting(false)
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
+            if case .stolen(let reveal) = game.stage {
+                Color(hex: 0x02141A).opacity(0.3).ignoresSafeArea()
+                    .transition(.opacity)
+                    .allowsHitTesting(false)
+                StolenView(reveal: reveal)
+                    .besideFold(game.foldX)
+                    .transition(.scale(scale: 0.6).combined(with: .opacity))
+                    .onTapGesture { withAnimation(.snappy) { game.nextOyster() } }
             }
 
             if case .card(let reveal) = game.stage {
@@ -150,6 +181,26 @@ struct FishingView: View {
         return nil
     }
 
+    /// Le poisson voleur, pendant qu'il emporte la perle.
+    private func thief(at date: Date, size: CGSize, oyster: OysterArt, layout: OysterArt.Layout) -> ThiefFishArt? {
+        guard let elapsed = game.theftElapsedMs(at: date) else { return nil }
+        let fish = game.fishThief
+        return ThiefFishArt(elapsedMs: elapsed, arriveMs: fish.arriveMs, fleeMs: fish.fleeMs, target: layout.pearlCenter, L: layout.L,
+                            size: size, fromLeft: game.shapeSeed % 2 == 0, time: date.timeIntervalSinceReferenceDate)
+    }
+
+    /// Le doigt touche-t-il le poisson ? (Le Core décide s'il est encore temps.)
+    private func tryToCatch(at point: CGPoint) {
+        let date = Date()
+        let oyster = art(at: date)
+        let layout = OysterArt.layout(size: sceneSize, look: oyster.look, pose: oyster.pose)
+        guard let fish = thief(at: date, size: sceneSize, oyster: oyster, layout: layout) else { return }
+        let center = fish.position(at: fish.elapsedMs)
+        if hypot(point.x - center.x, point.y - center.y) <= fish.length * 0.5 + layout.L * game.fishThief.hitRadius {
+            withAnimation(.spring(duration: 0.45, bounce: 0.35)) { game.catchFish() }
+        }
+    }
+
     private func art(at date: Date) -> OysterArt {
         let oyster = game.current
         let look: PearlLook? = if game.find != nil || oyster.pearlId == "empty" { nil }
@@ -170,7 +221,8 @@ struct FishingView: View {
             time: date.timeIntervalSinceReferenceDate,
             look: SkinLook(skinId: game.player.equippedSkin),
             shapeSeed: game.shapeSeed,
-            pose: pose
+            pose: pose,
+            pearlTaken: game.pearlTaken(at: date)
         )
     }
 

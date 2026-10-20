@@ -57,6 +57,8 @@ public struct Weighted: Codable, Sendable, Equatable {
 
 public struct Catalog: Codable, Sendable {
     public let tuning: Tuning
+    /// Musique et effets sonores de l'app (src/tuning.ts, `APP_AUDIO`).
+    public let audio: AudioTuning
     public internal(set) var pearls: [PearlType]
     public let findProbability: Double
     public let findTierWeights: [Weighted]
