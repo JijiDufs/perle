@@ -273,8 +273,8 @@ final class GameModel {
         case .sample(let angle):
             guard stage == .playing, thumb.distance == 0 || hingeDriving else { return }
             // La fête (ou la fenêtre des succès) s'est affichée téléphone fermé : l'ouvrir la referme, et ouvre l'huître.
-            if levelUpToShow != nil { acknowledgeLevelUp() }
-            if achievementCatchUpToShow != nil { acknowledgeAchievementCatchUp() }
+            // Une seule fenêtre à la fois : la suivante attend le prochain moment calme.
+            if levelUpToShow != nil { acknowledgeLevelUp() } else if achievementCatchUpToShow != nil { acknowledgeAchievementCatchUp() }
             if engine.phase == .closed {
                 guard canOpen else { return }
                 haptics.prepare()
@@ -301,6 +301,7 @@ final class GameModel {
     func catchFish() {
         guard case .theft(let reveal) = stage, let elapsed = theftElapsedMs(at: Date()), fishThief.canCatch(elapsedMs: elapsed) else { return }
         let gained = player.catchThief()
+        showReputation()
         rescuedDust = gained
         if gained > 0 { dustBump += 1 }
         save()

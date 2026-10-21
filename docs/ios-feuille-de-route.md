@@ -82,7 +82,7 @@ Durée indicative : 1 à 2 semaines par lot, revue d'Apple comprise. Une seule v
 |---|---|---|
 | 1.1 | Barème de réputation de l'app : le même que la webapp ? | **Tranché (Jules, 2026-10-20) : plus rapide au début.** Les 10 premiers niveaux vont plus vite pour accrocher, puis la courbe rejoint celle de la webapp (niveau 50 en 4 à 6 mois). Récompenses de niveau en économie lente (surtout des huîtres, peu de ✦) |
 | 1.1 | Joueurs de la 1.0 : repartent du niveau 1, ou réputation rétroactive d'après leur collection ? | **Tranché (Jules, 2026-10-20) : rétroactive**, calculée d'après la collection, avec une seule fenêtre « Tu es niveau N » (pas de célébrations en rafale) |
-| 1.4 | D'où viennent les écrins dans l'app ? | Niveaux, 7e jour du calendrier, bonus des trois missions, poussière d'or. **Jamais vendus contre de l'argent réel** (tirage payant, cf. la Belgique) |
+| 1.4 | D'où viennent les écrins dans l'app ? | **Tranché (Jules, 2026-10-21) : les quatre sources** : montées de niveau (tous les 3 niveaux et à chaque rang), 7e jour du calendrier et bonus des trois missions, poussière d'or au comptoir, et 1 toutes les X huîtres. Toutes ensemble, c'est généreux : X et le prix en ✦ sont à caler dans le lot pour rester dans l'économie lente (§6 quater). **Jamais vendus contre de l'argent réel** (tirage payant, cf. la Belgique) |
 | 1.4 | La charnière ouvre l'écrin comme l'huître ? | Oui : tenir le téléphone immobile dans l'angle d'éclat, c'est le geste le plus naturel du Duo |
 | 1.6 | Textes des lettres de Rose en anglais | Traduction relue par un anglophone |
 | 1.7 | Sertissage sur le Duo | Refermer le téléphone = refermer l'établi (`SettingSample` est déjà prêt pour ça) |
