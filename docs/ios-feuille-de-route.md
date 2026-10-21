@@ -15,30 +15,24 @@
 
 ## 2. Les lots, dans l'ordre
 
-Durée indicative : 1 à 2 semaines par lot, revue d'Apple comprise. Une seule version peut être en revue à la fois : on ne prépare l'envoi du lot suivant qu'une fois le précédent accepté.
+> **Revu le 2026-10-21 après l'audit** (`docs/audit-app-ios.md`) : l'économie faisait boule de neige (≈ 205 huîtres à la première séance, les 7 perles en 2 à 3 jours, puis la falaise vers J3). On rééquilibre avant d'envoyer quoi que ce soit, et les lots déjà faits (niveaux, collection, succès) partent **ensemble** dans la 1.1 : une seule revue Apple, un seul équilibrage. Le « une fonction à la fois » se fait dans l'app (déblocage par niveau), pas par version.
 
-| Version | Lot | Ce que le joueur voit | Repris de la webapp |
+Une seule version peut être en revue à la fois : on ne prépare l'envoi du lot suivant qu'une fois le précédent accepté.
+
+| Version | Lot | Ce que le joueur voit | État |
 |---|---|---|---|
-| **1.0.1** | Lancement | Vraies pubs AdMob ; réglages de la charnière d'après les retours TestFlight Duo ; corrections des premiers avis | — |
-| **1.1** | Niveaux et réputation | Anneau de niveau dans la barre du haut, « +N » à chaque gain, célébration de montée de niveau avec récompenses, rangs (Pêcheur → …), fiche « Ma progression » | `core/levels.ts`, `features/progress/` |
-| **1.2** | Collection enrichie | Encyclopédie (toucher une perle filtre ses cartes), tri rareté / récentes / valeur, carte agrandie, carnet des variantes (formes, reflets, marques), album des trouvailles | `core/collection.ts`, `core/pearlTraits.ts`, `features/collection/` |
-| **1.3** | Succès, titres, missions enrichies | Succès bronze / argent / or (dont secrets), titre porté sous le rang, bannière au moment calme ; nouvelles sortes de missions du jour | `core/achievements.ts`, `core/quests.ts`, `core/progression.ts` |
-| **1.4** | Écrins et bijoux | Onglet Écrins (salon de joaillier), écrin en cuir qui s'ouvre au pouce **ou à la charnière**, angle d'éclat, éclat parfait, variantes Aurore / Nuit / Givre, garantie ★, probabilités avant ouverture, volet Bijoux de la collection | `core/glint.ts`, `core/jewels.ts`, `art/ecrin3d.ts`, `art/salon.ts`, `features/ecrin/` |
-| **1.5** | Expertise à la loupe | Loupe au-dessus du doigt sur les pierres précieuses, inclusions, certificat Excellent / Bon | `core/expertise.ts`, `features/expertise/` |
-| **1.6** | La Maison de Rose | 4e onglet : maison de poupée vue en coupe, lettres de grand-mère Rose débloquées par niveau, pièces qui se rallument, maison qui grandit avec le rang | `core/house.ts`, `art/house*.ts`, `features/house/` |
-| **1.7** | L'Atelier | Carnet de recettes, établi, **sertissage** (pincer deux doigts ; sur le Duo, refermer le téléphone), étoiles, volet Créations, vitrine de la Maison | `core/atelier.ts`, `core/setting.ts`, `input/pinch.ts`, `features/atelier/` |
-| **1.8** | Les lagons (1) | Carte des marées ; La Crique (le lagon actuel) + **le Jardin d'algues** débloqué par niveau, avec ses perles et trouvailles propres | idée de `features/map/` (concept seulement, voir §4) |
-| **1.9** | Les lagons (2) | L'Épave des échos | idem |
-| **1.10** | Les lagons (3) | La Faille d'azur | idem |
+| **1.1** | Niveaux, collection, succès + **Confiance et équilibrage** | Ce qui est fait (anneau, fête de niveau, « Ma progression », encyclopédie et carnet, albums, succès et titres) ; plus d'huîtres en cascade ; le poisson ne fait plus rien perdre ; la garantie se voit ; la boutique ne vend plus de hasard ; on joue tout de suite (pas de mur de connexion, consentement à la première pub) ; une ligne d'objectif à la Pêche ; fenêtres une à la fois ; mesure d'usage | lots 1.1 à 1.3 faits ; équilibrage en cours |
+| **1.2** | Écrins et bijoux | Onglet Écrins, écrin en cuir au pouce ou **à la charnière (vu de profil sur le Duo)**, angle d'éclat, variantes, garantie ★, volet Bijoux ; sources recalées sur l'économie corrigée | fait (branche `claude/ios-1-4-ecrins-20174f`), à recaler après la 1.1 |
+| **1.3** | La Maison de Rose | 4e onglet, maison de poupée, lettres de Rose par niveau, maison qui grandit avec le rang : le moteur J7–J30 | — |
+| **1.4** | L'Atelier | Recettes, sertissage (pincer ; sur le Duo, refermer le téléphone), étoiles, créations : le puits à doublons et à poussière | — |
+| **1.5** | Compte utile | Sauvegarde en ligne, Game Center (classement), coquille Première marée par lien à code | — |
+| **1.6** | Lagon 2 : le Jardin d'algues | Carte des marées, nouvelles perles et trouvailles à chasser quand la Crique est complète | — |
+| **1.7** | Expertise à la loupe | Mini-jeu des pierres précieuses (peut rejoindre un lot « Écrins 2 ») | — |
+| **1.8+** | Lagons 3 et 4, nouvelles coquilles | Contenu régulier | — |
 
-**Pourquoi cet ordre**
-- **Niveaux d'abord** : c'est la colonne vertébrale. Tout ce qui suit se débloque par niveau, et le joueur sent enfin qu'il avance.
-- **Collection ensuite** : petit lot, sans économie nouvelle, qui rode la façon de travailler ; et il prépare les volets Bijoux et Créations.
-- **Succès avant les écrins** : ils donnent des objectifs avec le contenu actuel, et les écrins y ajouteront les leurs.
-- **Écrins en 1.4**, le plus gros lot : il touche le geste, la charnière, l'économie et un nouvel onglet. S'il est trop gros, on le coupe en deux (écrin et bijoux ; puis variantes rares).
-- **Les lagons en dernier** : c'est du contenu nouveau, qui n'existe pas dans la webapp et demande des décisions (§4).
+**Pourquoi cet ordre** : d'abord une base saine (équité, rythme) ; puis le contenu qui fait revenir longtemps (écrins, Maison) et le puits qui donne un sens aux doublons (Atelier) ; l'Expertise, un raffinement, après.
 
-**Missions** : l'app a déjà 3 missions du jour. Chaque lot ajoute ses sortes de missions (ouvrir un écrin, lire une lettre, sertir…) dans `MissionKind`, sans en changer le nombre.
+**Missions** : chaque lot ajoute ses sortes de missions dans `MissionKind`, sans en changer le nombre, et seulement si elles sont faisables chaque jour.
 
 ## 3. Ce que chaque lot doit cocher (définition de « fini »)
 
