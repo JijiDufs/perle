@@ -11,6 +11,7 @@ public enum AchievementTier: String, Codable, Sendable {
 public enum AchievementMeasure: String, Codable, Sendable {
     case oysters, emptyOysters, pearlKinds, pearl, finds, find, album, mark, overtone, shapes
     case lustreS, crackFreeStreak, loginStreak, sold, missions, level, fishCaught
+    case jewels, jewel, jewelRarities, jewelTypes, perfectGlints, variants
 }
 
 public struct Achievement: Codable, Sendable, Identifiable, Equatable {
@@ -62,8 +63,29 @@ public struct PlayerStats: Codable, Sendable, Equatable {
     public var sold = 0
     public var missions = 0
     public var fishCaught = 0
+    /// Éclats parfaits, et variantes rares révélées (écrins, 1.4).
+    public var perfectGlints = 0
+    public var variants = 0
 
     public init() {}
+
+    private enum CodingKeys: String, CodingKey {
+        case emptyOysters, lustreS, bestCrackFreeStreak, sold, missions, fishCaught, perfectGlints, variants
+    }
+
+    /// Les statistiques d'une version précédente se chargent avec 0 pour les nouvelles.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let count = { (key: CodingKeys) in try c.decodeIfPresent(Int.self, forKey: key) ?? 0 }
+        emptyOysters = try count(.emptyOysters)
+        lustreS = try count(.lustreS)
+        bestCrackFreeStreak = try count(.bestCrackFreeStreak)
+        sold = try count(.sold)
+        missions = try count(.missions)
+        fishCaught = try count(.fishCaught)
+        perfectGlints = try count(.perfectGlints)
+        variants = try count(.variants)
+    }
 }
 
 /// Partie d'avant les succès : ceux déjà remplis au chargement, montrés en une seule fenêtre (récompenses déjà données).
@@ -114,6 +136,12 @@ extension PlayerState {
         case .missions: stats.missions
         case .level: catalog.levelProgress(reputation: reputation).level
         case .fishCaught: stats.fishCaught
+        case .jewels: jewelCards.count
+        case .jewel: jewelCards.contains { $0.jewel.rarityId == target } ? 1 : 0
+        case .jewelRarities: Set(jewelCards.map(\.jewel.rarityId)).count
+        case .jewelTypes: Set(jewelCards.map(\.jewel.type)).intersection(catalog.jewels.mainTypes).count
+        case .perfectGlints: stats.perfectGlints
+        case .variants: stats.variants
         }
         return (min(done, achievement.goal), achievement.goal)
     }

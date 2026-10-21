@@ -7,18 +7,23 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ACHIEVEMENTS } from '../src/core/achievements';
-import { APP_ACHIEVEMENT_REWARDS, APP_ACHIEVEMENTS, APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_LEVELS, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { APP_ACHIEVEMENT_REWARDS, APP_ACHIEVEMENTS, APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_ECRINS, APP_FISH_THIEF, APP_LEVELS, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS } from '../src/core/catalog';
 import { INITIAL_LOGIN, streakIfClaimed, type LoginState } from '../src/core/daily';
 import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
-import { RARITY_SYMBOLS } from '../src/core/jewels';
+import {
+  CUT_WEIGHTS, DIADEM_MIN_TIER, DIADEM_WEIGHT, FORCED_CUTS, GEM_CUTS, GEM_WORDS, INITIAL_JEWEL_DRAW, JEWEL_NAMES, JEWEL_RARITIES,
+  JEWEL_STYLES, JEWEL_VARIANTS, LEGEND_NAME, METAL_OPTIONS, RARITY_SYMBOLS, rollJewel, rollRareVariant, roundValue, STYLE_WEIGHTS,
+  TOC_VARIANTS, TYPE_MULTIPLIER, TYPE_WEIGHTS, JEWEL_TYPE_LABELS, MAIN_JEWEL_TYPES,
+} from '../src/core/jewels';
+import { GlintEngine, rollSweetAngle } from '../src/core/glint';
 import { levelFromXp, RANKS, reputationFor, xpToNext } from '../src/core/levels';
 import { INITIAL_DRAW_STATE } from '../src/core/draw';
 import { FIND_TIER_WEIGHTS, FINDS, FIND_ALBUMS, BOTTLE_MESSAGES } from '../src/core/finds';
 import { OpeningEngine, type OpeningSample } from '../src/core/opening';
 import { createOyster, oysterWith } from '../src/core/oyster';
-import { rarityRank, sortCards } from '../src/core/collection';
-import { pearlValue, type PearlCard, type PlayerState } from '../src/core/player';
+import { jewelRarityRank, rarityRank, sortCards, sortJewelCards } from '../src/core/collection';
+import { pearlValue, type JewelCard, type PearlCard, type PlayerState } from '../src/core/player';
 import { INITIAL_STATS } from '../src/core/progression';
 import { MARKS, OVERTONES, OVERTONE_WEIGHTS, SHAPES, SHAPE_WEIGHTS } from '../src/core/pearlTraits';
 import { seededRng } from '../src/core/rng';
@@ -68,6 +73,28 @@ function catalog() {
       levels: APP_LEVELS,
       achievements: APP_ACHIEVEMENTS,
       achievementRewards: APP_ACHIEVEMENT_REWARDS,
+      ecrins: APP_ECRINS,
+    },
+    // Les bijoux des écrins (src/core/jewels.ts) : les poids en listes de paires, car leur ordre compte pour le tirage.
+    jewels: {
+      rarities: JEWEL_RARITIES,
+      tocVariants: TOC_VARIANTS,
+      legendName: LEGEND_NAME,
+      types: JEWEL_TYPE_LABELS,
+      mainTypes: MAIN_JEWEL_TYPES,
+      typeMultipliers: TYPE_MULTIPLIER,
+      cuts: GEM_CUTS,
+      styles: Object.fromEntries(Object.entries(JEWEL_STYLES).map(([id, style]) => [id, style.value])),
+      metalOptions: Object.fromEntries(Object.entries(METAL_OPTIONS).map(([id, options]) => [id, options!.map(([color, name, weight]) => ({ color, name, weight }))])),
+      cutWeights: Object.fromEntries(Object.entries(CUT_WEIGHTS).map(([id, weights]) => [id, pairs(weights!)])),
+      typeWeights: Object.fromEntries(Object.entries(TYPE_WEIGHTS).map(([ornament, weights]) => [ornament, pairs(weights)])),
+      styleWeights: Object.fromEntries(Object.entries(STYLE_WEIGHTS).map(([ornament, byType]) => [ornament, Object.fromEntries(Object.entries(byType).map(([type, weights]) => [type, pairs(weights!)]))])),
+      diademMinTier: DIADEM_MIN_TIER,
+      diademWeight: DIADEM_WEIGHT,
+      forcedCuts: FORCED_CUTS,
+      gemWords: GEM_WORDS,
+      names: JEWEL_NAMES,
+      variants: JEWEL_VARIANTS,
     },
     markWeights: pairs(Object.fromEntries(Object.entries(MARKS).map(([id, mark]) => [id, mark.weight]))),
     english: CATALOG_ENGLISH,
@@ -212,7 +239,57 @@ function parity() {
     return { oystersOpened: n, pearlCards, findIds, stats, bestStreak, progress };
   });
 
+  // Écrins : bijou, angle d'éclat et variante tirés à l'avance (src/core/player.ts, ensureEcrin), garantie ★ comprise.
+  const ecrinRng = seededRng(77);
+  let jewelDraw = INITIAL_JEWEL_DRAW;
+  const ecrins = Array.from({ length: 300 }, () => {
+    const rolled = rollJewel(jewelDraw, ecrinRng, DEFAULT_TUNING);
+    jewelDraw = rolled.state;
+    return {
+      jewel: rolled.jewel,
+      sweetAngle: rollSweetAngle(ecrinRng, DEFAULT_TUNING),
+      variantIfPerfect: rollRareVariant(ecrinRng, DEFAULT_TUNING),
+      sinceStarOrBetter: jewelDraw.sinceStarOrBetter,
+    };
+  });
+  // Valeur de la carte : ×1,5 sur un éclat parfait, ×2 avec une variante (recordEcrin).
+  const jewelValues = ecrins.slice(0, 60).map((ecrin, i) => {
+    const perfect = i % 2 === 0;
+    const variant = perfect ? ecrin.variantIfPerfect : null;
+    const multiplier = variant ? DEFAULT_TUNING.glintRareVariantMultiplier : perfect ? DEFAULT_TUNING.glintPerfectMultiplier : 1;
+    return { base: ecrin.jewel.value, perfect, variant, value: roundValue(ecrin.jewel.value * multiplier) };
+  });
+  const jewelCards = ecrins.slice(0, 40).map((ecrin, i) => ({ serial: i + 1, rarityId: ecrin.jewel.rarityId, value: jewelValues[i].value }));
+  const jewelSorts = (['rarity', 'recent', 'value'] as const).map((sort) => ({
+    sort,
+    serials: sortJewelCards(jewelCards.map((c) => ({ serial: c.serial, value: c.value, jewel: { rarityId: c.rarityId } })) as unknown as JewelCard[], sort).map((c) => c.serial),
+  }));
+  const jewelRarityRanks = JEWEL_RARITIES.map((j) => ({ rarityId: j.id, rank: jewelRarityRank(j.id) }));
+
+  // Moteur de l'écrin : mesures (push) et images sans mouvement (tick), comme le pouce immobile.
+  type GlintStep = { push: OpeningSample } | { tick: number };
+  const glintCase = (name: string, sweetAngle: number, steps: GlintStep[]) => {
+    const engine = new GlintEngine(DEFAULT_TUNING, sweetAngle);
+    const events = steps.map((step) => ('push' in step ? engine.push(step.push) : engine.tick(step.tick)).map((e) => e.type));
+    if (name.startsWith('relâché')) engine.release();
+    return { name, sweetAngle, steps, events, phase: engine.phase, perfect: engine.perfect, holdMs: engine.holdMs, closeness: engine.closeness };
+  };
+  const rampTo = (from: number, to: number, startMs: number, steps: number, stepMs: number): GlintStep[] =>
+    ramp(from, to, steps).map((angle, i) => ({ push: { angle, time: startMs + i * stepMs } }));
+  const holdAt = (angle: number, startMs: number, frames: number): GlintStep[] => [
+    { push: { angle, time: startMs } },
+    ...Array.from({ length: frames }, (_, i) => ({ tick: startMs + (i + 1) * 16 })),
+  ];
+  const glints = [
+    glintCase('tenu sur l’angle d’éclat', 80, [...rampTo(0, 80, 0, 40, 30), ...holdAt(80, 1300, 70), ...rampTo(80, 150, 2500, 20, 30)]),
+    glintCase('passé trop vite', 80, rampTo(0, 150, 0, 30, 16)),
+    glintCase('tenu trop loin', 100, [...rampTo(0, 80, 0, 40, 30), ...holdAt(80, 1300, 70)]),
+    glintCase('hésitant', 70, [...rampTo(0, 72, 0, 30, 30), ...holdAt(72, 950, 20), ...rampTo(72, 90, 1300, 4, 30), ...holdAt(70, 1450, 80)]),
+    glintCase('relâché pendant la résistance', 80, rampTo(0, 10, 0, 5, 30)),
+  ];
+
   return {
+    ecrinSeed: 77, ecrins, jewelValues, jewelSorts, jewelRarityRanks, glints,
     rngSeed: 2026, rngValues, oysterSeed: 42, oysters, tutorialSeed: 7, tutorialOysters, openings, thumbAngles, values, logins,
     xpToNextLevels, levelProgress, reputations, collectionCards, cardSorts, rarityRanks, achievementStates,
   };

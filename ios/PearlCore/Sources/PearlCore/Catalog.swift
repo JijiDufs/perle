@@ -77,6 +77,8 @@ public struct Catalog: Codable, Sendable {
     /// Rangs de prestige (src/core/levels.ts), du Pêcheur à la Maison de haute joaillerie.
     public internal(set) var ranks: [Rank]
     public internal(set) var economy: Economy
+    /// Les bijoux des écrins (src/core/jewels.ts) ; voir Jewels.swift.
+    public internal(set) var jewels: JewelCatalog
     /// Textes anglais du contenu (src/core/catalogEnglish.ts) ; voir `localized(_:)`.
     public let english: CatalogEnglish?
 

@@ -1,14 +1,15 @@
 // Garde-fous de l'économie de l'app iOS (docs/duo-gadget.md §6 quater).
 import { describe, expect, it } from 'vitest';
 import { ACHIEVEMENTS } from '../src/core/achievements';
-import { APP_ACHIEVEMENT_REWARDS, APP_ACHIEVEMENTS, APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_LEVELS, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { APP_ACHIEVEMENT_REWARDS, APP_ACHIEVEMENTS, APP_CONSUMABLES, APP_ECONOMY, APP_ECRINS, APP_FISH_THIEF, APP_LEVELS, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { JEWEL_RARITIES } from '../src/core/jewels';
 import { INITIAL_LOGIN } from '../src/core/daily';
 import { FIND_ALBUMS, FINDS } from '../src/core/finds';
 import { MARKS, OVERTONES } from '../src/core/pearlTraits';
 import type { PlayerState } from '../src/core/player';
 import { INITIAL_STATS } from '../src/core/progression';
 import { FIND_PROBABILITY, PEARLS, pearlTier } from '../src/core/catalog';
-import { levelFromXp, xpToNext } from '../src/core/levels';
+import { levelFromXp, RANKS, xpToNext } from '../src/core/levels';
 import { DEFAULT_TUNING as t } from '../src/tuning';
 
 /** Poussière moyenne par huître si tout est en double. */
@@ -105,7 +106,7 @@ describe('économie de l’app iOS', () => {
   it('chaque succès vise quelque chose qui existe', () => {
     const targets: Partial<Record<string, readonly string[]>> = {
       pearl: PEARLS.map((p) => p.id), find: FINDS.map((f) => f.id), album: FIND_ALBUMS.map((a) => a.id),
-      mark: Object.keys(MARKS), overtone: Object.keys(OVERTONES),
+      mark: Object.keys(MARKS), overtone: Object.keys(OVERTONES), jewel: JEWEL_RARITIES.map((j) => j.id),
     };
     for (const a of APP_ACHIEVEMENTS) {
       const ids = targets[a.measure];
@@ -116,12 +117,46 @@ describe('économie de l’app iOS', () => {
     }
   });
 
-  it('tous les succès réunis rapportent surtout des huîtres, moins d’un quart du bénitier en poussière', () => {
+  // 1.3 : moins d'un quart ; les succès d'écrins (1.4) les portent à ≈ 27 %, sur des mois de jeu.
+  it('tous les succès réunis rapportent surtout des huîtres, moins de 30 % du bénitier en poussière', () => {
     const rewards = APP_ACHIEVEMENTS.map((a) => APP_ACHIEVEMENT_REWARDS[a.tier]);
     const dust = rewards.reduce((sum, r) => sum + r.dust, 0);
     const oysters = rewards.reduce((sum, r) => sum + r.oysters, 0) + APP_ACHIEVEMENTS.filter((a) => a.album).length * APP_ACHIEVEMENT_REWARDS.albumOysters;
-    expect(dust).toBeLessThan(APP_SKINS.find((s) => s.id === 'benitier')!.dustPrice! / 4);
+    expect(dust).toBeLessThan(APP_SKINS.find((s) => s.id === 'benitier')!.dustPrice! * 0.3);
     expect(oysters * APP_ECONOMY.oysterDustPrice).toBeGreaterThan(5 * dust);
+  });
+
+  it('un écrin coûte 10 huîtres de poussière, un à trois jours de revente', () => {
+    expect(APP_ECRINS.dustPrice).toBe(10 * APP_ECONOMY.oysterDustPrice);
+    const missions = APP_ECONOMY.missionsPerDay * APP_ECONOMY.missionRewardDust + APP_ECONOMY.missionBonusDust;
+    const regularDay = 30 * dustPerOyster + missions;
+    expect(APP_ECRINS.dustPrice / regularDay).toBeGreaterThan(1);
+    expect(APP_ECRINS.dustPrice / regularDay).toBeLessThan(3);
+    // Revendre le bijou d'un écrin rapporte bien moins que son prix : pas de boucle écrin → poussière → écrin.
+    const resale = JEWEL_RARITIES.reduce((sum, j) => sum + j.probability * APP_SELL_DUST_BY_TIER[j.tier], 0);
+    expect(resale * 20).toBeLessThan(APP_ECRINS.dustPrice);
+    // Jamais contre de l'argent réel : aucun produit de la boutique ne donne d'écrin.
+    for (const product of APP_CONSUMABLES) expect(Object.keys(product)).not.toContain('ecrins');
+  });
+
+  it('les niveaux donnent quelques écrins la première semaine, puis environ un par semaine', () => {
+    const perOyster = PEARLS.reduce((sum, p) => sum + p.probability * (p.glow === null ? t.repOyster
+      : t.repOyster + t.repPerTier * pearlTier(p.id) + t.repLustreA / 2), 0);
+    const regularDay = 30 * perOyster + APP_ECONOMY.missionsPerDay * APP_LEVELS.missionReputation + APP_LEVELS.calendarReputation;
+    const ecrinsAt = (level: number) => (level % APP_ECRINS.levelEvery === 0 ? 1 : 0) + (RANKS.some((r) => r.level === level && level > 1) ? APP_ECRINS.rankEcrins : 0);
+    const weekly: number[] = [];
+    let level = 1;
+    for (let week = 1; week <= 12; week++) {
+      const reached = levelFromXp(regularDay * 7 * week, t, APP_LEVELS.fastStart).level;
+      let ecrins = 0;
+      for (let l = level + 1; l <= reached; l++) ecrins += ecrinsAt(l);
+      weekly.push(ecrins);
+      level = reached;
+    }
+    expect(weekly[0]).toBeGreaterThanOrEqual(3);
+    const later = weekly.slice(4).reduce((a, b) => a + b, 0) / weekly.slice(4).length;
+    expect(later).toBeGreaterThan(0.4);
+    expect(later).toBeLessThan(1.5);
   });
 
   it('un seul skin offert au départ', () => {

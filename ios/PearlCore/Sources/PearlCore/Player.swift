@@ -86,6 +86,14 @@ public struct PlayerState: Codable, Sendable, Equatable {
     public var achievementCatchUp: AchievementCatchUp?
     /// Titre porté : l'identifiant du succès qui le donne (nil : aucun).
     public var title: String?
+    /// Écrins à ouvrir (montées de niveau, poussière d'or), sans compter celui posé.
+    public var ecrins: Int
+    /// L'écrin posé, tiré à l'avance et sauvegardé (invariant 5).
+    public var currentEcrin: PendingEcrin?
+    public var jewelDraw: JewelDrawState
+    public var jewelCards: [JewelCard]
+    /// Partie d'avant les écrins (1.1 à 1.3) : écrins des niveaux déjà franchis, annoncés en une fenêtre.
+    public var ecrinCatchUp: Int?
 
     /// Nouvelle partie : stock plein, skin de départ, première huître (celle du tutoriel) déjà posée.
     public static func new(_ rng: Rng, _ tuning: Tuning, now: Double, catalog: Catalog = .shared) -> PlayerState {
@@ -96,7 +104,8 @@ public struct PlayerState: Codable, Sendable, Equatable {
             dust: 0, stock: StockState(count: tuning.oysterStockMax, lastRefillAt: now),
             ownedSkins: starters, equippedSkin: starters.first ?? "", missions: nil, noCrackStreak: 0, adRewards: nil,
             login: .initial, stolenCard: nil, reputation: 0, rewardedLevel: 1, levelUp: nil,
-            stats: PlayerStats(), achievements: [], unseenAchievements: [], achievementCatchUp: nil, title: nil
+            stats: PlayerStats(), achievements: [], unseenAchievements: [], achievementCatchUp: nil, title: nil,
+            ecrins: 0, currentEcrin: nil, jewelDraw: .initial, jewelCards: [], ecrinCatchUp: nil
         )
     }
 
@@ -244,17 +253,94 @@ public struct PlayerState: Codable, Sendable, Equatable {
         return gained
     }
 
-    /// Revend tous les doublons (voir `sellableDuplicates`). Renvoie la poussière gagnée.
+    /// Revend tous les doublons, perles et bijoux (voir `sellableDuplicates`, `sellableJewelDuplicates`).
+    /// Renvoie la poussière gagnée.
     public mutating func sellAllDuplicates(catalog: Catalog = .shared) -> Int {
         let sold = sellableDuplicates()
-        let gained = sold.reduce(0) { $0 + catalog.sellDust($1.pearlId) }
-        let serials = Set(sold.map(\.serial))
+        let soldJewels = sellableJewelDuplicates()
+        let gained = sold.reduce(0) { $0 + catalog.sellDust($1.pearlId) } + soldJewels.reduce(0) { $0 + catalog.sellDust(jewel: $1.jewel.rarityId) }
+        let serials = Set(sold.map(\.serial) + soldJewels.map(\.serial))
         pearlCards.removeAll { serials.contains($0.serial) }
+        jewelCards.removeAll { serials.contains($0.serial) }
         dust += gained
-        stats.sold += sold.count
-        missions?.advance(.sell, by: sold.count)
+        stats.sold += serials.count
+        missions?.advance(.sell, by: serials.count)
         unlockAchievements(catalog: catalog)
         return gained
+    }
+
+    /// Nombre de bijoux possédés d'une rareté (encyclopédie).
+    public func count(ofJewel rarityId: String) -> Int {
+        jewelCards.filter { $0.jewel.rarityId == rarityId }.count
+    }
+
+    /// Les bijoux qu'on peut revendre d'un coup : on garde le plus bel exemplaire de chaque rareté
+    /// et tous les bijoux à éclat parfait (ou à variante rare).
+    public func sellableJewelDuplicates() -> [JewelCard] {
+        var kept = Set<Int>()
+        for rarityId in Set(jewelCards.map(\.jewel.rarityId)) {
+            let best = jewelCards.filter { $0.jewel.rarityId == rarityId }
+                .max { ($0.value, -$0.serial) < ($1.value, -$1.serial) }
+            if let best { kept.insert(best.serial) }
+        }
+        return jewelCards.filter { !kept.contains($0.serial) && !$0.perfect }
+    }
+
+    /// Revend un bijou. Jamais le dernier exemplaire d'une rareté. Renvoie la poussière gagnée.
+    public mutating func sellJewel(serial: Int, catalog: Catalog = .shared) -> Int? {
+        guard let card = jewelCards.first(where: { $0.serial == serial }), count(ofJewel: card.jewel.rarityId) > 1 else { return nil }
+        jewelCards.removeAll { $0.serial == serial }
+        let gained = catalog.sellDust(jewel: card.jewel.rarityId)
+        dust += gained
+        stats.sold += 1
+        missions?.advance(.sell)
+        unlockAchievements(catalog: catalog)
+        return gained
+    }
+
+    // MARK: - Écrins
+
+    /// Pose un écrin s'il en reste à ouvrir et qu'aucun n'est posé : bijou, angle d'éclat et variante tirés maintenant.
+    public mutating func ensureEcrin(rng: Rng, catalog: Catalog = .shared) {
+        guard currentEcrin == nil, ecrins > 0 else { return }
+        let rolled = catalog.rollJewel(jewelDraw, rng)
+        currentEcrin = PendingEcrin(jewel: rolled.jewel, sweetAngle: catalog.rollSweetAngle(rng), variantIfPerfect: catalog.rollRareVariant(rng))
+        jewelDraw = rolled.state
+        ecrins -= 1
+    }
+
+    /// L'écrin posé est ouvert : sa carte (×1,5 sur un éclat parfait, ×2 avec la variante), la réputation,
+    /// les statistiques et les succès.
+    public mutating func recordEcrin(perfect: Bool, now: Double, catalog: Catalog = .shared) -> JewelCard? {
+        guard let pending = currentEcrin else { return nil }
+        let variant = perfect ? pending.variantIfPerfect : nil
+        let t = catalog.tuning
+        let multiplier = variant != nil ? t.glintRareVariantMultiplier : perfect ? t.glintPerfectMultiplier : 1
+        let card = JewelCard(serial: nextSerial, jewel: pending.jewel, value: roundJewelValue(pending.jewel.value * multiplier),
+                             perfect: perfect, variant: variant, foundAt: now)
+        let discovery = count(ofJewel: pending.jewel.rarityId) == 0
+        currentEcrin = nil
+        nextSerial += 1
+        jewelCards.append(card)
+        if perfect { stats.perfectGlints += 1 }
+        if variant != nil { stats.variants += 1 }
+        gainReputation(catalog.reputationForEcrin(perfect: perfect, discovery: discovery), catalog: catalog)
+        unlockAchievements(catalog: catalog)
+        return card
+    }
+
+    /// Un écrin acheté au comptoir avec la poussière d'or.
+    public mutating func buyEcrin(catalog: Catalog = .shared) -> Bool {
+        let price = catalog.economy.ecrins.dustPrice
+        guard dust >= price else { return false }
+        dust -= price
+        ecrins += 1
+        return true
+    }
+
+    /// La fenêtre « des écrins t'attendent » a été vue.
+    public mutating func acknowledgeEcrinCatchUp() {
+        ecrinCatchUp = nil
     }
 
     // MARK: - Dépenser la poussière d'or
@@ -368,6 +454,7 @@ extension PlayerState {
         case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak, adRewards, login, stolenCard
         case reputation, rewardedLevel, levelUp
         case stats, achievements, unseenAchievements, achievementCatchUp, title
+        case ecrins, currentEcrin, jewelDraw, jewelCards, ecrinCatchUp
     }
 
     /// Les anciennes sauvegardes (sans poussière, stock ni skins) se chargent avec des valeurs de départ.
@@ -398,6 +485,12 @@ extension PlayerState {
         unseenAchievements = try container.decodeIfPresent([String].self, forKey: .unseenAchievements) ?? []
         achievementCatchUp = try container.decodeIfPresent(AchievementCatchUp.self, forKey: .achievementCatchUp)
         title = try container.decodeIfPresent(String.self, forKey: .title)
+        let savedEcrins = try container.decodeIfPresent(Int.self, forKey: .ecrins)
+        ecrins = savedEcrins ?? 0
+        currentEcrin = try container.decodeIfPresent(PendingEcrin.self, forKey: .currentEcrin)
+        jewelDraw = try container.decodeIfPresent(JewelDrawState.self, forKey: .jewelDraw) ?? .initial
+        jewelCards = try container.decodeIfPresent([JewelCard].self, forKey: .jewelCards) ?? []
+        ecrinCatchUp = try container.decodeIfPresent(Int.self, forKey: .ecrinCatchUp)
         if let reputation = try container.decodeIfPresent(Int.self, forKey: .reputation) {
             self.reputation = reputation
         } else {
@@ -406,6 +499,18 @@ extension PlayerState {
             gainReputation(Self.retroactiveReputation(pearlCards: pearlCards, findCards: findCards, oystersOpened: oystersOpened,
                                                       catalog: .shared))
             levelUp?.retroactive = true
+        }
+        // Partie des 1.1 à 1.3 : les écrins des niveaux déjà franchis, une seule fois. Avec la fête de niveau si elle
+        // attend encore (une seule fenêtre), sinon dans leur propre fenêtre. (Une partie 1.0 les a eus ci-dessus.)
+        if savedEcrins == nil, container.contains(.reputation), rewardedLevel > 1 {
+            let owed = (2...rewardedLevel).reduce(0) { $0 + Catalog.shared.levelReward($1).ecrins }
+            ecrins = owed
+            if owed > 0, var up = levelUp {
+                up.ecrins = (up.ecrins ?? 0) + owed
+                levelUp = up
+            } else if owed > 0 {
+                ecrinCatchUp = owed
+            }
         }
         // Partie d'avant les succès (1.0 à 1.2) : ceux déjà remplis sont donnés maintenant, montrés en une fenêtre.
         if savedStats == nil { unlockAchievements(catchUp: true) }

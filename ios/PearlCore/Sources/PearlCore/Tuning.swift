@@ -44,6 +44,20 @@ public struct Tuning: Codable, Sendable, Equatable {
     public var coachTipMs: Double
     /// La bannière d'un succès obtenu s'efface au bout de (ms).
     public var achievementBannerMs: Double
+    /// Écrin : plage (°) de l'angle d'éclat caché, écart toléré, écart au-delà duquel rien ne scintille.
+    public var glintMinAngle: Double
+    public var glintMaxAngle: Double
+    public var glintTolerance: Double
+    public var glintSparkleRange: Double
+    /// Écrin : temps (ms) à tenir immobile sur l'angle d'éclat, et vitesse (°/s) qui compte comme immobile.
+    public var glintHoldMs: Double
+    public var glintMaxVelocity: Double
+    /// Valeur d'un éclat parfait (×1,5), chance et valeur d'une variante rare (×2).
+    public var glintPerfectMultiplier: Double
+    public var glintRareVariantChance: Double
+    public var glintRareVariantMultiplier: Double
+    /// Écrins d'affilée sans bijou ★ ou mieux avant que le suivant soit garanti.
+    public var ecrinPityThreshold: Int
     /// Huîtres d'affilée sans perle dorée ou mieux avant que la suivante soit garantie.
     public var pityThreshold: Int
     /// Stock d'huîtres maximum, et minutes pour qu'une huître revienne.
@@ -64,6 +78,9 @@ public struct Tuning: Codable, Sendable, Equatable {
     public var repLustreS: Int
     public var repLustreA: Int
     public var repDiscovery: Int
+    /// Réputation d'un écrin ouvert, et bonus d'éclat parfait.
+    public var repEcrin: Int
+    public var repPerfect: Int
     /// Réputation pour passer du niveau n au suivant : base + croissance × n^puissance (voir `Catalog.xpToNext`).
     public var levelBaseXp: Double
     public var levelGrowthXp: Double

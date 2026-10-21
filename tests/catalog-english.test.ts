@@ -7,6 +7,7 @@ import { RANKS } from '../src/core/levels';
 import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
 import { BOTTLE_MESSAGES, FINDS, FIND_ALBUMS } from '../src/core/finds';
 import { MARKS, OVERTONES, SHAPES } from '../src/core/pearlTraits';
+import { GEM_CUTS, GEM_WORDS, JEWEL_NAMES, JEWEL_RARITIES, JEWEL_TYPE_LABELS, JEWEL_VARIANTS, METAL_OPTIONS, TOC_VARIANTS } from '../src/core/jewels';
 
 const filled = (text: string | undefined) => typeof text === 'string' && text.trim().length > 0;
 
@@ -44,5 +45,27 @@ describe('textes anglais du catalogue', () => {
 
   it('rangs', () => {
     for (const rank of RANKS) expect(filled(CATALOG_ENGLISH.ranks[rank.id]), rank.id).toBe(true);
+  });
+
+  it('bijoux : raretés, métaux, tailles, noms et variantes', () => {
+    const en = CATALOG_ENGLISH.jewels;
+    for (const j of JEWEL_RARITIES) {
+      expect(filled(en.rarities[j.id]?.label), j.id).toBe(true);
+      expect(filled(en.rarities[j.id]?.flavor), j.id).toBe(filled(j.flavor));
+      expect(filled(en.metals[j.metalName]), j.metalName).toBe(true);
+    }
+    expect(en.tocVariants).toHaveLength(TOC_VARIANTS.length);
+    for (const variant of TOC_VARIANTS) expect(filled(en.metals[variant.metalName]), variant.metalName).toBe(true);
+    for (const options of Object.values(METAL_OPTIONS)) for (const [, name] of options!) expect(filled(en.metals[name]), name).toBe(true);
+    for (const v of JEWEL_VARIANTS) {
+      expect(filled(en.variants[v.id]?.label) && filled(en.variants[v.id]?.flavor), v.id).toBe(true);
+      expect(filled(en.metals[v.metalName]), v.metalName).toBe(true);
+    }
+    for (const id of Object.keys(GEM_CUTS)) expect(filled(en.cuts[id as keyof typeof GEM_CUTS]), id).toBe(true);
+    for (const id of Object.keys(JEWEL_TYPE_LABELS)) expect(filled(en.types[id as keyof typeof JEWEL_TYPE_LABELS]), id).toBe(true);
+    expect(Object.keys(en.gemWords).sort()).toEqual(Object.keys(GEM_WORDS).sort());
+    for (const [ornament, names] of Object.entries(JEWEL_NAMES)) {
+      expect(Object.keys(en.names[ornament as keyof typeof JEWEL_NAMES]).sort(), ornament).toEqual(Object.keys(names).sort());
+    }
   });
 });

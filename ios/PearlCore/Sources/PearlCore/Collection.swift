@@ -28,6 +28,26 @@ extension Catalog {
         }
     }
 
+    /// Rang de rareté d'un bijou : 0 = le plus précieux. Par niveau (toc 0 … légende 5), pas par probabilité :
+    /// le toc est plus rare que l'argent mais ne vaut rien. À niveau égal, le moins probable d'abord.
+    public func jewelRarityRank(_ rarityId: String) -> Int {
+        let ranked = jewels.rarities.enumerated().sorted { (-$0.element.tier, $0.element.probability, $0.offset) < (-$1.element.tier, $1.element.probability, $1.offset) }
+        return ranked.firstIndex { $0.element.id == rarityId } ?? jewels.rarities.count
+    }
+
+    /// Même tri que les perles, pour les cartes de bijoux (`sortJewelCards`).
+    public func sortJewelCards(_ cards: [JewelCard], _ sort: CardSort) -> [JewelCard] {
+        let rank = Dictionary(uniqueKeysWithValues: jewels.rarities.map { ($0.id, jewelRarityRank($0.id)) })
+        return cards.sorted { a, b in
+            let rarity = (rank[a.jewel.rarityId] ?? 0, rank[b.jewel.rarityId] ?? 0)
+            switch sort {
+            case .recent: return a.serial > b.serial
+            case .value: return (-a.value, rarity.0, -a.serial) < (-b.value, rarity.1, -b.serial)
+            case .rarity: return (rarity.0, -a.value, -a.serial) < (rarity.1, -b.value, -b.serial)
+            }
+        }
+    }
+
     /// Les formes et les reflets qu'une perle peut avoir, et les marques rares (carnet des variantes), dans l'ordre du catalogue.
     public func shapes(of pearlId: String) -> [String] { shapeWeights[pearlId]?.map(\.id) ?? [] }
     public func overtones(of pearlId: String) -> [String] { overtoneWeights[pearlId]?.map(\.id) ?? [] }

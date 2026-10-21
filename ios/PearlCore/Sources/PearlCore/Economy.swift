@@ -51,6 +51,15 @@ public struct FishThief: Codable, Sendable, Equatable {
     }
 }
 
+/// D'où viennent les écrins dans l'app : les montées de niveau et la poussière d'or (`APP_ECRINS`), jamais l'argent réel.
+public struct EcrinEconomy: Codable, Sendable, Equatable {
+    /// Un écrin tous les `levelEvery` niveaux, et `rankEcrins` de plus à chaque rang.
+    public let levelEvery: Int
+    public let rankEcrins: Int
+    /// Un écrin acheté au comptoir.
+    public let dustPrice: Int
+}
+
 public struct Economy: Codable, Sendable {
     public let oysterDustPrice: Int
     public let goldCoinDust: Int
@@ -72,6 +81,7 @@ public struct Economy: Codable, Sendable {
     /// Succès de l'app et leurs récompenses.
     public internal(set) var achievements: [Achievement]
     public let achievementRewards: AchievementRewards
+    public let ecrins: EcrinEconomy
     public internal(set) var skins: [AppSkin]
     public internal(set) var consumables: [AppConsumable]
 
@@ -87,5 +97,10 @@ extension Catalog {
     /// Poussière d'or rapportée par la revente d'une perle de cette sorte.
     public func sellDust(_ pearlId: String) -> Int {
         economy.sellDustByTier[tier(of: pearlId)]
+    }
+
+    /// Poussière d'or rapportée par la revente d'un bijou de cette rareté (même barème que les perles).
+    public func sellDust(jewel rarityId: String) -> Int {
+        economy.sellDustByTier[jewelRarity(rarityId).tier]
     }
 }

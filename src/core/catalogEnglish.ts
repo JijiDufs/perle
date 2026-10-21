@@ -4,6 +4,7 @@
 // Clins d'œil : comme en français, jamais de nom d'œuvre, de personnage ni de marque.
 import type { PearlId } from './catalog';
 import type { FindAlbumId } from './finds';
+import type { GemCut, JewelRarityId, JewelType, JewelVariantId, Ornament } from './jewels';
 import type { PearlMark, PearlOvertone, PearlShape } from './pearlTraits';
 
 export interface CatalogEnglish {
@@ -21,6 +22,20 @@ export interface CatalogEnglish {
   ranks: Readonly<Record<string, string>>;
   /** Succès de l'app (APP_ACHIEVEMENTS) ; `title` seulement pour ceux qui en donnent un. */
   achievements: Readonly<Record<string, { name: string; description: string; title?: string }>>;
+  /** Les bijoux des écrins (src/core/jewels.ts) : mêmes clés, mêmes modèles de noms ({one}, {with}, {of}, {metal}). */
+  jewels: {
+    rarities: Readonly<Record<JewelRarityId, { label: string; flavor: string }>>;
+    /** Même ordre que TOC_VARIANTS. */
+    tocVariants: readonly { name: string; flavor: string }[];
+    legendName: string;
+    /** Par nom français du métal (raretés, METAL_OPTIONS, TOC_VARIANTS, variantes). */
+    metals: Readonly<Record<string, string>>;
+    types: Readonly<Record<JewelType, string>>;
+    cuts: Readonly<Record<GemCut, string>>;
+    gemWords: Readonly<Partial<Record<JewelRarityId, { one: string; with: string; of: string }>>>;
+    names: Readonly<Record<Ornament, Readonly<Record<string, string>>>>;
+    variants: Readonly<Record<JewelVariantId, { label: string; flavor: string }>>;
+  };
 }
 
 export const CATALOG_ENGLISH: CatalogEnglish = {
@@ -157,5 +172,105 @@ export const CATALOG_ENGLISH: CatalogEnglish = {
     'niveau-20': { name: 'A signature', description: 'Reach level 20.', title: 'Signature of the lagoon' },
     alchimiste: { name: 'Alchemist', description: 'Sell 20 duplicates at the counter.', title: 'Alchemist' },
     poisson: { name: 'Not so fast!', description: 'Catch the thief fish.' },
+    'premier-bijou': { name: 'First jewel', description: 'Open your first jewellery case.' },
+    toc: { name: 'Worth two tickets', description: 'Find a costume jewel.' },
+    'eclat-parfait': { name: 'Eagle eye', description: 'Get a perfect glint.' },
+    'eclat-parfait-10': { name: 'Jeweller’s eye', description: 'Get 10 perfect glints.', title: 'Eagle eye' },
+    variante: { name: 'A rare light', description: 'Reveal a rare variant.' },
+    diamant: { name: 'Forever', description: 'Find a diamond jewel.' },
+    legende: { name: 'Out of the Abyss', description: 'Find the legendary jewel.', title: 'Legend of the Abyss' },
+    'ecrin-complet': { name: 'Full case', description: 'Own a jewel of every rarity.', title: 'Grand collector' },
+    'types-bijoux': { name: 'Tidy case', description: 'Own a ring, a necklace, a bracelet, earrings, a pendant and a brooch.' },
+  },
+  jewels: {
+    rarities: {
+      toc: { label: 'Costume', flavor: '' },
+      fantaisie: { label: 'Fancy', flavor: 'It sparkles just like the real thing. From afar, at night.' },
+      argent: { label: 'Silver', flavor: 'Understated, elegant, given with no ulterior motive.' },
+      or: { label: 'Gold', flavor: 'The reassuring weight of 18-carat gold.' },
+      perles: { label: 'Pearls', flavor: 'Every pearl came out of an oyster. Someone opened a lot of them.' },
+      saphir: { label: 'Sapphire', flavor: 'A deep midnight blue, cut to last.' },
+      emeraude: { label: 'Emerald', flavor: 'Green as a promise, and just as fragile.' },
+      rubis: { label: 'Ruby', flavor: 'The stone of declarations you never take back.' },
+      diamant: { label: 'Diamond', flavor: 'Forever. Or at least until the next case.' },
+      legende: { label: 'Legend', flavor: 'No register says where it came from.' },
+    },
+    tocVariants: [
+      { name: 'Candy ring', flavor: 'It tastes of strawberry. Don’t keep it on too long.' },
+      { name: 'Funfair ring', flavor: 'Won at the coconut shy. Well worth two tickets.' },
+      { name: 'Ring that turns green', flavor: 'Your finger is going to change colour. That’s normal.' },
+    ],
+    legendName: 'Tiara of the Abyss',
+    metals: {
+      Plastique: 'Plastic',
+      Laiton: 'Brass',
+      'Métal argenté': 'Silver-plated metal',
+      'Argent 925': 'Sterling silver',
+      Vermeil: 'Vermeil',
+      'Or 18 ct': '18 ct gold',
+      'Or jaune': 'Yellow gold',
+      'Or rose': 'Rose gold',
+      'Or blanc': 'White gold',
+      Platine: 'Platinum',
+      'Métal ?': 'Metal?',
+      'Or aurore': 'Dawn gold',
+      'Or noir': 'Black gold',
+      'Platine givré': 'Frosted platinum',
+    },
+    types: { bague: 'Ring', collier: 'Necklace', bracelet: 'Bracelet', boucles: 'Earrings', pendentif: 'Pendant', broche: 'Brooch', diademe: 'Tiara' },
+    cuts: { rond: 'Round brilliant', ovale: 'Oval', poire: 'Pear', coussin: 'Cushion', emeraude: 'Emerald', princesse: 'Princess', coeur: 'Heart', marquise: 'Marquise' },
+    gemWords: {
+      fantaisie: { one: 'rhinestone', with: 'rhinestone', of: 'rhinestone' },
+      saphir: { one: 'sapphire', with: 'sapphire', of: 'sapphire' },
+      emeraude: { one: 'emerald', with: 'emerald', of: 'emerald' },
+      rubis: { one: 'ruby', with: 'ruby', of: 'ruby' },
+      diamant: { one: 'diamond', with: 'diamond', of: 'diamond' },
+    },
+    names: {
+      pearls: {
+        'rang.bracelet': 'Pearl bracelet',
+        rang: 'Pearl necklace',
+        sautoir: 'Pearl sautoir',
+        puces: 'Pearl stud earrings',
+        pendants: 'Pearl drop earrings',
+        goutte: 'Pearl pendant',
+      },
+      metal: {
+        'jonc.bague': '{metal} band ring',
+        jonc: '{metal} bangle',
+        chevaliere: '{metal} signet ring',
+        chaine: '{metal} chain',
+        gourmette: '{metal} curb bracelet',
+        creoles: '{metal} hoop earrings',
+        medaille: '{metal} medal',
+        coquillage: '{metal} shell pendant',
+        fleur: '{metal} flower brooch',
+        libellule: '{metal} dragonfly brooch',
+        etoile: '{metal} starfish brooch',
+      },
+      gem: {
+        'solitaire.bague': '{one} solitaire',
+        solitaire: '{one} necklace',
+        trilogie: '{with} trilogy ring',
+        cocktail: '{one} cocktail ring',
+        riviere: '{of} rivière',
+        tennis: '{of} tennis bracelet',
+        jonc: '{of}-set bangle',
+        puces: '{one} stud earrings',
+        pendants: '{one} drop earrings',
+        creoles: '{of}-set hoop earrings',
+        goutte: '{one} teardrop pendant',
+        coeur: '{one} heart pendant',
+        fleur: '{with} flower brooch',
+        libellule: '{with} dragonfly brooch',
+        etoile: '{with} starfish brooch',
+        classique: '{of} tiara',
+      },
+    },
+    variants: {
+      aurore: { label: 'Dawn', flavor: 'It kept the colour of the first ray of morning.' },
+      nuit: { label: 'Night', flavor: 'Cut at midnight, it only shines for those who know how to look.' },
+      givre: { label: 'Frost', flavor: 'Cold to the touch, even in high summer.' },
+    },
   },
 };

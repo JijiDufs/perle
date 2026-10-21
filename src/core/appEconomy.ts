@@ -55,6 +55,19 @@ export const APP_LEVELS = {
   calendarReputation: 15,
 } as const;
 
+/**
+ * Écrins de l'app (lot 1.4, choix de Jules 2026-10-21, docs/ios-feuille-de-route.md §4) : seulement aux montées de
+ * niveau (un tous les `levelEvery` niveaux, un de plus à chaque rang, comme la webapp) et contre de la poussière d'or
+ * au comptoir. **Jamais contre de l'argent réel**, ni en boutique ni en pub. Prix : 10 huîtres de poussière, la même
+ * ancre que « Marée haute » (10 huîtres = 200 ✦ = 0,99 €). Pas de mission « ouvrir un écrin » : on n'en a pas tous les
+ * jours. **Provisoire, à valider avec Mathys.**
+ */
+export const APP_ECRINS = {
+  levelEvery: 3,
+  rankEcrins: 1,
+  dustPrice: 200,
+} as const;
+
 export type AppMissionKind = 'open' | 'lustreA' | 'lustreS' | 'rare' | 'noCrack' | 'sell' | 'share' | 'find' | 'fish';
 
 /** Les missions possibles ; chaque jour en tire `missionsPerDay`, avec un objectif parmi `goals`. */
@@ -143,8 +156,9 @@ export const APP_CONSUMABLES: readonly { id: string; name: string; oysters: numb
 /**
  * Succès de l'app (lot 1.3, cahier §10) : ceux de la webapp (src/core/achievements.ts) qu'on peut obtenir dans l'app,
  * mêmes identifiants et mêmes objectifs (un test le vérifie), plus quelques-uns propres à l'app (missions, niveaux,
- * poisson voleur). Rien sur les écrins, bijoux, expertise, Maison ou atelier : ils viendront avec leurs lots (règle
- * Apple 2.1). `measure` dit ce qui est compté (voir ios/PearlCore Achievements.swift), `target` la perle, trouvaille,
+ * poisson voleur). Écrins et bijoux depuis le lot 1.4 (sauf « Huit tailles » : 1 chance sur 250 environ pour la taille
+ * princesse, sans carnet pour suivre les tailles). Rien sur l'expertise, la Maison ou l'atelier : ils viendront avec
+ * leurs lots (règle Apple 2.1). `measure` dit ce qui est compté (voir ios/PearlCore Achievements.swift), `target` la perle, trouvaille,
  * marque, reflet ou album visé. Textes anglais : catalogEnglish.ts. **Liste et textes provisoires, à valider avec Mathys.**
  */
 export type AppAchievementMeasure =
@@ -164,7 +178,13 @@ export type AppAchievementMeasure =
   | 'sold' // doublons revendus
   | 'missions' // missions du jour récupérées
   | 'level' // niveau atteint
-  | 'fishCaught'; // poissons voleurs rattrapés
+  | 'fishCaught' // poissons voleurs rattrapés
+  | 'jewels' // cartes de bijoux
+  | 'jewel' // un bijou de cette rareté
+  | 'jewelRarities' // raretés de bijoux différentes
+  | 'jewelTypes' // types de bijoux différents parmi MAIN_JEWEL_TYPES
+  | 'perfectGlints' // éclats parfaits
+  | 'variants'; // variantes rares révélées
 
 export type AppAchievementTier = 'bronze' | 'argent' | 'or';
 
@@ -225,6 +245,16 @@ export const APP_ACHIEVEMENTS: readonly AppAchievement[] = [
   // La poussière d'or et le poisson voleur
   { id: 'alchimiste', name: 'Alchimiste', description: 'Revendre 20 doublons au comptoir.', tier: 'argent', measure: 'sold', goal: 20, title: 'Alchimiste' },
   { id: 'poisson', name: 'Pas si vite !', description: 'Rattraper le poisson voleur.', tier: 'bronze', measure: 'fishCaught', goal: 1 },
+  // Les écrins (lot 1.4)
+  { id: 'premier-bijou', name: 'Premier bijou', description: 'Ouvrir ton premier écrin.', tier: 'bronze', measure: 'jewels', goal: 1 },
+  { id: 'toc', name: 'Ça valait deux tickets', description: 'Trouver un bijou en toc.', tier: 'bronze', measure: 'jewel', target: 'toc', goal: 1 },
+  { id: 'eclat-parfait', name: 'Œil de lynx', description: 'Réussir un éclat parfait.', tier: 'bronze', measure: 'perfectGlints', goal: 1 },
+  { id: 'eclat-parfait-10', name: 'Regard de joaillier', description: 'Réussir 10 éclats parfaits.', tier: 'argent', measure: 'perfectGlints', goal: 10, title: 'Œil de lynx' },
+  { id: 'variante', name: 'Une lumière rare', description: 'Révéler une variante rare.', tier: 'argent', measure: 'variants', goal: 1 },
+  { id: 'diamant', name: 'Pour toujours', description: 'Trouver un bijou en diamant.', tier: 'argent', measure: 'jewel', target: 'diamant', goal: 1 },
+  { id: 'legende', name: 'Venu des Abysses', description: 'Trouver le bijou légendaire.', tier: 'or', measure: 'jewel', target: 'legende', goal: 1, secret: true, title: 'Légende des Abysses' },
+  { id: 'ecrin-complet', name: 'Écrin complet', description: 'Posséder un bijou de chaque rareté.', tier: 'or', measure: 'jewelRarities', goal: 10, title: 'Grand collectionneur' },
+  { id: 'types-bijoux', name: 'Écrin bien rangé', description: 'Posséder une bague, un collier, un bracelet, des boucles, un pendentif et une broche.', tier: 'argent', measure: 'jewelTypes', goal: 6 },
 ];
 
 /**

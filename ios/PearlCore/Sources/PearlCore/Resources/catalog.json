@@ -1567,6 +1567,85 @@
         "tier": "bronze",
         "measure": "fishCaught",
         "goal": 1
+      },
+      {
+        "id": "premier-bijou",
+        "name": "Premier bijou",
+        "description": "Ouvrir ton premier écrin.",
+        "tier": "bronze",
+        "measure": "jewels",
+        "goal": 1
+      },
+      {
+        "id": "toc",
+        "name": "Ça valait deux tickets",
+        "description": "Trouver un bijou en toc.",
+        "tier": "bronze",
+        "measure": "jewel",
+        "target": "toc",
+        "goal": 1
+      },
+      {
+        "id": "eclat-parfait",
+        "name": "Œil de lynx",
+        "description": "Réussir un éclat parfait.",
+        "tier": "bronze",
+        "measure": "perfectGlints",
+        "goal": 1
+      },
+      {
+        "id": "eclat-parfait-10",
+        "name": "Regard de joaillier",
+        "description": "Réussir 10 éclats parfaits.",
+        "tier": "argent",
+        "measure": "perfectGlints",
+        "goal": 10,
+        "title": "Œil de lynx"
+      },
+      {
+        "id": "variante",
+        "name": "Une lumière rare",
+        "description": "Révéler une variante rare.",
+        "tier": "argent",
+        "measure": "variants",
+        "goal": 1
+      },
+      {
+        "id": "diamant",
+        "name": "Pour toujours",
+        "description": "Trouver un bijou en diamant.",
+        "tier": "argent",
+        "measure": "jewel",
+        "target": "diamant",
+        "goal": 1
+      },
+      {
+        "id": "legende",
+        "name": "Venu des Abysses",
+        "description": "Trouver le bijou légendaire.",
+        "tier": "or",
+        "measure": "jewel",
+        "target": "legende",
+        "goal": 1,
+        "secret": true,
+        "title": "Légende des Abysses"
+      },
+      {
+        "id": "ecrin-complet",
+        "name": "Écrin complet",
+        "description": "Posséder un bijou de chaque rareté.",
+        "tier": "or",
+        "measure": "jewelRarities",
+        "goal": 10,
+        "title": "Grand collectionneur"
+      },
+      {
+        "id": "types-bijoux",
+        "name": "Écrin bien rangé",
+        "description": "Posséder une bague, un collier, un bracelet, des boucles, un pendentif et une broche.",
+        "tier": "argent",
+        "measure": "jewelTypes",
+        "goal": 6
       }
     ],
     "achievementRewards": {
@@ -1586,7 +1665,933 @@
         "reputation": 60
       },
       "albumOysters": 10
+    },
+    "ecrins": {
+      "levelEvery": 3,
+      "rankEcrins": 1,
+      "dustPrice": 200
     }
+  },
+  "jewels": {
+    "rarities": [
+      {
+        "id": "toc",
+        "label": "Toc",
+        "tier": 0,
+        "probability": 0.14,
+        "glow": null,
+        "metal": "#ff8fc4",
+        "metalName": "Plastique",
+        "gem": "#ff3d8b",
+        "suffix": "",
+        "carats": null,
+        "value": [
+          0.5,
+          3
+        ],
+        "flavor": "",
+        "rarity": "—"
+      },
+      {
+        "id": "fantaisie",
+        "label": "Fantaisie",
+        "tier": 1,
+        "probability": 0.24,
+        "glow": "#ffffff",
+        "metal": "#d9b56b",
+        "metalName": "Laiton",
+        "gem": "#eef6ff",
+        "suffix": "en strass",
+        "carats": null,
+        "value": [
+          15,
+          60
+        ],
+        "flavor": "Ça brille comme un vrai. De loin, la nuit.",
+        "rarity": "◆"
+      },
+      {
+        "id": "argent",
+        "label": "Argent",
+        "tier": 1,
+        "probability": 0.2,
+        "glow": "#e6f0ff",
+        "metal": "#d7dbe0",
+        "metalName": "Argent 925",
+        "gem": null,
+        "suffix": "en argent",
+        "carats": null,
+        "value": [
+          60,
+          250
+        ],
+        "flavor": "Sobre, élégant, offert sans arrière-pensée.",
+        "rarity": "◆"
+      },
+      {
+        "id": "or",
+        "label": "Or",
+        "tier": 2,
+        "probability": 0.14,
+        "glow": "#ffd27a",
+        "metal": "#e3b54d",
+        "metalName": "Or 18 ct",
+        "gem": null,
+        "suffix": "en or",
+        "carats": null,
+        "value": [
+          400,
+          1500
+        ],
+        "flavor": "Le poids rassurant de l'or 18 carats.",
+        "rarity": "◆◆"
+      },
+      {
+        "id": "perles",
+        "label": "Perles",
+        "tier": 2,
+        "probability": 0.09,
+        "glow": "#fff1d6",
+        "metal": "#e3b54d",
+        "metalName": "Or 18 ct",
+        "gem": null,
+        "suffix": "",
+        "carats": null,
+        "value": [
+          600,
+          2500
+        ],
+        "flavor": "Chaque perle sort d'une huître. Quelqu'un en a beaucoup ouvert.",
+        "rarity": "◆◆"
+      },
+      {
+        "id": "saphir",
+        "label": "Saphir",
+        "tier": 3,
+        "probability": 0.07,
+        "glow": "#5d86ff",
+        "metal": "#e8eaee",
+        "metalName": "Or blanc",
+        "gem": "#1f4fd1",
+        "suffix": "au saphir",
+        "carats": [
+          0.8,
+          3.5
+        ],
+        "value": [
+          1200,
+          2200
+        ],
+        "flavor": "Un bleu de nuit profonde, taillé pour durer.",
+        "rarity": "◆◆◆"
+      },
+      {
+        "id": "emeraude",
+        "label": "Émeraude",
+        "tier": 3,
+        "probability": 0.05,
+        "glow": "#4dffb0",
+        "metal": "#e3b54d",
+        "metalName": "Or jaune",
+        "gem": "#13a36b",
+        "suffix": "à l'émeraude",
+        "carats": [
+          0.8,
+          3
+        ],
+        "value": [
+          1800,
+          3000
+        ],
+        "flavor": "Verte comme une promesse, et aussi fragile.",
+        "rarity": "◆◆◆"
+      },
+      {
+        "id": "rubis",
+        "label": "Rubis",
+        "tier": 4,
+        "probability": 0.04,
+        "glow": "#ff4060",
+        "metal": "#e9b19a",
+        "metalName": "Or rose",
+        "gem": "#c8102e",
+        "suffix": "au rubis",
+        "carats": [
+          0.8,
+          3
+        ],
+        "value": [
+          3000,
+          5000
+        ],
+        "flavor": "La pierre des déclarations qu'on ne retire pas.",
+        "rarity": "★"
+      },
+      {
+        "id": "diamant",
+        "label": "Diamant",
+        "tier": 4,
+        "probability": 0.025,
+        "glow": "#bfefff",
+        "metal": "#eef0f3",
+        "metalName": "Platine",
+        "gem": "#f2fbff",
+        "suffix": "",
+        "carats": [
+          0.5,
+          3
+        ],
+        "value": [
+          6000,
+          11000
+        ],
+        "flavor": "Pour toujours. Ou au moins jusqu'au prochain écrin.",
+        "rarity": "★"
+      },
+      {
+        "id": "legende",
+        "label": "Légende",
+        "tier": 5,
+        "probability": 0.005,
+        "glow": "#9ffcff",
+        "metal": "#eef0f3",
+        "metalName": "Platine",
+        "gem": "#7df3ff",
+        "suffix": "",
+        "carats": [
+          40,
+          45
+        ],
+        "value": [
+          6000,
+          7000
+        ],
+        "flavor": "Aucun registre ne dit d'où il vient.",
+        "rarity": "★★"
+      }
+    ],
+    "tocVariants": [
+      {
+        "name": "Bague bonbon",
+        "metal": "#ff8fc4",
+        "gem": "#ff3d8b",
+        "metalName": "Plastique",
+        "candy": true,
+        "flavor": "Elle a un goût de fraise. Ne la garde pas trop longtemps."
+      },
+      {
+        "name": "Bague de fête foraine",
+        "metal": "#ffd400",
+        "gem": "#ff2a2a",
+        "metalName": "Plastique",
+        "candy": true,
+        "flavor": "Gagnée au chamboule-tout. Elle valait bien deux tickets."
+      },
+      {
+        "name": "Bague qui verdit",
+        "metal": "#9fa05a",
+        "gem": "#a9e8ff",
+        "metalName": "Métal ?",
+        "candy": false,
+        "flavor": "Ton doigt va changer de couleur. C’est normal."
+      }
+    ],
+    "legendName": "Diadème des Abysses",
+    "types": {
+      "bague": "Bague",
+      "collier": "Collier",
+      "bracelet": "Bracelet",
+      "boucles": "Boucles d'oreilles",
+      "pendentif": "Pendentif",
+      "broche": "Broche",
+      "diademe": "Diadème"
+    },
+    "mainTypes": [
+      "bague",
+      "collier",
+      "bracelet",
+      "boucles",
+      "pendentif",
+      "broche"
+    ],
+    "typeMultipliers": {
+      "bague": 1,
+      "collier": 1.4,
+      "bracelet": 1.2,
+      "boucles": 1.1,
+      "pendentif": 1.1,
+      "broche": 1.2,
+      "diademe": 1
+    },
+    "cuts": {
+      "rond": {
+        "label": "Brillant rond",
+        "value": 1
+      },
+      "ovale": {
+        "label": "Ovale",
+        "value": 1
+      },
+      "poire": {
+        "label": "Poire",
+        "value": 1.1
+      },
+      "coussin": {
+        "label": "Coussin",
+        "value": 1.05
+      },
+      "emeraude": {
+        "label": "Émeraude",
+        "value": 1.05
+      },
+      "princesse": {
+        "label": "Princesse",
+        "value": 1
+      },
+      "coeur": {
+        "label": "Cœur",
+        "value": 1.2
+      },
+      "marquise": {
+        "label": "Marquise",
+        "value": 1.1
+      }
+    },
+    "styles": {
+      "solitaire": 1,
+      "trilogie": 1.3,
+      "cocktail": 1.5,
+      "jonc": 0.9,
+      "chevaliere": 1.1,
+      "perle": 1,
+      "riviere": 1.6,
+      "chaine": 0.8,
+      "rang": 1,
+      "sautoir": 1.3,
+      "tennis": 1.4,
+      "gourmette": 1,
+      "puces": 0.9,
+      "pendants": 1.1,
+      "creoles": 0.9,
+      "goutte": 1,
+      "coeur": 1.1,
+      "medaille": 0.8,
+      "coquillage": 0.9,
+      "fleur": 1.1,
+      "libellule": 1.3,
+      "etoile": 1.1,
+      "classique": 1.8
+    },
+    "metalOptions": {
+      "fantaisie": [
+        {
+          "color": "#d9b56b",
+          "name": "Laiton",
+          "weight": 60
+        },
+        {
+          "color": "#cfd5db",
+          "name": "Métal argenté",
+          "weight": 40
+        }
+      ],
+      "argent": [
+        {
+          "color": "#d7dbe0",
+          "name": "Argent 925",
+          "weight": 80
+        },
+        {
+          "color": "#e8c27a",
+          "name": "Vermeil",
+          "weight": 20
+        }
+      ],
+      "or": [
+        {
+          "color": "#e3b54d",
+          "name": "Or jaune",
+          "weight": 55
+        },
+        {
+          "color": "#e9b19a",
+          "name": "Or rose",
+          "weight": 25
+        },
+        {
+          "color": "#e8eaee",
+          "name": "Or blanc",
+          "weight": 20
+        }
+      ],
+      "perles": [
+        {
+          "color": "#e3b54d",
+          "name": "Or jaune",
+          "weight": 50
+        },
+        {
+          "color": "#e8eaee",
+          "name": "Or blanc",
+          "weight": 30
+        },
+        {
+          "color": "#e9b19a",
+          "name": "Or rose",
+          "weight": 20
+        }
+      ],
+      "saphir": [
+        {
+          "color": "#e8eaee",
+          "name": "Or blanc",
+          "weight": 50
+        },
+        {
+          "color": "#eef0f3",
+          "name": "Platine",
+          "weight": 30
+        },
+        {
+          "color": "#e3b54d",
+          "name": "Or jaune",
+          "weight": 20
+        }
+      ],
+      "emeraude": [
+        {
+          "color": "#e3b54d",
+          "name": "Or jaune",
+          "weight": 55
+        },
+        {
+          "color": "#eef0f3",
+          "name": "Platine",
+          "weight": 25
+        },
+        {
+          "color": "#e8eaee",
+          "name": "Or blanc",
+          "weight": 20
+        }
+      ],
+      "rubis": [
+        {
+          "color": "#e9b19a",
+          "name": "Or rose",
+          "weight": 45
+        },
+        {
+          "color": "#e3b54d",
+          "name": "Or jaune",
+          "weight": 35
+        },
+        {
+          "color": "#eef0f3",
+          "name": "Platine",
+          "weight": 20
+        }
+      ],
+      "diamant": [
+        {
+          "color": "#eef0f3",
+          "name": "Platine",
+          "weight": 50
+        },
+        {
+          "color": "#e8eaee",
+          "name": "Or blanc",
+          "weight": 30
+        },
+        {
+          "color": "#e9b19a",
+          "name": "Or rose",
+          "weight": 20
+        }
+      ]
+    },
+    "cutWeights": {
+      "fantaisie": [
+        {
+          "id": "rond",
+          "weight": 70
+        },
+        {
+          "id": "ovale",
+          "weight": 15
+        },
+        {
+          "id": "coeur",
+          "weight": 15
+        }
+      ],
+      "saphir": [
+        {
+          "id": "ovale",
+          "weight": 35
+        },
+        {
+          "id": "coussin",
+          "weight": 25
+        },
+        {
+          "id": "rond",
+          "weight": 20
+        },
+        {
+          "id": "poire",
+          "weight": 10
+        },
+        {
+          "id": "marquise",
+          "weight": 10
+        }
+      ],
+      "emeraude": [
+        {
+          "id": "emeraude",
+          "weight": 55
+        },
+        {
+          "id": "ovale",
+          "weight": 15
+        },
+        {
+          "id": "poire",
+          "weight": 15
+        },
+        {
+          "id": "coussin",
+          "weight": 15
+        }
+      ],
+      "rubis": [
+        {
+          "id": "poire",
+          "weight": 25
+        },
+        {
+          "id": "coussin",
+          "weight": 25
+        },
+        {
+          "id": "ovale",
+          "weight": 20
+        },
+        {
+          "id": "rond",
+          "weight": 15
+        },
+        {
+          "id": "coeur",
+          "weight": 15
+        }
+      ],
+      "diamant": [
+        {
+          "id": "rond",
+          "weight": 35
+        },
+        {
+          "id": "princesse",
+          "weight": 15
+        },
+        {
+          "id": "poire",
+          "weight": 12
+        },
+        {
+          "id": "ovale",
+          "weight": 10
+        },
+        {
+          "id": "marquise",
+          "weight": 10
+        },
+        {
+          "id": "coeur",
+          "weight": 8
+        },
+        {
+          "id": "emeraude",
+          "weight": 5
+        },
+        {
+          "id": "coussin",
+          "weight": 5
+        }
+      ]
+    },
+    "typeWeights": {
+      "gem": [
+        {
+          "id": "bague",
+          "weight": 26
+        },
+        {
+          "id": "collier",
+          "weight": 16
+        },
+        {
+          "id": "bracelet",
+          "weight": 14
+        },
+        {
+          "id": "boucles",
+          "weight": 16
+        },
+        {
+          "id": "pendentif",
+          "weight": 16
+        },
+        {
+          "id": "broche",
+          "weight": 10
+        }
+      ],
+      "metal": [
+        {
+          "id": "bague",
+          "weight": 26
+        },
+        {
+          "id": "collier",
+          "weight": 18
+        },
+        {
+          "id": "bracelet",
+          "weight": 18
+        },
+        {
+          "id": "boucles",
+          "weight": 16
+        },
+        {
+          "id": "pendentif",
+          "weight": 14
+        },
+        {
+          "id": "broche",
+          "weight": 8
+        }
+      ],
+      "pearls": [
+        {
+          "id": "collier",
+          "weight": 35
+        },
+        {
+          "id": "bracelet",
+          "weight": 20
+        },
+        {
+          "id": "boucles",
+          "weight": 25
+        },
+        {
+          "id": "pendentif",
+          "weight": 20
+        }
+      ]
+    },
+    "styleWeights": {
+      "gem": {
+        "bague": [
+          {
+            "id": "solitaire",
+            "weight": 45
+          },
+          {
+            "id": "trilogie",
+            "weight": 30
+          },
+          {
+            "id": "cocktail",
+            "weight": 25
+          }
+        ],
+        "collier": [
+          {
+            "id": "solitaire",
+            "weight": 55
+          },
+          {
+            "id": "riviere",
+            "weight": 45
+          }
+        ],
+        "bracelet": [
+          {
+            "id": "tennis",
+            "weight": 60
+          },
+          {
+            "id": "jonc",
+            "weight": 40
+          }
+        ],
+        "boucles": [
+          {
+            "id": "puces",
+            "weight": 45
+          },
+          {
+            "id": "pendants",
+            "weight": 35
+          },
+          {
+            "id": "creoles",
+            "weight": 20
+          }
+        ],
+        "pendentif": [
+          {
+            "id": "goutte",
+            "weight": 50
+          },
+          {
+            "id": "coeur",
+            "weight": 50
+          }
+        ],
+        "broche": [
+          {
+            "id": "fleur",
+            "weight": 35
+          },
+          {
+            "id": "libellule",
+            "weight": 35
+          },
+          {
+            "id": "etoile",
+            "weight": 30
+          }
+        ],
+        "diademe": [
+          {
+            "id": "classique",
+            "weight": 100
+          }
+        ]
+      },
+      "metal": {
+        "bague": [
+          {
+            "id": "jonc",
+            "weight": 55
+          },
+          {
+            "id": "chevaliere",
+            "weight": 45
+          }
+        ],
+        "collier": [
+          {
+            "id": "chaine",
+            "weight": 100
+          }
+        ],
+        "bracelet": [
+          {
+            "id": "jonc",
+            "weight": 50
+          },
+          {
+            "id": "gourmette",
+            "weight": 50
+          }
+        ],
+        "boucles": [
+          {
+            "id": "creoles",
+            "weight": 100
+          }
+        ],
+        "pendentif": [
+          {
+            "id": "medaille",
+            "weight": 50
+          },
+          {
+            "id": "coquillage",
+            "weight": 50
+          }
+        ],
+        "broche": [
+          {
+            "id": "fleur",
+            "weight": 35
+          },
+          {
+            "id": "libellule",
+            "weight": 30
+          },
+          {
+            "id": "etoile",
+            "weight": 35
+          }
+        ]
+      },
+      "pearls": {
+        "collier": [
+          {
+            "id": "rang",
+            "weight": 65
+          },
+          {
+            "id": "sautoir",
+            "weight": 35
+          }
+        ],
+        "bracelet": [
+          {
+            "id": "rang",
+            "weight": 100
+          }
+        ],
+        "boucles": [
+          {
+            "id": "puces",
+            "weight": 50
+          },
+          {
+            "id": "pendants",
+            "weight": 50
+          }
+        ],
+        "pendentif": [
+          {
+            "id": "goutte",
+            "weight": 100
+          }
+        ]
+      }
+    },
+    "diademMinTier": 4,
+    "diademWeight": 2,
+    "forcedCuts": {
+      "goutte": "poire",
+      "coeur": "coeur"
+    },
+    "gemWords": {
+      "fantaisie": {
+        "one": "en strass",
+        "with": "en strass",
+        "of": "de strass"
+      },
+      "saphir": {
+        "one": "au saphir",
+        "with": "aux saphirs",
+        "of": "de saphirs"
+      },
+      "emeraude": {
+        "one": "à l'émeraude",
+        "with": "aux émeraudes",
+        "of": "d'émeraudes"
+      },
+      "rubis": {
+        "one": "au rubis",
+        "with": "aux rubis",
+        "of": "de rubis"
+      },
+      "diamant": {
+        "one": "diamant",
+        "with": "aux diamants",
+        "of": "de diamants"
+      }
+    },
+    "names": {
+      "pearls": {
+        "rang.bracelet": "Bracelet de perles",
+        "rang": "Collier de perles",
+        "sautoir": "Sautoir de perles",
+        "puces": "Puces d'oreilles perle",
+        "pendants": "Pendants d'oreilles perle",
+        "goutte": "Pendentif perle"
+      },
+      "metal": {
+        "jonc.bague": "Bague jonc en {metal}",
+        "jonc": "Jonc en {metal}",
+        "chevaliere": "Chevalière en {metal}",
+        "chaine": "Chaîne en {metal}",
+        "gourmette": "Gourmette en {metal}",
+        "creoles": "Créoles en {metal}",
+        "medaille": "Médaille en {metal}",
+        "coquillage": "Pendentif coquillage en {metal}",
+        "fleur": "Broche fleur en {metal}",
+        "libellule": "Broche libellule en {metal}",
+        "etoile": "Broche étoile de mer en {metal}"
+      },
+      "gem": {
+        "solitaire.bague": "Solitaire {one}",
+        "solitaire": "Collier {one}",
+        "trilogie": "Bague trilogie {with}",
+        "cocktail": "Bague cocktail {one}",
+        "riviere": "Rivière {of}",
+        "tennis": "Bracelet tennis {of}",
+        "jonc": "Jonc serti {of}",
+        "puces": "Puces d'oreilles {one}",
+        "pendants": "Pendants d'oreilles {one}",
+        "creoles": "Créoles serties {of}",
+        "goutte": "Pendentif goutte {one}",
+        "coeur": "Pendentif cœur {one}",
+        "fleur": "Broche fleur {with}",
+        "libellule": "Broche libellule {with}",
+        "etoile": "Broche étoile de mer {with}",
+        "classique": "Diadème {of}"
+      }
+    },
+    "variants": [
+      {
+        "id": "aurore",
+        "label": "Aurore",
+        "metal": "#f1b9dc",
+        "metalName": "Or aurore",
+        "gem": "#ffc4ec",
+        "glow": "#ff9ad5",
+        "frame": {
+          "colors": [
+            "#ffd1e8",
+            "#9af0ff"
+          ],
+          "dark": false
+        },
+        "flavor": "Elle a gardé la couleur du premier rayon du matin."
+      },
+      {
+        "id": "nuit",
+        "label": "Nuit",
+        "metal": "#3a3d5c",
+        "metalName": "Or noir",
+        "gem": "#7f8cff",
+        "glow": "#7f8cff",
+        "frame": {
+          "colors": [
+            "#3b3f6b",
+            "#0b0c1a"
+          ],
+          "dark": true
+        },
+        "flavor": "Taillée à minuit, elle ne brille que pour ceux qui savent regarder."
+      },
+      {
+        "id": "givre",
+        "label": "Givre",
+        "metal": "#dff3ff",
+        "metalName": "Platine givré",
+        "gem": "#bff3ff",
+        "glow": "#aef4ff",
+        "frame": {
+          "colors": [
+            "#f2fbff",
+            "#9ad7f0"
+          ],
+          "dark": false
+        },
+        "flavor": "Froide au toucher, même en plein été."
+      }
+    ]
   },
   "markWeights": [
     {
@@ -1984,6 +2989,221 @@
       "poisson": {
         "name": "Not so fast!",
         "description": "Catch the thief fish."
+      },
+      "premier-bijou": {
+        "name": "First jewel",
+        "description": "Open your first jewellery case."
+      },
+      "toc": {
+        "name": "Worth two tickets",
+        "description": "Find a costume jewel."
+      },
+      "eclat-parfait": {
+        "name": "Eagle eye",
+        "description": "Get a perfect glint."
+      },
+      "eclat-parfait-10": {
+        "name": "Jeweller’s eye",
+        "description": "Get 10 perfect glints.",
+        "title": "Eagle eye"
+      },
+      "variante": {
+        "name": "A rare light",
+        "description": "Reveal a rare variant."
+      },
+      "diamant": {
+        "name": "Forever",
+        "description": "Find a diamond jewel."
+      },
+      "legende": {
+        "name": "Out of the Abyss",
+        "description": "Find the legendary jewel.",
+        "title": "Legend of the Abyss"
+      },
+      "ecrin-complet": {
+        "name": "Full case",
+        "description": "Own a jewel of every rarity.",
+        "title": "Grand collector"
+      },
+      "types-bijoux": {
+        "name": "Tidy case",
+        "description": "Own a ring, a necklace, a bracelet, earrings, a pendant and a brooch."
+      }
+    },
+    "jewels": {
+      "rarities": {
+        "toc": {
+          "label": "Costume",
+          "flavor": ""
+        },
+        "fantaisie": {
+          "label": "Fancy",
+          "flavor": "It sparkles just like the real thing. From afar, at night."
+        },
+        "argent": {
+          "label": "Silver",
+          "flavor": "Understated, elegant, given with no ulterior motive."
+        },
+        "or": {
+          "label": "Gold",
+          "flavor": "The reassuring weight of 18-carat gold."
+        },
+        "perles": {
+          "label": "Pearls",
+          "flavor": "Every pearl came out of an oyster. Someone opened a lot of them."
+        },
+        "saphir": {
+          "label": "Sapphire",
+          "flavor": "A deep midnight blue, cut to last."
+        },
+        "emeraude": {
+          "label": "Emerald",
+          "flavor": "Green as a promise, and just as fragile."
+        },
+        "rubis": {
+          "label": "Ruby",
+          "flavor": "The stone of declarations you never take back."
+        },
+        "diamant": {
+          "label": "Diamond",
+          "flavor": "Forever. Or at least until the next case."
+        },
+        "legende": {
+          "label": "Legend",
+          "flavor": "No register says where it came from."
+        }
+      },
+      "tocVariants": [
+        {
+          "name": "Candy ring",
+          "flavor": "It tastes of strawberry. Don’t keep it on too long."
+        },
+        {
+          "name": "Funfair ring",
+          "flavor": "Won at the coconut shy. Well worth two tickets."
+        },
+        {
+          "name": "Ring that turns green",
+          "flavor": "Your finger is going to change colour. That’s normal."
+        }
+      ],
+      "legendName": "Tiara of the Abyss",
+      "metals": {
+        "Plastique": "Plastic",
+        "Laiton": "Brass",
+        "Métal argenté": "Silver-plated metal",
+        "Argent 925": "Sterling silver",
+        "Vermeil": "Vermeil",
+        "Or 18 ct": "18 ct gold",
+        "Or jaune": "Yellow gold",
+        "Or rose": "Rose gold",
+        "Or blanc": "White gold",
+        "Platine": "Platinum",
+        "Métal ?": "Metal?",
+        "Or aurore": "Dawn gold",
+        "Or noir": "Black gold",
+        "Platine givré": "Frosted platinum"
+      },
+      "types": {
+        "bague": "Ring",
+        "collier": "Necklace",
+        "bracelet": "Bracelet",
+        "boucles": "Earrings",
+        "pendentif": "Pendant",
+        "broche": "Brooch",
+        "diademe": "Tiara"
+      },
+      "cuts": {
+        "rond": "Round brilliant",
+        "ovale": "Oval",
+        "poire": "Pear",
+        "coussin": "Cushion",
+        "emeraude": "Emerald",
+        "princesse": "Princess",
+        "coeur": "Heart",
+        "marquise": "Marquise"
+      },
+      "gemWords": {
+        "fantaisie": {
+          "one": "rhinestone",
+          "with": "rhinestone",
+          "of": "rhinestone"
+        },
+        "saphir": {
+          "one": "sapphire",
+          "with": "sapphire",
+          "of": "sapphire"
+        },
+        "emeraude": {
+          "one": "emerald",
+          "with": "emerald",
+          "of": "emerald"
+        },
+        "rubis": {
+          "one": "ruby",
+          "with": "ruby",
+          "of": "ruby"
+        },
+        "diamant": {
+          "one": "diamond",
+          "with": "diamond",
+          "of": "diamond"
+        }
+      },
+      "names": {
+        "pearls": {
+          "rang.bracelet": "Pearl bracelet",
+          "rang": "Pearl necklace",
+          "sautoir": "Pearl sautoir",
+          "puces": "Pearl stud earrings",
+          "pendants": "Pearl drop earrings",
+          "goutte": "Pearl pendant"
+        },
+        "metal": {
+          "jonc.bague": "{metal} band ring",
+          "jonc": "{metal} bangle",
+          "chevaliere": "{metal} signet ring",
+          "chaine": "{metal} chain",
+          "gourmette": "{metal} curb bracelet",
+          "creoles": "{metal} hoop earrings",
+          "medaille": "{metal} medal",
+          "coquillage": "{metal} shell pendant",
+          "fleur": "{metal} flower brooch",
+          "libellule": "{metal} dragonfly brooch",
+          "etoile": "{metal} starfish brooch"
+        },
+        "gem": {
+          "solitaire.bague": "{one} solitaire",
+          "solitaire": "{one} necklace",
+          "trilogie": "{with} trilogy ring",
+          "cocktail": "{one} cocktail ring",
+          "riviere": "{of} rivière",
+          "tennis": "{of} tennis bracelet",
+          "jonc": "{of}-set bangle",
+          "puces": "{one} stud earrings",
+          "pendants": "{one} drop earrings",
+          "creoles": "{of}-set hoop earrings",
+          "goutte": "{one} teardrop pendant",
+          "coeur": "{one} heart pendant",
+          "fleur": "{with} flower brooch",
+          "libellule": "{with} dragonfly brooch",
+          "etoile": "{with} starfish brooch",
+          "classique": "{of} tiara"
+        }
+      },
+      "variants": {
+        "aurore": {
+          "label": "Dawn",
+          "flavor": "It kept the colour of the first ray of morning."
+        },
+        "nuit": {
+          "label": "Night",
+          "flavor": "Cut at midnight, it only shines for those who know how to look."
+        },
+        "givre": {
+          "label": "Frost",
+          "flavor": "Cold to the touch, even in high summer."
+        }
       }
     }
   }

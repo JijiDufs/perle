@@ -40,6 +40,8 @@ public struct LevelProgress: Sendable, Equatable {
 public struct LevelReward: Sendable, Equatable {
     public let oysters: Int
     public let dust: Int
+    /// Écrins : un tous les 3 niveaux, un de plus à chaque rang (`APP_ECRINS`).
+    public let ecrins: Int
     /// Rang atteint à ce niveau, s'il y en a un.
     public let rank: Rank?
 }
@@ -52,6 +54,8 @@ public struct LevelUp: Codable, Sendable, Equatable {
     /// Récompenses de tous les niveaux franchis (déjà données).
     public internal(set) var oysters: Int
     public internal(set) var dust: Int
+    /// Écrins gagnés (absent des fêtes sauvegardées avant la 1.4).
+    public internal(set) var ecrins: Int?
     /// Partie de la 1.0 : réputation calculée d'après la collection (« Tu es niveau N »).
     public internal(set) var retroactive: Bool
 }
@@ -91,8 +95,14 @@ extension Catalog {
     public func levelReward(_ level: Int) -> LevelReward {
         let rank = ranks.first { $0.level == level && $0.level > 1 }
         let levels = economy.levels
+        let ecrins = (level % economy.ecrins.levelEvery == 0 ? 1 : 0) + (rank == nil ? 0 : economy.ecrins.rankEcrins)
         return LevelReward(oysters: levels.rewardOysters + (rank == nil ? 0 : levels.rankRewardOysters),
-                           dust: levels.rewardDust + (rank == nil ? 0 : levels.rankRewardDust), rank: rank)
+                           dust: levels.rewardDust + (rank == nil ? 0 : levels.rankRewardDust), ecrins: ecrins, rank: rank)
+    }
+
+    /// Réputation d'un écrin ouvert : éclat parfait, premier bijou de sa rareté.
+    public func reputationForEcrin(perfect: Bool, discovery: Bool) -> Int {
+        tuning.repEcrin + (perfect ? tuning.repPerfect : 0) + (discovery ? tuning.repDiscovery : 0)
     }
 
     /// Réputation d'une huître ouverte : sa rareté, le lustre S / A d'une perle non fêlée, une première perle de sa sorte.
@@ -116,13 +126,15 @@ extension PlayerState {
         reputation += amount
         let level = catalog.levelProgress(reputation: reputation).level
         guard level > rewardedLevel else { return }
-        var up = levelUp ?? LevelUp(from: rewardedLevel, to: rewardedLevel, oysters: 0, dust: 0, retroactive: false)
+        var up = levelUp ?? LevelUp(from: rewardedLevel, to: rewardedLevel, oysters: 0, dust: 0, ecrins: 0, retroactive: false)
         for reached in (rewardedLevel + 1)...level {
             let reward = catalog.levelReward(reached)
             stock.count += reward.oysters
             dust += reward.dust
+            ecrins += reward.ecrins
             up.oysters += reward.oysters
             up.dust += reward.dust
+            up.ecrins = (up.ecrins ?? 0) + reward.ecrins
         }
         up.to = level
         rewardedLevel = level

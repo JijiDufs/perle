@@ -19,6 +19,21 @@ public struct CatalogEnglish: Codable, Sendable {
     public let consumables: [String: String]
     public let ranks: [String: String]
     public let achievements: [String: AchievementText]
+    public let jewels: Jewels
+
+    public struct Jewels: Codable, Sendable {
+        public struct LabelFlavor: Codable, Sendable { public let label: String; public let flavor: String }
+        public let rarities: [String: LabelFlavor]
+        /// Même ordre que `JewelCatalog.tocVariants`.
+        public let tocVariants: [NameFlavor]
+        public let legendName: String
+        public let metals: [String: String]
+        public let types: [String: String]
+        public let cuts: [String: String]
+        public let gemWords: [String: GemWords]
+        public let names: [String: [String: String]]
+        public let variants: [String: LabelFlavor]
+    }
 }
 
 extension Catalog {
@@ -77,6 +92,37 @@ extension Catalog {
             }
             return achievement
         }
+        var jewels = self.jewels
+        let en = english.jewels
+        jewels.rarities = jewels.rarities.map { rarity in
+            var rarity = rarity
+            if let text = en.rarities[rarity.id] { rarity.label = text.label; rarity.flavor = text.flavor }
+            return rarity
+        }
+        if en.tocVariants.count == jewels.tocVariants.count {
+            jewels.tocVariants = zip(jewels.tocVariants, en.tocVariants).map { toc, text in
+                var toc = toc
+                toc.name = text.name
+                toc.flavor = text.flavor
+                return toc
+            }
+        }
+        jewels.legendName = en.legendName
+        jewels.metalLabels = en.metals
+        jewels.types = jewels.types.mapValuesWithKeys { id, label in en.types[id] ?? label }
+        jewels.cuts = jewels.cuts.mapValuesWithKeys { id, cut in
+            var cut = cut
+            if let label = en.cuts[id] { cut.label = label }
+            return cut
+        }
+        jewels.gemWords = en.gemWords
+        jewels.names = en.names
+        jewels.variants = jewels.variants.map { variant in
+            var variant = variant
+            if let text = en.variants[variant.id] { variant.label = text.label; variant.flavor = text.flavor }
+            return variant
+        }
+        catalog.jewels = jewels
         catalog.ranks = ranks.map { rank in
             var rank = rank
             if let title = english.ranks[rank.id] { rank.title = title }

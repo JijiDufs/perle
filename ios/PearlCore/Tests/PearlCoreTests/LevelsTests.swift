@@ -32,7 +32,7 @@ private let levels = catalog.economy.levels
     let expectedOysters = 4 * levels.rewardOysters + levels.rankRewardOysters
     let expectedDust = 4 * levels.rewardDust + levels.rankRewardDust
     #expect(player.rewardedLevel == 5)
-    #expect(player.levelUp == LevelUp(from: 1, to: 5, oysters: expectedOysters, dust: expectedDust, retroactive: false))
+    #expect(player.levelUp == LevelUp(from: 1, to: 5, oysters: expectedOysters, dust: expectedDust, ecrins: 2, retroactive: false))
     #expect(player.stock.count == stock + expectedOysters)
     #expect(player.dust == expectedDust)
     // Un peu plus sans changer de niveau : rien de plus ; la fête reste à faire.
