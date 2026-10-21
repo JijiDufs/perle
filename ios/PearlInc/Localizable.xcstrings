@@ -4778,6 +4778,1018 @@
           }
         }
       }
+    },
+    "%@ · taille %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · %2$@ cut"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · taille %@"
+          }
+        }
+      }
+    },
+    "%@ · éclat parfait" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · perfect glint"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · éclat parfait"
+          }
+        }
+      }
+    },
+    "%lld / %lld raretés de bijoux" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld jewel rarities"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld raretés de bijoux"
+          }
+        }
+      }
+    },
+    "%lld bijoux" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@n@"
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg jewel"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg jewels"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@n@"
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg bijou"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg bijoux"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld à ouvrir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld to open"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld à ouvrir"
+          }
+        }
+      }
+    },
+    "%lld écrins" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@n@"
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg jewel case"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg jewel cases"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@n@"
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg écrin"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg écrins"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Acheter un écrin · %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buy a jewel case · %lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acheter un écrin · %lld ✦"
+          }
+        }
+      }
+    },
+    "Appui long sur un bijou en double pour le revendre." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long-press a duplicate jewel to sell it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appui long sur un bijou en double pour le revendre."
+          }
+        }
+      }
+    },
+    "Bijou pas encore trouvé, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jewel not found yet, %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bijou pas encore trouvé, %@"
+          }
+        }
+      }
+    },
+    "Bijoux" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jewels"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bijoux"
+          }
+        }
+      }
+    },
+    "Carats" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carats"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carats"
+          }
+        }
+      }
+    },
+    "Ce que contient un écrin" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What a jewel case holds"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce que contient un écrin"
+          }
+        }
+      }
+    },
+    "Chaque écrin est un tirage. Les chances ne changent jamais." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every jewel case is a draw. The odds never change."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque écrin est un tirage. Les chances ne changent jamais."
+          }
+        }
+      }
+    },
+    "Cherche l’angle d’éclat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find the glint angle"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherche l’angle d’éclat"
+          }
+        }
+      }
+    },
+    "C’est là ! Ne bouge plus…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That’s it! Hold still…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’est là ! Ne bouge plus…"
+          }
+        }
+      }
+    },
+    "Des écrins t’attendent !" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jewel cases are waiting for you!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des écrins t’attendent !"
+          }
+        }
+      }
+    },
+    "Encore un peu…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A little more…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encore un peu…"
+          }
+        }
+      }
+    },
+    "Garantie : un bijou ★ ou plus rare au plus tard au %lldᵉ écrin." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarantee: a ★ jewel or rarer by jewel case no. %lld at the latest."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garantie : un bijou ★ ou plus rare au plus tard au %lldᵉ écrin."
+          }
+        }
+      }
+    },
+    "Glisse le doigt vers le haut pour l'ouvrir, et arrête-toi quand le bijou scintille." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slide your finger up to open it, and stop when the jewel sparkles."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glisse le doigt vers le haut pour l'ouvrir, et arrête-toi quand le bijou scintille."
+          }
+        }
+      }
+    },
+    "J’ai trouvé « %@ » %@ dans un écrin de Pearl Inc. (%@) 💍 pearl-inc.app" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I found “%1$@” %2$@ in a Pearl Inc. jewel case (%3$@) 💍 pearl-inc.app"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "J’ai trouvé « %@ » %@ dans un écrin de Pearl Inc. (%@) 💍 pearl-inc.app"
+          }
+        }
+      }
+    },
+    "Les écrins se gagnent tous les %lld niveaux et à chaque nouveau rang, ou s’achètent %lld ✦ au comptoir. Jamais contre de l’argent réel." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jewel cases are earned every %1$lld levels and with each new rank, or bought for %2$lld ✦ at the counter. Never for real money."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les écrins se gagnent tous les %lld niveaux et à chaque nouveau rang, ou s’achètent %lld ✦ au comptoir. Jamais contre de l’argent réel."
+          }
+        }
+      }
+    },
+    "Mes bijoux" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My jewels"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes bijoux"
+          }
+        }
+      }
+    },
+    "Monte ou descends doucement jusqu’à ce que ça brille fort." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move gently up or down until it shines bright."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monte ou descends doucement jusqu’à ce que ça brille fort."
+          }
+        }
+      }
+    },
+    "Nouveau !" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveau !"
+          }
+        }
+      }
+    },
+    "On garde la plus belle de chaque sorte, toutes les perles à marque rare et tous les bijoux à éclat parfait." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We keep the finest of each kind, every pearl with a rare mark and every jewel with a perfect glint."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On garde la plus belle de chaque sorte, toutes les perles à marque rare et tous les bijoux à éclat parfait."
+          }
+        }
+      }
+    },
+    "Ouvre doucement…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open it gently…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre doucement…"
+          }
+        }
+      }
+    },
+    "Ouvre l’écrin : glisse le pouce vers le haut" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the case: slide your thumb up"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvre l’écrin : glisse le pouce vers le haut"
+          }
+        }
+      }
+    },
+    "Ouvrir l'écrin" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the jewel case"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir l'écrin"
+          }
+        }
+      }
+    },
+    "Ouvrir mes écrins" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open my jewel cases"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir mes écrins"
+          }
+        }
+      }
+    },
+    "Pas d’éclat parfait cette fois : arrête-toi pile quand ça brille le plus, et tiens une seconde." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No perfect glint this time: stop right when it shines brightest, and hold for a second."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas d’éclat parfait cette fois : arrête-toi pile quand ça brille le plus, et tiens une seconde."
+          }
+        }
+      }
+    },
+    "Pas d’écrin pour l’instant" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No jewel case for now"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas d’écrin pour l’instant"
+          }
+        }
+      }
+    },
+    "Pas d’écrin à ouvrir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No jewel case to open"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas d’écrin à ouvrir"
+          }
+        }
+      }
+    },
+    "Plus tard" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Later"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus tard"
+          }
+        }
+      }
+    },
+    "Probabilités des écrins" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jewel case odds"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probabilités des écrins"
+          }
+        }
+      }
+    },
+    "Referme le téléphone pour continuer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close the phone to continue"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Referme le téléphone pour continuer"
+          }
+        }
+      }
+    },
+    "Revendre %lld doublons pour %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sell %1$lld duplicates for %2$lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revendre %lld doublons pour %lld ✦"
+          }
+        }
+      }
+    },
+    "Récents" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récents"
+          }
+        }
+      }
+    },
+    "Tes niveaux t’ont rapporté %lld écrins. Ouvre-les doucement : quelque part, le bijou scintille." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your levels earned you %#@n@. Open them gently: at some point, the jewel sparkles."
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg jewel case"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg jewel cases"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes niveaux t’ont rapporté %#@n@. Ouvre-les doucement : quelque part, le bijou scintille."
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg écrin"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg écrins"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Ton premier écrin ! Ouvre lentement : quelque part, le bijou se met à scintiller. Arrête-toi pile là et tiens une seconde." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your first jewel case! Open it slowly: at some point, the jewel starts to sparkle. Stop right there and hold for a second."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton premier écrin ! Ouvre lentement : quelque part, le bijou se met à scintiller. Arrête-toi pile là et tiens une seconde."
+          }
+        }
+      }
+    },
+    "Ton seul bijou %@ : on le garde." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your only %@ jewel: we’re keeping it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton seul bijou %@ : on le garde."
+          }
+        }
+      }
+    },
+    "Touche la carte pour continuer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the card to continue"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touche la carte pour continuer"
+          }
+        }
+      }
+    },
+    "Touche la carte pour l’écrin suivant (%lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the card for the next case (%lld)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touche la carte pour l’écrin suivant (%lld)"
+          }
+        }
+      }
+    },
+    "Tu en gagnes un tous les %lld niveaux et à chaque nouveau rang : le prochain au niveau %lld." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You earn one every %1$lld levels and with each new rank: the next one at level %2$lld."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu en gagnes un tous les %lld niveaux et à chaque nouveau rang : le prochain au niveau %lld."
+          }
+        }
+      }
+    },
+    "Un éclat filtre… Glisse le pouce vers le haut" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A glint shines through… Slide your thumb up"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un éclat filtre… Glisse le pouce vers le haut"
+          }
+        }
+      }
+    },
+    "Variante rare %@ : valeur ×%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rare variant %1$@: value ×%2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variante rare %@ : valeur ×%@"
+          }
+        }
+      }
+    },
+    "Variante rare : %@ ! Ouvre jusqu’au bout" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rare variant: %@! Open it all the way"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variante rare : %@ ! Ouvre jusqu’au bout"
+          }
+        }
+      }
+    },
+    "Ça scintille… ne bouge plus" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It’s sparkling… hold still"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ça scintille… ne bouge plus"
+          }
+        }
+      }
+    },
+    "Éclat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glint"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éclat"
+          }
+        }
+      }
+    },
+    "Éclat parfait" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfect glint"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éclat parfait"
+          }
+        }
+      }
+    },
+    "Éclat parfait ! Le bijou vaut 50 % de plus." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfect glint! The jewel is worth 50% more."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éclat parfait ! Le bijou vaut 50 % de plus."
+          }
+        }
+      }
+    },
+    "Éclat parfait ! Ouvre jusqu’au bout" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfect glint! Open it all the way"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éclat parfait ! Ouvre jusqu’au bout"
+          }
+        }
+      }
+    },
+    "Éclat parfait : valeur ×%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfect glint: value ×%@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éclat parfait : valeur ×%@"
+          }
+        }
+      }
+    },
+    "Éclat parfait : valeur ×%@, et %@ de chance d’une variante rare (Aurore, Nuit ou Givre) : valeur ×%@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfect glint: value ×%1$@, and a %2$@ chance of a rare variant (Dawn, Night or Frost): value ×%3$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éclat parfait : valeur ×%@, et %@ de chance d’une variante rare (Aurore, Nuit ou Givre) : valeur ×%@."
+          }
+        }
+      }
+    },
+    "Écrin fermé" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closed jewel case"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrin fermé"
+          }
+        }
+      }
+    },
+    "Écrins" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jewel cases"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrins"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -58,6 +58,9 @@ final class Canvas2D {
     func translate(_ x: Double, _ y: Double) { state.ctm = CGAffineTransform(translationX: x, y: y).concatenating(state.ctm) }
     func rotate(_ angle: Double) { state.ctm = CGAffineTransform(rotationAngle: angle).concatenating(state.ctm) }
     func scale(_ x: Double, _ y: Double) { state.ctm = CGAffineTransform(scaleX: x, y: y).concatenating(state.ctm) }
+    func transform(_ a: Double, _ b: Double, _ c: Double, _ d: Double, _ e: Double, _ f: Double) {
+        state.ctm = CGAffineTransform(a: a, b: b, c: c, d: d, tx: e, ty: f).concatenating(state.ctm)
+    }
 
     // MARK: - Chemin (stocké dans le repère de l'écran)
 
@@ -170,7 +173,9 @@ final class Canvas2D {
             // on le reconstruit par des disques emboîtés, du cercle extérieur au cercle intérieur.
             g.clip(to: local, style: FillStyle(eoFill: eoFill))
             g.fill(local, with: .color(gradient.color(at: 1)), style: FillStyle(eoFill: eoFill))
-            let steps = 40
+            // Autant de disques que nécessaire à l'écran (les petites pierres des bijoux en ont des dizaines).
+            let deviceRadius = max(r0, r1) * sqrt(abs(state.ctm.a * state.ctm.d - state.ctm.b * state.ctm.c))
+            let steps = min(40, max(6, Int(deviceRadius / 2)))
             for i in stride(from: steps, through: 0, by: -1) {
                 let t = Double(i) / Double(steps)
                 let cx = x0 + (x1 - x0) * t, cy = y0 + (y1 - y0) * t, r = r0 + (r1 - r0) * t

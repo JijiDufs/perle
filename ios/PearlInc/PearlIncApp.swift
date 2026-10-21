@@ -28,22 +28,39 @@ struct RootView: View {
     @Environment(GameModel.self) private var game
     @Environment(\.scenePhase) private var scenePhase
     @State private var showCalendar = false
-    @State private var tab = 0
 
     var body: some View {
-        TabView(selection: $tab) {
-            Tab("Pêche", systemImage: "drop.fill", value: 0) {
+        @Bindable var game = game
+        TabView(selection: $game.tab) {
+            Tab("Pêche", systemImage: "drop.fill", value: GameModel.Tab.fishing) {
                 FishingView()
             }
-            Tab("Collection", systemImage: "square.grid.2x2.fill", value: 1) {
+            // Apparaît avec le premier écrin (montée de niveau ou comptoir).
+            if game.hasEcrins {
+                Tab("Écrins", systemImage: "gift.fill", value: GameModel.Tab.ecrins) {
+                    EcrinView()
+                }
+                .badge(game.ecrinsToOpen)
+            }
+            Tab("Collection", systemImage: "square.grid.2x2.fill", value: GameModel.Tab.collection) {
                 CollectionView()
             }
-            Tab("Boutique", systemImage: "sparkles", value: 2) {
+            Tab("Boutique", systemImage: "sparkles", value: GameModel.Tab.shop) {
                 ShopView()
             }
         }
         .tint(Palette.gold)
-        .onChange(of: tab) { game.audio.tap() }
+        #if DEBUG
+        // Outil de test : par-dessus la carte, pour essayer « refermer = huître (ou écrin) suivant ».
+        .overlay(alignment: .bottom) {
+            if SimulatedHingeSlider.isEnabled {
+                SimulatedHingeSlider { game.hingeChanged(degrees: $0) }
+                    .padding(.horizontal, 24).padding(.bottom, 96)
+            }
+        }
+        #endif
+        // iPhone Duo : ouvrir le téléphone ouvre l'huître (ou l'écrin), le refermer passe au suivant.
+        .hingeInput({ game.hingeChanged(degrees: $0) }, fold: { if !HingeInput.simulatedFold { game.foldChanged(x: $0) } })
         .fullScreenCover(isPresented: Binding(get: { game.ads.isShowing }, set: { if !$0 && game.ads.isShowing { game.ads.finish(rewarded: false) } })) {
             SimulatedAdView(ads: game.ads)
         }

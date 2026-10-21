@@ -20,6 +20,16 @@ final class GameModel {
         case stolen(Reveal)
     }
 
+    /// Les onglets (sur l'iPhone Duo, la charnière ouvre l'huître ou l'écrin selon l'onglet).
+    enum Tab: Hashable { case fishing, ecrins, collection, shop }
+
+    /// Où en est l'écrin posé.
+    enum EcrinStage: Equatable {
+        case playing
+        case suspense
+        case card(JewelCard)
+    }
+
     /// Le catalogue dans la langue de l'app (les textes seulement : les règles sont les mêmes).
     let catalog = Catalog.shared.localized(AppLanguage.code)
     var tuning: Tuning { catalog.tuning }
@@ -63,6 +73,40 @@ final class GameModel {
     private(set) var reputationGain = 0
     private(set) var reputationBump = 0
 
+    /// L'onglet affiché. En changer désarme la charnière : il faudra refermer le téléphone avant d'ouvrir.
+    var tab: Tab = .fishing {
+        didSet {
+            guard tab != oldValue else { return }
+            audio.tap()
+            hinge.disarmIfOpen()
+            hingeArmed = hinge.armed
+            hingeDriving = false
+            ecrinHingeDriving = false
+        }
+    }
+
+    // L'écrin posé (onglet Écrins).
+    private(set) var ecrinStage: EcrinStage = .playing
+    /// L'écrin à l'écran : gardé pendant la carte (le Core vide l'écrin posé dès qu'il est ouvert).
+    private(set) var shownEcrin: PendingEcrin?
+    private(set) var ecrinAngle = 0.0
+    private(set) var ecrinPhase: OpeningPhase = .closed
+    /// Proximité de l'angle d'éclat (0…1), progression de l'éclat parfait (0…1), éclat parfait obtenu.
+    private(set) var glintCloseness = 0.0
+    private(set) var glintHold = 0.0
+    private(set) var glintPerfect = false
+    /// La variante rare vient d'apparaître : le bijou se transforme sous les yeux du joueur.
+    private(set) var variantRevealed = false
+    private(set) var perfectAt: Date?
+    private(set) var ecrinRevealStartedAt: Date?
+    private(set) var ecrinSuspenseMs = 0.0
+    /// Couleur du cuir de l'écrin posé (`EcrinArt.leathers`).
+    private(set) var leather = 0
+    /// Premier écrin du joueur : guidé (bulle, jauge d'éclat).
+    private(set) var firstEcrin = false
+    /// La carte affichée est le premier bijou de sa rareté.
+    private(set) var ecrinIsNew = false
+
     /// Achats intégrés et pub récompensée (plateforme).
     let store = Store()
     let ads = RewardedAds()
@@ -91,6 +135,11 @@ final class GameModel {
         return systemRng()
     }()
     @ObservationIgnored private var lastTickDistance = 0.0
+    @ObservationIgnored private var glint: GlintEngine?
+    @ObservationIgnored private let ecrinThumb = ThumbSource()
+    @ObservationIgnored private var ecrinHingeDriving = false
+    @ObservationIgnored private var glintTicker: Task<Void, Never>?
+    @ObservationIgnored private var ecrinLastTick = 0.0
 
     init() {
         let catalog = Catalog.shared
@@ -105,6 +154,8 @@ final class GameModel {
         hinge = HingeTracker(tuning: catalog.tuning)
         thumb.onSample = { [weak self] sample, distance in self?.handle(sample, distance: distance) }
         thumb.onRelease = { [weak self] in self?.handleRelease() }
+        ecrinThumb.onSample = { [weak self] sample, distance in self?.handleEcrin(sample, distance: distance) }
+        ecrinThumb.onRelease = { [weak self] in self?.handleEcrinRelease() }
         shapeSeed = player.nextSerial
         // Le calendrier ne s'ouvre pas tout seul le jour de la toute première séance, même si l'app est relancée.
         if saved.isInTutorial() { calendarOffered() }
@@ -173,7 +224,7 @@ final class GameModel {
 
     /// Le succès dont la bannière attend, au moment calme, après les fenêtres de niveau et de rattrapage.
     var achievementToShow: Achievement? {
-        guard isCalm, player.levelUp == nil, player.achievementCatchUp == nil else { return nil }
+        guard isCalm, player.levelUp == nil, player.achievementCatchUp == nil, player.ecrinCatchUp == nil else { return nil }
         return player.unseenAchievements.first.flatMap { catalog.achievement($0) }
     }
 
@@ -259,6 +310,7 @@ final class GameModel {
         hasHinge = true
         let action = hinge.update(degrees: degrees)
         hingeArmed = hinge.armed
+        if tab == .ecrins { return ecrinHingeChanged(action) }
         switch action {
         case .none:
             break
@@ -275,6 +327,7 @@ final class GameModel {
             // La fête (ou la fenêtre des succès) s'est affichée téléphone fermé : l'ouvrir la referme, et ouvre l'huître.
             // Une seule fenêtre à la fois : la suivante attend le prochain moment calme.
             if levelUpToShow != nil { acknowledgeLevelUp() } else if achievementCatchUpToShow != nil { acknowledgeAchievementCatchUp() }
+            else if ecrinCatchUpToShow != nil { acknowledgeEcrinCatchUp() }
             if engine.phase == .closed {
                 guard canOpen else { return }
                 haptics.prepare()
@@ -395,6 +448,10 @@ final class GameModel {
         rescuedDust = nil
         revealIsNew = false
         stage = .playing
+        ecrinStage = .playing
+        glint = nil
+        shownEcrin = nil
+        tab = .fishing
         refresh()
         store.refreshEntitlements()
     }
@@ -499,6 +556,232 @@ final class GameModel {
         guard gain > 0 else { return }
         reputationGain = gain
         reputationBump += 1
+    }
+
+    // MARK: - Écrins
+
+    /// L'onglet Écrins existe dès le premier écrin (pas d'onglet verrouillé qui annonce quelque chose).
+    var hasEcrins: Bool { player.ecrins > 0 || player.currentEcrin != nil || !player.jewelCards.isEmpty }
+    /// Écrins à ouvrir, celui posé compris (pastille de l'onglet).
+    var ecrinsToOpen: Int { player.ecrins + (player.currentEcrin == nil ? 0 : 1) }
+    var ecrinPrice: Int { economy.ecrins.dustPrice }
+    /// La rareté du bijou à l'écran (le scintillement, la lumière, le suspense en dépendent).
+    var shownRarity: JewelRarity? { shownEcrin.map { catalog.jewelRarity($0.jewel.rarityId) } }
+    /// La variante promise par l'écrin à l'écran, si l'éclat est parfait.
+    var pendingVariant: JewelVariant? { shownEcrin?.variantIfPerfect.flatMap { catalog.jewelVariant($0) } }
+
+    /// Pose l'écrin suivant s'il y en a un à ouvrir (bijou, angle d'éclat et variante tirés par le Core et sauvegardés).
+    func prepareEcrin() {
+        guard ecrinStage == .playing, glint == nil || shownEcrin != player.currentEcrin else { return }
+        player.ensureEcrin(rng: rng)
+        save()
+        glintTicker?.cancel()
+        ecrinThumb.reset()
+        ecrinHingeDriving = false
+        hinge.disarmIfOpen()
+        hingeArmed = hinge.armed
+        shownEcrin = player.currentEcrin
+        glint = shownEcrin.map { GlintEngine(tuning: tuning, sweetAngle: $0.sweetAngle) }
+        firstEcrin = shownEcrin != nil && player.jewelCards.isEmpty
+        leather = Int(rng() * Double(EcrinArt.leathers.count)) % EcrinArt.leathers.count
+        ecrinAngle = 0
+        ecrinPhase = .closed
+        glintCloseness = 0
+        glintHold = 0
+        glintPerfect = false
+        variantRevealed = false
+        perfectAt = nil
+        ecrinRevealStartedAt = nil
+        ecrinIsNew = false
+        ecrinLastTick = 0
+    }
+
+    func ecrinDrag(translation: Double) {
+        guard ecrinStage == .playing, glint != nil, !ecrinHingeDriving else { return }
+        if ecrinPhase == .closed { haptics.prepare() }
+        ecrinThumb.drag(translation: translation, tuning: tuning)
+    }
+
+    /// Lâché après l'angle d'éclat (zone de jeu passée), le couvercle finit seul, comme dans la webapp.
+    func ecrinEndDrag() {
+        guard ecrinStage == .playing, glint != nil, !ecrinHingeDriving else { return }
+        let autoOpen = max(tuning.autoOpenFromAngle, tuning.glintMaxAngle + tuning.glintTolerance)
+        ecrinThumb.end(tuning: tuning, autoOpenFrom: ecrinPhase == .opening ? autoOpen : nil)
+    }
+
+    /// VoiceOver : ouverture lente qui s'arrête sur l'angle d'éclat le temps d'un éclat parfait (comme l'huître
+    /// ouverte par VoiceOver obtient un lustre régulier), puis jusqu'au bout.
+    func openEcrinForAccessibility() {
+        guard ecrinStage == .playing, let glint, glint.phase == .closed else { return }
+        let sweet = glint.sweetAngle
+        let holdMs = tuning.glintHoldMs
+        Task { [weak self] in
+            for (from, to, ms) in [(0.0, sweet, 1600.0), (sweet, sweet, holdMs + 300), (sweet, 180, 900)] {
+                let start = ThumbSource.now
+                while true {
+                    guard let self, self.ecrinStage == .playing else { return }
+                    let k = min(1, (ThumbSource.now - start) / ms)
+                    let angle = from + (to - from) * k
+                    if from == to { self.tickGlint() } else { self.handleEcrin(OpeningSample(angle: angle, time: ThumbSource.now), distance: 0) }
+                    if k >= 1 { break }
+                    try? await Task.sleep(for: .milliseconds(16))
+                }
+            }
+        }
+    }
+
+    /// Toucher la carte (sur le Duo : refermer le téléphone) : écrin suivant, s'il y en a.
+    func nextEcrin() {
+        guard case .card = ecrinStage else { return }
+        ecrinStage = .playing
+        glint = nil
+        prepareEcrin()
+    }
+
+    /// Un écrin acheté au comptoir (ou sur l'onglet Écrins vide) avec la poussière d'or.
+    func buyEcrin() {
+        guard player.buyEcrin() else { return }
+        haptics.reveal(tier: 2)
+        audio.purchase()
+        save()
+        if tab == .ecrins { prepareEcrin() }
+    }
+
+    private func ecrinHingeChanged(_ action: HingeAction) {
+        switch action {
+        case .none:
+            break
+        case .closed:
+            if case .card = ecrinStage {
+                nextEcrin()
+            } else if ecrinStage == .playing, ecrinPhase == .resisting {
+                handleEcrinRelease()
+            }
+            if ecrinPhase != .opening { ecrinHingeDriving = false }
+        case .sample(let angle):
+            guard ecrinStage == .playing, glint != nil, ecrinThumb.distance == 0 || ecrinHingeDriving else { return }
+            if ecrinPhase == .closed { haptics.prepare() }
+            ecrinHingeDriving = true
+            handleEcrin(OpeningSample(angle: angle, time: ThumbSource.now), distance: angle / tuning.popAngle * tuning.resistanceDistance)
+        }
+    }
+
+    private func handleEcrin(_ sample: OpeningSample, distance: Double) {
+        guard let glint, ecrinStage == .playing else { return }
+        let events = glint.push(sample)
+        if glint.phase == .resisting, distance - ecrinLastTick >= tuning.resistanceTickDistance {
+            ecrinLastTick = distance
+            haptics.tick()
+            audio.tick(step: Int(distance / tuning.resistanceTickDistance))
+        }
+        handleGlint(events)
+    }
+
+    /// Le geste immobile n'envoie plus de mesures : le temps avance quand même (éclat parfait).
+    private func tickGlint() {
+        guard let glint, ecrinStage == .playing else { return }
+        handleGlint(glint.tick(ThumbSource.now))
+    }
+
+    private func handleGlint(_ events: [GlintEvent]) {
+        guard let glint else { return }
+        ecrinAngle = glint.angle
+        ecrinPhase = glint.phase
+        glintCloseness = glint.closeness
+        glintHold = glint.holdProgress
+        for event in events {
+            switch event {
+            case .pop:
+                haptics.pop()
+                audio.pop()
+                if !ecrinHingeDriving { ecrinThumb.lockAfterPop(tuning: tuning) }
+                startGlintTicker()
+            case .perfect:
+                glintPerfect = true
+                perfectAt = Date()
+                haptics.reveal(tier: 2)
+                audio.reward()
+                if pendingVariant != nil {
+                    variantRevealed = true
+                    haptics.reveal(tier: 3)
+                }
+            case .reveal(let perfect):
+                startEcrinReveal(perfect: perfect)
+            }
+        }
+    }
+
+    private func startGlintTicker() {
+        glintTicker?.cancel()
+        glintTicker = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .milliseconds(16))
+                guard let self, self.ecrinStage == .playing, self.ecrinPhase == .opening else { return }
+                self.tickGlint()
+            }
+        }
+    }
+
+    private func handleEcrinRelease() {
+        guard let glint else { return }
+        glint.release()
+        ecrinAngle = glint.angle
+        ecrinPhase = glint.phase
+        if glint.phase == .closed {
+            ecrinThumb.reset()
+            ecrinLastTick = 0
+        }
+    }
+
+    /// Le bijou est révélé : sa carte est créée tout de suite (sauvegardée), puis montrée après le suspense.
+    private func startEcrinReveal(perfect: Bool) {
+        glintTicker?.cancel()
+        guard let pending = shownEcrin else { return }
+        ecrinIsNew = player.count(ofJewel: pending.jewel.rarityId) == 0
+        guard let card = player.recordEcrin(perfect: perfect, now: Clock.nowMs) else { return }
+        save()
+        ecrinStage = .suspense
+        let rarity = catalog.jewelRarity(pending.jewel.rarityId)
+        // Même mise en scène que les trouvailles : — et ◆ discrets, ★ avec éclair ; la variante rare au maximum.
+        let tier = card.variant != nil ? 3 : max(0, min(3, rarity.tier - 1))
+        ecrinRevealStartedAt = Date()
+        ecrinSuspenseMs = tuning.revealSuspenseMs(tier: tier)
+        let suspense = ecrinSuspenseMs
+        audio.lid()
+        audio.setSuspense(true)
+        Task { [weak self] in
+            var elapsed = 0.0
+            let pulse = self?.catalog.audio.pulseEveryMs ?? suspense
+            while elapsed + pulse < suspense {
+                try? await Task.sleep(for: .milliseconds(Int(pulse)))
+                elapsed += pulse
+                self?.haptics.suspensePulse(tier: tier)
+                self?.audio.suspensePulse(tier: tier)
+            }
+            try? await Task.sleep(for: .milliseconds(Int(max(0, suspense - elapsed))))
+            guard let self else { return }
+            self.haptics.reveal(tier: tier)
+            self.audio.setSuspense(false)
+            self.audio.reveal(rarity.id == "toc" ? .empty : .pearl, tier: tier)
+            self.showReputation()
+            self.ecrinStage = .card(card)
+        }
+    }
+
+    /// Partie d'avant les écrins : la fenêtre « des écrins t'attendent », au moment calme (après la fête et les succès).
+    var ecrinCatchUpToShow: Int? {
+        isCalm && player.levelUp == nil && player.achievementCatchUp == nil ? player.ecrinCatchUp : nil
+    }
+
+    func acknowledgeEcrinCatchUp() {
+        guard player.ecrinCatchUp != nil else { return }
+        player.acknowledgeEcrinCatchUp()
+        save()
+        audio.tap()
+    }
+
+    func sellJewel(_ card: JewelCard) {
+        if let gained = player.sellJewel(serial: card.serial) { gainedDust(gained); showReputation() }
     }
 
     // MARK: - Moteur

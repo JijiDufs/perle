@@ -6,7 +6,7 @@ import PearlCore
 /// triées, les albums de trouvailles et les probabilités. Toucher une carte l'agrandit.
 /// Nombre pair de colonnes partout, pour se couper proprement au pli du Duo.
 struct CollectionView: View {
-    private enum Shelf: Hashable { case pearls, finds }
+    private enum Shelf: Hashable { case pearls, jewels, finds }
 
     @Environment(GameModel.self) private var game
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -15,6 +15,8 @@ struct CollectionView: View {
     @State private var shelf: Shelf = .pearls
     /// La sorte de perle touchée dans l'encyclopédie ; nil = toutes les cartes.
     @State private var filter: String?
+    /// La rareté touchée dans l'encyclopédie des bijoux ; nil = tous.
+    @State private var jewelFilter: String?
     @State private var shown: PearlCardView.Content?
     @State private var confirmSellAll = false
 
@@ -24,15 +26,18 @@ struct CollectionView: View {
                 ScrollView {
                     VStack(spacing: 22) {
                         header
-                        if !game.player.findCards.isEmpty {
+                        if !game.player.findCards.isEmpty || !game.player.jewelCards.isEmpty {
                             Picker("Volet de la collection", selection: $shelf) {
                                 Text("Perles").tag(Shelf.pearls)
-                                Text("Trouvailles").tag(Shelf.finds)
+                                if !game.player.jewelCards.isEmpty { Text("Bijoux").tag(Shelf.jewels) }
+                                if !game.player.findCards.isEmpty { Text("Trouvailles").tag(Shelf.finds) }
                             }
                             .pickerStyle(.segmented)
                         }
                         if shelf == .finds && !game.player.findCards.isEmpty {
                             findAlbums
+                        } else if shelf == .jewels && !game.player.jewelCards.isEmpty {
+                            jewelShelf(scroll)
                         } else {
                             pearlShelf(scroll)
                         }
@@ -48,9 +53,9 @@ struct CollectionView: View {
             if let shown { zoom(shown) }
         }
         .confirmationDialog("Revendre les doublons ?", isPresented: $confirmSellAll, titleVisibility: .visible) {
-            Button("Revendre \(sellable.count) perles pour \(sellableDust) ✦") { game.sellAllDuplicates() }
+            Button("Revendre \(sellableCount) doublons pour \(sellableDust) ✦") { game.sellAllDuplicates() }
         } message: {
-            Text("On garde la plus belle de chaque sorte et toutes les perles à marque rare.")
+            Text("On garde la plus belle de chaque sorte, toutes les perles à marque rare et tous les bijoux à éclat parfait.")
         }
     }
 
@@ -126,7 +131,11 @@ struct CollectionView: View {
     private var header: some View {
         VStack(spacing: 6) {
             Text("Ma collection").font(.system(size: 34, weight: .bold)).tracking(-0.8)
-            if shelf == .finds && !game.player.findCards.isEmpty {
+            if shelf == .jewels && !game.player.jewelCards.isEmpty {
+                let rarities = game.catalog.jewels.rarities
+                Text("\(rarities.filter { game.player.count(ofJewel: $0.id) > 0 }.count) / \(rarities.count) raretés de bijoux").font(.headline).opacity(0.9)
+                Text("\(game.player.jewelCards.count) bijoux").font(.subheadline).opacity(0.65)
+            } else if shelf == .finds && !game.player.findCards.isEmpty {
                 let found = game.catalog.finds.filter { game.player.count(ofFind: $0.id) > 0 }.count
                 Text("\(found) / \(game.catalog.finds.count) trouvailles").font(.headline).opacity(0.9)
                 Text("\(completeAlbums) albums complets").font(.subheadline).opacity(0.65)
@@ -153,17 +162,87 @@ struct CollectionView: View {
             Button {
                 confirmSellAll = true
             } label: {
-                if sellable.isEmpty {
+                if sellableCount == 0 {
                     Text("Aucun doublon à revendre")
                 } else {
-                    Text("Revendre \(sellable.count) doublons · + \(sellableDust) ✦")
+                    Text("Revendre \(sellableCount) doublons · + \(sellableDust) ✦")
                 }
             }
             .buttonStyle(PearlButtonStyle())
-            .disabled(sellable.isEmpty)
+            .disabled(sellableCount == 0)
+            // Un écrin contre de la poussière d'or (jamais contre de l'argent réel) ; probabilités dans le volet Bijoux,
+            // dans l'onglet Écrins et dans les réglages.
+            Button { game.buyEcrin() } label: {
+                Label("Acheter un écrin · \(game.ecrinPrice) ✦", systemImage: "gift.fill")
+            }
+            .buttonStyle(GlassButtonStyle())
+            .disabled(game.player.dust < game.ecrinPrice)
         }
         .padding(18)
         .glassPanel(shade: 0.25)
+    }
+
+    // MARK: - Bijoux
+
+    /// Les dix raretés de bijoux en cases (toucher une rareté ne garde que ses bijoux), les cartes triées, les probabilités.
+    @ViewBuilder
+    private func jewelShelf(_ scroll: ScrollViewProxy) -> some View {
+        LazyVGrid(columns: columns(2, spacing: 14), spacing: 14) {
+            ForEach(game.catalog.jewels.rarities) { rarity in
+                let count = game.player.count(ofJewel: rarity.id)
+                let selected = jewelFilter == rarity.id
+                Button {
+                    game.audio.tap()
+                    withAnimation(.snappy) { jewelFilter = selected ? nil : rarity.id }
+                    if !selected { withAnimation(reduceMotion ? nil : .snappy) { scroll.scrollTo(Self.cardsAnchor, anchor: .top) } }
+                } label: {
+                    JewelCell(rarity: rarity, best: bestJewel(rarity.id), count: count, selected: selected)
+                }
+                .buttonStyle(.plain)
+                .disabled(count == 0)
+                .accessibilityAddTraits(selected ? .isSelected : [])
+            }
+        }
+
+        VStack(spacing: 12) {
+            section("Mes bijoux", note: "Appui long sur un bijou en double pour le revendre.")
+            Picker("Trier les cartes", selection: $sort) {
+                Text("Rareté").tag(CardSort.rarity)
+                Text("Récents").tag(CardSort.recent)
+                Text("Valeur").tag(CardSort.value)
+            }
+            .pickerStyle(.segmented)
+            if let jewelFilter {
+                HStack {
+                    Text("\(game.catalog.jewelRarity(jewelFilter).label) seulement · \(jewelCards.count) sur \(game.player.jewelCards.count)")
+                        .font(.subheadline.weight(.semibold))
+                    Spacer(minLength: 8)
+                    Button("Tout afficher") { withAnimation(.snappy) { self.jewelFilter = nil } }
+                        .font(.subheadline.weight(.bold))
+                        .foregroundStyle(Palette.gold)
+                }
+            }
+            GlassList {
+                LazyVStack(spacing: 0) {
+                    ForEach(jewelCards) { card in
+                        JewelRow(card: card) { open(.jewel(card)) }
+                    }
+                }
+            }
+        }
+        .id(Self.cardsAnchor)
+
+        section("Probabilités des écrins", note: "Chaque écrin est un tirage. Les chances ne changent jamais.")
+        GlassList { EcrinOddsList().padding(.vertical, 8) }
+    }
+
+    private func bestJewel(_ rarityId: String) -> JewelCard? {
+        game.player.jewelCards.filter { $0.jewel.rarityId == rarityId }.max { $0.value < $1.value }
+    }
+
+    private var jewelCards: [JewelCard] {
+        let mine = jewelFilter.map { id in game.player.jewelCards.filter { $0.jewel.rarityId == id } } ?? game.player.jewelCards
+        return game.catalog.sortJewelCards(mine, sort)
     }
 
     // MARK: - Trouvailles
@@ -274,7 +353,11 @@ struct CollectionView: View {
     private var discovered: Int { findable.filter { game.player.count(of: $0.id) > 0 }.count }
     private var treasure: Int { Int(game.player.pearlCards.reduce(0) { $0 + $1.value }) }
     private var sellable: [PearlCard] { game.player.sellableDuplicates() }
-    private var sellableDust: Int { sellable.reduce(0) { $0 + game.catalog.sellDust($1.pearlId) } }
+    private var sellableJewels: [JewelCard] { game.player.sellableJewelDuplicates() }
+    private var sellableCount: Int { sellable.count + sellableJewels.count }
+    private var sellableDust: Int {
+        sellable.reduce(0) { $0 + game.catalog.sellDust($1.pearlId) } + sellableJewels.reduce(0) { $0 + game.catalog.sellDust(jewel: $1.jewel.rarityId) }
+    }
 
     /// Les cartes montrées : la sorte touchée (ou toutes), dans l'ordre choisi.
     private var cards: [PearlCard] {
@@ -459,6 +542,92 @@ private struct PearlRow: View {
                 Text("Ta seule \(pearl.name.lowercased()) : on la garde.")
             }
         }
+    }
+}
+
+/// Une case de l'encyclopédie des bijoux : le plus beau de cette rareté, ou un « ? ».
+private struct JewelCell: View {
+    @Environment(GameModel.self) private var game
+    let rarity: JewelRarity
+    let best: JewelCard?
+    let count: Int
+    var selected = false
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ZStack {
+                if let best {
+                    JewelThumb(card: best, size: 92)
+                } else {
+                    Text("?").font(.system(size: 50, weight: .semibold)).foregroundStyle(.white.opacity(0.22))
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 104)
+            HStack(alignment: .firstTextBaseline) {
+                Text(count > 0 ? rarity.label : "???").font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.white.opacity(count > 0 ? 0.95 : 0.4)).lineLimit(2).minimumScaleFactor(0.75)
+                Spacer(minLength: 4)
+                Text(count > 0 ? "×\(count)" : rarity.rarity).font(.subheadline.weight(.semibold)).foregroundStyle(collectionCyan.opacity(0.85))
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.bottom, 14)
+        .collectionCell(known: count > 0, selected: selected)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(count > 0 ? String(localized: "\(rarity.label), \(count) exemplaires") : String(localized: "Bijou pas encore trouvé, \(rarity.rarity)"))
+    }
+}
+
+private struct JewelRow: View {
+    @Environment(GameModel.self) private var game
+    let card: JewelCard
+    let open: () -> Void
+
+    var body: some View {
+        let rarity = game.catalog.jewelRarity(card.jewel.rarityId)
+        Button(action: open) {
+            HStack {
+                JewelThumb(card: card, size: 34)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(game.catalog.jewelName(card.jewel, variant: card.variant)).lineLimit(2)
+                    Group {
+                        if card.perfect { Text("\(rarity.rarity) · éclat parfait") } else { Text(verbatim: rarity.rarity) }
+                    }
+                    .font(.caption).foregroundStyle(.white.opacity(0.6))
+                }
+                Spacer()
+                Text(GameText.jewelValue(card.value)).font(.headline.monospacedDigit()).foregroundStyle(Palette.gold)
+            }
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            if game.player.count(ofJewel: rarity.id) > 1 {
+                Button("Revendre · + \(game.catalog.sellDust(jewel: rarity.id)) ✦", systemImage: "sparkles") { game.sellJewel(card) }
+            } else {
+                Text("Ton seul bijou \(rarity.label.lowercased()) : on le garde.")
+            }
+        }
+    }
+}
+
+/// Un bijou dessiné avec sa lumière, pour les cases et les lignes de la collection.
+struct JewelThumb: View {
+    @Environment(GameModel.self) private var game
+    let card: JewelCard
+    var size: CGFloat = 40
+
+    var body: some View {
+        Canvas { c, canvasSize in
+            let side = Double(canvasSize.width)
+            let glow = card.variant.flatMap { game.catalog.jewelVariant($0)?.glow } ?? game.catalog.jewelRarity(card.jewel.rarityId).glow
+            PearlArt.glow(&c, side / 2, side / 2, side * 0.5, glow, 0.45)
+            JewelArt.draw(Canvas2D(c), side / 2, side * JewelArt.yOffset(card.jewel), side / 440,
+                          JewelArt.Look(card.jewel, variant: card.variant, catalog: game.catalog))
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
     }
 }
 

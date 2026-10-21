@@ -36,6 +36,11 @@ enum GameText {
         return mark.map { "\(base) · \($0)" } ?? base
     }
 
+    /// Valeur d'un bijou : au centième sous 10, à l'unité au-delà (comme la webapp, sans l'euro).
+    static func jewelValue(_ value: Double) -> String {
+        value.formatted(.number.precision(.fractionLength(value < 10 ? 2 : 0)))
+    }
+
     /// Le texte d'une mission du jour.
     static func mission(_ mission: Mission) -> String {
         let goal = mission.goal

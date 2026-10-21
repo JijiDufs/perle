@@ -1,4 +1,5 @@
 import SwiftUI
+import PearlCore
 
 /// Cadre des cartes selon la perle, porté de src/art/cardStyle.ts (le prototype de pearl-inc.app) :
 /// dégradé [haut-gauche, bas-droite], et texte clair (`dark`) ou foncé.
@@ -23,6 +24,12 @@ struct CardFrame {
     /// Une trouvaille prend le cadre de la perle de même ampleur (◆ … ★★).
     static func find(tier: Int) -> CardFrame {
         pearl(["white", "white", "baroque", "golden", "giant"][min(max(tier - 1, 0), 4)])
+    }
+
+    /// Un bijou : le cadre de la perle de même ampleur (— … ★★, `JEWEL_FRAMES`), ou celui de sa variante rare.
+    static func jewel(_ card: JewelCard, catalog: Catalog) -> CardFrame {
+        if let variant = card.variant.flatMap({ catalog.jewelVariant($0) }) { return CardFrame(colors: variant.frame.colors, dark: variant.frame.dark) }
+        return pearl(["empty", "white", "baroque", "black", "golden", "giant"][min(max(catalog.jewelRarity(card.jewel.rarityId).tier, 0), 5)])
     }
 
     /// Fond de la vitrine où repose la perle.

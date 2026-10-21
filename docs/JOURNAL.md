@@ -4,6 +4,28 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-21 (lot 1.4) · Jules · Claude Code · branche `claude/ios-1-4-ecrins-20174f`
+
+Lot 1.4 de l'app iOS, « Écrins et bijoux » (`docs/ios-feuille-de-route.md`). Décision en `AGENTS.md` §6.
+
+**Fait**
+- **TypeScript** : tables de `jewels.ts` exportées ; les noms des bijoux deviennent des modèles (`JEWEL_NAMES`), sans changer un seul nom (vérifié sur 5 000 tirages avant / après). `APP_ECRINS` (`appEconomy.ts` : 1 écrin tous les 3 niveaux, + 1 par rang, 200 ✦ au comptoir) ; 9 succès d'écrins ; textes anglais des bijoux (`catalogEnglish.ts`, test). Export : catalogue des bijoux, `economy.ecrins`, réglages de l'éclat ; cas de référence : 300 écrins tirés d'avance (bijou, angle d'éclat, variante, garantie ★), valeurs des cartes, tri, rang de rareté, 5 ouvertures d'écrin (`GlintEngine`). Tests d'économie : prix = 10 huîtres de poussière, 1 à 3 jours de revente, revente d'un bijou ≪ prix, aucun produit ne donne d'écrin ; ≥ 3 écrins la 1re semaine puis 0,4 à 1,5 par semaine.
+- **PearlCore** : `Jewels.swift` (tirage, garantie, nom et texte dans la langue du catalogue, couleurs de la variante), `Glint.swift` (moteur de l'écrin). `PlayerState` : `ecrins`, `currentEcrin` (tiré à la pose, sauvegardé), `jewelDraw`, `jewelCards`, `ecrinCatchUp` ; `ensureEcrin`, `recordEcrin` (×1,5 / ×2, réputation, statistiques `perfectGlints` / `variants`, succès), `buyEcrin`, revente des bijoux (seule ou avec les doublons de perles). Niveaux : `levelReward.ecrins`, `LevelUp.ecrins`. Sauvegardes : 1.0 → écrins dans la fête rétroactive ; 1.1 à 1.3 → écrins des niveaux franchis, une fois ; `PlayerStats` se décode sans les nouveaux champs. `EcrinTests` (parité, sources, tirage d'avance, revente, succès, sauvegardes 1.0 et 1.3).
+- **App** : onglet **Écrins** (apparaît avec le premier écrin, pastille) ; `SalonArt`, `EcrinArt`, `JewelArt` (portés de `salon.ts`, `ecrin3d.ts`, `jewel.ts` par `Canvas2D`, qui gagne `transform` et moins de disques pour les petits dégradés) ; `EcrinView` : geste au pouce (fin automatique après la zone d'éclat), bulle et jauge d'éclat pour le premier écrin, gerbe d'étoiles, variante qui transforme le bijou, suspense et carte, état vide (niveau du prochain écrin, achat 200 ✦), probabilités. **Charnière** : branchée au niveau des onglets (`RootView`), elle ouvre l'huître ou l'écrin selon l'onglet ; changer d'onglet désarme. Carte de bijou dans `PearlCardView` (cadre par rareté ou de la variante, métal · taille, mention éclat / variante, partage). Collection : volet **Bijoux**, achat d'écrin au comptoir, revente des doublons de bijoux. Fête de niveau : « + N écrins » et « Ouvrir mes écrins » ; fenêtre « Des écrins t'attendent ! » ; Réglages → Probabilités avec les écrins. VoiceOver « Ouvrir l'écrin ». FR / EN (56 textes, pluriels).
+- **Simulateur** (un seul à la fois) : iPhone 17 Pro avec une partie 1.1 (232 huîtres, niveau 12) : fête du niveau 13, succès, puis « 6 écrins t'attendent » ; éclat parfait au pouce, carte « Nouveau ! » ; ouverture rapide sans éclat ; volet Bijoux. iPhone 17e, partie neuve en anglais : tutoriel → « Level 4! + 1 jewel case » → « Open my jewel cases » → premier écrin guidé, fiche des probabilités. Duo simulé (`-SimulatedHinge -SimulatedFold`, 17e) : écrin à droite du pli, **éclat parfait à la charnière** (téléphone tenu vers 109°), carte à droite du pli, refermer → état vide. Corrigé en route : en-tête écrasé et jauge qui débordait sur la moitié d'écran, métal tronqué sur la carte, bouton d'achat tronqué. Sauvegardes d'origine des deux simulateurs remises.
+
+**À faire**
+- Jules : iPhone réel (geste de l'éclat au pouce : trouver l'angle et tenir 0,9 s est-il agréable ? VoiceOver), TestFlight Duo (l'angle d'éclat à la vraie charnière, tolérance 6°), numéro de version 1.4, texte « Nouveautés », notes de revue (nouveau tirage : probabilités affichées, écrin jamais vendu contre de l'argent).
+- Valider avec Mathys : prix (200 ✦), rythme, succès.
+- Après la fusion : `graphify update .` dans le dossier principal.
+
+**Fragile**
+- **Argent réel → poussière → écrin** : les packs de poussière (1,99 $ = 400 ✦) achètent indirectement 2 écrins. Ce n'est pas nouveau (les huîtres s'achètent déjà), mais si l'on veut « jamais d'écrin payé » au sens strict, il faudrait séparer la poussière gagnée de la poussière achetée. À trancher.
+- VoiceOver donne l'éclat parfait à chaque fois (comme l'huître ouverte par VoiceOver a un lustre régulier) : un joueur voyant pourrait s'en servir.
+- « Écrin complet » et « Venu des Abysses » demandent la légende (0,5 %, ≈ 7 % des écrins de garantie) : objectif de long terme.
+- Au simulateur, les touchers sur la barre d'onglets ne passent qu'avec un appui de ≈ 0,45 s, et les captures arrivent souvent avec une action de retard.
+- La fenêtre d'une partie 1.1 à 1.3 peut suivre deux autres fenêtres (niveau, succès) au premier lancement : trois fenêtres d'affilée, une seule fois.
+
 ## 2026-10-21 (lot 1.3) · Jules · Claude Code · branche `claude/ios-1-3-succes-e31e8f`
 
 Lot 1.3 de l'app iOS, « Succès, titres, missions enrichies » (`docs/ios-feuille-de-route.md`). Décision en `AGENTS.md` §6.

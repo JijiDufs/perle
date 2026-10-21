@@ -216,6 +216,7 @@ Les premiers jours, il y a peu de doublons (on garde toujours le premier exempla
 |---|---|
 | Une huître (quand le stock est vide) | 20 ✦ |
 | Bénitier | 2 000 ✦ |
+| Un écrin (1.4), au comptoir ou sur l'onglet Écrins vide | 200 ✦ (`APP_ECRINS` ; les autres viennent des niveaux : 1 tous les 3, + 1 par rang) |
 
 **Cohérence avec la boutique** : 2 000 ✦ en poussière achetée coûtent plus de 4,99 €, alors que le bénitier coûte 2,99 € en direct. Celui qui paie achète donc le skin, pas la poussière. Et 10 huîtres valent 200 ✦ ou 0,99 € : les deux prix se tiennent.
 

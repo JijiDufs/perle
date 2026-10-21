@@ -69,13 +69,23 @@ struct LevelUpView: View {
                     .opacity(0.75)
             }
 
+            // Un écrin gagné : on peut aller l'ouvrir tout de suite (l'onglet apparaît avec le premier).
+            if (levelUp.ecrins ?? 0) > 0 {
+                Button {
+                    withAnimation { game.acknowledgeLevelUp(); game.tab = .ecrins }
+                } label: {
+                    Text("Ouvrir mes écrins")
+                }
+                .buttonStyle(PearlButtonStyle())
+                .padding(.top, 4)
+            }
             Button {
                 withAnimation { game.acknowledgeLevelUp() }
             } label: {
                 Text("Continuer")
             }
-            .buttonStyle(PearlButtonStyle())
-            .padding(.top, 4)
+            .buttonStyle(levelUp.ecrins ?? 0 > 0 ? AnyButtonStyle(GlassButtonStyle()) : AnyButtonStyle(PearlButtonStyle()))
+            .padding(.top, (levelUp.ecrins ?? 0) > 0 ? 0 : 4)
         }
         .foregroundStyle(.white)
         .padding(compact ? 16 : 24)
@@ -119,5 +129,52 @@ struct LevelUpView: View {
                 .foregroundStyle(Palette.gold)
                 .accessibilityLabel(Text("\(levelUp.dust) poussière d’or"))
         }
+        if let ecrins = levelUp.ecrins, ecrins > 0 {
+            Label("+ \(ecrins)", systemImage: "gift.fill")
+                .accessibilityLabel(Text("\(ecrins) écrins"))
+        }
+    }
+}
+
+/// Un style de bouton choisi à l'exécution.
+struct AnyButtonStyle: ButtonStyle {
+    private let make: (Configuration) -> AnyView
+
+    init<S: ButtonStyle>(_ style: S) { make = { AnyView(style.makeBody(configuration: $0)) } }
+
+    func makeBody(configuration: Configuration) -> some View { make(configuration) }
+}
+
+/// Partie d'avant les écrins (1.1 à 1.3) : les écrins des niveaux déjà franchis, en une seule fenêtre.
+struct EcrinCatchUpView: View {
+    @Environment(GameModel.self) private var game
+    let count: Int
+
+    var body: some View {
+        VStack(spacing: game.foldX != nil ? 10 : 14) {
+            Image(systemName: "gift.fill").font(.system(size: 40)).foregroundStyle(Palette.gold).accessibilityHidden(true)
+            Text("Des écrins t’attendent !").font(.title2.weight(.bold)).multilineTextAlignment(.center).accessibilityAddTraits(.isHeader)
+            Text("Tes niveaux t’ont rapporté \(count) écrins. Ouvre-les doucement : quelque part, le bijou scintille.")
+                .font(.subheadline).multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true).opacity(0.85)
+            Button {
+                withAnimation { game.acknowledgeEcrinCatchUp(); game.tab = .ecrins }
+            } label: {
+                Text("Ouvrir mes écrins")
+            }
+            .buttonStyle(PearlButtonStyle())
+            Button("Plus tard") { withAnimation { game.acknowledgeEcrinCatchUp() } }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.8))
+        }
+        .foregroundStyle(.white)
+        .padding(game.foldX != nil ? 16 : 24)
+        .frame(maxWidth: 340)
+        .glassPanel(cornerRadius: 28, rim: Palette.gold, shade: 0.35)
+        .padding(.horizontal, game.foldX != nil ? 10 : 20)
+        .environment(\.buttonLabelWraps, game.foldX != nil)
+        .accessibilityElement(children: .contain)
+        .accessibilityAddTraits(.isModal)
+        .accessibilityAction(.escape) { game.acknowledgeEcrinCatchUp() }
+        .onAppear { game.celebrateAchievement() }
     }
 }

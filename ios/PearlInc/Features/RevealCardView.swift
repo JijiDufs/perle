@@ -116,6 +116,10 @@ extension PearlCardView.Content {
         case .find(let card, _):
             let name = catalog.find(card.findId).name
             return String(localized: "Il y avait « \(name) » dans mon huître. Pearl Inc. 🦪 pearl-inc.app", comment: "Message partagé")
+        case .jewel(let card):
+            let name = catalog.jewelName(card.jewel, variant: card.variant), rarity = catalog.jewelRarity(card.jewel.rarityId).rarity
+            let serial = GameText.serial(card.serial)
+            return String(localized: "J’ai trouvé « \(name) » \(rarity) dans un écrin de Pearl Inc. (\(serial)) 💍 pearl-inc.app", comment: "Message partagé")
         case .empty:
             return nil
         }

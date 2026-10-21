@@ -63,11 +63,20 @@ struct SettingsView: View {
                         }
                     }
                     NavigationLink {
-                        ScrollView { OddsList().padding(20) }
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 18) {
+                                OddsList()
+                                if game.hasEcrins {
+                                    Text("Écrins").font(.title3.weight(.bold))
+                                    EcrinOddsList()
+                                }
+                            }
+                            .padding(20)
+                        }
                             .scrollContentBackground(.hidden)
                             .navigationTitle("Probabilités")
                     } label: {
-                        Label("Probabilités des perles", systemImage: "percent")
+                        Label("Probabilités", systemImage: "percent")
                     }
                     if game.ads.privacyOptionsRequired {
                         Button { Task { await game.ads.showPrivacyOptions() } } label: {

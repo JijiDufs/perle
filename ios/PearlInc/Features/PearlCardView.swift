@@ -9,6 +9,7 @@ struct PearlCardView: View {
         case pearl(PearlCard)
         case find(FindCard, dust: Int)
         case empty(serial: Int)
+        case jewel(JewelCard)
     }
 
     @Environment(GameModel.self) private var game
@@ -59,6 +60,7 @@ struct PearlCardView: View {
         case .pearl(let card): CardFrame.pearl(card.pearlId)
         case .find(let card, _): CardFrame.find(tier: game.catalog.find(card.findId).tier)
         case .empty: CardFrame.pearl("empty")
+        case .jewel(let card): CardFrame.jewel(card, catalog: game.catalog)
         }
     }
 
@@ -68,6 +70,7 @@ struct PearlCardView: View {
             return GameText.pearlName(game.catalog.pearl(card.pearlId).name, cracked: card.cracked)
         case .find(let card, _): return game.catalog.find(card.findId).name
         case .empty: return game.catalog.pearl("empty").name
+        case .jewel(let card): return game.catalog.jewelName(card.jewel, variant: card.variant)
         }
     }
 
@@ -78,10 +81,12 @@ struct PearlCardView: View {
             let tier = game.catalog.find(card.findId).tier
             return String(repeating: "◆", count: min(tier, 3)) + String(repeating: "★", count: max(0, tier - 3))
         case .empty: return game.catalog.pearl("empty").rarity
+        case .jewel(let card): return game.catalog.jewelRarity(card.jewel.rarityId).rarity
         }
     }
 
     private var showsHolo: Bool {
+        if case .jewel(let card) = content { return card.perfect || game.catalog.jewelRarity(card.jewel.rarityId).tier >= 3 }
         guard case .pearl(let card) = content, !card.cracked else { return false }
         return game.catalog.pearl(card.pearlId).revealTier >= 2
     }
@@ -105,6 +110,12 @@ struct PearlCardView: View {
                 let find = game.catalog.find(card.findId)
                 PearlArt.glow(&c, w / 2, h / 2, w * 0.5, find.glow, 0.6, additive: false)
                 FindArt.draw(c, w / 2, h / 2, h * 0.36, id: find.id, t: time)
+            case .jewel(let card):
+                let glow = card.variant.flatMap { game.catalog.jewelVariant($0)?.glow } ?? game.catalog.jewelRarity(card.jewel.rarityId).glow
+                PearlArt.glow(&c, w / 2, h / 2, w * 0.5, glow, 0.55, additive: false)
+                let side = min(w, h) * 1.05
+                JewelArt.draw(Canvas2D(c), w / 2, h / 2 + side * (JewelArt.yOffset(card.jewel) - 0.5), side / 440,
+                              JewelArt.Look(card.jewel, variant: card.variant, catalog: game.catalog))
             case .empty:
                 let r = w * 0.17
                 c.stroke(Path(ellipseIn: CGRect(x: w / 2 - r, y: h / 2 - r, width: r * 2, height: r * 2)),
@@ -147,6 +158,31 @@ struct PearlCardView: View {
                 }
                 Text(find.flavor).font(.system(size: 23 * s)).opacity(0.88).lineLimit(4).minimumScaleFactor(0.8)
                 if dust > 0 { Text("+ \(dust) ✦ de poussière d’or").font(.system(size: 24 * s, weight: .bold)) }
+            }
+        case .jewel(let card):
+            let jewel = card.jewel
+            VStack(alignment: .leading, spacing: 10 * s) {
+                HStack(alignment: .top, spacing: 10 * s) {
+                    stat("Carats", jewel.carats > 0 ? jewel.carats.formatted(.number.precision(.fractionLength(2))) : "—")
+                    stat("Valeur", GameText.jewelValue(card.value))
+                    stat("N°", GameText.serialTag(card.serial))
+                }
+                // Le métal (parfois long : « Platine givré », « Métal argenté ») et la taille de la pierre, sur leur ligne.
+                let metal = game.catalog.metalLabel(game.catalog.jewelLook(jewel, variant: card.variant).metalName)
+                Group {
+                    if let cut = jewel.cut.flatMap({ game.catalog.jewels.cuts[$0]?.label }), !jewel.candy {
+                        Text("\(metal) · taille \(cut.lowercased())")
+                    } else {
+                        Text(verbatim: metal)
+                    }
+                }
+                .font(.system(size: 20 * s, weight: .medium)).opacity(0.75).lineLimit(1).minimumScaleFactor(0.7)
+                Text(game.catalog.jewelFlavor(jewel, variant: card.variant)).font(.system(size: 23 * s)).opacity(0.88).lineLimit(3).minimumScaleFactor(0.8)
+                if let variant = card.variant.flatMap({ game.catalog.jewelVariant($0) }) {
+                    Text("Variante rare \(variant.label) : valeur ×\(game.tuning.glintRareVariantMultiplier.formatted())").font(.system(size: 21 * s, weight: .bold))
+                } else if card.perfect {
+                    Text("Éclat parfait : valeur ×\(game.tuning.glintPerfectMultiplier.formatted())").font(.system(size: 21 * s, weight: .bold))
+                }
             }
         case .empty(let serial):
             VStack(spacing: 10 * s) {
