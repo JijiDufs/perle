@@ -174,9 +174,13 @@ struct EcrinView: View {
         let left = game.foldX.map { min(max(0, $0), w) } ?? 0
         let span = w - left
         let visible = h - 190
-        let cx = left + span / 2
+        // Sur l'écran intérieur du Duo, l'écrin est vu de profil : sa charnière vers le pli, son couvercle qui prend
+        // l'angle du téléphone (il ne passe sur le pli qu'au-delà de la révélation). Ailleurs, de trois quarts.
+        let profile = game.foldX != nil
+        // Charnière vers 40 % de la moitié d'écran : le couvercle ouvert à 140° (la révélation) touche à peine le pli.
+        let cx = left + span * (profile ? 0.64 : 0.5)
         let cy = 100 + visible * 0.62
-        let bw = min(span * 0.86, visible * 0.68)
+        let bw = profile ? span * 0.7 : min(span * 0.86, visible * 0.68)
         let salon = SalonArt(time: t, focus: .init(x: cx, y: cy, w: bw * 0.8, h: bw * 0.45))
         salon.draw(c, w: w, h: h)
         guard let pending = game.shownEcrin, let rarity = game.shownRarity else {
@@ -193,11 +197,12 @@ struct EcrinView: View {
         let sparkleTier = variant != nil ? max(rarity.tier, 5) : rarity.tier
         let look = JewelArt.Look(pending.jewel, variant: variant?.id, catalog: game.catalog)
 
-        EcrinArt.drawShadow(c, cx: cx, cy: cy, width: bw)
+        EcrinArt.drawShadow(c, cx: cx, cy: cy, width: bw, profile: profile)
         let anchors = EcrinArt.draw(
             c, cx: cx, cy: cy, width: bw, leather: EcrinArt.leathers[game.leather], angle: angle,
             dim: 1 - smoothstep(4, 140, angle),
             sweep: rarity.tier >= 4 && game.ecrinPhase == .closed && !reduceMotion ? (t * 0.5).truncatingRemainder(dividingBy: 1.6) - 0.3 : nil,
+            profile: profile,
             drawJewel: { JewelArt.draw(c, 0, (JewelArt.yOffset(pending.jewel) - 0.5) * 0.66, 0.66 / 440, look) },
             drawEffects: { x, y, unit in
                 guard let glow else { return }

@@ -17,6 +17,19 @@ enum EcrinArt {
     private static let dist = 3.4
     /// Le couvercle s'ouvre jusqu'à ~115° quand le geste va jusqu'à 180°.
     private static let lidRatio = 0.64
+    /// Vue de profil (Duo à moitié ouvert) : on regarde l'écrin par le côté, à peine d'en haut.
+    private static let profilePitch = 8 * Double.pi / 180
+
+    /// La caméra : de trois quarts (vu d'assez haut), ou de profil (charnière à gauche, couvercle qui se lève vers le pli).
+    private static func camera(profile: Bool) -> (V3) -> V3 {
+        let tilt = profile ? profilePitch : pitch
+        let cosP = cos(tilt), sinP = sin(tilt)
+        return { p in
+            // De profil, l'avant de l'écrin (+z) part à droite de l'écran.
+            let (x, z) = profile ? (p.2, -p.0) : (p.0, p.2)
+            return (x, p.1 * cosP - z * sinP, p.1 * sinP + z * cosP)
+        }
+    }
 
     private static func normalize(_ v: V3) -> V3 {
         let l = (v.0 * v.0 + v.1 * v.1 + v.2 * v.2).squareRoot()
@@ -63,15 +76,16 @@ enum EcrinArt {
     /// Dessine l'écrin centré en (cx, cy), large de `width` ; `angle` : le geste (0…180°) ; `dim` : pénombre de
     /// l'intérieur (0…1) ; `sweep` : reflet sur le couvercle (0…1) ; `drawJewel` dessine le bijou couché sur le
     /// plateau (repère du plateau : 1 = largeur de l'écrin) ; `drawEffects` : lumière au-dessus du bijou (x, y, pt par unité).
+    /// `profile` (Duo à moitié ouvert) : vu de côté, le couvercle prend exactement l'angle du téléphone et le bijou
+    /// se tient debout sur le plateau, pour qu'on le voie.
     @discardableResult
     static func draw(_ c: Canvas2D, cx: Double, cy: Double, width: Double, leather: String, angle: Double, dim: Double, sweep: Double?,
-                     drawJewel: () -> Void, drawEffects: (Double, Double, Double) -> Void) -> Anchors {
-        let cosP = cos(pitch), sinP = sin(pitch)
+                     profile: Bool = false, drawJewel: () -> Void, drawEffects: (Double, Double, Double) -> Void) -> Anchors {
         let scale = width * (dist - D / 2) * 0.98
-        let alpha = min(180, max(0, angle)) * lidRatio * .pi / 180
+        let alpha = min(180, max(0, angle)) * (profile ? 1 : lidRatio) * .pi / 180
         let cosA = cos(alpha), sinA = sin(alpha)
 
-        func toCam(_ p: V3) -> V3 { (p.0, p.1 * cosP - p.2 * sinP, p.1 * sinP + p.2 * cosP) }
+        let toCam = camera(profile: profile)
         let centre = toCam((0, H * 0.5, 0))
         func project(_ p: V3) -> P2 {
             let q = toCam(p)
@@ -351,6 +365,28 @@ enum EcrinArt {
             }
         }
 
+        if profile {
+            // De profil, le bijou tient debout dans le coin ouvert entre le plateau et le couvercle (rien ne passe devant).
+            // `dim` ne sert pas ici.
+            // Le coin ouvert : entre le plateau et le couvercle, depuis la charnière (vide quand l'écrin est fermé).
+            let wedge = [project((0, H, -D / 2)), project((0, H, -D / 2 + 4)), project(lid((0, H, -D / 2 + 4)))]
+            let stand: V3 = (0, H + 0.21, 0.05)
+            let standAt = project(stand)
+            drawBase()
+            c.save()
+            poly(wedge)
+            c.clip()
+            inPlane(stand, (0, 0, 1), (0, -1, 0)) {
+                c.scale(0.6, 0.6)
+                drawJewel()
+            }
+            // Pas de pénombre : de profil, le couvercle cache déjà le bijou tant qu'il est peu ouvert.
+            drawEffects(standAt.0, standAt.1, scale / (dist - toCam(stand).2))
+            c.restore()
+            drawLid()
+            return Anchors(jewel: standAt, scale: scale / (dist - toCam(stand).2), lidEdge: project(lid((0, H, D / 2))))
+        }
+
         // Ordre : tant qu'on voit le dessus du couvercle, il recouvre le bijou ; dès qu'on voit son satin, le bijou
         // est devant lui ; au-delà de la verticale, le couvercle passe derrière la base.
         if facing(toCam(lidN((0, 1, 0))), lid((0, H + T, 0))) {
@@ -364,10 +400,9 @@ enum EcrinArt {
     }
 
     /// Ombre de l'étui sur la table, sous son empreinte (à dessiner avant l'étui).
-    static func drawShadow(_ c: Canvas2D, cx: Double, cy: Double, width: Double) {
-        let cosP = cos(pitch), sinP = sin(pitch)
+    static func drawShadow(_ c: Canvas2D, cx: Double, cy: Double, width: Double, profile: Bool = false) {
         let scale = width * (dist - D / 2) * 0.98
-        func toCam(_ p: V3) -> V3 { (p.0, p.1 * cosP - p.2 * sinP, p.1 * sinP + p.2 * cosP) }
+        let toCam = camera(profile: profile)
         let centre = toCam((0, H * 0.5, 0))
         func project(_ p: V3) -> P2 {
             let q = toCam(p)
