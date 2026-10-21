@@ -158,11 +158,48 @@ final class GameModel {
 
     var levelProgress: LevelProgress { catalog.levelProgress(reputation: shownReputation) }
 
-    /// La montée de niveau à fêter, seulement à un moment calme : huître posée, fermée, hors du tutoriel
-    /// (jamais pendant la révélation ni la carte).
+    /// Moment calme : huître posée, fermée, hors du tutoriel (jamais pendant la révélation ni la carte).
+    private var isCalm: Bool { stage == .playing && phase == .closed && angle == 0 && !inTutorial }
+
+    /// La montée de niveau à fêter, seulement à un moment calme.
     var levelUpToShow: LevelUp? {
-        guard stage == .playing, phase == .closed, angle == 0, !inTutorial else { return nil }
-        return player.levelUp
+        isCalm ? player.levelUp : nil
+    }
+
+    /// Partie d'avant les succès : la fenêtre « tu as déjà N succès », au moment calme, après la fête de niveau.
+    var achievementCatchUpToShow: AchievementCatchUp? {
+        isCalm && player.levelUp == nil ? player.achievementCatchUp : nil
+    }
+
+    /// Le succès dont la bannière attend, au moment calme, après les fenêtres de niveau et de rattrapage.
+    var achievementToShow: Achievement? {
+        guard isCalm, player.levelUp == nil, player.achievementCatchUp == nil else { return nil }
+        return player.unseenAchievements.first.flatMap { catalog.achievement($0) }
+    }
+
+    /// Une bannière de succès (ou la fenêtre de rattrapage) arrive : haptique et son de récompense.
+    func celebrateAchievement() {
+        haptics.reveal(tier: 1)
+        audio.reward()
+    }
+
+    func acknowledgeAchievement(_ id: String) {
+        player.acknowledgeAchievement(id)
+        save()
+    }
+
+    func acknowledgeAchievementCatchUp() {
+        guard player.achievementCatchUp != nil else { return }
+        player.acknowledgeAchievementCatchUp()
+        save()
+        audio.tap()
+    }
+
+    /// Porte le titre d'un succès obtenu (nil : aucun).
+    func wearTitle(_ achievementId: String?) {
+        player.wearTitle(achievementId, catalog: catalog)
+        save()
+        haptics.tick()
     }
 
     /// La fête commence : haptique et son de récompense.
@@ -235,8 +272,9 @@ final class GameModel {
             if engine.phase != .opening { hingeDriving = false }
         case .sample(let angle):
             guard stage == .playing, thumb.distance == 0 || hingeDriving else { return }
-            // La fête s'est affichée téléphone fermé : l'ouvrir la referme, et ouvre l'huître.
+            // La fête (ou la fenêtre des succès) s'est affichée téléphone fermé : l'ouvrir la referme, et ouvre l'huître.
             if levelUpToShow != nil { acknowledgeLevelUp() }
+            if achievementCatchUpToShow != nil { acknowledgeAchievementCatchUp() }
             if engine.phase == .closed {
                 guard canOpen else { return }
                 haptics.prepare()
@@ -262,7 +300,7 @@ final class GameModel {
     /// Toucher le poisson pendant qu'il s'enfuit : la perle revient (avec un peu de poussière d'or).
     func catchFish() {
         guard case .theft(let reveal) = stage, let elapsed = theftElapsedMs(at: Date()), fishThief.canCatch(elapsedMs: elapsed) else { return }
-        let gained = player.resolveTheft(caught: true)
+        let gained = player.catchThief()
         rescuedDust = gained
         if gained > 0 { dustBump += 1 }
         save()
@@ -310,11 +348,12 @@ final class GameModel {
     // MARK: - Comptoir, boutique, missions
 
     func sell(_ card: PearlCard) {
-        if let gained = player.sell(serial: card.serial) { gainedDust(gained) }
+        if let gained = player.sell(serial: card.serial) { gainedDust(gained); showReputation() }
     }
 
     func sellAllDuplicates() {
         gainedDust(player.sellAllDuplicates())
+        showReputation()
     }
 
     func buyOyster() {

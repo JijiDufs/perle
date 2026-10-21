@@ -53,10 +53,16 @@ struct LevelRing: View {
                 .allowsHitTesting(false)
                 .accessibilityHidden(true)
         }
-        .accessibilityLabel(Text("Niveau \(progress.level), \(game.catalog.rank(forLevel: progress.level).title)"))
+        .accessibilityLabel(Text("Niveau \(progress.level), \(rankAndTitle(progress.level))"))
         .accessibilityValue(progress.needed > 0
             ? Text("\(progress.into) sur \(progress.needed) de réputation pour le niveau suivant")
             : Text("Niveau maximum"))
         .accessibilityHint(Text("Ouvre « Ma progression »"))
+    }
+
+    /// « Perlier » ou « Perlier, Virtuose » quand un titre est porté.
+    private func rankAndTitle(_ level: Int) -> String {
+        let rank = game.catalog.rank(forLevel: level).title
+        return game.player.wornTitle(catalog: game.catalog).map { "\(rank), \($0)" } ?? rank
     }
 }

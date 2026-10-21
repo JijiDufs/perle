@@ -29,11 +29,14 @@ private func playerAfterTutorial() -> PlayerState {
 
 @Test func uneCaseParJour() {
     var player = playerAfterTutorial()
-    let stock = player.stock.count, dust = player.dust
+    // Sans compter ce que rapportent les niveaux et les succès que la case fait gagner.
+    let bonus = { (oysters: (player.levelUp?.oysters ?? 0) + achievementRewards(player).oysters,
+                   dust: (player.levelUp?.dust ?? 0) + achievementRewards(player).dust) }
+    let stock = player.stock.count - bonus().oysters, dust = player.dust - bonus().dust
     let first = catalog.economy.calendar[0]
     #expect(player.claimDaily(day: "2026-10-19") == first)
-    #expect(player.stock.count == stock + first.oysters)
-    #expect(player.dust == dust + first.dust)
+    #expect(player.stock.count - bonus().oysters == stock + first.oysters)
+    #expect(player.dust - bonus().dust == dust + first.dust)
     #expect(player.claimDaily(day: "2026-10-19") == nil)
     #expect(player.claimDaily(day: "2026-10-20") == catalog.economy.calendar[1])
     #expect(player.login.streak == 2)

@@ -44,6 +44,8 @@ export interface Tuning {
   revealFlashMs: number;
   /** App iOS : une bulle d'information (le stock, juste après le tutoriel) s'efface au bout de (ms). */
   coachTipMs: number;
+  /** App iOS : la bannière d'un succès obtenu s'efface au bout de (ms). */
+  achievementBannerMs: number;
   /** Huîtres d'affilée sans perle dorée ou mieux avant que la suivante soit garantie. Cahier §5. */
   pityThreshold: number;
   /** Stock d'huîtres maximum. Cahier §5 : 10. */
@@ -178,6 +180,7 @@ export const DEFAULT_TUNING: Readonly<Tuning> = {
   revealLidSettleMs: 350,
   revealFlashMs: 500,
   coachTipMs: 7000,
+  achievementBannerMs: 4500,
   pityThreshold: 25,
   oysterStockMax: 10,
   oysterRechargeMinutes: 20,

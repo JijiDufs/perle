@@ -129,6 +129,28 @@ struct FishingView: View {
                     .transition(reduceMotion ? .opacity : .scale(scale: 0.5).combined(with: .opacity))
             }
 
+            // Partie d'avant les succès : ceux déjà remplis, en une fenêtre (après la fête de niveau).
+            if let catchUp = game.achievementCatchUpToShow {
+                Color(hex: 0x02141A).opacity(0.45).ignoresSafeArea()
+                    .transition(.opacity)
+                AchievementCatchUpView(catchUp: catchUp)
+                    .besideFold(game.foldX)
+                    .transition(reduceMotion ? .opacity : .scale(scale: 0.5).combined(with: .opacity))
+            }
+
+            // Un succès obtenu : bannière en haut, au moment calme (après la bulle du stock), hors des panneaux.
+            if let achievement = game.achievementToShow, coachText == nil, !showProgress, !showMissions, !showSettings {
+                VStack {
+                    AchievementBanner(achievement: achievement)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 70)
+                    Spacer()
+                }
+                .besideFold(game.foldX)
+                .id(achievement.id)
+                .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
+            }
+
             if showProgress {
                 Color(hex: 0x02141A).opacity(0.35).ignoresSafeArea()
                     .transition(.opacity)
@@ -141,6 +163,8 @@ struct FishingView: View {
         }
         .animation(.spring(duration: 0.45, bounce: 0.35), value: game.stage)
         .animation(.spring(duration: 0.5, bounce: 0.3), value: game.levelUpToShow)
+        .animation(.spring(duration: 0.5, bounce: 0.3), value: game.achievementCatchUpToShow)
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(duration: 0.45, bounce: 0.2), value: game.achievementToShow?.id)
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(duration: 0.4, bounce: 0.1), value: showProgress)
         .animation(.easeInOut(duration: 0.3), value: coachText)
         .animation(.easeInOut(duration: 0.3), value: showsGhostHand)
@@ -158,8 +182,8 @@ struct FishingView: View {
         #endif
         // iPhone Duo : ouvrir le téléphone ouvre l'huître, le refermer passe à la suivante.
         .hingeInput({ game.hingeChanged(degrees: $0) }, fold: { if !HingeInput.simulatedFold { game.foldChanged(x: $0) } })
-        // La bulle sur le stock ne commence à s'effacer qu'une fois la fête de niveau refermée.
-        .task(id: "\(game.step)-\(game.levelUpToShow == nil)") {
+        // La bulle sur le stock ne commence à s'effacer qu'une fois la fête de niveau (et la fenêtre des succès) refermée.
+        .task(id: "\(game.step)-\(game.levelUpToShow == nil)-\(game.achievementCatchUpToShow == nil)") {
             stockTipExpired = false
             guard game.step == game.catalog.tutorialPearls.count else { return }
             try? await Task.sleep(for: .milliseconds(Int(game.tuning.coachTipMs)))
@@ -179,8 +203,9 @@ struct FishingView: View {
 
     /// La bulle d'accompagnement des premières huîtres ; nil = rien à dire.
     private var coachText: String? {
-        // Marée basse ou fête de niveau : le panneau prend la place, la bulle passerait dessous.
-        guard game.stage == .playing, !game.cracked, !game.isTideOut(at: Date()), game.levelUpToShow == nil else { return nil }
+        // Marée basse, fête de niveau ou fenêtre des succès : le panneau prend la place, la bulle passerait dessous.
+        guard game.stage == .playing, !game.cracked, !game.isTideOut(at: Date()), game.levelUpToShow == nil,
+              game.achievementCatchUpToShow == nil else { return nil }
         if stockTipExpired && game.step == game.catalog.tutorialPearls.count { return nil }
         return Coach.duringGesture(step: game.step, phase: game.phase, hinge: game.hasHinge, hingeArmed: game.hingeArmed, tuning: game.tuning)
     }

@@ -23,6 +23,7 @@
     "revealLidSettleMs": 350,
     "revealFlashMs": 500,
     "coachTipMs": 7000,
+    "achievementBannerMs": 4500,
     "pityThreshold": 25,
     "oysterStockMax": 10,
     "oysterRechargeMinutes": 20,
@@ -1143,6 +1144,18 @@
         "goals": [
           1
         ]
+      },
+      {
+        "kind": "find",
+        "goals": [
+          1
+        ]
+      },
+      {
+        "kind": "fish",
+        "goals": [
+          1
+        ]
       }
     ],
     "skins": [
@@ -1264,6 +1277,315 @@
       "rankRewardDust": 20,
       "missionReputation": 30,
       "calendarReputation": 15
+    },
+    "achievements": [
+      {
+        "id": "premiere-perle",
+        "name": "Première perle",
+        "description": "Trouver ta première perle.",
+        "tier": "bronze",
+        "measure": "pearlKinds",
+        "goal": 1
+      },
+      {
+        "id": "dix-huitres",
+        "name": "Les mains dans l’eau",
+        "description": "Ouvrir 10 huîtres.",
+        "tier": "bronze",
+        "measure": "oysters",
+        "goal": 10
+      },
+      {
+        "id": "cent-huitres",
+        "name": "Pêcheur assidu",
+        "description": "Ouvrir 100 huîtres.",
+        "tier": "argent",
+        "measure": "oysters",
+        "goal": 100,
+        "title": "Pêcheur assidu"
+      },
+      {
+        "id": "cinq-cents-huitres",
+        "name": "Loup de mer",
+        "description": "Ouvrir 500 huîtres.",
+        "tier": "or",
+        "measure": "oysters",
+        "goal": 500,
+        "title": "Loup de mer"
+      },
+      {
+        "id": "huitres-vides",
+        "name": "Patience",
+        "description": "Tomber sur 5 huîtres vides.",
+        "tier": "bronze",
+        "measure": "emptyOysters",
+        "goal": 5
+      },
+      {
+        "id": "perle-noire",
+        "name": "Les connaisseurs se taisent",
+        "description": "Trouver une perle noire.",
+        "tier": "bronze",
+        "measure": "pearl",
+        "target": "black",
+        "goal": 1
+      },
+      {
+        "id": "perle-doree",
+        "name": "De l’or dans la paume",
+        "description": "Trouver une perle dorée.",
+        "tier": "argent",
+        "measure": "pearl",
+        "target": "golden",
+        "goal": 1
+      },
+      {
+        "id": "perle-geante",
+        "name": "Trop grande pour la main",
+        "description": "Trouver une perle géante.",
+        "tier": "or",
+        "measure": "pearl",
+        "target": "giant",
+        "goal": 1,
+        "title": "Chasseur de géantes"
+      },
+      {
+        "id": "perle-maudite",
+        "name": "Ce qui dormait",
+        "description": "Trouver la perle maudite.",
+        "tier": "or",
+        "measure": "pearl",
+        "target": "cursed",
+        "goal": 1,
+        "secret": true,
+        "title": "Porteur de la maudite"
+      },
+      {
+        "id": "crique-complete",
+        "name": "Plus de secrets",
+        "description": "Trouver les 7 sortes de perles.",
+        "tier": "or",
+        "measure": "pearlKinds",
+        "goal": 7,
+        "title": "Gardien du lagon"
+      },
+      {
+        "id": "premiere-trouvaille",
+        "name": "Ce n’est pas une perle",
+        "description": "Trouver ta première trouvaille.",
+        "tier": "bronze",
+        "measure": "finds",
+        "goal": 1
+      },
+      {
+        "id": "album-port",
+        "name": "Brocante des marées",
+        "description": "Compléter l’album « Le bric-à-brac du port ».",
+        "tier": "argent",
+        "measure": "album",
+        "target": "port",
+        "goal": 9,
+        "album": true,
+        "title": "Brocanteur des marées"
+      },
+      {
+        "id": "album-clins",
+        "name": "Ça me rappelle quelque chose",
+        "description": "Compléter l’album « Clins d’œil ».",
+        "tier": "or",
+        "measure": "album",
+        "target": "clins",
+        "goal": 12,
+        "album": true,
+        "title": "Cinéphile des abysses"
+      },
+      {
+        "id": "album-tresors",
+        "name": "Chasseur d’épaves",
+        "description": "Compléter l’album « Trésors engloutis ».",
+        "tier": "or",
+        "measure": "album",
+        "target": "tresors",
+        "goal": 4,
+        "album": true,
+        "title": "Chasseur d’épaves"
+      },
+      {
+        "id": "grand-bateau",
+        "name": "Il était une fois un grand bateau",
+        "description": "Trouver le grand diamant bleu.",
+        "tier": "or",
+        "measure": "find",
+        "target": "coeur-ocean",
+        "goal": 1,
+        "secret": true
+      },
+      {
+        "id": "perle-jumelle",
+        "name": "Deux pour le prix d’une",
+        "description": "Trouver une perle jumelle.",
+        "tier": "argent",
+        "measure": "mark",
+        "target": "jumelle",
+        "goal": 1
+      },
+      {
+        "id": "perle-coeur",
+        "name": "Coup de cœur",
+        "description": "Trouver une perle en cœur.",
+        "tier": "or",
+        "measure": "mark",
+        "target": "coeur",
+        "goal": 1,
+        "title": "Cœur de nacre"
+      },
+      {
+        "id": "arc-en-ciel",
+        "name": "Toutes les couleurs",
+        "description": "Trouver une perle au reflet arc-en-ciel.",
+        "tier": "argent",
+        "measure": "overtone",
+        "target": "arc-en-ciel",
+        "goal": 1
+      },
+      {
+        "id": "six-formes",
+        "name": "Six formes",
+        "description": "Trouver une perle de chaque forme.",
+        "tier": "argent",
+        "measure": "shapes",
+        "goal": 6
+      },
+      {
+        "id": "lustre-s",
+        "name": "Geste parfait",
+        "description": "Obtenir un lustre S.",
+        "tier": "bronze",
+        "measure": "lustreS",
+        "goal": 1
+      },
+      {
+        "id": "lustre-s-10",
+        "name": "Virtuose",
+        "description": "Obtenir 10 lustres S.",
+        "tier": "argent",
+        "measure": "lustreS",
+        "goal": 10,
+        "title": "Virtuose"
+      },
+      {
+        "id": "sans-felure-10",
+        "name": "Main de velours",
+        "description": "Ouvrir 10 huîtres d’affilée sans fêlure.",
+        "tier": "argent",
+        "measure": "crackFreeStreak",
+        "goal": 10,
+        "title": "Main de velours"
+      },
+      {
+        "id": "sans-felure-50",
+        "name": "Main de chirurgien",
+        "description": "Ouvrir 50 huîtres d’affilée sans fêlure.",
+        "tier": "or",
+        "measure": "crackFreeStreak",
+        "goal": 50,
+        "title": "Main de chirurgien"
+      },
+      {
+        "id": "serie-7",
+        "name": "Fidèle au ponton",
+        "description": "Venir 7 jours d’affilée.",
+        "tier": "argent",
+        "measure": "loginStreak",
+        "goal": 7,
+        "title": "Habitué du port"
+      },
+      {
+        "id": "serie-30",
+        "name": "La marée et moi",
+        "description": "Venir 30 jours d’affilée.",
+        "tier": "or",
+        "measure": "loginStreak",
+        "goal": 30,
+        "title": "Enfant des marées"
+      },
+      {
+        "id": "missions-10",
+        "name": "Au rapport",
+        "description": "Récupérer 10 missions du jour.",
+        "tier": "bronze",
+        "measure": "missions",
+        "goal": 10
+      },
+      {
+        "id": "missions-60",
+        "name": "Toujours partant",
+        "description": "Récupérer 60 missions du jour.",
+        "tier": "argent",
+        "measure": "missions",
+        "goal": 60,
+        "title": "Toujours partant"
+      },
+      {
+        "id": "niveau-5",
+        "name": "Le métier rentre",
+        "description": "Atteindre le niveau 5.",
+        "tier": "bronze",
+        "measure": "level",
+        "goal": 5
+      },
+      {
+        "id": "niveau-10",
+        "name": "On parle de toi au port",
+        "description": "Atteindre le niveau 10.",
+        "tier": "argent",
+        "measure": "level",
+        "goal": 10
+      },
+      {
+        "id": "niveau-20",
+        "name": "Une signature",
+        "description": "Atteindre le niveau 20.",
+        "tier": "or",
+        "measure": "level",
+        "goal": 20,
+        "title": "Signature du lagon"
+      },
+      {
+        "id": "alchimiste",
+        "name": "Alchimiste",
+        "description": "Revendre 20 doublons au comptoir.",
+        "tier": "argent",
+        "measure": "sold",
+        "goal": 20,
+        "title": "Alchimiste"
+      },
+      {
+        "id": "poisson",
+        "name": "Pas si vite !",
+        "description": "Rattraper le poisson voleur.",
+        "tier": "bronze",
+        "measure": "fishCaught",
+        "goal": 1
+      }
+    ],
+    "achievementRewards": {
+      "bronze": {
+        "oysters": 3,
+        "dust": 5,
+        "reputation": 15
+      },
+      "argent": {
+        "oysters": 5,
+        "dust": 10,
+        "reputation": 30
+      },
+      "or": {
+        "oysters": 10,
+        "dust": 25,
+        "reputation": 60
+      },
+      "albumOysters": 10
     }
   },
   "markWeights": [
@@ -1516,6 +1838,153 @@
       "joaillier": "Jeweller",
       "maitre": "Master jeweller",
       "maison": "High jewellery house"
+    },
+    "achievements": {
+      "premiere-perle": {
+        "name": "First pearl",
+        "description": "Find your first pearl."
+      },
+      "dix-huitres": {
+        "name": "Hands in the water",
+        "description": "Open 10 oysters."
+      },
+      "cent-huitres": {
+        "name": "Dedicated fisher",
+        "description": "Open 100 oysters.",
+        "title": "Dedicated fisher"
+      },
+      "cinq-cents-huitres": {
+        "name": "Old salt",
+        "description": "Open 500 oysters.",
+        "title": "Old salt"
+      },
+      "huitres-vides": {
+        "name": "Patience",
+        "description": "Come across 5 empty oysters."
+      },
+      "perle-noire": {
+        "name": "Connoisseurs fall silent",
+        "description": "Find a black pearl."
+      },
+      "perle-doree": {
+        "name": "Gold in your palm",
+        "description": "Find a golden pearl."
+      },
+      "perle-geante": {
+        "name": "Too big for one hand",
+        "description": "Find a giant pearl.",
+        "title": "Giant hunter"
+      },
+      "perle-maudite": {
+        "name": "What was sleeping",
+        "description": "Find the cursed pearl.",
+        "title": "Bearer of the cursed pearl"
+      },
+      "crique-complete": {
+        "name": "No more secrets",
+        "description": "Find all 7 kinds of pearl.",
+        "title": "Keeper of the lagoon"
+      },
+      "premiere-trouvaille": {
+        "name": "This is not a pearl",
+        "description": "Make your first find."
+      },
+      "album-port": {
+        "name": "Tidal flea market",
+        "description": "Complete the “Harbour odds and ends” album.",
+        "title": "Tidal bargain hunter"
+      },
+      "album-clins": {
+        "name": "That rings a bell",
+        "description": "Complete the “Nods and winks” album.",
+        "title": "Deep-sea film buff"
+      },
+      "album-tresors": {
+        "name": "Wreck hunter",
+        "description": "Complete the “Sunken treasures” album.",
+        "title": "Wreck hunter"
+      },
+      "grand-bateau": {
+        "name": "Once upon a time, a great ship",
+        "description": "Find the great blue diamond."
+      },
+      "perle-jumelle": {
+        "name": "Two for the price of one",
+        "description": "Find a twin pearl."
+      },
+      "perle-coeur": {
+        "name": "Love at first sight",
+        "description": "Find a heart pearl.",
+        "title": "Heart of nacre"
+      },
+      "arc-en-ciel": {
+        "name": "Every colour",
+        "description": "Find a pearl with a rainbow overtone."
+      },
+      "six-formes": {
+        "name": "Six shapes",
+        "description": "Find a pearl of every shape."
+      },
+      "lustre-s": {
+        "name": "Perfect touch",
+        "description": "Get an S lustre."
+      },
+      "lustre-s-10": {
+        "name": "Virtuoso",
+        "description": "Get 10 S lustres.",
+        "title": "Virtuoso"
+      },
+      "sans-felure-10": {
+        "name": "Velvet hands",
+        "description": "Open 10 oysters in a row without a crack.",
+        "title": "Velvet hands"
+      },
+      "sans-felure-50": {
+        "name": "Surgeon’s hands",
+        "description": "Open 50 oysters in a row without a crack.",
+        "title": "Surgeon’s hands"
+      },
+      "serie-7": {
+        "name": "Faithful to the pier",
+        "description": "Come 7 days in a row.",
+        "title": "Harbour regular"
+      },
+      "serie-30": {
+        "name": "The tide and me",
+        "description": "Come 30 days in a row.",
+        "title": "Child of the tides"
+      },
+      "missions-10": {
+        "name": "Reporting for duty",
+        "description": "Claim 10 daily missions."
+      },
+      "missions-60": {
+        "name": "Always up for it",
+        "description": "Claim 60 daily missions.",
+        "title": "Always up for it"
+      },
+      "niveau-5": {
+        "name": "Getting the hang of it",
+        "description": "Reach level 5."
+      },
+      "niveau-10": {
+        "name": "The talk of the harbour",
+        "description": "Reach level 10."
+      },
+      "niveau-20": {
+        "name": "A signature",
+        "description": "Reach level 20.",
+        "title": "Signature of the lagoon"
+      },
+      "alchimiste": {
+        "name": "Alchemist",
+        "description": "Sell 20 duplicates at the counter.",
+        "title": "Alchemist"
+      },
+      "poisson": {
+        "name": "Not so fast!",
+        "description": "Catch the thief fish."
+      }
     }
   }
 }

@@ -51,7 +51,8 @@ private let levels = catalog.economy.levels
     // Première huître du tutoriel : la perle rosée, une découverte.
     let first = player.oyster.pearlId
     _ = player.reveal(lustre: .S, cracked: false, now: 0, rng: rng, tuning: tuning)
-    #expect(player.reputation == catalog.reputationForPearl(first, lustre: .S, cracked: false, discovery: true))
+    #expect(player.reputation == catalog.reputationForPearl(first, lustre: .S, cracked: false, discovery: true)
+        + achievementRewards(player).reputation)
     // Fini le tutoriel, puis le calendrier et une mission.
     while player.isInTutorial() { _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning) }
     let before = player.reputation
@@ -83,14 +84,17 @@ private let levels = catalog.economy.levels
     // Réputation d'après la collection, une seule fête « Tu es niveau N », récompenses données une fois.
     let expected = PlayerState.retroactiveReputation(pearlCards: player.pearlCards, findCards: player.findCards,
                                                      oystersOpened: player.oystersOpened, catalog: catalog)
-    #expect(player.reputation == expected && expected > 0)
-    let level = catalog.levelProgress(reputation: expected).level
+    // Les succès déjà remplis (lot 1.3) ajoutent leur réputation et leurs récompenses.
+    let achievements = player.achievements.map { catalog.reward(of: catalog.achievement($0)!) }
+    #expect(player.reputation == expected + achievements.reduce(0) { $0 + $1.reputation } && expected > 0)
+    let level = catalog.levelProgress(reputation: player.reputation).level
     #expect(level > 1)
     #expect(player.rewardedLevel == level)
     let up = try #require(player.levelUp)
     #expect(up.from == 1 && up.to == level && up.retroactive)
-    #expect(player.stock.count == rawStock["count"] as! Int + up.oysters)
-    #expect(player.dust == raw["dust"] as! Int + up.dust)
+    let catchUp = player.achievementCatchUp
+    #expect(player.stock.count == rawStock["count"] as! Int + up.oysters + (catchUp?.oysters ?? 0))
+    #expect(player.dust == raw["dust"] as! Int + up.dust + (catchUp?.dust ?? 0))
 
     // Rechargée après la mise à jour : plus rien de rétroactif, rien de redonné.
     let again = try JSONDecoder().decode(PlayerState.self, from: JSONEncoder().encode(player))

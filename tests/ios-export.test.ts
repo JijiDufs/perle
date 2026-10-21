@@ -6,7 +6,8 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_LEVELS, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { ACHIEVEMENTS } from '../src/core/achievements';
+import { APP_ACHIEVEMENT_REWARDS, APP_ACHIEVEMENTS, APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_LEVELS, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS } from '../src/core/catalog';
 import { INITIAL_LOGIN, streakIfClaimed, type LoginState } from '../src/core/daily';
 import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
@@ -17,7 +18,8 @@ import { FIND_TIER_WEIGHTS, FINDS, FIND_ALBUMS, BOTTLE_MESSAGES } from '../src/c
 import { OpeningEngine, type OpeningSample } from '../src/core/opening';
 import { createOyster, oysterWith } from '../src/core/oyster';
 import { rarityRank, sortCards } from '../src/core/collection';
-import { pearlValue, type PearlCard } from '../src/core/player';
+import { pearlValue, type PearlCard, type PlayerState } from '../src/core/player';
+import { INITIAL_STATS } from '../src/core/progression';
 import { MARKS, OVERTONES, OVERTONE_WEIGHTS, SHAPES, SHAPE_WEIGHTS } from '../src/core/pearlTraits';
 import { seededRng } from '../src/core/rng';
 import { scriptedPearl, TUTORIAL_PEARLS } from '../src/core/tutorial';
@@ -64,6 +66,8 @@ function catalog() {
       calendar: APP_CALENDAR,
       fishThief: APP_FISH_THIEF,
       levels: APP_LEVELS,
+      achievements: APP_ACHIEVEMENTS,
+      achievementRewards: APP_ACHIEVEMENT_REWARDS,
     },
     markWeights: pairs(Object.fromEntries(Object.entries(MARKS).map(([id, mark]) => [id, mark.weight]))),
     english: CATALOG_ENGLISH,
@@ -179,9 +183,38 @@ function parity() {
   }));
   const rarityRanks = PEARLS.map((pearl) => ({ pearlId: pearl.id, rank: rarityRank(pearl.id) }));
 
+  // Succès repris de la webapp : leur avancement (src/core/achievements.ts) sur des parties de plus en plus longues,
+  // faites des huîtres ci-dessus (la dernière avec toutes les trouvailles). Statistiques et série de jours inventées.
+  const achievementStates = [0, 3, 30, 150, 400, 400].map((n, i, all) => {
+    const opened = oysters.slice(0, n);
+    const pearlCards = opened.filter((o) => !o.findId && o.pearlId !== 'empty').map((o) => ({ pearlId: o.pearlId, traits: o.traits ?? null }));
+    const findIds = i === all.length - 1 ? FINDS.map((f) => f.id) : opened.flatMap((o) => (o.findId ? [o.findId] : []));
+    const stats = {
+      emptyOysters: opened.filter((o) => o.pearlId === 'empty' && !o.findId).length,
+      lustreS: Math.floor(n / 9),
+      bestCrackFreeStreak: Math.floor(n / 7),
+      sold: Math.floor(n / 15),
+    };
+    const bestStreak = Math.floor(n / 11);
+    const web = {
+      cards: pearlCards.map((c) => ({ pearlId: c.pearlId, traits: c.traits ?? undefined })),
+      findCards: findIds.map((findId) => ({ findId })),
+      oystersOpened: n,
+      stats: { ...INITIAL_STATS, emptyOysters: stats.emptyOysters, lustreS: stats.lustreS, bestCrackFreeStreak: stats.bestCrackFreeStreak, melted: stats.sold },
+      login: { ...INITIAL_LOGIN, bestStreak },
+      jewelCards: [],
+      craftedCards: [],
+    } as unknown as PlayerState;
+    const progress = Object.fromEntries(APP_ACHIEVEMENTS.flatMap((a) => {
+      const achievement = ACHIEVEMENTS.find((w) => w.id === a.id);
+      return achievement ? [[a.id, achievement.progress(web)]] : [];
+    }));
+    return { oystersOpened: n, pearlCards, findIds, stats, bestStreak, progress };
+  });
+
   return {
     rngSeed: 2026, rngValues, oysterSeed: 42, oysters, tutorialSeed: 7, tutorialOysters, openings, thumbAngles, values, logins,
-    xpToNextLevels, levelProgress, reputations, collectionCards, cardSorts, rarityRanks,
+    xpToNextLevels, levelProgress, reputations, collectionCards, cardSorts, rarityRanks, achievementStates,
   };
 }
 

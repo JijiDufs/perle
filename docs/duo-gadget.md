@@ -198,6 +198,7 @@ Choix de Jules (2026-10-08) : on peut **recharger ses huîtres** et **acheter de
 | Les trois missions du jour terminées | + 10 ✦ |
 | Calendrier de connexion (jours 1 à 7) | 3 huîtres · 10 ✦ · 5 huîtres · 15 ✦ · 5 huîtres · 20 ✦ · 10 huîtres + 25 ✦ (`APP_CALENDAR`) |
 | Montée de niveau (1.1) | 5 ✦ (+ 5 huîtres) ; nouveau rang : + 20 ✦ (+ 10 huîtres) (`APP_LEVELS`) |
+| Succès (1.3), une seule fois chacun | bronze 5 ✦ (+ 3 huîtres), argent 10 ✦ (+ 5), or 25 ✦ (+ 10) ; album complété + 10 huîtres ; ≈ 440 ✦ pour les 32 (`APP_ACHIEVEMENT_REWARDS`) |
 
 **Ce que ça donne par jour** (une fois les doublons arrivés : environ 2,5 ✦ par huître revendue en moyenne)
 
@@ -229,6 +230,8 @@ Les premiers jours, il y a peu de doublons (on garde toujours le premier exempla
 | Ouvrir des huîtres d'affilée sans fêlure | 3 ou 5 |
 | Revendre des doublons au comptoir | 1 ou 3 |
 | Partager une carte | 1 |
+| Pêcher une trouvaille (1.3) | 1 |
+| Rattraper le poisson voleur (1.3) | 1 |
 
 Elles se font en une ou deux sessions avec le stock gratuit : elles donnent une raison de revenir chaque jour, pas une corvée.
 

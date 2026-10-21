@@ -1,6 +1,12 @@
 // Garde-fous de l'économie de l'app iOS (docs/duo-gadget.md §6 quater).
 import { describe, expect, it } from 'vitest';
-import { APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_LEVELS, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { ACHIEVEMENTS } from '../src/core/achievements';
+import { APP_ACHIEVEMENT_REWARDS, APP_ACHIEVEMENTS, APP_CONSUMABLES, APP_ECONOMY, APP_FISH_THIEF, APP_LEVELS, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { INITIAL_LOGIN } from '../src/core/daily';
+import { FIND_ALBUMS, FINDS } from '../src/core/finds';
+import { MARKS, OVERTONES } from '../src/core/pearlTraits';
+import type { PlayerState } from '../src/core/player';
+import { INITIAL_STATS } from '../src/core/progression';
 import { FIND_PROBABILITY, PEARLS, pearlTier } from '../src/core/catalog';
 import { levelFromXp, xpToNext } from '../src/core/levels';
 import { DEFAULT_TUNING as t } from '../src/tuning';
@@ -81,6 +87,41 @@ describe('économie de l’app iOS', () => {
     expect(APP_LEVELS.rewardOysters * APP_ECONOMY.oysterDustPrice).toBeGreaterThan(10 * APP_LEVELS.rewardDust);
     // Les dix premiers niveaux (deux rangs compris) rapportent moins d'une journée de poussière d'un joueur régulier.
     expect(9 * APP_LEVELS.rewardDust + 2 * APP_LEVELS.rankRewardDust).toBeLessThan(105);
+  });
+
+  it('les succès repris de la webapp gardent son objectif, son palier, son titre et son secret', () => {
+    const empty = { cards: [], findCards: [], oystersOpened: 0, stats: INITIAL_STATS, login: INITIAL_LOGIN, jewelCards: [], craftedCards: [] } as unknown as PlayerState;
+    expect(new Set(APP_ACHIEVEMENTS.map((a) => a.id)).size).toBe(APP_ACHIEVEMENTS.length);
+    for (const app of APP_ACHIEVEMENTS) {
+      const web = ACHIEVEMENTS.find((a) => a.id === app.id);
+      if (!web) continue;
+      expect(web.progress(empty)[1], app.id).toBe(app.goal);
+      expect([web.tier, web.secret ?? false, web.album ?? false], app.id).toEqual([app.tier, app.secret ?? false, app.album ?? false]);
+      // Titre de la webapp, sauf « Gardien de la Crique » (pas encore de carte des lagons dans l'app).
+      if (app.id !== 'crique-complete') expect(web.title, app.id).toBe(app.title);
+    }
+  });
+
+  it('chaque succès vise quelque chose qui existe', () => {
+    const targets: Partial<Record<string, readonly string[]>> = {
+      pearl: PEARLS.map((p) => p.id), find: FINDS.map((f) => f.id), album: FIND_ALBUMS.map((a) => a.id),
+      mark: Object.keys(MARKS), overtone: Object.keys(OVERTONES),
+    };
+    for (const a of APP_ACHIEVEMENTS) {
+      const ids = targets[a.measure];
+      if (ids) expect(ids, a.id).toContain(a.target);
+      else expect(a.target, a.id).toBeUndefined();
+      if (a.measure === 'album') expect(FINDS.filter((f) => f.album === a.target).length, a.id).toBe(a.goal);
+      if (a.album) expect(a.measure, a.id).toBe('album');
+    }
+  });
+
+  it('tous les succès réunis rapportent surtout des huîtres, moins d’un quart du bénitier en poussière', () => {
+    const rewards = APP_ACHIEVEMENTS.map((a) => APP_ACHIEVEMENT_REWARDS[a.tier]);
+    const dust = rewards.reduce((sum, r) => sum + r.dust, 0);
+    const oysters = rewards.reduce((sum, r) => sum + r.oysters, 0) + APP_ACHIEVEMENTS.filter((a) => a.album).length * APP_ACHIEVEMENT_REWARDS.albumOysters;
+    expect(dust).toBeLessThan(APP_SKINS.find((s) => s.id === 'benitier')!.dustPrice! / 4);
+    expect(oysters * APP_ECONOMY.oysterDustPrice).toBeGreaterThan(5 * dust);
   });
 
   it('un seul skin offert au départ', () => {

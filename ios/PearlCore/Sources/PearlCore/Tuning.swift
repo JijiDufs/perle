@@ -42,6 +42,8 @@ public struct Tuning: Codable, Sendable, Equatable {
     public var revealFlashMs: Double
     /// Une bulle d'information (le stock, juste après le tutoriel) s'efface au bout de (ms).
     public var coachTipMs: Double
+    /// La bannière d'un succès obtenu s'efface au bout de (ms).
+    public var achievementBannerMs: Double
     /// Huîtres d'affilée sans perle dorée ou mieux avant que la suivante soit garantie.
     public var pityThreshold: Int
     /// Stock d'huîtres maximum, et minutes pour qu'une huître revienne.

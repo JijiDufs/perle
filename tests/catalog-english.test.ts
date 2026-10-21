@@ -1,7 +1,7 @@
 // Chaque élément du catalogue a son texte anglais (app iOS) : une trouvaille, un skin ou un produit
 // ajouté sans traduction ferait échouer ce test.
 import { describe, expect, it } from 'vitest';
-import { APP_CONSUMABLES, APP_SKINS } from '../src/core/appEconomy';
+import { APP_ACHIEVEMENTS, APP_CONSUMABLES, APP_SKINS } from '../src/core/appEconomy';
 import { PEARLS } from '../src/core/catalog';
 import { RANKS } from '../src/core/levels';
 import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
@@ -31,6 +31,15 @@ describe('textes anglais du catalogue', () => {
   it('coquilles et produits de la boutique', () => {
     for (const skin of APP_SKINS) expect(filled(CATALOG_ENGLISH.skins[skin.id]?.name), skin.id).toBe(true);
     for (const product of APP_CONSUMABLES) expect(filled(CATALOG_ENGLISH.consumables[product.id]), product.id).toBe(true);
+  });
+
+  it('succès et titres', () => {
+    for (const a of APP_ACHIEVEMENTS) {
+      const text = CATALOG_ENGLISH.achievements[a.id];
+      expect(filled(text?.name) && filled(text?.description), a.id).toBe(true);
+      expect(filled(text?.title), a.id).toBe(a.title !== undefined);
+    }
+    expect(Object.keys(CATALOG_ENGLISH.achievements).sort()).toEqual(APP_ACHIEVEMENTS.map((a) => a.id).sort());
   });
 
   it('rangs', () => {

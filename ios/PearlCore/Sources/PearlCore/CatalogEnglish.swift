@@ -5,6 +5,7 @@ public struct CatalogEnglish: Codable, Sendable {
     public struct NameFlavor: Codable, Sendable { public let name: String; public let flavor: String }
     public struct NameDescription: Codable, Sendable { public let name: String; public let description: String }
     public struct Mark: Codable, Sendable { public let label: String; public let description: String }
+    public struct AchievementText: Codable, Sendable { public let name: String; public let description: String; public let title: String? }
 
     public let pearls: [String: NameFlavor]
     public let findAlbums: [String: NameDescription]
@@ -17,6 +18,7 @@ public struct CatalogEnglish: Codable, Sendable {
     public let skins: [String: NameDescription]
     public let consumables: [String: String]
     public let ranks: [String: String]
+    public let achievements: [String: AchievementText]
 }
 
 extension Catalog {
@@ -65,6 +67,15 @@ extension Catalog {
             var product = product
             if let name = english.consumables[product.id] { product.name = name }
             return product
+        }
+        catalog.economy.achievements = economy.achievements.map { achievement in
+            var achievement = achievement
+            if let text = english.achievements[achievement.id] {
+                achievement.name = text.name
+                achievement.description = text.description
+                if achievement.title != nil, let title = text.title { achievement.title = title }
+            }
+            return achievement
         }
         catalog.ranks = ranks.map { rank in
             var rank = rank

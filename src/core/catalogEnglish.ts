@@ -19,6 +19,8 @@ export interface CatalogEnglish {
   consumables: Readonly<Record<string, string>>;
   /** Titres des rangs (src/core/levels.ts). */
   ranks: Readonly<Record<string, string>>;
+  /** Succès de l'app (APP_ACHIEVEMENTS) ; `title` seulement pour ceux qui en donnent un. */
+  achievements: Readonly<Record<string, { name: string; description: string; title?: string }>>;
 }
 
 export const CATALOG_ENGLISH: CatalogEnglish = {
@@ -121,5 +123,39 @@ export const CATALOG_ENGLISH: CatalogEnglish = {
     joaillier: 'Jeweller',
     maitre: 'Master jeweller',
     maison: 'High jewellery house',
+  },
+  achievements: {
+    'premiere-perle': { name: 'First pearl', description: 'Find your first pearl.' },
+    'dix-huitres': { name: 'Hands in the water', description: 'Open 10 oysters.' },
+    'cent-huitres': { name: 'Dedicated fisher', description: 'Open 100 oysters.', title: 'Dedicated fisher' },
+    'cinq-cents-huitres': { name: 'Old salt', description: 'Open 500 oysters.', title: 'Old salt' },
+    'huitres-vides': { name: 'Patience', description: 'Come across 5 empty oysters.' },
+    'perle-noire': { name: 'Connoisseurs fall silent', description: 'Find a black pearl.' },
+    'perle-doree': { name: 'Gold in your palm', description: 'Find a golden pearl.' },
+    'perle-geante': { name: 'Too big for one hand', description: 'Find a giant pearl.', title: 'Giant hunter' },
+    'perle-maudite': { name: 'What was sleeping', description: 'Find the cursed pearl.', title: 'Bearer of the cursed pearl' },
+    'crique-complete': { name: 'No more secrets', description: 'Find all 7 kinds of pearl.', title: 'Keeper of the lagoon' },
+    'premiere-trouvaille': { name: 'This is not a pearl', description: 'Make your first find.' },
+    'album-port': { name: 'Tidal flea market', description: 'Complete the “Harbour odds and ends” album.', title: 'Tidal bargain hunter' },
+    'album-clins': { name: 'That rings a bell', description: 'Complete the “Nods and winks” album.', title: 'Deep-sea film buff' },
+    'album-tresors': { name: 'Wreck hunter', description: 'Complete the “Sunken treasures” album.', title: 'Wreck hunter' },
+    'grand-bateau': { name: 'Once upon a time, a great ship', description: 'Find the great blue diamond.' },
+    'perle-jumelle': { name: 'Two for the price of one', description: 'Find a twin pearl.' },
+    'perle-coeur': { name: 'Love at first sight', description: 'Find a heart pearl.', title: 'Heart of nacre' },
+    'arc-en-ciel': { name: 'Every colour', description: 'Find a pearl with a rainbow overtone.' },
+    'six-formes': { name: 'Six shapes', description: 'Find a pearl of every shape.' },
+    'lustre-s': { name: 'Perfect touch', description: 'Get an S lustre.' },
+    'lustre-s-10': { name: 'Virtuoso', description: 'Get 10 S lustres.', title: 'Virtuoso' },
+    'sans-felure-10': { name: 'Velvet hands', description: 'Open 10 oysters in a row without a crack.', title: 'Velvet hands' },
+    'sans-felure-50': { name: 'Surgeon’s hands', description: 'Open 50 oysters in a row without a crack.', title: 'Surgeon’s hands' },
+    'serie-7': { name: 'Faithful to the pier', description: 'Come 7 days in a row.', title: 'Harbour regular' },
+    'serie-30': { name: 'The tide and me', description: 'Come 30 days in a row.', title: 'Child of the tides' },
+    'missions-10': { name: 'Reporting for duty', description: 'Claim 10 daily missions.' },
+    'missions-60': { name: 'Always up for it', description: 'Claim 60 daily missions.', title: 'Always up for it' },
+    'niveau-5': { name: 'Getting the hang of it', description: 'Reach level 5.' },
+    'niveau-10': { name: 'The talk of the harbour', description: 'Reach level 10.' },
+    'niveau-20': { name: 'A signature', description: 'Reach level 20.', title: 'Signature of the lagoon' },
+    alchimiste: { name: 'Alchemist', description: 'Sell 20 duplicates at the counter.', title: 'Alchemist' },
+    poisson: { name: 'Not so fast!', description: 'Catch the thief fish.' },
   },
 };

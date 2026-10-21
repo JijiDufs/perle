@@ -76,6 +76,16 @@ public struct PlayerState: Codable, Sendable, Equatable {
     public var rewardedLevel: Int
     /// Montée de niveau pas encore fêtée à l'écran (attend un moment calme, jamais pendant le tutoriel).
     public var levelUp: LevelUp?
+    /// Statistiques que comptent les succès.
+    public var stats: PlayerStats
+    /// Succès obtenus (identifiants, dans l'ordre d'obtention).
+    public var achievements: [String]
+    /// Succès obtenus dont la bannière n'a pas encore été montrée (au moment calme suivant).
+    public var unseenAchievements: [String]
+    /// Partie d'avant les succès : ceux remplis au chargement, à montrer en une fois.
+    public var achievementCatchUp: AchievementCatchUp?
+    /// Titre porté : l'identifiant du succès qui le donne (nil : aucun).
+    public var title: String?
 
     /// Nouvelle partie : stock plein, skin de départ, première huître (celle du tutoriel) déjà posée.
     public static func new(_ rng: Rng, _ tuning: Tuning, now: Double, catalog: Catalog = .shared) -> PlayerState {
@@ -85,7 +95,8 @@ public struct PlayerState: Codable, Sendable, Equatable {
             oyster: first.oyster, drawState: first.drawState, nextSerial: 1, pearlCards: [], findCards: [], oystersOpened: 0,
             dust: 0, stock: StockState(count: tuning.oysterStockMax, lastRefillAt: now),
             ownedSkins: starters, equippedSkin: starters.first ?? "", missions: nil, noCrackStreak: 0, adRewards: nil,
-            login: .initial, stolenCard: nil, reputation: 0, rewardedLevel: 1, levelUp: nil
+            login: .initial, stolenCard: nil, reputation: 0, rewardedLevel: 1, levelUp: nil,
+            stats: PlayerStats(), achievements: [], unseenAchievements: [], achievementCatchUp: nil, title: nil
         )
     }
 
@@ -109,7 +120,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
     }
 
     /// L'huître en cours est ouverte : consomme une huître du stock (sauf celles du tutoriel, offertes),
-    /// crée sa carte, fait avancer les missions et pose la suivante. Parfois, un poisson chipe la perle
+    /// crée sa carte, fait avancer les statistiques, les missions et les succès, et pose la suivante. Parfois, un poisson chipe la perle
     /// (`stolenCard`) : elle n'entre dans la collection que si le joueur le rattrape. Le vol a son propre
     /// générateur (`thiefRng`, nil = pas de poisson) : le tirage des huîtres reste celui de la webapp.
     public mutating func reveal(lustre: Lustre, cracked: Bool, now: Double, rng: Rng, thiefRng: Rng? = nil, tuning: Tuning,
@@ -145,14 +156,20 @@ public struct PlayerState: Codable, Sendable, Equatable {
         }
         nextSerial += 1
         oystersOpened += 1
-        noCrackStreak = cracked ? 0 : noCrackStreak + 1
+        // Comme la webapp (progression.ts) : une huître vide ou une trouvaille n'a rien à fêler.
+        let isPearl = opened.findId == nil && opened.pearlId != "empty"
+        noCrackStreak = cracked && isPearl ? 0 : noCrackStreak + 1
+        stats.bestCrackFreeStreak = max(stats.bestCrackFreeStreak, noCrackStreak)
+        if opened.findId == nil && opened.pearlId == "empty" { stats.emptyOysters += 1 }
+        if isPearl && !cracked && lustre == .S { stats.lustreS += 1 }
 
         missions?.advance(.open)
-        if opened.findId == nil && opened.pearlId != "empty" {
+        if isPearl {
             if lustre == .S || lustre == .A { missions?.advance(.lustreA) }
             if lustre == .S { missions?.advance(.lustreS) }
             if catalog.tier(of: opened.pearlId) >= catalog.economy.rareMissionTier { missions?.advance(.rare) }
         }
+        if opened.findId != nil { missions?.advance(.find) }
         missions?.reachStreak(.noCrack, noCrackStreak)
 
         let next = nextOyster(oystersOpened: oystersOpened, drawState, rng, tuning, catalog: catalog)
@@ -164,6 +181,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
             pearlCards.removeLast()
             stolenCard = card
         }
+        unlockAchievements(catalog: catalog)
         return result
     }
 
@@ -172,8 +190,19 @@ public struct PlayerState: Codable, Sendable, Equatable {
         card.traits?.mark == nil && catalog.tier(of: card.pearlId) <= catalog.economy.fishThief.maxTier
     }
 
-    /// Le joueur a touché le poisson à temps (la perle rejoint la collection, avec un peu de poussière d'or)
-    /// ou l'a laissé filer (elle est perdue). Renvoie la poussière d'or gagnée.
+    /// Le joueur a touché le poisson à temps : la perle revient (avec un peu de poussière d'or), et ça compte
+    /// pour les missions et les succès. Renvoie la poussière d'or gagnée.
+    public mutating func catchThief(catalog: Catalog = .shared) -> Int {
+        guard stolenCard != nil else { return 0 }
+        let gained = resolveTheft(caught: true, catalog: catalog)
+        stats.fishCaught += 1
+        missions?.advance(.fish)
+        unlockAchievements(catalog: catalog)
+        return gained
+    }
+
+    /// La perle rejoint la collection, avec un peu de poussière d'or (aussi quand l'app a été fermée pendant
+    /// la fuite), ou le poisson a filé avec (elle est perdue). Renvoie la poussière d'or gagnée.
     public mutating func resolveTheft(caught: Bool, catalog: Catalog = .shared) -> Int {
         guard let card = stolenCard else { return 0 }
         stolenCard = nil
@@ -209,7 +238,9 @@ public struct PlayerState: Codable, Sendable, Equatable {
         pearlCards.removeAll { $0.serial == serial }
         let gained = catalog.sellDust(card.pearlId)
         dust += gained
+        stats.sold += 1
         missions?.advance(.sell)
+        unlockAchievements(catalog: catalog)
         return gained
     }
 
@@ -220,7 +251,9 @@ public struct PlayerState: Codable, Sendable, Equatable {
         let serials = Set(sold.map(\.serial))
         pearlCards.removeAll { serials.contains($0.serial) }
         dust += gained
+        stats.sold += sold.count
         missions?.advance(.sell, by: sold.count)
+        unlockAchievements(catalog: catalog)
         return gained
     }
 
@@ -300,6 +333,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
         stock.count += reward.oysters
         dust += reward.dust
         gainReputation(catalog.economy.levels.calendarReputation, catalog: catalog)
+        unlockAchievements(catalog: catalog)
         return reward
     }
 
@@ -321,7 +355,9 @@ public struct PlayerState: Codable, Sendable, Equatable {
         }
         missions = daily
         dust += gained
+        stats.missions += 1
         gainReputation(catalog.economy.levels.missionReputation, catalog: catalog)
+        unlockAchievements(catalog: catalog)
         return gained
     }
 }
@@ -331,6 +367,7 @@ extension PlayerState {
         case oyster, drawState, nextSerial, pearlCards, findCards, oystersOpened
         case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak, adRewards, login, stolenCard
         case reputation, rewardedLevel, levelUp
+        case stats, achievements, unseenAchievements, achievementCatchUp, title
     }
 
     /// Les anciennes sauvegardes (sans poussière, stock ni skins) se chargent avec des valeurs de départ.
@@ -355,6 +392,12 @@ extension PlayerState {
         stolenCard = try container.decodeIfPresent(PearlCard.self, forKey: .stolenCard)
         levelUp = try container.decodeIfPresent(LevelUp.self, forKey: .levelUp)
         rewardedLevel = try container.decodeIfPresent(Int.self, forKey: .rewardedLevel) ?? 1
+        let savedStats = try container.decodeIfPresent(PlayerStats.self, forKey: .stats)
+        stats = savedStats ?? Self.retroactiveStats(pearlCards: pearlCards, noCrackStreak: noCrackStreak)
+        achievements = try container.decodeIfPresent([String].self, forKey: .achievements) ?? []
+        unseenAchievements = try container.decodeIfPresent([String].self, forKey: .unseenAchievements) ?? []
+        achievementCatchUp = try container.decodeIfPresent(AchievementCatchUp.self, forKey: .achievementCatchUp)
+        title = try container.decodeIfPresent(String.self, forKey: .title)
         if let reputation = try container.decodeIfPresent(Int.self, forKey: .reputation) {
             self.reputation = reputation
         } else {
@@ -364,6 +407,8 @@ extension PlayerState {
                                                       catalog: .shared))
             levelUp?.retroactive = true
         }
+        // Partie d'avant les succès (1.0 à 1.2) : ceux déjà remplis sont donnés maintenant, montrés en une fenêtre.
+        if savedStats == nil { unlockAchievements(catchUp: true) }
     }
 }
 

@@ -28,7 +28,7 @@ public struct MissionTemplate: Codable, Sendable, Equatable {
 }
 
 public enum MissionKind: String, Codable, Sendable {
-    case open, lustreA, lustreS, rare, noCrack, sell, share
+    case open, lustreA, lustreS, rare, noCrack, sell, share, find, fish
 }
 
 /// Le poisson voleur : il chipe parfois une perle ordinaire juste après la révélation (src/core/appEconomy.ts).
@@ -69,6 +69,9 @@ public struct Economy: Codable, Sendable {
     public let fishThief: FishThief
     /// Niveaux : courbe accélérée au début, récompenses, réputation des missions et du calendrier.
     public let levels: LevelEconomy
+    /// Succès de l'app et leurs récompenses.
+    public internal(set) var achievements: [Achievement]
+    public let achievementRewards: AchievementRewards
     public internal(set) var skins: [AppSkin]
     public internal(set) var consumables: [AppConsumable]
 

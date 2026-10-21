@@ -47,6 +47,8 @@ enum GameText {
         case .noCrack: return String(localized: "Ouvrir \(goal) huîtres d’affilée sans fêlure", comment: "Mission du jour")
         case .sell: return String(localized: "Revendre \(goal) doublons au comptoir", comment: "Mission du jour")
         case .share: return String(localized: "Partager une carte", comment: "Mission du jour")
+        case .find: return String(localized: "Pêcher une trouvaille", comment: "Mission du jour")
+        case .fish: return String(localized: "Rattraper le poisson voleur", comment: "Mission du jour")
         }
     }
 

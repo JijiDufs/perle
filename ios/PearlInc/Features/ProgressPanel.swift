@@ -1,12 +1,14 @@
 import SwiftUI
 import PearlCore
 
-/// « Ma progression » (toucher l'anneau de niveau) : niveau et rang, statistiques, chemin des rangs,
-/// barème de réputation. Seulement ce qui existe dans l'app (règle Apple 2.1 : rien « à venir »).
+/// « Ma progression » (toucher l'anneau de niveau) : niveau, rang et titre porté, puis deux volets : la progression
+/// (statistiques, chemin des rangs, barème de réputation) et les succès. Seulement ce qui existe dans l'app
+/// (règle Apple 2.1 : rien « à venir »).
 /// Panneau qui monte depuis le bas, sur une moitié d'écran quand le Duo est à moitié ouvert.
 struct ProgressPanel: View {
     @Environment(GameModel.self) private var game
     let close: () -> Void
+    @State private var showAchievements = false
 
     /// Moitié d'écran du Duo à moitié ouvert : marges réduites.
     private var compact: Bool { game.foldX != nil }
@@ -28,9 +30,18 @@ struct ProgressPanel: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     header
-                    stats
-                    ranks
-                    scale
+                    Picker("Volet", selection: $showAchievements) {
+                        Text("Progression").tag(false)
+                        Text("Succès").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    if showAchievements {
+                        AchievementList()
+                    } else {
+                        stats
+                        ranks
+                        scale
+                    }
                 }
                 .padding(.horizontal, compact ? 14 : 20)
                 .padding(.bottom, 24)
@@ -54,6 +65,9 @@ struct ProgressPanel: View {
                 .font(.caption.weight(.bold))
                 .tracking(2)
                 .foregroundStyle(Palette.gold)
+            if let title = game.player.wornTitle(catalog: game.catalog) {
+                Text(title).font(.subheadline.italic()).opacity(0.9)
+            }
             Text("Niveau \(progress.level)").font((compact ? Font.title : .largeTitle).weight(.bold))
                 .accessibilityAddTraits(.isHeader)
             if progress.needed > 0 {

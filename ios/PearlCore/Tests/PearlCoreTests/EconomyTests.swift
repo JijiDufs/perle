@@ -57,8 +57,8 @@ private func newPlayer() -> PlayerState {
     var player = newPlayer()
     let rng = seededRng(2)
     // Les huîtres du tutoriel sont offertes ; les suivantes coûtent une huître du stock.
-    // (Sans compter les huîtres gagnées en montant de niveau.)
-    let levelOysters = { player.levelUp?.oysters ?? 0 }
+    // (Sans compter les huîtres gagnées en montant de niveau et avec les succès.)
+    let levelOysters = { (player.levelUp?.oysters ?? 0) + achievementRewards(player).oysters }
     for _ in catalog.tutorialPearls { _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning) }
     #expect(player.stock.count - levelOysters() == tuning.oysterStockMax)
     _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning)

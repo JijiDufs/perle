@@ -18,8 +18,8 @@ private let tuning = catalog.tuning
         _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning)
     }
     #expect(revealed == catalog.tutorialPearls)
-    // Offertes : le stock n'a bougé que des huîtres gagnées en montant de niveau.
-    #expect(player.stock.count == tuning.oysterStockMax + (player.levelUp?.oysters ?? 0))
+    // Offertes : le stock n'a bougé que des huîtres gagnées en montant de niveau et avec les succès.
+    #expect(player.stock.count == tuning.oysterStockMax + (player.levelUp?.oysters ?? 0) + achievementRewards(player).oysters)
     #expect(player.pearlCards.map(\.pearlId) == ["rose", "white", "baroque"])
 }
 
