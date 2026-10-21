@@ -142,7 +142,7 @@ struct FishingView: View {
             if let achievement = game.achievementToShow, coachText == nil, !showProgress, !showMissions, !showSettings {
                 VStack {
                     AchievementBanner(achievement: achievement)
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, game.foldX == nil ? 16 : 6)
                         .padding(.top, 70)
                     Spacer()
                 }

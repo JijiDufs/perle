@@ -744,6 +744,22 @@
         }
       }
     },
+    "Succès bronze / argent / or" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bronze / silver / gold achievement"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Succès bronze / argent / or"
+          }
+        }
+      }
+    },
     "Succès obtenu : %@" : {
       "localizations" : {
         "en" : {

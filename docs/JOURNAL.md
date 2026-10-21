@@ -4,6 +4,28 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-21 (lot 1.3) · Jules · Claude Code · branche `claude/ios-1-3-succes-e31e8f`
+
+Lot 1.3 de l'app iOS, « Succès, titres, missions enrichies » (`docs/ios-feuille-de-route.md`). Décision en `AGENTS.md` §6.
+
+**Fait**
+- **TypeScript** : `APP_ACHIEVEMENTS` et `APP_ACHIEVEMENT_REWARDS` (`appEconomy.ts`) : 32 succès décrits par des données (`measure`, `target`, `goal`), dont 26 repris de la webapp (un test vérifie mêmes objectifs, paliers, titres et secrets que `achievements.ts`) et 6 propres à l'app (missions 10 / 60, niveaux 5 / 10 / 20, poisson rattrapé) ; missions `find` et `fish` ajoutées à `APP_MISSIONS` ; `achievementBannerMs` (`tuning.ts`) ; textes anglais (`catalogEnglish.ts`, test). Cas de référence `achievementStates` dans `parity.json` : l'avancement calculé par la webapp sur 6 parties (0 à 400 huîtres, une avec toutes les trouvailles).
+- **PearlCore** : `Achievements.swift` (statistiques `PlayerStats`, avancement, déblocage après chaque action avec récompenses, titres, statistiques rétroactives). `PlayerState` : `stats`, `achievements`, `unseenAchievements`, `achievementCatchUp`, `title` ; déblocage après une huître, une revente, une mission, le calendrier et le poisson rattrapé (`catchThief`, distinct de la perle rendue à la relance). Série sans fêlure comme la webapp (une huître vide ou une trouvaille ne la casse pas). Sauvegarde sans `stats` (1.0 à 1.2) → succès remplis au chargement, comptés dans `achievementCatchUp` (pas de bannière). `AchievementsTests` (parité, statistiques, rattrapage 1.0 et 1.2, titres, nouvelles missions) ; tests existants ajustés pour les récompenses de succès.
+- **App** : `AchievementBanner` (bannière au moment calme : après la fête de niveau, la fenêtre de rattrapage et la bulle du stock, hors panneaux ; 4,5 s ou toucher ; annonce VoiceOver), `AchievementCatchUpView` (« Les succès arrivent ! », une fenêtre ; ouvrir le Duo la referme), `AchievementList` (volet « Succès » de « Ma progression » : titre porté au menu, médailles par palier, avancement, récompenses, secrets cachés) ; titre porté sous le rang dans « Ma progression » et dans l'étiquette VoiceOver de l'anneau ; ligne « Succès bronze / argent / or » au barème ; sur la moitié d'écran du Duo, sélecteur des volets en icônes. Missions « Pêcher une trouvaille », « Rattraper le poisson voleur ». FR / EN (26 textes).
+- **Simulateur** (un seul allumé à la fois : le Mac manque de mémoire) : iPhone 17 Pro avec une partie 1.2 (232 huîtres) : fête « Niveau 13 » (réputation des succès), puis « 16 succès, + 93 huîtres, + 205 ✦ », lustre S → pas de bannière sur la carte, bannière « Virtuose · Argent » à l'huître suivante, volet Succès, titre porté. iPhone 17e avec `save-1.0.json` en anglais : « You're level 7! » puis « Achievements are here! 8 … + 28 oysters · + 50 ✦ », « My progress » en anglais. Duo simulé (`-SimulatedHinge -SimulatedFold`, sur le 17e) : fenêtre de rattrapage et bannière à droite du pli (récompenses insécables : « + 5 huîtres » ne se coupe plus), ouvrir le téléphone referme la fenêtre et ouvre l'huître ; « Ma progression » sur la moitié d'écran : sélecteur en icônes (« Progression » était tronqué), médaille et coche au-dessus du texte (aussi au très grand texte). Partie neuve (17e, français) : « Première perle » et « Geste parfait » gagnés pendant le tutoriel sans rien afficher, puis « Niveau 4 ! », la bulle du stock, et seulement ensuite les deux bannières. Les sauvegardes d'origine des simulateurs ont été remises.
+
+**À faire**
+- Jules : iPhone réel (mise à jour d'une partie 1.2 : une fenêtre de rattrapage, puis des bannières ; VoiceOver sur la bannière et le volet ; choix du titre), TestFlight Duo, numéro de version 1.3, texte « Nouveautés », envoi.
+- Valider avec Mathys : liste, textes, titres et montants des succès (provisoires).
+- Après la fusion : `graphify update .` dans le dossier principal.
+
+**Fragile**
+- Une partie d'avant la 1.3 ne retrouve pas ses huîtres vides, reventes ni missions passées (pas d'historique) : « Patience », « Alchimiste » et les succès de missions repartent de 0.
+- Le rattrapage peut donner beaucoup d'un coup à un gros joueur (partie de test 1.2 : 93 huîtres) ; tous les succès réunis ≈ 230 huîtres et 440 ✦ sur des mois.
+- La bannière qui ne s'est pas affichée jusqu'au bout (huître ouverte tout de suite) revient au moment calme suivant.
+- `Localizable.xcstrings` est complété à la main (Xcode en ligne de commande n'ajoute pas les nouveaux textes) : l'ouvrir dans Xcode peut réordonner le fichier.
+- Les missions « trouvaille » et « poisson » dépendent du hasard (≈ 4 chances sur 5 en 30 huîtres pour la trouvaille).
+
 ## 2026-10-20 (lot 1.2) · Jules · Claude Code · branche `claude/ios-1-2-collection-0dfa32`
 
 Lot 1.2 de l'app iOS, « Collection enrichie » (`docs/ios-feuille-de-route.md`). Décision en `AGENTS.md` §6.

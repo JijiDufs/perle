@@ -48,40 +48,52 @@ struct AchievementList: View {
 
 private struct AchievementRow: View {
     @Environment(GameModel.self) private var game
+    @Environment(\.dynamicTypeSize) private var typeSize
     let achievement: Achievement
+
+    /// Moitié d'écran du Duo, ou très grand texte : la médaille et la coche passent au-dessus du texte.
+    private var stacked: Bool { game.foldX != nil || typeSize.isAccessibilitySize }
 
     var body: some View {
         let earned = game.player.hasAchievement(achievement.id)
         let hidden = achievement.secret == true && !earned
         let (done, goal) = game.player.progress(of: achievement, catalog: game.catalog)
-        HStack(alignment: .top, spacing: 12) {
-            AchievementMedal(tier: achievement.tier, earned: earned)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(hidden ? String(localized: "Succès secret") : achievement.name)
-                    .font(.body.weight(.semibold))
-                Text(hidden ? String(localized: "Continue de pêcher…") : achievement.description)
-                    .font(.subheadline)
-                    .opacity(0.8)
-                if !earned && !hidden && goal > 1 {
-                    ProgressView(value: Double(done), total: Double(goal)).tint(achievement.tier.color)
-                    Text("\(done) / \(goal)").font(.caption.monospacedDigit()).opacity(0.7)
+        let check = Image(systemName: "checkmark.circle.fill").foregroundStyle(Palette.gold).font(.title3)
+        VStack(alignment: .leading, spacing: 6) {
+            if stacked {
+                HStack {
+                    AchievementMedal(tier: achievement.tier, earned: earned)
+                    Spacer(minLength: 0)
+                    if earned { check }
                 }
-                if !hidden {
-                    Text(AchievementText.reward(game.catalog.reward(of: achievement)))
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(Palette.gold)
-                    if let title = achievement.title {
-                        Text("Titre : \(title)").font(.caption).opacity(0.8)
+            }
+            HStack(alignment: .top, spacing: 12) {
+                if !stacked { AchievementMedal(tier: achievement.tier, earned: earned) }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(hidden ? String(localized: "Succès secret") : achievement.name)
+                        .font(.body.weight(.semibold))
+                    Text(hidden ? String(localized: "Continue de pêcher…") : achievement.description)
+                        .font(.subheadline)
+                        .opacity(0.8)
+                    if !earned && !hidden && goal > 1 {
+                        ProgressView(value: Double(done), total: Double(goal)).tint(achievement.tier.color)
+                        Text("\(done) / \(goal)").font(.caption.monospacedDigit()).opacity(0.7)
+                    }
+                    if !hidden {
+                        Text(AchievementText.reward(game.catalog.reward(of: achievement)))
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(Palette.gold)
+                        if let title = achievement.title {
+                            Text("Titre : \(title)").font(.caption).opacity(0.8)
+                        }
                     }
                 }
-            }
-            .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 0)
-            if earned {
-                Image(systemName: "checkmark.circle.fill").foregroundStyle(Palette.gold).font(.title3)
+                .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                if earned && !stacked { check }
             }
         }
-        .padding(12)
+        .padding(stacked ? 10 : 12)
         .glassPanel(cornerRadius: 16, shade: earned ? 0.15 : 0.3)
         .opacity(earned ? 1 : 0.85)
         .accessibilityElement(children: .combine)

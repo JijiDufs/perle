@@ -30,9 +30,15 @@ struct ProgressPanel: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     header
+                    // Moitié d'écran du Duo : des icônes, les mots ne tiennent pas.
                     Picker("Volet", selection: $showAchievements) {
-                        Text("Progression").tag(false)
-                        Text("Succès").tag(true)
+                        if compact {
+                            Image(systemName: "chart.bar.fill").accessibilityLabel(Text("Progression")).tag(false)
+                            Image(systemName: "medal.fill").accessibilityLabel(Text("Succès")).tag(true)
+                        } else {
+                            Text("Progression").tag(false)
+                            Text("Succès").tag(true)
+                        }
                     }
                     .pickerStyle(.segmented)
                     if showAchievements {
@@ -135,6 +141,9 @@ struct ProgressPanel: View {
             ScaleRow(label: String(localized: "Nouvelle perle ou nouvelle trouvaille"), value: "+\(tuning.repDiscovery)")
             ScaleRow(label: String(localized: "Mission du jour"), value: "+\(levels.missionReputation)")
             ScaleRow(label: String(localized: "Rendez-vous du jour"), value: "+\(levels.calendarReputation)")
+            let rewards = game.economy.achievementRewards
+            ScaleRow(label: String(localized: "Succès bronze / argent / or"),
+                     value: "+\(rewards.bronze.reputation) / +\(rewards.argent.reputation) / +\(rewards.or.reputation)")
             Text("Chaque niveau : \(levels.rewardOysters) huîtres et \(levels.rewardDust) ✦ ; nouveau rang : \(levels.rankRewardOysters) huîtres et \(levels.rankRewardDust) ✦ de plus.")
                 .font(.footnote)
                 .opacity(0.8)

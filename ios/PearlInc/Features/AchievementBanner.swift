@@ -7,9 +7,12 @@ struct AchievementBanner: View {
     @Environment(GameModel.self) private var game
     let achievement: Achievement
 
+    /// Moitié d'écran du Duo à moitié ouvert : marges réduites.
+    private var compact: Bool { game.foldX != nil }
+
     var body: some View {
         let reward = game.catalog.reward(of: achievement)
-        HStack(spacing: 12) {
+        HStack(spacing: compact ? 8 : 12) {
             AchievementMedal(tier: achievement.tier, earned: true)
             VStack(alignment: .leading, spacing: 3) {
                 Text("Succès obtenu · \(achievement.tier.label)")
@@ -25,7 +28,7 @@ struct AchievementBanner: View {
             Spacer(minLength: 0)
         }
         .foregroundStyle(.white)
-        .padding(.horizontal, 16)
+        .padding(.horizontal, compact ? 10 : 16)
         .padding(.vertical, 12)
         .frame(maxWidth: 420)
         .glassPanel(cornerRadius: 22, rim: achievement.tier.color, shade: 0.35)
@@ -69,6 +72,7 @@ struct AchievementCatchUpView: View {
             Text(AchievementText.reward(AchievementReward(oysters: catchUp.oysters, dust: catchUp.dust, reputation: 0)))
                 .font(.headline.monospacedDigit())
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
                 .glass(RoundedRectangle(cornerRadius: 22, style: .continuous), shade: 0.2)
@@ -137,6 +141,7 @@ enum AchievementText {
         var parts: [String] = []
         if reward.oysters > 0 { parts.append(String(localized: "+ \(reward.oysters) huîtres")) }
         if reward.dust > 0 { parts.append("+ \(reward.dust) ✦") }
-        return parts.joined(separator: " · ")
+        // Chaque récompense reste sur une ligne (« + 5 huîtres »), même sur la moitié d'écran du Duo.
+        return parts.map { $0.replacingOccurrences(of: " ", with: "\u{00A0}") }.joined(separator: " · ")
     }
 }
