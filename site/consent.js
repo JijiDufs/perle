@@ -14,6 +14,10 @@
     return;
   }
 
+  // Pages d'aide et légales (celles qu'ouvre le build 4 de l'app, sans ?app=1) : la bannière ne s'ouvre
+  // pas d'elle-même, seulement par le lien « Cookies ». Le pixel n'y vient qu'avec un accord déjà donné.
+  var quietPage=/^\/(en\/)?(support|confidentialite|conditions|mentions-legales|privacy|terms|legal-notice)(\/|$)/.test(location.pathname);
+
   var KEY='pearl-consent-v1';
   var MAX_AGE=1000*60*60*24*182; // 6 mois
 
@@ -116,5 +120,5 @@
 
   var choice=readChoice();
   if(choice===true)loadXPixel();
-  else if(choice===null)open();
+  else if(choice===null&&!quietPage)open();
 })();

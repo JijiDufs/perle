@@ -9,14 +9,18 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 Refus App Store de la 1.0 (build 4), règle **5.1.2(i)** : l'app ouvre des pages de pearl-inc.app qui proposent un cookie publicitaire (pixel X) sans demande ATT.
 `npm test`, `npm run build`, build de l'app : verts.
 
+**Cause réelle** (capture d'Apple, iPad) : le formulaire de consentement de Google (UMP, AdMob) au lancement, qui parle de « publicité personnalisée » sans demande ATT.
+
 **Fait**
+- Pour renvoyer **le même build 4** : le message RGPD de Pearl Inc. est à dépublier dans AdMob (Confidentialité et messages → Réglementations européennes) ; sans message publié, UMP n'affiche plus rien et les pubs se chargent (« pubs limitées » attendues dans l'EEE, moins payées). Les pages d'aide et légales n'ouvrent plus la bannière cookies d'elles-mêmes (seulement par le lien « Cookies »).
 - L'app ouvre les pages du site avec `?app=1` (`SiteLinks`) ; `site/consent.js` n'affiche alors ni bannière ni lien « Cookies » et ne charge jamais le pixel, pour toute la visite (`sessionStorage`), même en naviguant vers l'accueil.
 - Politiques de confidentialité FR / EN : « les pages ouvertes depuis l'app n'affichent pas la bannière et ne chargent jamais le pixel ».
 - **Build 5** (1.0), sans le travail de la 1.1.
 
 **Reste à faire**
 - Déployer `site/` sur Vercel **avant** de renvoyer en revue, puis vérifier `https://pearl-inc.app/confidentialite/?app=1` (pas de bannière).
-- Archiver le build 5, le choisir pour la version 1.0, répondre à Apple (note de revue dans la réponse de Claude), renvoyer.
+- Renvoyer le build 4 avec la réponse à Apple. Le build 5 (`?app=1`) ne sert que si Apple refuse encore : il sera la base de la 1.0.1.
+- Retirer le formulaire UMP du code (build suivant) et la ligne « Confidentialité des pubs » : sans message publié, ils ne servent plus.
 - Fusionner cette branche dans `jules/app-1.0.1` (la 1.1 en a besoin aussi).
 
 **Fragile**
