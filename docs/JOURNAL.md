@@ -4,6 +4,49 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-27 (lot 1.1, équilibrage) · Jules · Claude Code · branche `claude/ios-1-1-equilibrage-7f4d0a`
+
+Lot « Confiance et équilibrage » de la 1.1 (`docs/audit-app-ios.md`, P0 et P1-7, P1-12), avec les choix de Jules du 2026-10-27 (boutique et connexion gardées, poisson sur toutes les perles, quelques huîtres aux niveaux). Décision en `AGENTS.md` §6 (ligne du 2026-10-21 complétée).
+
+**Fait**
+- **Simulation de l'économie** (`ios/PearlCore/Tests/PearlCoreTests/EconomySimulationTests.swift`, reprise de l'annexe A de l'audit) : 3 joueurs types × 40 parties × 30 jours, vrai moteur, graine fixe (≈ 1 min en Debug). Elle échoue si la 1re séance dépasse 40 huîtres, si les 7 perles arrivent avant J5 (médiane, régulier) ou après J21 (léger), si le bénitier arrive avant J19 (régulier). Les chiffres s'affichent avec `swift test --filter lEconomieResteLente`.
+
+  | Régulier (3 séances, 3 pubs) | Avant | Après |
+  |---|---|---|
+  | 1re séance (max) | 227 huîtres | 33 |
+  | Huîtres par jour | 54 | 44 |
+  | Poussière par jour | ≈ 200 ✦ | 143 ✦ |
+  | 7 perles (médiane) | J2 | J5 |
+  | Bénitier (médiane) | J7 | J21 |
+
+  Léger : 1re séance 24, 7 perles J9, bénitier J31. Gros : 33, J3, J14. La perle maudite (0,3 %) fixe le rythme de la collection : probabilités inchangées (décision de la session pilote).
+- **Récompenses** (`appEconomy.ts`) : niveau 5 ✦ ; 5 huîtres tous les 5 niveaux (`rewardOystersEvery`) ; rang + 5 huîtres + 20 ✦ ; succès 5 / 10 / 25 ✦ sans huîtres (album : plus d'huîtres) ; revente 0 / 1 / 2 / 4 / 10 / 25 ✦ ; bénitier 3 000 ✦. Les parties existantes gardent ce qu'elles ont reçu ; la recharge n'est plus gelée longtemps (les huîtres au-delà du maximum sont maintenant ≤ 10 d'un coup).
+- **Poisson voleur** : 3 % des perles, toutes raretés et marques (avant : 10 % des ◆ sans marque) ; raté = perdue ; app fermée pendant la fuite = perle rendue **sans** bonus (`returnStolenPearl`, audit P2-2) ; fuite × 2 avec VoiceOver ou « Réduire les animations » (`assistedFleeFactor`) ; annonce VoiceOver quand il prend la perle.
+- **Garantie visible** : `openedSinceGolden` (Core, sauvegardé) compte les huîtres ouvertes depuis la dernière dorée ; `guaranteeIn` ne trahit jamais l'huître posée (test). Partie d'avant : déduit de `drawState`.
+- **Probabilités complètes** (`OddsList`) : perles, trouvailles par rareté, garantie avec « Encore N », 4 marques rares, poisson ; dépliées au-dessus des achats d'huîtres dans la boutique, et « Voir les probabilités » sur l'écran de marée basse. « Première marée » n'est plus montrée tant qu'on ne peut pas l'obtenir.
+- **Consentement Google à la première pub** : au lancement seulement s'il a déjà été donné ; sinon à l'ouverture de la boutique ou de la marée basse (jamais pendant le tutoriel).
+- **Fenêtres** : le calendrier entre dans la file (une fenêtre à la fois : calendrier, puis fête de niveau, rattrapage, bannières) ; au plus grand texte, le contenu de la fête de niveau et de « Les succès arrivent ! » défile, le bouton reste visible (`FitOrScroll`).
+- **Pêche** : sous l'huître, la mission la plus proche (`DailyMissions.nearest`) et « Perle dorée garantie · encore N » ; bulle du stock corrigée (« Elles reviennent seules, une toutes les 20 min »).
+- **Mesure d'usage** : TelemetryDeck (`TelemetryDeck/SwiftSDK` 2.14.2, nouvelle dépendance), tout dans `Platform/Analytics.swift` : huître (sorte, rareté, lustre, fêlure, pouce ou charnière), poisson, marée basse, pub, achat, mission, calendrier, niveau ; séance envoyée par TelemetryDeck. Identifiant dans Info.plist (`TelemetryDeckAppID`, **vide : rien n'est envoyé**). `PrivacyInfo.xcprivacy` : « interactions avec le produit » et « identifiant de l'appareil » (haché), analyse, non liés, pas de pistage.
+- FR / EN (`Localizable.xcstrings`), tests TS et Swift mis à jour ; partie 1.3 sans `openedSinceGolden` chargée sans perte (test).
+- **Simulateur** (iPhone 17e, seul allumé ; le 17 Pro servait aux autres sessions) : partie neuve, pas de formulaire de Google pendant le tutoriel, **10 huîtres à la fin du tutoriel** (31 avant), « Niveau 3 » + 10 ✦ ; bulle corrigée ; boutique (probabilités dépliées, produits présents) ; poisson raté au plus grand texte (perle perdue) ; « Niveau 4 » au plus grand texte (bouton visible) ; `save-1.0.json` : « Tu es niveau 7 » (+ 10 huîtres + 50 ✦, contenu qui défile) puis « Les succès arrivent ! » (8 succès, + 50 ✦, bouton visible), une à la fois ; Duo simulé (`-SimulatedHinge -SimulatedFold`) : fenêtre et ligne d'objectif à droite du pli. App retirée et simulateur éteint ensuite. **Pas vu** : le formulaire de consentement à l'ouverture de la boutique (il ne s'est pas affiché au simulateur), l'annonce VoiceOver, la première séance complète jouée jusqu'à 33 huîtres (comptée par la simulation).
+- P0-11 : les réglages publics d'authentification de Supabase disent **Apple activé** (ainsi que l'e-mail et l'anonyme).
+
+**À faire (Jules)**
+- **TelemetryDeck** : créer le compte (serveurs UE) et l'app, coller son identifiant dans `ios/PearlInc-Info.plist` (`TelemetryDeckAppID`).
+- **App Store Connect, confidentialité de l'app** : ajouter « Données d'utilisation → Interactions avec le produit » et « Identifiants → Identifiant de l'appareil », pour « Analyse », **non liées** à l'identité, **pas de pistage** ; mettre à jour la politique de confidentialité (site, FR / EN) : mesure d'usage TelemetryDeck.
+- **AdMob** : régler le message RGPD sur les finalités réellement utilisées (pubs non personnalisées).
+- **Supabase / Apple** : tester « Se connecter avec Apple » sur un vrai iPhone avant l'envoi.
+- Écran de connexion : la phrase « Inscrit avant la sortie ? … coquille Première marée » est toujours là (`LoginView.swift`, laissé à la session sauvegarde) : à retirer tant que Première marée n'est pas livrable.
+- Valider avec Mathys : montants, taux du poisson (**risqué sur une perle rare ou achetée**), bénitier à 3 000 ✦.
+
+**Fragile**
+- « 7 perles à J5 » est pile au seuil du test : un réglage qui donne un peu plus d'huîtres le fera échouer (c'est voulu).
+- La simulation suppose que le joueur ne dépense pas sa poussière en huîtres et n'achète rien.
+- Le poisson peut voler une perle maudite ou une perle d'une huître achetée : c'est le choix de Jules, à surveiller avec la mesure d'usage (`Fish.ended`, rareté).
+- Au plus grand texte, la barre du haut et la carte restent illisibles (P1-13, autre lot).
+- `Localizable.xcstrings` édité par script (même format qu'Xcode) : l'ouvrir dans Xcode peut réordonner le fichier.
+
 ## 2026-10-21 (lot 1.3) · Jules · Claude Code · branche `claude/ios-1-3-succes-e31e8f`
 
 Lot 1.3 de l'app iOS, « Succès, titres, missions enrichies » (`docs/ios-feuille-de-route.md`). Décision en `AGENTS.md` §6.
