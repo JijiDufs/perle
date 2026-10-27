@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light only">
-<meta name="description" content="Pearl Inc.: the game where the oyster opens with your iPhone Duo. Try the prototype.">
+<meta name="description" content="Pearl Inc.: the game where the oyster opens with your iPhone Duo. Free on the App Store, try it here.">
 <title>Pearl Inc. for iPhone Duo</title>
 <!-- Aperçu des liens (X, LinkedIn, iMessage…). Image : sh scripts/make-og.sh. Adresses absolues : à changer si le domaine change. -->
 <link rel="canonical" href="https://pearl-inc.app/en">
@@ -17,11 +17,13 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/favicon-64.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!-- Bannière de Safari sur iPhone, qui ouvre la fiche de l'app (même identifiant que APP_STORE_URL plus bas). -->
+<meta name="apple-itunes-app" content="app-id=6822782842">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Pearl Inc.">
 <meta property="og:url" content="https://pearl-inc.app/en">
 <meta property="og:title" content="Pearl Inc.: the oyster opens with your iPhone Duo">
-<meta property="og:description" content="Open it gently and light seeps in. Too fast, and the pearl cracks. Try the prototype: 5 free oysters.">
+<meta property="og:description" content="Open it gently and light seeps in. Too fast, and the pearl cracks. Free on the App Store.">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="fr_FR">
 <meta property="og:image" content="https://pearl-inc.app/og.jpg">
@@ -30,7 +32,7 @@
 <meta property="og:image:alt" content="An open oyster in a turquoise lagoon, a shining golden pearl, and the title Pearl Inc.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Pearl Inc.: the oyster opens with your iPhone Duo">
-<meta name="twitter:description" content="Open it gently and light seeps in. Too fast, and the pearl cracks. 5 free oysters.">
+<meta name="twitter:description" content="Open it gently and light seeps in. Too fast, and the pearl cracks. Free on the App Store.">
 <meta name="twitter:image" content="https://pearl-inc.app/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,6 +68,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .btn-primary:hover{background:#0077ed}
 .btn-ghost{background:transparent;color:var(--accent);padding-left:6px;padding-right:6px}
 .btn-ghost:hover{text-decoration:underline}
+/* Badge officiel d'Apple (non modifié) : 40 px de haut au moins, marge d'un quart de sa hauteur tout autour. */
+.store{display:inline-block;padding:12px;line-height:0;border-radius:12px}
+.store img{display:block;height:48px;width:auto}
 
 /* Démo */
 .demo{position:relative;height:min(88svh,860px);min-height:560px;margin:8px 0 0;overflow:hidden;background:var(--bg)}
@@ -134,7 +139,7 @@ hr{border:0;border-top:1px solid var(--line);margin:0}
 .duo-table th{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
 .notify{text-align:center}
 .notify .lead{max-width:34ch;margin-left:auto;margin-right:auto}
-.notify-note{font-size:13px;color:var(--faint);margin:14px 0 0;min-height:1.4em}
+.notify-note{font-size:13px;color:var(--faint);margin:14px auto 0;max-width:40ch}
 footer{padding:36px 0 calc(env(safe-area-inset-bottom,0px) + 40px);font-size:12px;color:var(--faint);text-align:center}
 footer p{margin:4px 0}
 .foot-links{margin-top:12px}.foot-links a{color:var(--soft);text-decoration:none}.foot-links a:hover{text-decoration:underline}
@@ -148,7 +153,7 @@ footer p{margin:4px 0}
 <script defer src="/consent.js"></script>
 </head>
 <body>
-<nav class="nav"><div class="nav-in"><span class="brand">Pearl Inc.</span><div class="nav-r"><div class="lang" role="group" aria-label="Langue / Language"><button type="button" data-lang="fr" aria-pressed="false" lang="fr">FR</button><button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button></div><a class="nav-cta" data-tally data-i18n="navCta" href="#notify">Préviens-moi</a></div></div></nav>
+<nav class="nav"><div class="nav-in"><span class="brand">Pearl Inc.</span><div class="nav-r"><div class="lang" role="group" aria-label="Langue / Language"><button type="button" data-lang="fr" aria-pressed="false" lang="fr">FR</button><button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button></div><a class="nav-cta" data-appstore data-i18n="navCta" href="#get">Télécharger</a></div></div></nav>
 <header class="hero wrap">
   <svg class="icon" viewBox="0 0 120 120" role="img" data-i18n-aria="iconAria" aria-label="Icône de l'app Pearl Inc.">
     <defs>
@@ -171,9 +176,9 @@ footer p{margin:4px 0}
   </svg>
   <h1>Pearl Inc.</h1>
   <p class="tag" data-i18n-html="tag">L’huître s’ouvre avec ton iPhone&nbsp;Duo.</p>
-  <p class="status" data-i18n-html="status"><strong>Bientôt sur l’App Store</strong> · Jouable aussi sur tous les iPhone · Essaie-le juste en dessous</p>
+  <p class="status" data-i18n-html="status"><strong>Disponible sur l’App Store</strong> · Gratuit · Jouable aussi sur tous les iPhone</p>
   <div class="ctas">
-    <a class="btn btn-primary" data-tally data-i18n="notifyBtn" href="#notify">Préviens-moi de la sortie</a>
+    <a class="store" data-appstore href="#get"><img data-i18n-src="badgeSrc" data-i18n-alt="badgeAlt" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/fr-fr?releaseDate=1793084400" alt="Télécharger dans l’App Store" height="48"></a>
   </div>
 </header>
 
@@ -189,9 +194,9 @@ footer p{margin:4px 0}
     <div class="te-card" role="dialog" aria-labelledby="teTitle">
       <p class="te-kicker" data-i18n="teKicker">Fin de l’essai</p>
       <h2 id="teTitle" data-i18n-html="teTitle">Convaincu&nbsp;?</h2>
-      <p class="te-text" data-i18n="teText">Tu as ouvert tes 5 huîtres d’essai. Le jeu complet arrive bientôt sur l’App Store, avec bien plus de fonctionnalités.</p>
-      <a class="btn btn-primary" data-tally data-i18n="notifyBtn" href="#notify">Préviens-moi de la sortie</a>
-      <p class="te-small" data-i18n="teSmall">Juste un e-mail, le jour du lancement.</p>
+      <p class="te-text" data-i18n="teText">Tu as ouvert tes 5 huîtres d’essai. La suite t’attend dans l’app : ta collection, les trouvailles, une huître qui revient toutes les 20 minutes.</p>
+      <a class="store" data-appstore href="#get"><img data-i18n-src="badgeSrc" data-i18n-alt="badgeAlt" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/fr-fr?releaseDate=1793084400" alt="Télécharger dans l’App Store" height="48"></a>
+      <p class="te-small"><button type="button" class="btn btn-ghost" id="replay" data-i18n="teReplay">Rejouer l’essai</button></p>
     </div>
   </div>
   <p class="hint" id="hint"><span class="nudge" aria-hidden="true">←</span><span id="hintText" data-i18n="hint">Fais glisser l’iPhone vers la gauche pour l’ouvrir</span></p>
@@ -231,11 +236,11 @@ footer p{margin:4px 0}
 </section>
 
 <hr>
-<section class="block wrap notify" id="notify">
-  <h2 data-i18n="nTitle">Sois là pour la première huître.</h2>
-  <p class="lead" data-i18n="nLead">Laisse ton adresse : on te prévient le jour du lancement, et les premiers inscrits recevront un skin d’huître exclusif.</p>
-  <a class="btn btn-primary" data-tally data-i18n="notifyBtn" href="#notify">Préviens-moi de la sortie</a>
-  <p class="notify-note" id="notifyNote" aria-live="polite"></p>
+<section class="block wrap notify" id="get">
+  <h2 data-i18n="nTitle">Ta première huître t’attend.</h2>
+  <p class="lead" data-i18n="nLead">Pearl Inc. est gratuit sur l’App Store. Conçu pour l’iPhone Duo, il se joue du pouce sur tous les iPhone.</p>
+  <a class="store" data-appstore href="#get"><img data-i18n-src="badgeSrc" data-i18n-alt="badgeAlt" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/fr-fr?releaseDate=1793084400" alt="Télécharger dans l’App Store" height="48"></a>
+  <p class="notify-note" data-i18n="nSignup">Inscrit avant la sortie ? Connecte-toi dans l’app avec l’e-mail de ton inscription : la coquille Première marée t’attend.</p>
 </section>
 
 <footer class="wrap">
@@ -251,17 +256,18 @@ footer p{margin:4px 0}
 const D={
 fr:{
   title:'Pearl Inc. pour iPhone Duo',
-  metaDesc:'Pearl Inc. : le jeu où l\u2019huître s\u2019ouvre avec ton iPhone Duo. Essaie le prototype.',
-  navCta:'Préviens-moi', iconAria:'Icône de l\u2019app Pearl Inc.',
+  metaDesc:'Pearl Inc. : le jeu où l\u2019huître s\u2019ouvre avec ton iPhone Duo. Gratuit sur l\u2019App Store, essaie-le ici.',
+  navCta:'Télécharger',
+  // Badge officiel d'Apple (Apple Marketing Tools), dans la langue de la page.
+  badgeSrc:'https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/fr-fr?releaseDate=1793084400', badgeAlt:'Télécharger dans l\u2019App Store', iconAria:'Icône de l\u2019app Pearl Inc.',
   tag:'L\u2019huître s\u2019ouvre avec ton iPhone&nbsp;Duo.',
-  status:'<strong>Bientôt sur l\u2019App Store</strong> · Jouable aussi sur tous les iPhone · Essaie-le juste en dessous',
-  notifyBtn:'Préviens-moi de la sortie',
+  status:'<strong>Disponible sur l\u2019App Store</strong> · Gratuit · Jouable aussi sur tous les iPhone',
   demoAria:'Prototype interactif', demoLabel:'Prototype interactif',
   canvasAria:'iPhone Duo en 3D avec l\u2019app Pearl Inc. Fais glisser l\u2019iPhone vers la gauche, ou maintiens la flèche gauche, pour l\u2019ouvrir.',
   colorAria:'Changer le coloris', soundOff:'Couper le son', soundOn:'Activer le son',
   teKicker:'Fin de l\u2019essai', teTitle:'Convaincu&nbsp;?',
-  teText:'Tu as ouvert tes 5 huîtres d\u2019essai. Le jeu complet arrive bientôt sur l\u2019App Store, avec bien plus de fonctionnalités.',
-  teSmall:'Juste un e-mail, le jour du lancement.',
+  teText:'Tu as ouvert tes 5 huîtres d\u2019essai. La suite t\u2019attend dans l\u2019app : ta collection, les trouvailles, une huître qui revient toutes les 20 minutes.',
+  teReplay:'Rejouer l\u2019essai',
   hint:'Fais glisser l\u2019iPhone vers la gauche pour l\u2019ouvrir',
   hintTouch:'Glisse vers la gauche, ou garde le doigt appuyé, pour ouvrir',
   ovTitle:'Une huître. Un geste. Une perle.',
@@ -271,27 +277,29 @@ fr:{
   s3t:'Doucement dans la zone fragile', s3p:'Entre 20° et 110°, une ouverture trop rapide fêle la perle. La régularité du geste donne son lustre.',
   s4t:'Ouvert, la carte se révèle', s4p:'Taille, lustre, valeur, numéro de série unique : chaque perle rejoint ta collection.',
   colTitle:'Huit perles à collectionner.',
-  colLead:'De la perle blanche à la perle maudite, chaque huître est un tirage. Les probabilités sont affichées dans le jeu, toujours.',
+  colLead:'De la perle blanche à la perle maudite, chaque huître est un tirage, et une sur vingt cache une trouvaille à la place de la perle. Les probabilités sont affichées dans le jeu, toujours.',
   evTitle:'Pensé pour le Duo. Jouable partout.',
   evLead:'Sur iPhone Duo, la charnière fait tout. Sur les autres iPhone, le même jeu se joue du pouce.',
   thGesture:'Geste', thOther:'Autres iPhone',
   r1a:'Ouvrir l\u2019huître', r1b:'Ouvrir le téléphone', r1c:'Glisser le pouce vers le haut',
   r2a:'Résistance', r2b:'Aimants et vibration', r2c:'Glissé freiné et vibration',
   r3a:'Huître suivante', r3b:'Refermer le téléphone', r3c:'Toucher la carte',
-  nTitle:'Sois là pour la première huître.',
-  nLead:'Laisse ton adresse : on te prévient le jour du lancement, et les premiers inscrits recevront un skin d’huître exclusif.',
-  signupSoon:'Les inscriptions ouvrent très bientôt.',
+  nTitle:'Ta première huître t\u2019attend.',
+  nLead:'Pearl Inc. est gratuit sur l\u2019App Store. Conçu pour l\u2019iPhone Duo, il se joue du pouce sur tous les iPhone.',
+  nSignup:'Inscrit avant la sortie ? Connecte-toi dans l\u2019app avec l\u2019e-mail de ton inscription : la coquille Première marée t\u2019attend.',
   foot0:'Une création du studio MJHstudio.',
   foot1:'© 2026 Pearl Inc. Tous droits réservés.',
   foot2:'iPhone et iPhone Duo sont des marques d\u2019Apple Inc. Pearl Inc. n\u2019est pas affilié à Apple.',
   foot3:'<a href="/confidentialite/">Confidentialité</a> · <a href="/mentions-legales/">Mentions légales</a> · <a href="#" data-consent-open>Cookies</a>',
   // Prototype
-  stGently:'Ouvre doucement…', stCrack:'Crac. La perle est fêlée.', stFast:'Trop vite !', stFragile:'Zone fragile', stMore:'Encore un peu…',
-  stNext:'Referme l\u2019iPhone pour la suivante',
+  stGently:'Ouvre doucement…', stCrack:'Crac. La perle est fêlée.', stFast:'Trop vite !', stFragile:'Zone fragile : doucement', stMore:'Encore un peu…',
+  stNext:'Referme l\u2019iPhone pour la suivante', stRearm:'Referme l\u2019iPhone, puis ouvre-le',
+  stFish:'Un poisson ! Touche-le vite',
+  caught:'Rattrapée au vol ! + 2 ✦', isNew:'Nouvelle !', fishGone:'Ça arrive aux meilleurs pêcheurs. La prochaine fois, touche-le pendant qu\u2019il s\u2019enfuit.', findOdds:'Trouvaille (dans l\u2019app)',
   closeIphone:'Referme l\u2019iPhone', toEndTrial:'pour terminer l\u2019essai', toNextOyster:'pour ouvrir l\u2019huître suivante',
   myCollection:'Ma collection', odds:'PROBABILITÉS PAR HUÎTRE', back:'Retour à l\u2019huître', close:'Fermer',
   cSize:'Taille', cLustre:'Lustre', cValue:'Valeur', cNo:'N°', cCracked:'Fêlée : valeur divisée par deux',
-  cvSoon:'À très vite', cvTrembles:'Elle tremble…', cvOpenMe:'Ouvre-moi', cvFullGame:'Le jeu complet arrive bientôt',
+  cvSoon:'À très vite', cvTrembles:'Elle tremble…', cvOpenMe:'Ouvre-moi', cvFullGame:'La suite sur l\u2019App Store',
   cvLast:'Dernière : ', cvOpenGently:'Ouvre l\u2019iPhone, doucement',
   pearls:{
     empty:['Huître vide','Rien. Elle te regarde, tu la regardes.'],
@@ -306,17 +314,17 @@ fr:{
 },
 en:{
   title:'Pearl Inc. for iPhone Duo',
-  metaDesc:'Pearl Inc.: the game where the oyster opens with your iPhone Duo. Try the prototype.',
-  navCta:'Notify me', iconAria:'Pearl Inc. app icon',
+  metaDesc:'Pearl Inc.: the game where the oyster opens with your iPhone Duo. Free on the App Store, try it here.',
+  navCta:'Download',
+  badgeSrc:'https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us?releaseDate=1793084400', badgeAlt:'Download on the App Store', iconAria:'Pearl Inc. app icon',
   tag:'The oyster opens with your iPhone&nbsp;Duo.',
-  status:'<strong>Coming soon to the App Store</strong> · Also playable on every iPhone · Try it right below',
-  notifyBtn:'Notify me at launch',
+  status:'<strong>Available on the App Store</strong> · Free · Also playable on every iPhone',
   demoAria:'Interactive prototype', demoLabel:'Interactive prototype',
   canvasAria:'3D iPhone Duo running the Pearl Inc. app. Drag the iPhone to the left, or hold the left arrow key, to open it.',
   colorAria:'Change color', soundOff:'Mute', soundOn:'Unmute',
   teKicker:'End of trial', teTitle:'Convinced?',
-  teText:'You\u2019ve opened your 5 trial oysters. The full game is coming soon to the App Store, with many more features.',
-  teSmall:'Just one email, on launch day.',
+  teText:'You\u2019ve opened your 5 trial oysters. The rest is waiting in the app: your collection, odd finds, a new oyster every 20 minutes.',
+  teReplay:'Replay the trial',
   hint:'Drag the iPhone to the left to open it',
   hintTouch:'Swipe left, or press and hold, to open',
   ovTitle:'One oyster. One gesture. One pearl.',
@@ -326,26 +334,28 @@ en:{
   s3t:'Gently through the fragile zone', s3p:'Between 20° and 110°, opening too fast cracks the pearl. A steady gesture gives it its lustre.',
   s4t:'Open, the card is revealed', s4p:'Size, lustre, value, unique serial number: every pearl joins your collection.',
   colTitle:'Eight pearls to collect.',
-  colLead:'From the white pearl to the cursed pearl, every oyster is a draw. The odds are always shown in the game.',
+  colLead:'From the white pearl to the cursed pearl, every oyster is a draw, and one in twenty hides an odd find instead of a pearl. The odds are always shown in the game.',
   evTitle:'Made for the Duo. Playable everywhere.',
   evLead:'On iPhone Duo, the hinge does it all. On other iPhones, the same game is played with your thumb.',
   thGesture:'Gesture', thOther:'Other iPhones',
   r1a:'Open the oyster', r1b:'Open the phone', r1c:'Swipe your thumb up',
   r2a:'Resistance', r2b:'Magnets and haptics', r2c:'Damped swipe and haptics',
   r3a:'Next oyster', r3b:'Close the phone', r3c:'Tap the card',
-  nTitle:'Be there for the first oyster.',
-  nLead:'Leave your email: we\u2019ll let you know on launch day, and early sign-ups get an exclusive oyster skin.',
-  signupSoon:'Sign-ups open very soon.',
+  nTitle:'Your first oyster is waiting.',
+  nLead:'Pearl Inc. is free on the App Store. Designed for iPhone Duo, it plays with your thumb on every iPhone.',
+  nSignup:'Signed up before launch? Sign in to the app with the email you signed up with: the First Tide shell is waiting for you.',
   foot0:'Created by MJHstudio.',
   foot1:'© 2026 Pearl Inc. All rights reserved.',
   foot2:'iPhone and iPhone Duo are trademarks of Apple Inc. Pearl Inc. is not affiliated with Apple.',
   foot3:'<a href="/en/privacy/">Privacy</a> · <a href="/en/legal-notice/">Legal notice</a> · <a href="#" data-consent-open>Cookies</a>',
-  stGently:'Open gently…', stCrack:'Crack. The pearl is cracked.', stFast:'Too fast!', stFragile:'Fragile zone', stMore:'A little more…',
-  stNext:'Close the iPhone for the next one',
+  stGently:'Open gently…', stCrack:'Crack. The pearl is cracked.', stFast:'Too fast!', stFragile:'Fragile zone: gently', stMore:'A little more…',
+  stNext:'Close the iPhone for the next one', stRearm:'Close the iPhone, then open it',
+  stFish:'A fish! Tap it, quick',
+  caught:'Caught it! + 2 ✦', isNew:'New!', fishGone:'It happens to the best of us. Next time, tap it while it swims away.', findOdds:'Odd find (in the app)',
   closeIphone:'Close the iPhone', toEndTrial:'to end the trial', toNextOyster:'to open the next oyster',
   myCollection:'My collection', odds:'ODDS PER OYSTER', back:'Back to the oyster', close:'Close',
   cSize:'Size', cLustre:'Lustre', cValue:'Value', cNo:'No.', cCracked:'Cracked: value halved',
-  cvSoon:'See you soon', cvTrembles:'It\u2019s trembling…', cvOpenMe:'Open me', cvFullGame:'The full game is coming soon',
+  cvSoon:'See you soon', cvTrembles:'It\u2019s trembling…', cvOpenMe:'Open me', cvFullGame:'More on the App Store',
   cvLast:'Last: ', cvOpenGently:'Open the iPhone, gently',
   pearls:{
     empty:['Empty oyster','Nothing. It stares at you, you stare at it.'],
@@ -385,6 +395,8 @@ function apply(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t(el.dataset.i18nHtml);});
   document.querySelectorAll('[data-i18n-aria]').forEach(el=>{el.setAttribute('aria-label',t(el.dataset.i18nAria));});
+  document.querySelectorAll('[data-i18n-src]').forEach(el=>{if(el.getAttribute('src')!==t(el.dataset.i18nSrc))el.src=t(el.dataset.i18nSrc);});
+  document.querySelectorAll('[data-i18n-alt]').forEach(el=>{el.alt=t(el.dataset.i18nAlt);});
   document.querySelectorAll('.lang [data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
 }
 function set(l){if(l===lang||!D[l])return;lang=l;try{localStorage.setItem(KEY,l);}catch(e){}syncPath();apply();subs.forEach(f=>{try{f(l);}catch(e){}});}
@@ -398,6 +410,7 @@ window.PearlI18n={
   pct:p=>{const s=String(+(p*100).toFixed(1));return fr()?s.replace('.',',')+'\u00a0%':s+'%';},
   trialLeft:n=>fr()?'Essai gratuit · '+n+(n>1?' huîtres restantes':' huître restante'):'Free trial · '+n+(n>1?' oysters left':' oyster left'),
   found:(f,n)=>fr()?f+' sur '+n+' découvertes':f+' of '+n+' discovered',
+  fishAway:p=>{const n=(D[lang].pearls[p.id]||[p.name])[0];return fr()?'Un poisson a filé avec ta '+n.toLowerCase()+' !':'A fish swam off with your '+n.toLowerCase()+'!';},
   treasure:(v,n)=>fr()?'Trésor : '+v+' points  ·  '+n+(n>1?' huîtres ouvertes':' huître ouverte'):'Treasure: '+v+' points  ·  '+n+(n===1?' oyster opened':' oysters opened')
 };
 function init(){apply();document.querySelectorAll('.lang [data-lang]').forEach(b=>b.addEventListener('click',()=>set(b.dataset.lang)));}
@@ -414,6 +427,10 @@ init(); // la page est déjà au-dessus de ce script : on traduit tout de suite,
 (function(){
 "use strict";
 const A=window.PerleArt, TUN=A.DEFAULT_TUNING;
+/* Comme l'app (src/tuning.ts, src/core/catalog.ts, src/core/appEconomy.ts) : sous 8°, le téléphone est fermé ;
+   5 % des huîtres cachent une trouvaille (prises sur l'huître vide et la perle blanche) ; le poisson voleur. */
+const CLOSED_BELOW=8, PULSE_MS=350, FIND_ODDS=0.05, FISH={arriveMs:750,fleeMs:2800,hitRadius:0.2};
+A.PEARLS.forEach(p=>{if(p.id==='empty')p.probability=0.09;if(p.id==='white')p.probability=0.38;}); // le prototype ne tire que des perles
 const $=id=>document.getElementById(id);
 const I=window.PearlI18n,t_=k=>I.t(k),pn=p=>I.pearlName(p),pf=p=>I.pearlFlavor(p);
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -429,6 +446,11 @@ function noise(dur,freq,gain){if(!actx||muted)return;const len=Math.max(1,Math.f
 function chime(p){if(!actx||muted)return;const tier=p.revealTier;const notes=p.id==='cursed'?[220,233,311,207]:!p.glow?[330,262]:[523,659,784,988,1175,1568].slice(0,2+tier+ (tier>=3?1:0));
   notes.forEach((fq,i)=>{const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+i*0.09;o.type=p.id==='cursed'?'sawtooth':'sine';o.frequency.value=fq;
     g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(p.id==='cursed'?0.05:0.11,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.9);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+1);});}
+/** Pulsation du suspense, plus grave pour les rares. */
+function thump(tier){if(!actx||muted)return;const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime;o.frequency.setValueAtTime(110+tier*20,t);o.frequency.exponentialRampToValueAtTime(55,t+0.18);
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.18,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+0.22);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+0.25);}
+/** Vibration (Android seulement : Safari ne vibre pas), après un premier geste du visiteur. */
+const buzz=ms=>{try{if(touched&&navigator.vibrate)navigator.vibrate(ms);}catch(e){}}; // jamais pendant l'entrouverture automatique
 $('soundBtn').addEventListener('click',e=>{muted=!muted;e.currentTarget.setAttribute('aria-pressed',String(!muted));e.currentTarget.setAttribute('aria-label',t_(muted?'soundOn':'soundOff'));e.currentTarget.classList.toggle('off',muted);});
 
 /* ---------- Écrans (dessin de l'app Pearl Inc.) ---------- */
@@ -439,15 +461,15 @@ const lagoonIn=new A.Lagoon(),lagoonCover=new A.Lagoon();
 
 /* ---------- État de jeu ---------- */
 let pearl=null,sizeMm=6,phases=A.randomPhases(Math.random),engine=null,stickyCrack=false,mode='armed';
+/** Comme l'app : la charnière ne pilote l'huître qu'une fois l'iPhone refermé depuis son arrivée. */
+let hingeArmed=true,fishLeft=1,theftAt=0,cardAt=0;
 const TRIAL=5,TKEY='perle-trial-v1';let trialUsed=0;try{trialUsed=+(localStorage.getItem(TKEY)||0);}catch(e){}
 function renderTrial(){const left=Math.max(0,TRIAL-trialUsed);document.getElementById('trial').textContent=left?I.trialLeft(left):'';}
 /* « Préviens-moi de la sortie » sur la fin d'essai : 5 nouvelles huîtres. */
-function restartTrial(){trialUsed=0;try{localStorage.setItem(TKEY,'0');}catch(e){}renderTrial();
+function restartTrial(){trialUsed=0;fishLeft=1;try{localStorage.setItem(TKEY,'0');}catch(e){}renderTrial();
   document.getElementById('trialEnd').hidden=true;hTarget=h=prevH=0;newOyster();lastPearl=null;
   const hi=document.getElementById('hint');hi.classList.remove('gone');canvas.focus({preventScroll:true});}
-document.querySelector('#trialEnd [data-tally]').addEventListener('click',e=>{
-  if(e.currentTarget.target!=='_blank')e.preventDefault(); // sans formulaire, on reste sur le prototype
-  restartTrial();});
+$('replay').addEventListener('click',restartTrial);
 function endTrial(){mode='ended';hTarget=0;document.getElementById('trialEnd').hidden=false;document.getElementById('hint').classList.add('gone');}
 const KEY='perle-pub-v1';let coll={},treasure=0;
 try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);coll=d.coll||{};treasure=d.treasure||0;}}catch(e){}
@@ -459,21 +481,64 @@ function roll(){
   let x=Math.random()*pool.reduce((a,p)=>a+p.probability,0);
   for(const p of pool){if((x-=p.probability)<=0)return p;} return pool[pool.length-1];
 }
-function newOyster(){colOpen=false;colSel=null;
+/** Huître suivante. `tapped` : carte touchée, iPhone ouvert : il faudra le refermer avant d'ouvrir celle-ci. */
+function newOyster(tapped){colOpen=false;colSel=null;hingeArmed=!tapped||h<=CLOSED_BELOW;theftAt=0;
   pearl=roll();sizeMm=pearl.sizeMm[0]+Math.random()*(pearl.sizeMm[1]-pearl.sizeMm[0]);
   phases=A.randomPhases(Math.random);engine=new A.OpeningEngine(TUN);stickyCrack=false;mode='armed';reveal=null;cardT=0;flashAt=0;
 }
 function onReveal(lustre,cracked){
   mode='revealed';opened++;serial++;trialUsed++;try{localStorage.setItem(TKEY,String(trialUsed));}catch(e){}renderTrial();pity=pearl.goldenOrBetter?0:pity+1;
   const crackedPearl=cracked&&pearl.glow!==null;
-  reveal={lustre,cracked:crackedPearl,value:A.pearlValue(pearl.id,sizeMm,crackedPearl),serial,size:sizeMm,show:false};
-  const e=coll[pearl.id]||{n:0};e.n++;
-  const rec={lustre:reveal.lustre,cracked:crackedPearl,value:reveal.value,serial,size:sizeMm};
-  if(!e.best||rec.value>e.best.value||(!pearl.glow&&!e.best))e.best=rec;coll[pearl.id]=e;treasure+=reveal.value;saveColl();
+  reveal={lustre,cracked:crackedPearl,value:A.pearlValue(pearl.id,sizeMm,crackedPearl),serial,size:sizeMm,show:false,
+    isNew:!(coll[pearl.id]&&coll[pearl.id].n>0),fish:false,caught:false,stolen:false};
+  // Le poisson voleur : dans l'app, quelques perles sur cent ; ici une fois par essai, sur une perle ◆ dès la 3e huître, pour qu'on le voie.
+  if(fishLeft&&trialUsed>=3&&pearl.rarity==='\u25C6'){fishLeft=0;reveal.fish=true;}
   revealAt=performance.now();suspenseMs=reduce?150:A.revealSuspenseMs(TUN,pearl.revealTier);
   noise(0.4,600,0.12);
-  setTimeout(()=>{if(!reveal)return;if(pearl.revealTier===3&&!reduce)flashAt=performance.now();chime(pearl);reveal.show=true;cardT=0;lastPearl=pearl;},suspenseMs);
+  // Suspense : une pulsation (son, vibration) toutes les 350 ms, d'autant plus longue que la perle est rare.
+  for(let k=PULSE_MS;k<suspenseMs;k+=PULSE_MS)setTimeout(()=>{if(reveal&&!reveal.show){thump(pearl.revealTier);buzz(15+pearl.revealTier*10);}},k);
+  setTimeout(()=>{if(!reveal)return;if(pearl.revealTier===3&&!reduce)flashAt=performance.now();chime(pearl);buzz([30,40,60].slice(0,1+Math.min(2,pearl.revealTier)));lastPearl=pearl;
+    if(reveal.fish){theftAt=performance.now();noise(0.3,900,0.2);}else showCard();},suspenseMs);
 }
+/** La perle rejoint la collection, et la carte arrive. */
+function showCard(){const e=coll[pearl.id]||{n:0};e.n++;
+  const rec={lustre:reveal.lustre,cracked:reveal.cracked,value:reveal.value,serial:reveal.serial,size:reveal.size};
+  if(!e.best||rec.value>e.best.value)e.best=rec;coll[pearl.id]=e;treasure+=reveal.value;saveColl();
+  reveal.show=true;cardT=0;cardAt=performance.now();}
+const resultShown=()=>!!reveal&&(reveal.show||reveal.stolen);
+const fleeMs=()=>FISH.fleeMs*(reduce?2:1); // comme l'app : fuite deux fois plus lente avec « Réduire les animations »
+/** Le poisson voleur, `el` ms après la carte : il fond sur la perle, la happe, puis file vers le coin. */
+function fishAt(el){const L=HW*0.86,px=HW+L*0.5,py=IH/2,sx=IW+160,sy=py-280,ex=IW+180,ey=-140;
+  if(el<FISH.arriveMs){const u=smooth(0,FISH.arriveMs,el);return {x:sx+(px-sx)*u,y:sy+(py-sy)*u,dir:Math.atan2(py-sy,px-sx),carry:false};}
+  const u=clamp((el-FISH.arriveMs)/fleeMs(),0,1),w=Math.sin(u*14)*36*(1-u);
+  return {x:px+(ex-px)*u*u*(1.6-0.6*u),y:py+(ey-py)*u+w,dir:Math.atan2(ey-py,ex-px)+Math.cos(u*14)*0.25,carry:true};}
+function fishLength(){return HW*0.86*0.36;}
+/** Un poisson orange (vu de profil), avec la perle dans la bouche s'il l'a happée. */
+function drawFish(c,x,y,len,dir,t,carry){
+  c.save();c.translate(x,y);c.rotate(dir);const fl=Math.cos(dir)<0;if(fl)c.scale(1,-1);const b=len/2,flap=Math.sin(t*14)*0.35;
+  c.fillStyle='#ff7a2f';c.beginPath();c.moveTo(-b*0.8,0);c.lineTo(-b*1.35,-b*0.42+flap*b*0.3);c.lineTo(-b*1.25,0);c.lineTo(-b*1.35,b*0.42+flap*b*0.3);c.closePath();c.fill();
+  const g=c.createLinearGradient(0,-b*0.45,0,b*0.45);g.addColorStop(0,'#ffb057');g.addColorStop(1,'#e8551f');c.fillStyle=g;
+  c.beginPath();c.ellipse(0,0,b,b*0.45,0,0,7);c.fill();
+  c.fillStyle='rgba(255,255,255,.85)';c.beginPath();c.moveTo(-b*0.1,-b*0.42);c.lineTo(b*0.25,-b*0.75);c.lineTo(b*0.35,-b*0.38);c.closePath();c.fill();
+  c.fillStyle='#fff';c.beginPath();c.arc(b*0.55,-b*0.1,b*0.13,0,7);c.fill();c.fillStyle='#1b1b1b';c.beginPath();c.arc(b*0.58,-b*0.1,b*0.07,0,7);c.fill();
+  if(carry&&pearl.glow){A.drawGlow(c,b*1.02,b*0.08,b*0.55,pearl.glow,0.5,false);A.drawPearl(c,b*1.02,b*0.08,b*0.17,pearl,reveal&&reveal.cracked);}
+  c.restore();}
+function fishHit(q){if(!theftAt||!q)return false;const f=fishAt(performance.now()-theftAt);return Math.hypot(q.x-f.x,q.y-f.y)<=fishLength()*0.5+HW*0.86*FISH.hitRadius;}
+function catchFish(){reveal.caught=true;theftAt=0;chime(pearl);buzz(40);showCard();}
+/** Gerbe d'étincelles de la couleur de la perle derrière la carte, et rayons de lumière dès ◆◆◆ (comme RevealBurst de l'app). */
+function drawBurst(c,cx,cy,t,el){
+  if(!pearl.glow||reduce)return;const tier=pearl.revealTier,[r,g,b]=A.rgba(pearl.glow,1).match(/\d+/g);
+  if(tier>=2){c.save();c.translate(cx,cy);c.rotate(t*0.15);const a=0.16*smooth(0,600,el);
+    for(let i=0;i<12;i++){c.rotate(Math.PI/6);const gr=c.createLinearGradient(0,0,0,-IH*0.7);gr.addColorStop(0,'rgba('+r+','+g+','+b+','+a+')');gr.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
+      c.fillStyle=gr;c.beginPath();c.moveTo(0,0);c.lineTo(-40,-IH*0.7);c.lineTo(40,-IH*0.7);c.closePath();c.fill();}c.restore();}
+  const u=el/1400;if(u>=1)return;const n=14+tier*10,R=IH*0.55;
+  for(let i=0;i<n;i++){const ang=i*2.399,k=0.45+0.55*((i*0.618)%1),d=R*k*(1-Math.pow(1-u,3));
+    c.fillStyle='rgba('+r+','+g+','+b+','+(1-u)+')';c.beginPath();c.arc(cx+Math.cos(ang)*d,cy+Math.sin(ang)*d,4+((i*7)%5),0,7);c.fill();}
+}
+/** Étiquette sur la carte (« Nouvelle ! », « Rattrapée au vol ! »), comme dans l'app. */
+function tag(c,x,y,rot,text,color){c.save();c.translate(x,y);c.rotate(rot*Math.PI/180);c.font='800 26px '+SANS;const w=c.measureText(text).width+40;
+  c.shadowColor='rgba(0,0,0,.3)';c.shadowBlur=8;c.shadowOffsetY=3;rr(c,-w/2,-24,w,48,24);c.fillStyle=color;c.fill();c.shadowColor='transparent';
+  c.lineWidth=3;c.strokeStyle='rgba(255,255,255,.7)';c.stroke();c.fillStyle='#2a1600';c.textAlign='center';c.fillText(text,0,9);c.restore();}
 
 /* ---------- Verre dépoli (glassmorphism) ---------- */
 const mid=document.createElement('canvas');mid.width=Math.round(IW/4);mid.height=Math.round(IH/4);const mc=mid.getContext('2d');
@@ -500,6 +565,7 @@ function glassPanel(c,x,y,w,hh,r,tint){
 function glassPill(c,cx,cy,text,warn){c.font='600 32px '+SANS;const w=c.measureText(text).width+76,hh=74;glassPanel(c,cx-w/2,cy-hh/2,w,hh,hh/2,warn?'rgba(255,120,100,.28)':null);
   c.textAlign='center';c.fillStyle='#fff';c.shadowColor='rgba(0,0,0,.25)';c.shadowBlur=6;c.fillText(text,cx,cy+11);c.shadowBlur=0;}
 function stateText(){
+  if(!hingeArmed)return [t_('stRearm'),false];
   if(engine.phase==='closed'||engine.phase==='resisting')return [t_('stGently'),false];
   if((engine.cracked||stickyCrack)&&pearl.glow)return [t_('stCrack'),true];
   if(engine.inFragileZone&&engine.velocity>TUN.maxSafeVelocity*0.6)return [t_('stFast'),true];
@@ -555,28 +621,42 @@ function drawInner(t,now){
   const pulse=pearl.id==='cursed'?0.75+0.25*Math.sin(t*6):1;
   if(busy&&!reveal.show)prad*=1+0.1*suspense*Math.max(0,Math.sin(t*(6+pearl.revealTier*3)));
   const cracked=engine.cracked||stickyCrack;
-  A.drawPearl(c,px,py,prad,pearl,cracked);
-  const dim=busy?0:1-smooth(4,140,h);
+  const theftEl=theftAt?now-theftAt:-1,taken=busy&&(reveal.stolen||theftEl>=FISH.arriveMs);
+  if(!taken)A.drawPearl(c,px,py,prad,pearl,cracked);
+  const oa=hingeArmed?h:0; // iPhone ouvert mais pas encore réarmé : l'huître reste fermée
+  const dim=busy?0:1-smooth(4,140,oa);
   if(dim>0.001){c.save();c.fillStyle='rgba(0,6,8,'+(dim*0.94)+')';
     A.tracePath(c,A.shellOutline(hx,hy,0,L*0.88,phases,0));c.fill();A.tracePath(c,A.shellOutline(hx,hy,Math.PI,L*0.98*0.88,phases,0));c.fill();c.restore();}
   const strength=[0.55,0.7,0.85,1][pearl.revealTier]*pulse*(cracked?0.35:1);
-  A.drawGlow(c,px,py,prad*(4+pearl.revealTier*0.8),pearl.glow,(busy?1:smooth(1,25,h))*strength,false);
+  A.drawGlow(c,px,py,prad*(4+pearl.revealTier*0.8),pearl.glow,(busy?(taken?0.3:1):smooth(1,25,oa))*strength,false);
   lagoonIn.drawOverlay(c,IW,IH);
-  if(busy&&!reveal.show)A.drawGlow(c,px,py,L*(1.4+pearl.revealTier*0.5),pearl.glow,suspense*0.5*pulse,false);
+  if(busy&&!reveal.show&&!theftAt&&!reveal.stolen)A.drawGlow(c,px,py,L*(1.4+pearl.revealTier*0.5),pearl.glow,suspense*0.5*pulse,false);
+  if(theftEl>=0){const f=fishAt(theftEl);drawFish(c,f.x,f.y,fishLength(),f.dir,t,f.carry);}
   // Verre dépoli pendant l'ouverture : le couvercle reste givré tant qu'il n'est pas bien ouvert, comme sur le Duo.
   const frost=0; // coquille nette pendant l'ouverture
   if(frost>0.01){snapshot();c.save();c.beginPath();c.rect(0,0,HW,IH);c.clip();c.globalAlpha=frost;c.imageSmoothingEnabled=true;c.drawImage(mid,0,0,IW,IH);
     c.fillStyle='rgba(235,248,255,.16)';c.fillRect(0,0,HW,IH);const sh=c.createLinearGradient(0,0,HW,0);sh.addColorStop(0,'rgba(255,255,255,.18)');sh.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=sh;c.fillRect(0,0,HW,IH);c.restore();}
-  if(busy&&reveal.show&&colOpen){drawCollection(c,t);}
+  if(busy&&resultShown()&&colOpen){drawCollection(c,t);}
+  else if(busy&&reveal.stolen){
+    c.fillStyle='rgba(2,20,26,.3)';c.fillRect(0,0,IW,IH);snapshot();
+    const x=HW+50,w=HW-100,y=IH/2-230;glassPanel(c,x,y,w,460,44);
+    drawFish(c,HW*1.5+Math.sin(t*1.3)*14,y+110,200,0,t,true);
+    c.textAlign='center';c.fillStyle='#fff';c.font='700 38px '+SERIF;wrap(c,I.fishAway(pearl),HW*1.5,y+240,w-70,46);
+    c.font='500 26px '+SANS;c.fillStyle='rgba(255,255,255,.85)';wrap(c,t_('fishGone'),HW*1.5,y+340,w-90,34);
+    nextPanel(c);
+  }
   else if(busy&&reveal.show){
     c.fillStyle='rgba(2,20,26,.3)';c.fillRect(0,0,IW,IH);
-    cardT=Math.min(1,cardT+frameDt*1.7);const e=1+2.2*Math.pow(cardT-1,3)+1.2*Math.pow(cardT-1,2);
-    drawCard(c,HW*1.5,IH/2,Math.max(0.01,e),t,pearl,reveal);
+    drawBurst(c,HW*1.5,IH/2,t,now-cardAt);
+    cardT=Math.min(1,cardT+frameDt*1.7);const e=1+2.2*Math.pow(cardT-1,3)+1.2*Math.pow(cardT-1,2),es=Math.max(0.01,e);
+    drawCard(c,HW*1.5,IH/2,es,t,pearl,reveal);
+    const ch=690*es,cw=ch*63/88;
+    if(reveal.isNew)tag(c,HW*1.5+cw/2-50*es,IH/2-ch/2-6*es,6,t_('isNew'),'#f2c14e');
+    if(reveal.caught)tag(c,HW*1.5,IH/2+ch/2+8*es,-3,t_('caught'),'#ff9d3c');
     snapshot();
-    glassPanel(c,HW/2-270,IH*0.33,540,170,44);
-    c.textAlign='center';c.fillStyle='#fff';c.font='700 46px '+SERIF;c.fillText(t_('closeIphone'),HW/2,IH*0.33+76);
-    c.font='500 28px '+SANS;c.fillStyle='rgba(255,255,255,.85)';c.fillText(t_(trialUsed>=TRIAL?'toEndTrial':'toNextOyster'),HW/2,IH*0.33+122);
-    btn(c,COL_BTN,t_('myCollection'));
+    nextPanel(c);
+  }else if(busy&&theftAt){
+    snapshot();glassPill(c,HW*1.5,110,t_('stFish'),false);
   }else if(mode==='armed'&&h>0.8){
     if(frost<=0.01)snapshot();
     const [txt,warn]=stateText();glassPill(c,HW*1.56,IH-110,txt,warn);
@@ -584,6 +664,13 @@ function drawInner(t,now){
   const flash=flashAt?1-smooth(0,500,now-flashAt):0;
   if(flash>0){c.fillStyle='rgba(255,250,235,'+(flash*0.7)+')';c.fillRect(0,0,IW,IH);}
   innerTex.needsUpdate=true;
+}
+/** Sur la moitié gauche (le couvercle) : comment passer à l'huître suivante, et la collection. */
+function nextPanel(c){
+  glassPanel(c,HW/2-270,IH*0.33,540,170,44);
+  c.textAlign='center';c.fillStyle='#fff';c.font='700 46px '+SERIF;c.fillText(t_('closeIphone'),HW/2,IH*0.33+76);
+  c.font='500 28px '+SANS;c.fillStyle='rgba(255,255,255,.85)';c.fillText(t_(trialUsed>=TRIAL?'toEndTrial':'toNextOyster'),HW/2,IH*0.33+122);
+  btn(c,COL_BTN,t_('myCollection'));
 }
 const cBlur=document.createElement('canvas');cBlur.width=Math.round(CW/16);cBlur.height=Math.round(CH/16);const cbs=cBlur.getContext('2d');
 const cMid=document.createElement('canvas');cMid.width=Math.round(CW/3);cMid.height=Math.round(CH/3);const cms=cMid.getContext('2d');
@@ -609,7 +696,7 @@ function drawCover(t,off){
 }
 
 /* ---------- Collection (sur l'écran intérieur) ---------- */
-const COL_BTN={x:HW/2-170,y:IH*0.6,w:340,h:68},BACK_BTN={x:HW/2-200,y:IH-120,w:400,h:68},CLOSE_BTN={x:HW*1.5-120,y:IH-104,w:240,h:66};
+const CARD_RECT={x:HW*1.5-247,y:IH/2-345,w:494,h:690},COL_BTN={x:HW/2-170,y:IH*0.6,w:340,h:68},BACK_BTN={x:HW/2-200,y:IH-120,w:400,h:68},CLOSE_BTN={x:HW*1.5-120,y:IH-104,w:240,h:66};
 const CELL={x0:HW+28,y0:28,gx:20,gy:16};CELL.w=(HW-56-CELL.gx)/2;CELL.h=(IH-56-3*CELL.gy)/4;
 const cellRect=i=>({x:CELL.x0+(i%2)*(CELL.w+CELL.gx),y:CELL.y0+Math.floor(i/2)*(CELL.h+CELL.gy),w:CELL.w,h:CELL.h});
 const inRect=(q,b,pad)=>q.x>=b.x-pad&&q.x<=b.x+b.w+pad&&q.y>=b.y-pad&&q.y<=b.y+b.h+pad;
@@ -623,6 +710,7 @@ function drawCollection(c,t){
   c.textAlign='left';c.font='600 22px '+SANS;c.fillStyle='rgba(174,244,255,.75)';c.fillText(t_('odds'),70,296);
   A.PEARLS.forEach((p,i)=>{const y=346+i*56;c.font='27px '+SANS;c.fillStyle='rgba(255,255,255,.9)';c.textAlign='left';c.fillText(pn(p)+'  '+p.rarity,70,y);
     c.textAlign='right';c.fillText(I.pct(p.probability),HW-70,y);c.fillStyle='rgba(255,255,255,.12)';c.fillRect(70,y+18,HW-140,1);});
+  {const y=346+A.PEARLS.length*56;c.font='27px '+SANS;c.fillStyle='rgba(255,255,255,.6)';c.textAlign='left';c.fillText(t_('findOdds'),70,y);c.textAlign='right';c.fillText(I.pct(FIND_ODDS),HW-70,y);}
   snapshot();btn(c,BACK_BTN,t_('back'));
   A.PEARLS.forEach((p,i)=>{const r=cellRect(i),e=coll[p.id],known=e&&e.n>0;
     rr(c,r.x,r.y,r.w,r.h,22);c.fillStyle=known?'rgba(255,255,255,.1)':'rgba(255,255,255,.04)';c.fill();c.lineWidth=2;c.strokeStyle=known?'rgba(174,244,255,.4)':'rgba(255,255,255,.1)';c.stroke();
@@ -721,12 +809,15 @@ let drag=null,lx=0,ly=0;
 let touched=false;const PEEK={delay:1.2,period:4.2,dur:1.8,angle:26};
 let downX=0,downY=0,downT=0,moved=0,touchHold=0,holdUsed=false,holdTimer=0;
 /** Appui long au doigt : l'iPhone s'ouvre (ou se referme après la révélation) tout seul, à vitesse sûre. */
-function holdDir(){if(mode==='armed')return 1;if(mode==='revealed'&&reveal&&reveal.show&&!colOpen)return -1;return 0;}
-canvas.addEventListener('pointerdown',e=>{ensureAudio();drag=(e.pointerType==='touch'||hit(e))?'hinge':'orbit';holdUsed=false;touchHold=0;clearTimeout(holdTimer);
+function holdDir(){if(mode==='armed')return hingeArmed?1:-1;if(mode==='revealed'&&resultShown()&&!colOpen)return -1;return 0;}
+canvas.addEventListener('pointerdown',e=>{ensureAudio();
+  // Le poisson se touche dès l'appui.
+  if(mode==='revealed'&&theftAt&&fishHit(screenPoint(e))){catchFish();return;}
+  drag=(e.pointerType==='touch'||hit(e))?'hinge':'orbit';holdUsed=false;touchHold=0;clearTimeout(holdTimer);
   if(e.pointerType==='touch')holdTimer=setTimeout(()=>{if(drag&&moved<8){touchHold=holdDir();holdUsed=touchHold!==0;}},220); // au doigt : jamais de rotation, tout glissé horizontal ouvre l'iPhone
   lx=e.clientX;ly=e.clientY;downX=lx;downY=ly;downT=performance.now();moved=0;try{canvas.setPointerCapture(e.pointerId);}catch(_){}canvas.style.cursor=drag==='hinge'?'grabbing':'grabbing';touched=true;$('hint').classList.add('gone');});
 canvas.addEventListener('pointermove',e=>{
-  if(!drag){canvas.style.cursor=tapTarget(screenPoint(e))?'pointer':hit(e)?'grab':'default';return;}
+  if(!drag){const q=screenPoint(e);canvas.style.cursor=tapTarget(q)||fishHit(q)?'pointer':hit(e)?'grab':'default';return;}
   moved=Math.max(moved,Math.hypot(e.clientX-downX,e.clientY-downY));if(moved>=8){clearTimeout(holdTimer);touchHold=0;}
   const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;
   if(drag==='hinge'&&mode!=='ended'){
@@ -738,15 +829,17 @@ canvas.addEventListener('pointermove',e=>{
 function screenPoint(e){const b=canvas.getBoundingClientRect();ndc.set(((e.clientX-b.left)/b.width)*2-1,-((e.clientY-b.top)/b.height)*2+1);ray.setFromCamera(ndc,camera);
   const hs=ray.intersectObjects(phoneMeshes,false);if(!hs.length||hs[0].object.material!==innerMat||!hs[0].uv)return null;return {x:hs[0].uv.x*IW,y:(1-hs[0].uv.y)*IH};}
 function tapTarget(q){
-  if(!q||mode!=='revealed'||!reveal||!reveal.show||h<90)return null;
-  if(!colOpen)return inRect(q,COL_BTN,16)?'colOpen':null;
+  if(!q||mode!=='revealed'||!resultShown()||h<90)return null;
+  // Comme dans l'app, la carte se touche aussi pour passer à la suivante (il faudra refermer l'iPhone avant de l'ouvrir).
+  if(!colOpen)return inRect(q,COL_BTN,16)?'colOpen':q.x>HW&&(reveal.stolen||inRect(q,CARD_RECT,0))?'card':null;
   if(colSel)return inRect(q,CLOSE_BTN,20)?'cardClose':null;
   if(inRect(q,BACK_BTN,16))return 'back';
   for(let i=0;i<A.PEARLS.length;i++){const e=coll[A.PEARLS[i].id];if(e&&e.n>0&&inRect(q,cellRect(i),0))return 'cell:'+A.PEARLS[i].id;}
   return null;
 }
 function handleTap(e){const k=tapTarget(screenPoint(e));if(!k)return;noise(0.05,1800,0.3);
-  if(k==='colOpen'){colOpen=true;colSel=null;}else if(k==='back'){colOpen=false;colSel=null;cardT=0;}else if(k==='cardClose')colSel=null;else if(k.startsWith('cell:'))colSel=k.slice(5);}
+  if(k==='card'){if(trialUsed>=TRIAL)endTrial();else newOyster(true);}
+  else if(k==='colOpen'){colOpen=true;colSel=null;}else if(k==='back'){colOpen=false;colSel=null;cardT=0;}else if(k==='cardClose')colSel=null;else if(k.startsWith('cell:'))colSel=k.slice(5);}
 const end=(e)=>{clearTimeout(holdTimer);touchHold=0;if(drag==='hinge'&&e&&e.type==='pointerup'&&!holdUsed&&moved<8&&performance.now()-downT<500)handleTap(e);if(drag==='hinge'&&hTarget<6)hTarget=0;drag=null;canvas.style.cursor='default';};
 canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',e=>{clearTimeout(holdTimer);touchHold=0;drag=null;canvas.style.cursor='default';if(hTarget<6)hTarget=0;});
 canvas.addEventListener('dblclick',e=>{if(!hit(e)){yaw=0;pitch=0.04;}});
@@ -775,15 +868,18 @@ function frame(now){
   if(h<12&&h>0.6&&Math.abs(h-lastTick)>1.7&&dv>0){noise(0.03,2600,0.18);lastTick=h;}
   prevH=h;vel+=(Math.max(0,dv)-vel)*0.3;
 
-  // Moteur d'ouverture de l'app Pearl Inc., piloté par l'angle de charnière.
-  if(mode==='armed'){
+  // Moteur d'ouverture de l'app Pearl Inc., piloté par l'angle de charnière, une fois l'iPhone refermé depuis l'arrivée de l'huître.
+  if(h<=CLOSED_BELOW)hingeArmed=true;
+  if(mode==='armed'&&hingeArmed){
     for(const ev of engine.push({angle:h,time:now})){
-      if(ev.type==='pop'){noise(0.09,1400,0.6);popShakeUntil=now+160;}
-      else if(ev.type==='crack'){if(pearl.glow)noise(0.15,3200,0.5);stickyCrack=true;}
+      if(ev.type==='pop'){noise(0.09,1400,0.6);buzz(20);popShakeUntil=now+160;}
+      else if(ev.type==='crack'){if(pearl.glow)noise(0.15,3200,0.5);buzz([40,30,40]);stickyCrack=true;}
       else if(ev.type==='reveal'){onReveal(ev.lustre,ev.cracked||stickyCrack);}
     }
     if(h<0.6&&engine.phase!=='closed'){const c=engine.cracked||stickyCrack;engine=new A.OpeningEngine(TUN);stickyCrack=c;}
-  }else if(mode!=='ended'&&h<1.5&&reveal&&reveal.show){if(trialUsed>=TRIAL)endTrial();else newOyster();}
+  }else if(mode!=='ended'&&h<=CLOSED_BELOW&&resultShown()){if(trialUsed>=TRIAL)endTrial();else newOyster();}
+  // Le poisson n'a pas été touché à temps : il a filé avec la perle.
+  if(mode==='revealed'&&theftAt&&now-theftAt>=FISH.arriveMs+fleeMs()){theftAt=0;reveal.stolen=true;noise(0.2,400,0.3);buzz([60,40,60]);}
 
   pivot.rotation.y=Math.PI-THREE.MathUtils.degToRad(h);
   const k=smooth(0,90,h),spx=THREE.MathUtils.lerp(0.3,0.26,k),spz=THREE.MathUtils.lerp(0.5,0.26,k);spine.scale.set(spx,1,spz);spine.position.set(0,0,-spz*smooth(0,35,h));
@@ -810,8 +906,9 @@ function frame(now){
   arcFill.setAttribute('d',arcPath(h));arcLabel.textContent=Math.round(h)+'°';
   let st='',warn=false;
   if(mode==='ended')st='';
-  else if(mode==='revealed')st=reveal&&reveal.show?t_('stNext'):'';
+  else if(mode==='revealed')st=resultShown()?t_('stNext'):theftAt?t_('stFish'):'';
   else if(!touched)st='';
+  else if(!hingeArmed)st=t_('stRearm');
   else if(engine.phase==='closed')st=h>0.8?t_('stGently'):'';
   else if(engine.phase==='resisting')st=t_('stGently');
   else if((engine.cracked||stickyCrack)&&pearl.glow){st=t_('stCrack');warn=true;}
@@ -849,28 +946,15 @@ Promise.all([document.fonts.load('700 40px "Inter"'),document.fonts.load('500 30
 })();
 
 (function(){
-  // Liens des formulaires Tally (un par langue) pour les inscriptions au lancement.
-  // FR : « Sois là pour la première huître. » · EN : « Be there for the first oyster. »
-  // Sans lien anglais, le formulaire français sert pour les deux langues.
-  const TALLY_URLS={fr:'https://tally.so/r/J9N7AJ',en:'https://tally.so/r/Me9oLY'};
-  const tallyUrl=()=>TALLY_URLS[window.PearlI18n.lang]||TALLY_URLS.fr;
-  // Champs cachés du formulaire : provenance de la campagne, langue, bouton cliqué (voir docs/tally-formulaire.md).
+  // Fiche de l'app sur l'App Store (identifiant Apple 6822782842, aussi dans <meta name="apple-itunes-app">).
+  // Sans pays dans l'adresse : Apple ouvre la boutique du pays du visiteur.
+  const APP_STORE_URL='https://apps.apple.com/app/pearl-inc/id6822782842';
   const page=new URLSearchParams(location.search);
-  const tallyLink=button=>{
-    const u=new URL(tallyUrl());
-    ['utm_source','utm_campaign'].forEach(k=>u.searchParams.set(k,page.get(k)||'direct'));
-    u.searchParams.set('lang',window.PearlI18n.lang);
-    u.searchParams.set('bouton',button);
-    return u.href;
-  };
-  document.querySelectorAll('[data-tally]').forEach(a=>{
-    if(tallyUrl()){
-      const button=a.closest('#trialEnd')?'fin-essai':a.closest('#notify')?'bas-de-page':a.closest('.nav')?'menu':'haut-de-page';
-      a.href=tallyLink(button);a.target='_blank';a.rel='noopener';
-      a.addEventListener('click',()=>{a.href=tallyLink(button);}); // suit la langue choisie
-    }
-    else if(!a.closest('#notify'))a.href='#notify';
-    else a.addEventListener('click',e=>{e.preventDefault();document.getElementById('notifyNote').textContent=window.PearlI18n.t('signupSoon');});
+  document.querySelectorAll('[data-appstore]').forEach(a=>{
+    a.href=APP_STORE_URL;
+    // Mesure : quel bouton mène à l'App Store, et depuis quelle campagne (événement Vercel, sans cookie).
+    const button=a.closest('#trialEnd')?'fin-essai':a.closest('#get')?'bas-de-page':a.closest('.nav')?'menu':'haut-de-page';
+    a.addEventListener('click',()=>{try{window.va('event',{name:'App Store',data:{bouton:button,campagne:page.get('utm_campaign')||'direct'}});}catch(e){}});
   });
 })();
 </script>

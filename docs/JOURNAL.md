@@ -4,6 +4,27 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-27 (site, sortie de l'app) · Jules · Claude Code · branche `claude/site-lancement-dacb0f`
+
+L'app est en ligne sur l'App Store depuis le 27 octobre (identifiant Apple `6822782842`, trouvé par l'API publique de recherche d'Apple). La page pearl-inc.app passe de l'inscription au téléchargement. **Rien n'est déployé ni envoyé.** Décision en `AGENTS.md` §6.
+
+**Fait**
+- **Page** (`site/index.html`, puis `npm run site:en`) : badge officiel d'Apple « Télécharger dans l'App Store » / « Download on the App Store » (en haut, en fin d'essai, en bas), bouton « Télécharger » du menu, bannière de Safari (`apple-itunes-app`), textes « Disponible sur l'App Store · Gratuit » ; section du bas « Ta première huître t'attend » avec une phrase pour les inscrits (Première marée). Aperçu de lien (description, FR / EN) mis à jour ; l'image `og.jpg` ne change pas. Le script Tally est retiré de la page ; un clic sur l'App Store envoie un événement Vercel (`App Store`, bouton, campagne).
+- **Prototype**, d'après l'app (`Hinge.swift`, `GameModel`, `RevealCardView`, `FishingView`) : armement (carte touchée iPhone ouvert → « Referme l'iPhone, puis ouvre-le », l'huître reste sombre jusqu'à ce que l'iPhone repasse sous 8°), refermer sous 8° = huître suivante, la carte se touche, « Nouvelle ! », gerbe d'étincelles et rayons dès ◆◆◆, pulsations sonores du suspense (350 ms), vibrations sur Android, textes de l'app (« Zone fragile : doucement »), poisson voleur (arrive en 0,75 s, fuit en 2,8 s ; touché : « Rattrapée au vol ! + 2 ✦ » ; raté : la perle est perdue et ne rejoint pas la collection), probabilités de l'app (huître vide 9 %, blanche 38 %, trouvailles 5 % affichées), « Rejouer l'essai ».
+- **Mail de sortie** FR / EN (objet, texte brut, HTML) : `docs/mail-sortie.md`.
+- Vérifié au navigateur intégré (serveur `site` de `.claude/launch.json`) : FR et EN, téléphone (375 px, pas de défilement horizontal) et ordinateur ; partie complète, désarmement, poisson volé et rattrapé, fin d'essai, rejouer. `npm test` (172), `npm run build` : verts.
+
+**À faire**
+- Jules : déployer quand tout est prêt (rien n'a été mis en ligne) ; retirer la phrase « Première marée » de la page si la 1.1 n'est pas en ligne au moment du déploiement.
+- **Politique de confidentialité** (autre session) : la page charge maintenant le badge depuis `toolbox.marketingtools.apple.com` (Apple reçoit l'adresse IP, pas de cookie). Ou bien héberger les deux SVG officiels dans `site/` (à télécharger depuis Apple Marketing Tools).
+- Mail : importer les e-mails des inscrits dans `early_access_signups`, 1.1 en ligne, reconnecter Resend dans Claude (permissions manquantes), puis envoyer (voir la liste en tête de `docs/mail-sortie.md`).
+- Les événements personnalisés de Vercel Analytics demandent peut-être une offre payante : sinon, l'événement `App Store` est ignoré sans erreur.
+
+**Fragile**
+- Le moteur embarqué dans la page (`window.PerleArt`, minifié le 2026-10-08) ne connaît ni `hingeClosedAngle` ni les trouvailles : 8° et les probabilités de l'app sont écrits dans le prototype, à tenir à jour à la main.
+- Le poisson apparaît dans environ 19 essais sur 20 (s'il sort une perle ◆ entre la 3e et la 5e huître) ; dans l'app, il est bien plus rare.
+- Le badge d'Apple est chargé depuis Apple : si leur adresse change, le badge disparaît (le lien reste dans le menu).
+
 ## 2026-10-22 · Jules · Claude Code · branche `jules/app-1.0-build5` (partie de `v1.0-build4`)
 
 Refus App Store de la 1.0 (build 4), règle **5.1.2(i)** : l'app ouvre des pages de pearl-inc.app qui proposent un cookie publicitaire (pixel X) sans demande ATT.
