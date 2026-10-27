@@ -5,6 +5,19 @@
    Une page de conversion le dit avec <body data-x-event="tw-rh65t-…"> (voir sendPageEvent).
    Pas de bannière pour Vercel Web Analytics : il ne dépose aucun cookie. */
 (function(){
+  // Page ouverte depuis l'app iOS (?app=1, gardé pour la visite) : ni bannière ni pixel,
+  // l'app ne piste pas (App Store 5.1.2, pas de demande ATT).
+  var fromApp=/[?&]app=1(&|$)/.test(location.search);
+  try{if(fromApp)sessionStorage.setItem('pearl-from-app','1');else fromApp=sessionStorage.getItem('pearl-from-app')==='1';}catch(e){}
+  if(fromApp){
+    var hide=document.createElement('style');hide.textContent='[data-consent-open]{display:none}';document.head.appendChild(hide);
+    return;
+  }
+
+  // Pages d'aide et légales (celles qu'ouvre le build 4 de l'app, sans ?app=1) : la bannière ne s'ouvre
+  // pas d'elle-même, seulement par le lien « Cookies ». Le pixel n'y vient qu'avec un accord déjà donné.
+  var quietPage=/^\/(en\/)?(support|confidentialite|conditions|mentions-legales|privacy|terms|legal-notice)(\/|$)/.test(location.pathname);
+
   var KEY='pearl-consent-v1';
   var MAX_AGE=1000*60*60*24*182; // 6 mois
 
@@ -107,5 +120,5 @@
 
   var choice=readChoice();
   if(choice===true)loadXPixel();
-  else if(choice===null)open();
+  else if(choice===null&&!quietPage)open();
 })();

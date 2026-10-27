@@ -157,7 +157,7 @@ Odds: the probability of every pearl is shown before any purchase, in the Shop (
 
 Thief fish: now and then (shown in the odds: 10% of common ◆ pearls), a fish snatches the common pearl that was just revealed. Tapping the fish while it swims away gets the pearl back (+2 gold dust). Rare pearls are never stolen. It is random: it may take 15 to 20 oysters to see it.
 
-Ads: rewarded ads only (Google AdMob, non-personalised, no tracking, no ATT prompt), always optional: "Watch an ad" gives 3 oysters, up to 3 times a day. Google's consent form appears where required (EU); "Ad privacy" in Settings lets the player change it.
+Ads: rewarded ads only (Google AdMob, non-personalised, no tracking, no ATT prompt), always optional: "Watch an ad" gives 3 oysters, up to 3 times a day. No consent or cookie prompt is shown: Google's consent message is unpublished, and the app does not track users.
 
 In-app purchases: oysters and gold dust (consumables), two cosmetic shells (non-consumables, restorable with "Restore purchases" in the Shop and in Settings).
 
