@@ -11,7 +11,7 @@ import { MARKS, OVERTONES } from '../src/core/pearlTraits';
 import type { PlayerState } from '../src/core/player';
 import { INITIAL_STATS } from '../src/core/progression';
 import { FIND_PROBABILITY, PEARLS, pearlTier } from '../src/core/catalog';
-import { levelFromXp, RANKS, xpToNext } from '../src/core/levels';
+import { levelFromXp, xpToNext } from '../src/core/levels';
 import { DEFAULT_TUNING as t } from '../src/tuning';
 
 /** Poussière moyenne par huître si tout est en double. */

@@ -4,6 +4,29 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-27 (1.1 pour TestFlight) · Jules · Claude Code · branche `jules/app-1.1-testflight`
+
+Retours de Jules sur le build de test : « 90 huîtres en 5 min », probabilités des écrins trop envahissantes, un écrin toutes les 12 huîtres, la carte qui suit le gyroscope. `npm test` (176), `npm run build`, `swift test` (92, simulation comprise) : verts.
+
+**Fait**
+- **L'équilibrage n'avait jamais été fusionné** : `jules/app-1.0.1` (lots 1.1 à 1.4) n'avait ni `claude/ios-1-1-equilibrage-7f4d0a` ni `claude/ios-1-1-sauvegarde-045c95`, d'où les 90 huîtres. Fusionnés ici, avec `jules/app-1.0-build5` (`?app=1`, nacre du Duo). Simulation : 1re séance ≤ 33 huîtres (227 avant), régulier 44 huîtres et 143 ✦ par jour.
+- Conflits : barème de l'équilibrage + écrins de la 1.4 ; `Localizable.xcstrings` fusionné texte par texte ; la carte « Première marée » est de nouveau montrée dans la boutique (avec la phrase des inscrits) ; au lancement : musique, sauvegarde du compte, coquille des inscrits, consentement s'il est connu, puis calendrier.
+- **Écrins : un toutes les 12 huîtres ouvertes** (`APP_ECRINS.oysterEvery`, `PlayerState.reveal`) au lieu d'un tous les 3 niveaux ; toujours un par rang, 200 ✦, boutique. Badge « + 1 écrin » sur la carte ; onglet Écrins vide : « le prochain dans N huîtres ». Une partie d'avant les écrins (la 1.0 publiée) reçoit ceux de ses huîtres déjà ouvertes (`oystersOpened / 12`) en plus de ceux de ses rangs, une fois.
+- **Boutique** : les probabilités des écrins se déplient (ⓘ « Chaque écrin est un tirage : voir les probabilités », chevron) au-dessus des achats. Celles des huîtres restent affichées.
+- **Cartes au gyroscope** : `Platform/DeviceTilt.swift` (CoreMotion, pas d'autorisation) ; `CardTilt` suit les mouvements du téléphone sans doigt (60 % de l'inclinaison du doigt, reflet compris), le repos suit la façon dont on tient le téléphone (carte immobile = à plat), capteurs coupés sans carte à l'écran, rien avec « Réduire les animations ». Toutes les cartes (révélation, collection, écrins).
+- Version **1.1 (build 6)**.
+
+**À faire**
+- Jules, iPhone réel : le sens et la force du gyroscope (`fullTilt` 0,35 g, `motionShare` 0,6 ; si la carte penche à l'envers, inverser les signes dans `DeviceTilt.update`), le rythme d'un écrin / 12 huîtres, la boutique.
+- Toutes les tâches App Store Connect des lots fusionnés restent dues avant l'envoi : achats `app.pearlinc.ecrin.1` / `.5`, confidentialité (TelemetryDeck, contenu de jeu), identifiant TelemetryDeck (vide : rien n'est envoyé), politique du site.
+- Fusionner `jules/app-1.1-testflight` dans `jules/app-1.0.1` une fois le build validé.
+
+**Fragile**
+- Un joueur régulier reçoit ≈ 3 écrins par jour (44 huîtres) : bien plus que l'ancien rythme (≈ 1 par semaine après la 1re), et l'écrin acheté (0,99 $) vaut alors à peu près 12 huîtres de jeu. À surveiller avec la bêta.
+- Le gyroscope n'a pas été essayé (pas de simulateur, à la demande de Jules).
+
+---
+
 ## 2026-10-27 (1.1, coquille des inscrits) · Jules · Claude Code · branche `claude/ios-1-1-sauvegarde-045c95`
 
 Les inscrits d'avant la sortie récupèrent la coquille « Première marée » dans l'app, grâce à leur compte (audit P0-8).
