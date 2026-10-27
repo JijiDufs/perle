@@ -4,6 +4,27 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-28 (1.2, pubs personnalisées avec ATT) · Jules · Claude Code · branche `jules/app-1.2-pubs-att`
+
+Demande de Jules : le consentement des pubs au moment de la première pub, pour gagner plus. Décision en `AGENTS.md` §6. Part de `jules/app-1.0.1` (= 1.1, build 6) ; **ne pas la mettre dans la 1.1**.
+
+**Fait**
+- `Platform/RewardedAds.swift` : au premier « Regarder une pub », formulaire de Google (UMP, si la loi l'exige), puis fenêtre ATT si elle n'a jamais été montrée, puis démarrage d'AdMob et la pub dès qu'elle est chargée (10 s au plus, sinon pas de récompense ni de pub, comme une pub indisponible). Le bouton reste actif tant que les questions n'ont pas été posées. Au lancement, AdMob ne démarre que si les deux réponses sont déjà connues. La boutique et la marée basse ne posent plus de question. Pubs personnalisées seulement si ATT est accepté (`publisherPrivacyPersonalizationState`, relu à chaque chargement : un changement dans les Réglages d'iOS est suivi).
+- `NSUserTrackingUsageDescription` (FR / EN, `InfoPlist.xcstrings`) ; `PrivacyInfo.xcprivacy` : `NSPrivacyTracking` vrai.
+- Politique de confidentialité du site FR / EN (`site/confidentialite`, `site/en/privacy`) : questions au premier « Regarder une pub », personnalisées seulement avec l'accord, comment changer d'avis (Réglages du jeu, Réglages d'iOS → Suivi). **En ligne seulement quand cette branche arrive dans `main`** : à fusionner le jour de la sortie de la 1.2, pas avant.
+
+**À faire le jour où la 1.2 part en vérification (dans cet ordre)**
+1. **AdMob** → Confidentialité et messages → Réglementations européennes : republier le message RGPD de Pearl Inc. **seulement une fois la 1.2 publiée** : la 1.1 demande le formulaire à l'ouverture de la boutique et de la marée basse, sans ATT (refus 5.1.2 si le message revient avant). Pendant la vérification, la question ATT suffit (les vérificateurs ne sont en général pas dans l'UE). Ne pas activer le message « IDFA explainer » de Google : l'app pose déjà la question ATT. Après la republication, un joueur de la 1.2 qui avait déjà répondu verra le formulaire de Google à sa prochaine pub, jamais au lancement.
+2. **App Store Connect → Confidentialité de l'app** : Identifiant de l'appareil, Données publicitaires, Interaction avec le produit, Emplacement approximatif → cocher « utilisées pour le suivi » (Apple affichera « Données utilisées pour vous suivre »). À publier quand la 1.2 est envoyée.
+3. Notes de revue de la 1.2 : « Ads: rewarded ads only, optional. On the first tap on "Watch an ad", Google's consent form (EEA/UK) then Apple's App Tracking Transparency prompt are shown; ads are personalised only if tracking is allowed. The reward is the same whatever the answers. »
+4. Fusionner dans `main` (politique du site en ligne) quand la 1.2 est publiée, avant de republier le message AdMob.
+
+**Fragile**
+- Pas essayé : ni simulateur (Jules testera), ni build. La fenêtre ATT ne s'affiche que si l'app est active : au toucher d'un bouton, c'est le cas.
+- Pendant les questions, la musique est coupée (comme pendant une pub) ; si le joueur met longtemps à répondre, la pub peut arriver après les 10 s d'attente : il retouche le bouton.
+
+---
+
 ## 2026-10-27 (1.1 pour TestFlight) · Jules · Claude Code · branche `jules/app-1.1-testflight`
 
 Retours de Jules sur le build de test : « 90 huîtres en 5 min », probabilités des écrins trop envahissantes, un écrin toutes les 12 huîtres, la carte qui suit le gyroscope. `npm test` (176), `npm run build`, `swift test` (92, simulation comprise) : verts.

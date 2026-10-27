@@ -4,8 +4,10 @@
      la politique de confidentialité (site/confidentialite) : sauvegarde en ligne, régie publicitaire… -->
 <plist version="1.0">
 <dict>
+	<!-- 1.2 : pubs personnalisées d'AdMob quand le joueur accepte la fenêtre de suivi d'Apple (ATT). Les domaines de
+	     Google sont déclarés par le manifeste du SDK de Google. -->
 	<key>NSPrivacyTracking</key>
-	<false/>
+	<true/>
 	<key>NSPrivacyTrackingDomains</key>
 	<array/>
 	<key>NSPrivacyCollectedDataTypes</key>

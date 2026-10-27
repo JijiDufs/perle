@@ -95,8 +95,6 @@ struct ShopView: View {
         }
         .statusBarFade()
         .background(LagoonBackground(dim: 0.82))
-        // Première pub possible : le formulaire de consentement de Google, s'il le faut (une seule fois).
-        .task { await game.ads.start() }
     }
 }
 

@@ -30,6 +30,23 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "NSUserTrackingUsageDescription" : {
+      "comment" : "Privacy - Tracking Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To show you better-suited ads when you watch one to earn oysters. Your answer never changes the reward."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour te montrer des pubs plus adaptées quand tu en regardes une pour gagner des huîtres. Ta réponse ne change rien à la récompense."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

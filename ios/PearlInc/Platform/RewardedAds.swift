@@ -1,9 +1,11 @@
 import Foundation
 import Observation
+import AppTrackingTransparency
 import GoogleMobileAds
 import UserMessagingPlatform
 
-/// Pub récompensée, par **AdMob** (Google), avec le consentement RGPD de Google (UMP).
+/// Pub récompensée, par **AdMob** (Google), avec le consentement RGPD de Google (UMP) et la fenêtre de suivi d'Apple
+/// (ATT), demandés au premier « Regarder une pub » (1.2). Pubs personnalisées seulement si le joueur accepte le suivi.
 /// Seul fichier qui parle à la régie : les écrans et le Core n'en savent rien.
 /// Ce que rapporte une pub et combien par jour : le Core (Economy.rewardedAdOysters / rewardedAdsPerDay).
 /// En Debug, sans pub disponible (simulateur hors ligne, pas de stock), la pub simulée prend le relais.
@@ -24,6 +26,8 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
     static let retryDelay: Duration = .seconds(60)
     /// Une pub chargée expire au bout d'une heure (règle de Google) : on en recharge une.
     static let adLifetime: TimeInterval = 3600
+    /// Première pub : après les réponses du joueur, on attend au plus ce temps qu'elle se charge.
+    static let firstAdWait: Duration = .seconds(10)
 
     /// La pub simulée est à l'écran (Debug seulement).
     private(set) var isShowing = false
@@ -40,24 +44,29 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
     @ObservationIgnored private var earned = false
     @ObservationIgnored private var completion: ((Bool) -> Void)?
 
-    /// Le bouton « Regarder une pub » peut servir.
+    /// Le bouton « Regarder une pub » peut servir : une pub est prête, ou c'est la première (le toucher pose
+    /// d'abord les questions, puis la pub se charge).
     var canShow: Bool {
         #if DEBUG
         true
         #else
-        isReady
+        isReady || !consentRequested
         #endif
     }
 
-    /// Au lancement : seulement si le joueur a déjà répondu au formulaire (il ne s'ouvre donc pas). Sinon on attend
-    /// le moment où une pub peut servir (`start`), jamais pendant le tutoriel (audit P0-7).
+    /// Au lancement : si le joueur a déjà répondu au formulaire de Google et à la fenêtre d'Apple, AdMob démarre pour
+    /// que la pub soit prête. Rien ne s'affiche jamais ici : une question qui manque attend le premier
+    /// « Regarder une pub ».
     func startIfConsentKnown() async {
         let status = ConsentInformation.shared.consentStatus
-        if status == .obtained || status == .notRequired { await start() }
+        guard status == .obtained || status == .notRequired,
+              ATTrackingManager.trackingAuthorizationStatus != .notDetermined else { return }
+        try? await ConsentInformation.shared.requestConsentInfoUpdate(with: RequestParameters())
+        await afterConsent()
     }
 
-    /// Quand une pub peut servir (marée basse, boutique) : consentement (formulaire de Google si la loi l'exige),
-    /// puis démarrage d'AdMob et chargement de la première pub.
+    /// Consentement (formulaire de Google si la loi l'exige), fenêtre de suivi d'Apple si elle n'a jamais été
+    /// montrée, puis démarrage d'AdMob et chargement d'une pub.
     func start() async {
         guard !consentRequested else { return }
         consentRequested = true
@@ -66,6 +75,10 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
             try await ConsentForm.loadAndPresentIfRequired(from: nil)
         } catch {
             // Hors ligne ou formulaire indisponible : le consentement d'une séance précédente reste valable.
+        }
+        // La récompense ne dépend jamais de la réponse (règle 5.1.2 d'Apple).
+        if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
+            _ = await ATTrackingManager.requestTrackingAuthorization()
         }
         await afterConsent()
     }
@@ -84,6 +97,20 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
             earned = false
             ad.present(from: nil) { [weak self] in
                 MainActor.assumeIsolated { self?.earned = true }
+            }
+            return
+        }
+        if !consentRequested {
+            // Première pub de la séance sans pub prête : d'abord les questions qui manquent (Google, puis Apple),
+            // ensuite la pub dès qu'elle est chargée.
+            self.completion = completion
+            Task {
+                await start()
+                let deadline = ContinuousClock.now + Self.firstAdWait
+                while ad == nil, ContinuousClock.now < deadline { try? await Task.sleep(for: .milliseconds(250)) }
+                guard let waiting = self.completion else { return }
+                self.completion = nil
+                show(completion: waiting)
             }
             return
         }
@@ -125,8 +152,6 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
         guard consent.canRequestAds else { return }
         if !sdkStarted {
             sdkStarted = true
-            // Pubs jamais personnalisées (choix de Jules, 2026-10-14) : pas de pistage à déclarer à Apple, pas d'ATT.
-            MobileAds.shared.requestConfiguration.publisherPrivacyPersonalizationState = .disabled
             _ = await MobileAds.shared.start()
         }
         load()
@@ -135,6 +160,10 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
     private func load() {
         guard sdkStarted, ad == nil, !isLoading, ConsentInformation.shared.canRequestAds else { return }
         isLoading = true
+        // Pubs personnalisées seulement si le joueur a accepté le suivi (fenêtre d'Apple, modifiable dans les Réglages
+        // d'iOS) ; sinon non personnalisées. En Europe, le formulaire de Google s'applique en plus.
+        MobileAds.shared.requestConfiguration.publisherPrivacyPersonalizationState =
+            ATTrackingManager.trackingAuthorizationStatus == .authorized ? .enabled : .disabled
         Task {
             do {
                 let ad = try await RewardedAd.load(with: Self.adUnitID, request: Request())

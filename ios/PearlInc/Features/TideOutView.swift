@@ -53,8 +53,6 @@ struct TideOutView: View {
         .foregroundStyle(.white)
         .shadow(color: .black.opacity(0.2), radius: 2)
         .padding(.horizontal, compact ? 8 : 16)
-        // Première pub possible : le formulaire de consentement de Google, s'il le faut (une seule fois).
-        .task { await game.ads.start() }
         .sheet(isPresented: $showOdds) {
             NavigationStack {
                 ScrollView { OddsList().padding(20) }
