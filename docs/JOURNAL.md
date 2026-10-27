@@ -4,6 +4,14 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-27 · Jules · Claude Code · branche `jules/app-1.0-build5`
+
+**Fait** : app iOS, iPhone Duo (écran intérieur) : la nacre de l'huître n'est plus jamais assombrie. Avant, toucher la carte téléphone ouvert laissait la nouvelle huître (angle 0, charnière désarmée) avec un fond noir. Maintenant seule la perle (ou la trouvaille) apparaît en fondu avec l'ouverture (`OysterArt.draw`, pose `.fold`). Le pouce et l'écran extérieur ne changent pas. Build de l'app : vert.
+
+**Reste à faire** : vérifier sur un vrai Duo (ou `-SimulatedHinge` / `-SimulatedFold`). Les écrins n'existent pas dans l'app iOS, rien à corriger de ce côté.
+
+---
+
 ## 2026-10-22 · Jules · Claude Code · branche `jules/app-1.0-build5` (partie de `v1.0-build4`)
 
 Refus App Store de la 1.0 (build 4), règle **5.1.2(i)** : l'app ouvre des pages de pearl-inc.app qui proposent un cookie publicitaire (pixel X) sans demande ATT.
