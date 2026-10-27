@@ -66,6 +66,8 @@ final class GameModel {
     /// Achats intégrés et pub récompensée (plateforme).
     let store = Store()
     let ads = RewardedAds()
+    /// La partie sauvegardée sur le compte du joueur.
+    let cloud = CloudSave(user: CloudSave.signedInUser)
 
     @ObservationIgnored private var engine: OpeningEngine
     @ObservationIgnored private let thumb = ThumbSource()
@@ -94,7 +96,7 @@ final class GameModel {
 
     init() {
         let catalog = Catalog.shared
-        var saved = Storage.load() ?? PlayerState.new(systemRng(), catalog.tuning, now: Clock.nowMs)
+        var saved = Storage.load(cloud.user) ?? PlayerState.new(systemRng(), catalog.tuning, now: Clock.nowMs)
         // App fermée pendant la fuite du poisson : on rend la perle.
         _ = saved.resolveTheft(caught: true)
         player = saved
@@ -110,6 +112,7 @@ final class GameModel {
         if saved.isInTutorial() { calendarOffered() }
         refresh()
         store.onDeliver = { [weak self] productId in self?.deliver(productId) }
+        cloud.onDownload = { [weak self] player in self?.start(player) }
         store.start(productIds: catalog.economy.consumables.map(\.id) + catalog.economy.skins.compactMap(\.productId))
     }
 
@@ -226,7 +229,7 @@ final class GameModel {
     /// Recharge le stock et renouvelle les missions (au lancement, au retour dans l'app, chaque minute).
     func refresh() {
         player.refresh(now: Clock.nowMs, day: Clock.dayKey(), tuning: tuning)
-        Storage.save(player)
+        save()
     }
 
     /// En quittant l'app : la notification « tes huîtres sont revenues » pour quand le stock sera plein
@@ -369,16 +372,37 @@ final class GameModel {
         if player.equip(skinId) { haptics.tick(); audio.tap(); save() }
     }
 
-    // MARK: - Compte supprimé
+    // MARK: - Compte
+
+    /// Un autre compte se connecte (ou la déconnexion) : on reprend sa partie sur cet iPhone, puis celle de son compte.
+    func useAccount(_ user: UUID?) {
+        guard user != cloud.user else { return }
+        cloud.switchUser(user)
+        start(Storage.load(user) ?? PlayerState.new(rng, tuning, now: Clock.nowMs))
+        Task { await cloud.sync() }
+    }
+
+    /// Après un conflit : reprendre la partie mise de côté.
+    func swapSetAside() { cloud.swapSetAside(current: player) }
 
     /// Efface la partie sur cet iPhone (après la suppression du compte) : on repart d'une partie neuve.
     /// Les skins achetés reviennent tout seuls (droits relus auprès d'Apple).
     func eraseLocalGame() {
-        player = PlayerState.new(rng, tuning, now: Clock.nowMs)
-        shownReputation = 0
-        calendarOffered()
-        step = 0
-        engine = OpeningEngine(tuning: tuning, crackProtected: catalog.isCrackProtected(oystersOpened: 0))
+        Storage.erase(cloud.user)
+        cloud.switchUser(nil)
+        start(PlayerState.new(rng, tuning, now: Clock.nowMs))
+        store.refreshEntitlements()
+    }
+
+    /// Remplace la partie à l'écran (compte supprimé, autre compte, partie récupérée du compte).
+    private func start(_ newPlayer: PlayerState) {
+        player = newPlayer
+        // App fermée pendant la fuite du poisson : on rend la perle.
+        _ = player.resolveTheft(caught: true)
+        shownReputation = player.reputation
+        if player.isInTutorial() { calendarOffered() }
+        step = player.oystersOpened
+        engine = OpeningEngine(tuning: tuning, crackProtected: catalog.isCrackProtected(oystersOpened: player.oystersOpened))
         thumb.reset()
         hingeDriving = false
         lastTickDistance = 0
@@ -396,7 +420,6 @@ final class GameModel {
         revealIsNew = false
         stage = .playing
         refresh()
-        store.refreshEntitlements()
     }
 
     // MARK: - Pub récompensée
@@ -490,7 +513,7 @@ final class GameModel {
         save()
     }
 
-    private func save() { Storage.save(player) }
+    private func save() { cloud.save(player) }
 
     /// L'anneau rattrape la réputation du joueur, avec un « +N ».
     private func showReputation() {

@@ -18,6 +18,8 @@ struct PearlIncApp: App {
                 }
             }
             .animation(.easeInOut(duration: 0.3), value: auth.session != nil)
+            // Chaque compte a sa partie (sur l'iPhone et sur le compte).
+            .onChange(of: auth.session?.user.id) { _, user in game.useAccount(user) }
             .preferredColorScheme(.dark)
         }
     }
@@ -50,6 +52,7 @@ struct RootView: View {
         // Consentement RGPD (formulaire de Google si besoin), puis première pub récompensée,
         // puis le calendrier de connexion s'il y a une case à récupérer aujourd'hui.
         .task {
+            await game.cloud.sync()
             game.audio.start()
             await game.ads.start()
             offerCalendar()
@@ -57,6 +60,7 @@ struct RootView: View {
         // « Tes huîtres sont revenues » : programmée en partant, retirée en revenant.
         .onChange(of: scenePhase) { _, phase in
             if phase == .background {
+                game.cloud.flush()
                 game.scheduleRefillNotification()
                 game.audio.stop()
             }
@@ -64,12 +68,20 @@ struct RootView: View {
                 game.audio.start()
                 Notifications.cancel()
                 game.refresh()
+                Task { await game.cloud.sync() }
                 // Au lancement, le formulaire de consentement de Google passe d'abord (la tâche ci-dessus) :
                 // sinon il s'ouvrirait par-dessus le calendrier.
                 if game.ads.consentAnswered { offerCalendar() }
             }
         }
         .sheet(isPresented: $showCalendar) { CalendarView() }
+        .alert("Deux parties sur ce compte", isPresented: Binding(get: { game.cloud.setAside != nil }, set: { if !$0 { game.cloud.setAside = nil } }),
+               presenting: game.cloud.setAside) { _ in
+            Button("Garder celle-ci", role: .cancel) {}
+            Button("Reprendre l’autre") { game.swapSetAside() }
+        } message: { aside in
+            Text("On a gardé la plus avancée, ou la plus récente à égalité (\(aside.keptOysters) huîtres ouvertes). L’autre (\(aside.otherOysters) huîtres) est mise de côté sur cet iPhone : tu peux la reprendre maintenant.")
+        }
         // Déconnexion : retour à l'écran de connexion, sans musique.
         .onDisappear { game.audio.stop() }
     }

@@ -3769,50 +3769,66 @@
         }
       }
     },
-    "Sans compte, ta partie reste sur cet iPhone." : {
+    "Sans compte, ta partie est sauvegardée sur cet iPhone et sur un compte invité, mais elle ne se retrouve pas sur un autre iPhone, ni après une déconnexion. Continue avec Apple pour la garder." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Without an account, your game stays on this iPhone."
+            "value" : "Without an account, your game is saved on this iPhone and on a guest account, but you can’t get it back on another iPhone or after signing out. Continue with Apple to keep it."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sans compte, ta partie reste sur cet iPhone."
+            "value" : "Sans compte, ta partie est sauvegardée sur cet iPhone et sur un compte invité, mais elle ne se retrouve pas sur un autre iPhone, ni après une déconnexion. Continue avec Apple pour la garder."
           }
         }
       }
     },
-    "Sans compte, ta progression reste sur cet iPhone jusqu’à ce que tu ajoutes Apple ou un e-mail." : {
+    "Ta partie est sauvegardée sur ton compte : reconnecte-toi sur un autre iPhone pour la retrouver." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Without an account, your progress stays on this iPhone until you add Apple or an email."
+            "value" : "Your game is saved to your account: sign in on another iPhone to get it back."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sans compte, ta progression reste sur cet iPhone jusqu’à ce que tu ajoutes Apple ou un e-mail."
+            "value" : "Ta partie est sauvegardée sur ton compte : reconnecte-toi sur un autre iPhone pour la retrouver."
           }
         }
       }
     },
-    "Sans compte, tu ne pourras plus revenir sur ce compte. Ta partie reste sur cet iPhone." : {
+    "Sans compte, ta partie ne se retrouve pas sur un autre iPhone. Avec Apple ou un e-mail, elle est sauvegardée sur ton compte." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Without an account, you won’t be able to come back to this account. Your game stays on this iPhone."
+            "value" : "Without an account, you can’t get your game back on another iPhone. With Apple or an email, it’s saved to your account."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sans compte, tu ne pourras plus revenir sur ce compte. Ta partie reste sur cet iPhone."
+            "value" : "Sans compte, ta partie ne se retrouve pas sur un autre iPhone. Avec Apple ou un e-mail, elle est sauvegardée sur ton compte."
+          }
+        }
+      }
+    },
+    "Sans compte, tu ne pourras plus revenir sur ce compte ni sur sa partie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without an account, you won’t be able to come back to this account or its game."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans compte, tu ne pourras plus revenir sur ce compte ni sur sa partie."
           }
         }
       }
@@ -3913,18 +3929,18 @@
         }
       }
     },
-    "Ta partie reste sur cet iPhone. Tu pourras te reconnecter avec le même compte." : {
+    "Ta partie reste sur ton compte. Tu la retrouveras en te reconnectant avec le même compte." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your game stays on this iPhone. You can sign back in with the same account."
+            "value" : "Your game stays on your account. You’ll get it back by signing in with the same account."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta partie reste sur cet iPhone. Tu pourras te reconnecter avec le même compte."
+            "value" : "Ta partie reste sur ton compte. Tu la retrouveras en te reconnectant avec le même compte."
           }
         }
       }
@@ -4025,18 +4041,18 @@
         }
       }
     },
-    "Ton compte et les données liées sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple." : {
+    "Ton compte et ta partie sauvegardée sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your account and its data are erased for good. The game on this iPhone (collection, oysters, gold dust) starts over. Shells you bought come back with “Restore purchases”. Purchases aren’t refunded: for that, go through Apple."
+            "value" : "Your account and your saved game are erased for good. The game on this iPhone (collection, oysters, gold dust) starts over. Shells you bought come back with “Restore purchases”. Purchases aren’t refunded: for that, go through Apple."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton compte et les données liées sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple."
+            "value" : "Ton compte et ta partie sauvegardée sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple."
           }
         }
       }
@@ -4775,6 +4791,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Collection section"
+          }
+        }
+      }
+    },
+    "Deux parties sur ce compte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Two games on this account"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deux parties sur ce compte"
+          }
+        }
+      }
+    },
+    "Garder celle-ci" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep this one"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garder celle-ci"
+          }
+        }
+      }
+    },
+    "Reprendre l’autre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch to the other"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reprendre l’autre"
+          }
+        }
+      }
+    },
+    "On a gardé la plus avancée, ou la plus récente à égalité (%lld huîtres ouvertes). L’autre (%lld huîtres) est mise de côté sur cet iPhone : tu peux la reprendre maintenant." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We kept the furthest one, or the most recent if tied (%lld oysters opened). The other one (%lld oysters) is set aside on this iPhone: you can switch to it now."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On a gardé la plus avancée, ou la plus récente à égalité (%lld huîtres ouvertes). L’autre (%lld huîtres) est mise de côté sur cet iPhone : tu peux la reprendre maintenant."
+          }
+        }
+      }
+    },
+    "Ce compte Apple n’a pas pu être lié. S’il sert déjà à une autre partie, déconnecte-toi puis connecte-toi avec Apple." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Apple account couldn’t be linked. If it’s already used for another game, sign out and then sign in with Apple."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce compte Apple n’a pas pu être lié. S’il sert déjà à une autre partie, déconnecte-toi puis connecte-toi avec Apple."
+          }
+        }
+      }
+    },
+    "Lie ta partie à ton compte Apple pour la retrouver sur un autre iPhone" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links your game to your Apple account so you can get it back on another iPhone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lie ta partie à ton compte Apple pour la retrouver sur un autre iPhone"
           }
         }
       }
