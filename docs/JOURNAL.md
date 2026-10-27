@@ -15,7 +15,7 @@ Les inscrits d'avant la sortie récupèrent la coquille « Première marée » d
 - `swift test` (74), `npm test` (172), `npm run build`, build de l'app : verts.
 
 **À faire**
-- **Importer les e-mails des inscrits** (formulaires Tally `J9N7AJ` FR, 10 réponses, et `Me9oLY` EN, 6 réponses, au 2026-10-27) : la lecture des réponses a été refusée à la session (données personnelles), il faut l'accord explicite de Jules. Ensuite : `insert … on conflict do nothing`, en minuscules ; aucun e-mail dans le dépôt ni le journal. À refaire si de nouveaux inscrits arrivent avant la sortie.
+- **E-mails des inscrits importés le 2026-10-27 : 13** (liste donnée par Jules, en minuscules, sans doublon ; les formulaires Tally comptaient 16 réponses). Aucun e-mail dans le dépôt. Pour de nouveaux inscrits avant la sortie : `insert into public.early_access_signups (email) values (lower('…')) on conflict do nothing`.
 - Jules, iPhone réel : se connecter par code avec l'adresse d'inscription → fenêtre et coquille ; avec Apple « Masquer mon e-mail » → rien (adresse relais, attendu).
 - Fusion avec la branche d'équilibrage : elle cache la carte de la coquille dans la boutique tant qu'on ne l'a pas ; il faut la remontrer (avec la phrase ci-dessus) en fusionnant.
 
