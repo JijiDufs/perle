@@ -24,8 +24,8 @@ enum Coach {
             return String(localized: "Doucement…")
         case (let step, .closed) where step == Catalog.shared.tutorialPearls.count:
             // Première huître hors tutoriel : le stock apparaît, on l'explique une fois.
-            let max = tuning.oysterStockMax, minutes = Int(tuning.oysterRechargeMinutes)
-            return String(localized: "Tes huîtres sont en haut : \(max) au maximum, une revient toutes les \(minutes) min. Tes perles t’attendent dans l’onglet Collection.")
+            let minutes = Int(tuning.oysterRechargeMinutes)
+            return String(localized: "Tes huîtres sont en haut. Elles reviennent seules, une toutes les \(minutes) min. Tes perles t’attendent dans l’onglet Collection.")
         default:
             return nil
         }

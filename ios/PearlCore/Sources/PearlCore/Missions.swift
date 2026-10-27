@@ -44,6 +44,13 @@ public struct DailyMissions: Codable, Sendable, Equatable {
         }
     }
 
+    /// La mission à mettre en avant à la Pêche : la plus avancée de celles pas encore récupérées (une terminée
+    /// passe devant) ; nil quand toutes sont récupérées.
+    public var nearest: Mission? {
+        missions.filter { !$0.claimed }
+            .max { Double($0.progress) / Double($0.goal) < Double($1.progress) / Double($1.goal) }
+    }
+
     /// Une mission terminée attend sa récompense.
     public var hasReward: Bool {
         missions.contains { $0.isDone && !$0.claimed }

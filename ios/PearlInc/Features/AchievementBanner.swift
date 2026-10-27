@@ -57,30 +57,34 @@ struct AchievementCatchUpView: View {
 
     var body: some View {
         VStack(spacing: compact ? 10 : 14) {
-            AchievementMedal(tier: .or, earned: true)
-                .scaleEffect(compact ? 1.2 : 1.6)
-                .padding(compact ? 6 : 12)
-            Text("Les succès arrivent !")
-                .font(.title2.weight(.bold))
-                .multilineTextAlignment(.center)
-                .accessibilityAddTraits(.isHeader)
-            Text("Tu en as déjà \(catchUp.count), d’après ta partie.")
-                .font(.subheadline)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .opacity(0.85)
-            Text(AchievementText.reward(AchievementReward(oysters: catchUp.oysters, dust: catchUp.dust, reputation: 0)))
-                .font(.headline.monospacedDigit())
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .glass(RoundedRectangle(cornerRadius: 22, style: .continuous), shade: 0.2)
-            Text("Retrouve-les dans « Ma progression », en touchant ton niveau.")
-                .font(.footnote)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .opacity(0.75)
+            FitOrScroll {
+                VStack(spacing: compact ? 10 : 14) {
+                    AchievementMedal(tier: .or, earned: true)
+                        .scaleEffect(compact ? 1.2 : 1.6)
+                        .padding(compact ? 6 : 12)
+                    Text("Les succès arrivent !")
+                        .font(.title2.weight(.bold))
+                        .multilineTextAlignment(.center)
+                        .accessibilityAddTraits(.isHeader)
+                    Text("Tu en as déjà \(catchUp.count), d’après ta partie.")
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .opacity(0.85)
+                    Text(AchievementText.reward(AchievementReward(oysters: catchUp.oysters, dust: catchUp.dust, reputation: 0)))
+                        .font(.headline.monospacedDigit())
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .glass(RoundedRectangle(cornerRadius: 22, style: .continuous), shade: 0.2)
+                    Text("Retrouve-les dans « Ma progression », en touchant ton niveau.")
+                        .font(.footnote)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .opacity(0.75)
+                }
+            }
             Button {
                 withAnimation { game.acknowledgeAchievementCatchUp() }
             } label: {

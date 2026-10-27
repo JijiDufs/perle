@@ -5,6 +5,10 @@ struct PearlIncApp: App {
     @State private var game = GameModel()
     @StateObject private var auth = AuthViewModel()
 
+    init() {
+        Analytics.start()
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {
@@ -27,7 +31,6 @@ struct PearlIncApp: App {
 struct RootView: View {
     @Environment(GameModel.self) private var game
     @Environment(\.scenePhase) private var scenePhase
-    @State private var showCalendar = false
 
     var body: some View {
         @Bindable var game = game
@@ -64,11 +67,11 @@ struct RootView: View {
         .fullScreenCover(isPresented: Binding(get: { game.ads.isShowing }, set: { if !$0 && game.ads.isShowing { game.ads.finish(rewarded: false) } })) {
             SimulatedAdView(ads: game.ads)
         }
-        // Consentement RGPD (formulaire de Google si besoin), puis première pub récompensée,
-        // puis le calendrier de connexion s'il y a une case à récupérer aujourd'hui.
+        // Le calendrier de connexion s'il y a une case à récupérer aujourd'hui. Le formulaire de consentement de Google
+        // attend la première pub (marée basse, boutique) : il ne coupe plus la première huître (audit P0-7).
         .task {
             game.audio.start()
-            await game.ads.start()
+            await game.ads.startIfConsentKnown()
             offerCalendar()
         }
         // « Tes huîtres sont revenues » : programmée en partant, retirée en revenant.
@@ -81,12 +84,10 @@ struct RootView: View {
                 game.audio.start()
                 Notifications.cancel()
                 game.refresh()
-                // Au lancement, le formulaire de consentement de Google passe d'abord (la tâche ci-dessus) :
-                // sinon il s'ouvrirait par-dessus le calendrier.
-                if game.ads.consentAnswered { offerCalendar() }
+                offerCalendar()
             }
         }
-        .sheet(isPresented: $showCalendar) { CalendarView() }
+        .sheet(isPresented: Binding(get: { game.showingCalendar }, set: { game.showingCalendar = $0 })) { CalendarView() }
         // Déconnexion : retour à l'écran de connexion, sans musique.
         .onDisappear { game.audio.stop() }
     }
@@ -94,10 +95,10 @@ struct RootView: View {
     private func offerCalendar() {
         #if DEBUG
         // Outil de test (`-ShowCalendar`) : ouvrir le calendrier à chaque lancement.
-        if ProcessInfo.processInfo.arguments.contains("-ShowCalendar") { showCalendar = true; return }
+        if ProcessInfo.processInfo.arguments.contains("-ShowCalendar") { game.showingCalendar = true; return }
         #endif
         guard game.shouldOfferCalendar else { return }
         game.calendarOffered()
-        showCalendar = true
+        game.showingCalendar = true
     }
 }

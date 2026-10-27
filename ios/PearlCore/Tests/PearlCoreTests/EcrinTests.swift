@@ -136,17 +136,27 @@ private func parity() throws -> Parity {
     #expect(english.jewelRarity("toc").label == "Costume")
 }
 
-@Test func lesEcrinsViennentDesNiveauxEtDeLaPoussiere() {
+@Test func lesEcrinsViennentDesHuitresDesRangsEtDeLaPoussiere() {
     #expect(catalog.levelReward(2).ecrins == 0)
-    #expect(catalog.levelReward(3).ecrins == 1)
+    #expect(catalog.levelReward(3).ecrins == 0)
     #expect(catalog.levelReward(5).ecrins == 1, "rang Perlier")
-    #expect(catalog.levelReward(30).ecrins == 1)
     #expect(catalog.levelReward(20).ecrins == 1, "rang Joaillier")
-    #expect(catalog.levelReward(15).ecrins == 1)
 
     var player = PlayerState.new(seededRng(1), tuning, now: 0)
     player.gainReputation((1..<5).reduce(0) { $0 + catalog.xpToNext($1) })
-    #expect(player.ecrins == 2 && player.levelUp?.ecrins == 2)
+    #expect(player.ecrins == 1 && player.levelUp?.ecrins == 1)
+
+    // Un écrin toutes les `oysterEvery` huîtres ouvertes, pas avant.
+    let every = catalog.economy.ecrins.oysterEvery
+    #expect(every == 12)
+    let rng = seededRng(3)
+    player.ecrins = 0
+    for opened in 1...every {
+        _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning)
+        #expect(player.ecrins == (opened == every ? 1 : 0), "huître \(opened)")
+    }
+    #expect(player.oystersUntilEcrin() == every)
+    player.ecrins = 2
 
     let price = catalog.economy.ecrins.dustPrice
     player.dust = price - 1
@@ -210,6 +220,7 @@ private func parity() throws -> Parity {
     let url = try #require(Bundle.module.url(forResource: "save-1.0", withExtension: "json"))
     let player = try JSONDecoder().decode(PlayerState.self, from: Data(contentsOf: url))
     let owed = (2...player.rewardedLevel).reduce(0) { $0 + catalog.levelReward($1).ecrins }
+        + player.oystersOpened / catalog.economy.ecrins.oysterEvery
     #expect(owed > 0)
     #expect(player.ecrins == owed && player.levelUp?.ecrins == owed && player.ecrinCatchUp == nil)
     let again = try JSONDecoder().decode(PlayerState.self, from: JSONEncoder().encode(player))
@@ -230,20 +241,20 @@ private func parity() throws -> Parity {
     raw["stats"] = stats
     let player = try JSONDecoder().decode(PlayerState.self, from: JSONSerialization.data(withJSONObject: raw))
 
-    // Niveaux 3, 5 (rang), 6, 9, 10 (rang), 12.
-    #expect(player.ecrins == 6 && player.ecrinCatchUp == 6 && player.levelUp == nil)
+    // Rangs des niveaux 5 et 10 (aucune huître ouverte dans cette partie de test).
+    #expect(player.ecrins == 2 && player.ecrinCatchUp == 2 && player.levelUp == nil)
     #expect(player.stats.sold == 4 && player.stats.perfectGlints == 0)
     var seen = player
     seen.acknowledgeEcrinCatchUp()
     let again = try JSONDecoder().decode(PlayerState.self, from: JSONEncoder().encode(seen))
-    #expect(again.ecrins == 6 && again.ecrinCatchUp == nil)
+    #expect(again.ecrins == 2 && again.ecrinCatchUp == nil)
 
     // Une fête encore à faire : les écrins y sont annoncés, pas dans une deuxième fenêtre.
     old.levelUp = LevelUp(from: 11, to: 12, oysters: 5, dust: 5, ecrins: nil, retroactive: false)
     raw = try #require(try JSONSerialization.jsonObject(with: JSONEncoder().encode(old)) as? [String: Any])
     for key in ["ecrins", "currentEcrin", "jewelDraw", "jewelCards", "ecrinCatchUp"] { raw[key] = nil }
     let pending = try JSONDecoder().decode(PlayerState.self, from: JSONSerialization.data(withJSONObject: raw))
-    #expect(pending.ecrins == 6 && pending.levelUp?.ecrins == 6 && pending.ecrinCatchUp == nil)
+    #expect(pending.ecrins == 2 && pending.levelUp?.ecrins == 2 && pending.ecrinCatchUp == nil)
 }
 
 @Test func lesSuccesDesEcrinsComptentLesBijoux() {

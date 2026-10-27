@@ -132,6 +132,22 @@
         }
       }
     },
+    "+ 1 écrin" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ 1 jewel case"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ 1 écrin"
+          }
+        }
+      }
+    },
     "?" : {
       "localizations" : {
         "en" : {
@@ -467,6 +483,22 @@
         }
       }
     },
+    "Affichées" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shown"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affichées"
+          }
+        }
+      }
+    },
     "Argent" : {
       "comment" : "Palier de succès",
       "localizations" : {
@@ -549,22 +581,6 @@
         }
       }
     },
-    "Chaque niveau : %lld huîtres et %lld ✦ ; nouveau rang : %lld huîtres et %lld ✦ de plus." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Each level: %1$lld oysters and %2$lld ✦; new rank: %3$lld more oysters and %4$lld ✦."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chaque niveau : %lld huîtres et %lld ✦ ; nouveau rang : %lld huîtres et %lld ✦ de plus."
-          }
-        }
-      }
-    },
     "Continue de pêcher…" : {
       "localizations" : {
         "en" : {
@@ -625,6 +641,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Les succès arrivent !"
+          }
+        }
+      }
+    },
+    "Masquées" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hidden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquées"
           }
         }
       }
@@ -1512,22 +1544,6 @@
         }
       }
     },
-    "Chaque huître est un tirage : voir les probabilités" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Every oyster is a draw: see the odds"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chaque huître est un tirage : voir les probabilités"
-          }
-        }
-      }
-    },
     "Chaque huître est un tirage. Les chances ne changent jamais, ni avec un skin ni avec un achat." : {
       "localizations" : {
         "en" : {
@@ -1972,22 +1988,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Français"
-          }
-        }
-      }
-    },
-    "Garantie : une perle dorée ou plus rare au plus tard à la %lldᵉ huître." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Guarantee: a golden pearl or rarer by oyster number %lld at the latest."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Garantie : une perle dorée ou plus rare au plus tard à la %lldᵉ huître."
           }
         }
       }
@@ -3464,22 +3464,6 @@
         }
       }
     },
-    "Réservée aux inscrits" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Early sign-ups only"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réservée aux inscrits"
-          }
-        }
-      }
-    },
     "Restaurer les achats" : {
       "localizations" : {
         "en" : {
@@ -3961,22 +3945,6 @@
         }
       }
     },
-    "Tes huîtres sont en haut : %lld au maximum, une revient toutes les %lld min. Tes perles t’attendent dans l’onglet Collection." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your oysters are up top: %1$lld at most, one comes back every %2$lld min. Your pearls are waiting in the Collection tab."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tes huîtres sont en haut : %lld au maximum, une revient toutes les %lld min. Tes perles t’attendent dans l’onglet Collection."
-          }
-        }
-      }
-    },
     "Tes huîtres sont revenues : %lld t’attendent sur le ponton." : {
       "localizations" : {
         "en" : {
@@ -4161,22 +4129,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trouvaille"
-          }
-        }
-      }
-    },
-    "Trouvaille, à la place de la perle" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Find, instead of the pearl"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trouvaille, à la place de la perle"
           }
         }
       }
@@ -4455,38 +4407,6 @@
         }
       }
     },
-    "Poisson voleur, sur une perle ◆" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thief fish, on a ◆ pearl"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Poisson voleur, sur une perle ◆"
-          }
-        }
-      }
-    },
-    "Il emporte la perle qu’on vient de trouver : touche-le pendant qu’il s’enfuit pour la récupérer." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "It snatches the pearl you just found: tap it while it gets away to get it back."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il emporte la perle qu’on vient de trouver : touche-le pendant qu’il s’enfuit pour la récupérer."
-          }
-        }
-      }
-    },
     "Attraper le poisson" : {
       "localizations" : {
         "en" : {
@@ -4759,6 +4679,230 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Collection section"
+          }
+        }
+      }
+    },
+    "Chaque niveau : %lld ✦, et %lld huîtres tous les %lld niveaux ; nouveau rang : %lld huîtres et %lld ✦ de plus." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each level: %1$lld ✦, plus %2$lld oysters every %3$lld levels; new rank: %4$lld more oysters and %5$lld ✦."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque niveau : %lld ✦, et %lld huîtres tous les %lld niveaux ; nouveau rang : %lld huîtres et %lld ✦ de plus."
+          }
+        }
+      }
+    },
+    "Tes huîtres sont en haut. Elles reviennent seules, une toutes les %lld min. Tes perles t’attendent dans l’onglet Collection." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your oysters are up top. They come back on their own, one every %lld min. Your pearls are waiting in the Collection tab."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes huîtres sont en haut. Elles reviennent seules, une toutes les %lld min. Tes perles t’attendent dans l’onglet Collection."
+          }
+        }
+      }
+    },
+    "Chaque huître est un tirage :" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every oyster is a draw:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque huître est un tirage :"
+          }
+        }
+      }
+    },
+    "Trouvaille %@, à la place de la perle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ find, instead of a pearl"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trouvaille %@, à la place de la perle"
+          }
+        }
+      }
+    },
+    "Garantie : une perle dorée ou plus rare en %lld huîtres au plus. Encore %lld." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guaranteed: a golden pearl or rarer within %1$lld oysters. %2$lld to go."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garantie : une perle dorée ou plus rare en %lld huîtres au plus. Encore %lld."
+          }
+        }
+      }
+    },
+    "Marque « %@ », sur une perle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” mark, on a pearl"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marque « %@ », sur une perle"
+          }
+        }
+      }
+    },
+    "Une marque rare augmente la valeur de la perle, pas sa rareté." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A rare mark raises the pearl’s value, not its rarity."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une marque rare augmente la valeur de la perle, pas sa rareté."
+          }
+        }
+      }
+    },
+    "Poisson voleur, sur une perle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thief fish, on a pearl"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poisson voleur, sur une perle"
+          }
+        }
+      }
+    },
+    "Il emporte la perle qu’on vient de trouver, quelle que soit sa rareté : touche-le pendant qu’il s’enfuit pour la récupérer (+ %lld ✦)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It snatches the pearl you just found, whatever its rarity: tap it as it flees to get it back (+ %lld ✦)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il emporte la perle qu’on vient de trouver, quelle que soit sa rareté : touche-le pendant qu’il s’enfuit pour la récupérer (+ %lld ✦)."
+          }
+        }
+      }
+    },
+    "Un poisson emporte ta perle ! Action : l’attraper." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fish is taking your pearl! Action: catch it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un poisson emporte ta perle ! Action : l’attraper."
+          }
+        }
+      }
+    },
+    "Voir les probabilités" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See the odds"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir les probabilités"
+          }
+        }
+      }
+    },
+    "Mission terminée : %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mission complete: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mission terminée : %@"
+          }
+        }
+      }
+    },
+    "%@ · %lld / %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · %2$lld / %3$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %lld / %lld"
+          }
+        }
+      }
+    },
+    "Perle dorée garantie · encore %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Golden pearl guaranteed · %lld to go"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perle dorée garantie · encore %lld"
           }
         }
       }
@@ -5427,12 +5571,12 @@
         }
       }
     },
-    "Tes niveaux t’ont rapporté %lld écrins. Ouvre-les doucement : quelque part, le bijou scintille." : {
+    "Tes huîtres et tes rangs t’ont rapporté %lld écrins. Ouvre-les doucement : quelque part, le bijou scintille." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your levels earned you %#@n@. Open them gently: at some point, the jewel sparkles."
+            "value" : "Your oysters and ranks earned you %#@n@. Open them gently: at some point, the jewel sparkles."
           },
           "substitutions" : {
             "n" : {
@@ -5460,7 +5604,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tes niveaux t’ont rapporté %#@n@. Ouvre-les doucement : quelque part, le bijou scintille."
+            "value" : "Tes huîtres et tes rangs t’ont rapporté %#@n@. Ouvre-les doucement : quelque part, le bijou scintille."
           },
           "substitutions" : {
             "n" : {
@@ -5551,18 +5695,62 @@
         }
       }
     },
-    "Tu en gagnes un tous les %lld niveaux et à chaque nouveau rang : le prochain au niveau %lld." : {
+    "Tu en gagnes un toutes les %lld huîtres et à chaque nouveau rang : le prochain dans %lld huîtres." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You earn one every %1$lld levels and with each new rank: the next one at level %2$lld."
+            "value" : "You earn one every %1$lld oysters and with each new rank: the next one in %#@n@."
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg oyster"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg oysters"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu en gagnes un tous les %lld niveaux et à chaque nouveau rang : le prochain au niveau %lld."
+            "value" : "Tu en gagnes un toutes les %1$lld huîtres et à chaque nouveau rang : le prochain dans %#@n@."
+          },
+          "substitutions" : {
+            "n" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg huître"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg huîtres"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -5759,18 +5947,18 @@
         }
       }
     },
-    "Les écrins se gagnent tous les %lld niveaux et à chaque nouveau rang, s’achètent %lld ✦ au comptoir, ou dans la boutique. Ils comptent tous pour la garantie." : {
+    "Les écrins se gagnent toutes les %lld huîtres et à chaque nouveau rang, s’achètent %lld ✦ au comptoir, ou dans la boutique. Ils comptent tous pour la garantie." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jewel cases are earned every %1$lld levels and with each new rank, bought for %2$lld ✦ at the counter, or in the shop. They all count towards the guarantee."
+            "value" : "Jewel cases are earned every %1$lld oysters and with each new rank, bought for %2$lld ✦ at the counter, or in the shop. They all count towards the guarantee."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les écrins se gagnent tous les %lld niveaux et à chaque nouveau rang, s’achètent %lld ✦ au comptoir, ou dans la boutique. Ils comptent tous pour la garantie."
+            "value" : "Les écrins se gagnent toutes les %lld huîtres et à chaque nouveau rang, s’achètent %lld ✦ au comptoir, ou dans la boutique. Ils comptent tous pour la garantie."
           }
         }
       }
@@ -5807,18 +5995,18 @@
         }
       }
     },
-    "Chaque écrin est un tirage : ce qu’il peut contenir" : {
+    "Chaque écrin est un tirage : voir les probabilités" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Every jewel case is a draw: what it can hold"
+            "value" : "Every jewel case is a draw: see the odds"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque écrin est un tirage : ce qu’il peut contenir"
+            "value" : "Chaque écrin est un tirage : voir les probabilités"
           }
         }
       }

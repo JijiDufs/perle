@@ -1,4 +1,5 @@
 // Règles de l'économie de l'app : stock, comptoir, poussière d'or, skins, missions.
+import Foundation
 import Testing
 @testable import PearlCore
 
@@ -118,7 +119,7 @@ private func newPlayer() -> PlayerState {
     #expect(!result8)
     let result9 = player.equip("benitier")
     #expect(!result9)
-    player.dust = 2000
+    player.dust = catalog.economy.skin("benitier")!.dustPrice!
     let result10 = player.buySkin("benitier")
     #expect(result10)
     #expect(player.dust == 0)
@@ -168,4 +169,55 @@ private func newPlayer() -> PlayerState {
     var player = newPlayer()
     player.refresh(now: 0, day: "2026-10-09", tuning: tuning)
     #expect(player.missions?.day == "2026-10-09")
+}
+
+@Test func laGarantieAfficheeNeTrahitPasLHuitrePosee() {
+    let rng = seededRng(11)
+    var player = PlayerState.new(rng, tuning, now: 0)
+    player.stock.count = 10_000
+    var sinceGolden = 0
+    for _ in 0..<600 {
+        // Ce qu'on affiche ne dépend que des huîtres déjà ouvertes, jamais de celle qui est posée.
+        #expect(player.guaranteeIn(tuning: tuning) == tuning.pityThreshold + 1 - sinceGolden)
+        let golden = catalog.pearl(player.oyster.pearlId).goldenOrBetter && player.oyster.findId == nil
+        if player.guaranteeIn(tuning: tuning) == 1 { #expect(golden, "promesse tenue") }
+        _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning)
+        sinceGolden = golden ? 0 : sinceGolden + 1
+    }
+}
+
+@Test func probabilitesDesTrouvaillesEtDesMarques() {
+    let findTotal = (1...5).reduce(0) { $0 + catalog.findChance(tier: $1) }
+    #expect(abs(findTotal - catalog.findProbability) < 1e-9)
+    let markTotal = catalog.markWeights.reduce(0) { $0 + catalog.markChance($1.id, tuning: tuning) }
+    #expect(abs(markTotal - tuning.pearlMarkChance) < 1e-9)
+}
+
+@Test func laMissionMiseEnAvant() {
+    var daily = DailyMissions(day: "2026-10-21", missions: [
+        Mission(kind: .open, goal: 8, progress: 2, claimed: false),
+        Mission(kind: .lustreS, goal: 1, progress: 0, claimed: false),
+        Mission(kind: .sell, goal: 3, progress: 2, claimed: false),
+    ], bonusClaimed: false)
+    #expect(daily.nearest?.kind == .sell)
+    daily.missions[2].claimed = true
+    #expect(daily.nearest?.kind == .open)
+    for index in daily.missions.indices { daily.missions[index].claimed = true }
+    #expect(daily.nearest == nil)
+}
+
+@Test func unePartie13SeChargeAvecSaGarantie() throws {
+    // Une partie de la 1.3 n'a pas `openedSinceGolden` : il se déduit de `drawState`, sans compter l'huître posée.
+    let rng = seededRng(12)
+    var player = PlayerState.new(rng, tuning, now: 0)
+    player.stock.count = 10_000
+    for _ in 0..<30 { _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: rng, tuning: tuning) }
+    var raw = try JSONSerialization.jsonObject(with: JSONEncoder().encode(player)) as! [String: Any]
+    raw.removeValue(forKey: "openedSinceGolden")
+    let loaded = try JSONDecoder().decode(PlayerState.self, from: JSONSerialization.data(withJSONObject: raw))
+    let posedGolden = catalog.pearl(player.oyster.pearlId).goldenOrBetter && player.oyster.findId == nil
+    #expect(loaded.openedSinceGolden == (posedGolden ? 0 : player.openedSinceGolden))
+    var same = loaded
+    same.openedSinceGolden = player.openedSinceGolden
+    #expect(same == player, "rien d'autre ne change")
 }

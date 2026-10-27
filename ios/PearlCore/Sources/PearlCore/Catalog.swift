@@ -101,6 +101,17 @@ public struct Catalog: Codable, Sendable {
         return find
     }
 
+    /// Chance qu'une huître cache une trouvaille de cette rareté (probabilités affichées).
+    public func findChance(tier: Int) -> Double {
+        findProbability * finds.filter { $0.tier == tier }.reduce(0) { $0 + findShare($1) }
+    }
+
+    /// Chance qu'une perle porte cette marque rare (probabilités affichées).
+    public func markChance(_ markId: String, tuning: Tuning) -> Double {
+        let total = markWeights.reduce(0) { $0 + $1.weight }
+        return tuning.pearlMarkChance * (markWeights.first { $0.id == markId }?.weight ?? 0) / total
+    }
+
     /// Chance d'une trouvaille parmi toutes les trouvailles (0…1).
     func findShare(_ find: FindType) -> Double {
         let weightOf = { (tier: Int) in findTierWeights.first(where: { $0.id == String(tier) })?.weight ?? 0 }

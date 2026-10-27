@@ -52,6 +52,9 @@ public struct PlayerState: Codable, Sendable, Equatable {
     /// L'huître posée devant le joueur, tirée à l'avance et sauvegardée (invariant 5).
     public var oyster: Oyster
     public var drawState: DrawState
+    /// Huîtres ouvertes d'affilée sans perle dorée ou mieux (la garantie affichée). Pas `drawState`, qui compte
+    /// aussi l'huître posée : l'afficher trahirait une perle dorée déjà tirée.
+    public var openedSinceGolden: Int
     public var nextSerial: Int
     public var pearlCards: [PearlCard]
     public var findCards: [FindCard]
@@ -100,7 +103,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
         let first = nextOyster(oystersOpened: 0, .initial, rng, tuning, catalog: catalog)
         let starters = catalog.economy.skins.filter { $0.grant == "start" }.map(\.id)
         return PlayerState(
-            oyster: first.oyster, drawState: first.drawState, nextSerial: 1, pearlCards: [], findCards: [], oystersOpened: 0,
+            oyster: first.oyster, drawState: first.drawState, openedSinceGolden: 0, nextSerial: 1, pearlCards: [], findCards: [], oystersOpened: 0,
             dust: 0, stock: StockState(count: tuning.oysterStockMax, lastRefillAt: now),
             ownedSkins: starters, equippedSkin: starters.first ?? "", missions: nil, noCrackStreak: 0, adRewards: nil,
             login: .initial, stolenCard: nil, reputation: 0, rewardedLevel: 1, levelUp: nil,
@@ -134,8 +137,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
     /// générateur (`thiefRng`, nil = pas de poisson) : le tirage des huîtres reste celui de la webapp.
     public mutating func reveal(lustre: Lustre, cracked: Bool, now: Double, rng: Rng, thiefRng: Rng? = nil, tuning: Tuning,
                                 catalog: Catalog = .shared) -> Reveal {
-        // Un vol resté en suspens (app fermée pendant la fuite) : on rend la perle.
-        _ = resolveTheft(caught: true, catalog: catalog)
+        returnStolenPearl()
         let tutorial = isInTutorial(catalog: catalog)
         if !tutorial, let consumed = consumeOyster(stock, now: now, tuning) { stock = consumed }
         let serial = nextSerial
@@ -165,6 +167,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
         }
         nextSerial += 1
         oystersOpened += 1
+        if oystersOpened % catalog.economy.ecrins.oysterEvery == 0 { ecrins += 1 }
         // Comme la webapp (progression.ts) : une huître vide ou une trouvaille n'a rien à fêler.
         let isPearl = opened.findId == nil && opened.pearlId != "empty"
         noCrackStreak = cracked && isPearl ? 0 : noCrackStreak + 1
@@ -181,12 +184,13 @@ public struct PlayerState: Codable, Sendable, Equatable {
         if opened.findId != nil { missions?.advance(.find) }
         missions?.reachStreak(.noCrack, noCrackStreak)
 
+        // Ici, `drawState` compte l'huître qu'on vient d'ouvrir, pas encore la suivante.
+        openedSinceGolden = drawState.sinceGoldenOrBetter
         let next = nextOyster(oystersOpened: oystersOpened, drawState, rng, tuning, catalog: catalog)
         oyster = next.oyster
         drawState = next.drawState
 
-        if !tutorial, let thiefRng, case .pearl(let card) = result, Self.canBeStolen(card, catalog: catalog),
-           thiefRng() < catalog.economy.fishThief.chance {
+        if !tutorial, let thiefRng, case .pearl(let card) = result, thiefRng() < catalog.economy.fishThief.chance {
             pearlCards.removeLast()
             stolenCard = card
         }
@@ -194,9 +198,10 @@ public struct PlayerState: Codable, Sendable, Equatable {
         return result
     }
 
-    /// Un poisson peut voler une perle ordinaire, sans marque rare.
-    static func canBeStolen(_ card: PearlCard, catalog: Catalog) -> Bool {
-        card.traits?.mark == nil && catalog.tier(of: card.pearlId) <= catalog.economy.fishThief.maxTier
+    /// Huîtres à ouvrir avant le prochain écrin gagné (un toutes les `oysterEvery`).
+    public func oystersUntilEcrin(catalog: Catalog = .shared) -> Int {
+        let every = catalog.economy.ecrins.oysterEvery
+        return every - oystersOpened % every
     }
 
     /// Le joueur a touché le poisson à temps : la perle revient (avec un peu de poussière d'or), et ça compte
@@ -210,8 +215,8 @@ public struct PlayerState: Codable, Sendable, Equatable {
         return gained
     }
 
-    /// La perle rejoint la collection, avec un peu de poussière d'or (aussi quand l'app a été fermée pendant
-    /// la fuite), ou le poisson a filé avec (elle est perdue). Renvoie la poussière d'or gagnée.
+    /// La perle rejoint la collection, avec un peu de poussière d'or, ou le poisson a filé avec (elle est perdue).
+    /// Renvoie la poussière d'or gagnée.
     public mutating func resolveTheft(caught: Bool, catalog: Catalog = .shared) -> Int {
         guard let card = stolenCard else { return 0 }
         stolenCard = nil
@@ -220,6 +225,18 @@ public struct PlayerState: Codable, Sendable, Equatable {
         let bonus = catalog.economy.fishThief.catchBonusDust
         dust += bonus
         return bonus
+    }
+
+    /// Au plus combien d'huîtres à ouvrir (celle posée comprise) avant une perle dorée ou mieux.
+    public func guaranteeIn(tuning: Tuning) -> Int {
+        max(1, tuning.pityThreshold + 1 - openedSinceGolden)
+    }
+
+    /// Un vol resté en suspens (app fermée pendant la fuite) : la perle revient, sans la poussière d'or du poisson rattrapé.
+    public mutating func returnStolenPearl() {
+        guard let card = stolenCard else { return }
+        stolenCard = nil
+        pearlCards.append(card)
     }
 
     // MARK: - Collection et comptoir
@@ -452,7 +469,7 @@ public struct PlayerState: Codable, Sendable, Equatable {
 
 extension PlayerState {
     private enum CodingKeys: String, CodingKey {
-        case oyster, drawState, nextSerial, pearlCards, findCards, oystersOpened
+        case oyster, drawState, openedSinceGolden, nextSerial, pearlCards, findCards, oystersOpened
         case dust, stock, ownedSkins, equippedSkin, missions, noCrackStreak, adRewards, login, stolenCard
         case reputation, rewardedLevel, levelUp
         case stats, achievements, unseenAchievements, achievementCatchUp, title
@@ -464,6 +481,10 @@ extension PlayerState {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         oyster = try container.decode(Oyster.self, forKey: .oyster)
         drawState = try container.decode(DrawState.self, forKey: .drawState)
+        // Partie d'avant la 1.1 : d'après `drawState`, sans l'huître posée ; si elle est dorée, on ne peut pas savoir
+        // (0 : la garantie affichée est la plus longue, jamais fausse).
+        openedSinceGolden = try container.decodeIfPresent(Int.self, forKey: .openedSinceGolden)
+            ?? (Catalog.shared.pearl(oyster.pearlId).goldenOrBetter && oyster.findId == nil ? 0 : max(0, drawState.sinceGoldenOrBetter - 1))
         nextSerial = try container.decode(Int.self, forKey: .nextSerial)
         pearlCards = try container.decode([PearlCard].self, forKey: .pearlCards)
         findCards = try container.decode([FindCard].self, forKey: .findCards)
@@ -502,11 +523,15 @@ extension PlayerState {
                                                       catalog: .shared))
             levelUp?.retroactive = true
         }
-        // Partie des 1.1 à 1.3 : les écrins des niveaux déjà franchis, une seule fois. Avec la fête de niveau si elle
-        // attend encore (une seule fenêtre), sinon dans leur propre fenêtre. (Une partie 1.0 les a eus ci-dessus.)
-        if savedEcrins == nil, container.contains(.reputation), rewardedLevel > 1 {
-            let owed = (2...rewardedLevel).reduce(0) { $0 + Catalog.shared.levelReward($1).ecrins }
-            ecrins = owed
+        // Partie d'avant les écrins (1.0 à 1.3) : ceux des huîtres déjà ouvertes et, pour les 1.1 à 1.3, des rangs déjà
+        // franchis (une partie 1.0 les a eus ci-dessus), une seule fois. Avec la fête de niveau si elle attend encore
+        // (une seule fenêtre), sinon dans leur propre fenêtre.
+        if savedEcrins == nil {
+            var owed = oystersOpened / Catalog.shared.economy.ecrins.oysterEvery
+            if container.contains(.reputation), rewardedLevel > 1 {
+                owed += (2...rewardedLevel).reduce(0) { $0 + Catalog.shared.levelReward($1).ecrins }
+            }
+            ecrins += owed
             if owed > 0, var up = levelUp {
                 up.ecrins = (up.ecrins ?? 0) + owed
                 levelUp = up

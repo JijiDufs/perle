@@ -15,58 +15,62 @@ struct LevelUpView: View {
         let catalog = game.catalog
         let newRank = catalog.ranks.last { $0.level > levelUp.from && $0.level <= levelUp.to }
         VStack(spacing: compact ? 10 : 14) {
-            Text(catalog.rank(forLevel: levelUp.to).title.uppercased())
-                .font(.caption.weight(.bold))
-                .tracking(2)
-                .foregroundStyle(Palette.gold)
+            FitOrScroll {
+                VStack(spacing: compact ? 10 : 14) {
+                    Text(catalog.rank(forLevel: levelUp.to).title.uppercased())
+                        .font(.caption.weight(.bold))
+                        .tracking(2)
+                        .foregroundStyle(Palette.gold)
 
-            ZStack {
-                Circle().stroke(Palette.gold.opacity(0.35), lineWidth: 5)
-                Circle().stroke(AngularGradient(colors: [Palette.gold, .white, Palette.gold], center: .center), lineWidth: 5)
-                Text("\(levelUp.to)")
-                    .font(.system(size: compact ? 30 : 44, weight: .bold, design: .rounded).monospacedDigit())
-                    .minimumScaleFactor(0.5)
-            }
-            .frame(width: compact ? 64 : 96, height: compact ? 64 : 96)
-            .accessibilityHidden(true)
+                    ZStack {
+                        Circle().stroke(Palette.gold.opacity(0.35), lineWidth: 5)
+                        Circle().stroke(AngularGradient(colors: [Palette.gold, .white, Palette.gold], center: .center), lineWidth: 5)
+                        Text("\(levelUp.to)")
+                            .font(.system(size: compact ? 30 : 44, weight: .bold, design: .rounded).monospacedDigit())
+                            .minimumScaleFactor(0.5)
+                    }
+                    .frame(width: compact ? 64 : 96, height: compact ? 64 : 96)
+                    .accessibilityHidden(true)
 
-            Group {
-                if levelUp.retroactive {
-                    Text("Tu es niveau \(levelUp.to) !")
-                } else {
-                    Text("Niveau \(levelUp.to) !")
-                }
-            }
-            .font(.title2.weight(.bold))
-            .multilineTextAlignment(.center)
-            .accessibilityAddTraits(.isHeader)
-
-            if levelUp.retroactive {
-                Text("Ta réputation a été calculée d’après ta collection.")
-                    .font(.subheadline)
+                    Group {
+                        if levelUp.retroactive {
+                            Text("Tu es niveau \(levelUp.to) !")
+                        } else {
+                            Text("Niveau \(levelUp.to) !")
+                        }
+                    }
+                    .font(.title2.weight(.bold))
                     .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .opacity(0.85)
-            }
+                    .accessibilityAddTraits(.isHeader)
 
-            if let newRank {
-                Label {
-                    Text("Nouveau rang : \(newRank.title)")
-                } icon: {
-                    Image(systemName: "crown.fill").foregroundStyle(Palette.gold)
+                    if levelUp.retroactive {
+                        Text("Ta réputation a été calculée d’après ta collection.")
+                            .font(.subheadline)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .opacity(0.85)
+                    }
+
+                    if let newRank {
+                        Label {
+                            Text("Nouveau rang : \(newRank.title)")
+                        } icon: {
+                            Image(systemName: "crown.fill").foregroundStyle(Palette.gold)
+                        }
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
+                    }
+
+                    rewards
+
+                    if let next = catalog.nextRank(after: levelUp.to) {
+                        Text("Prochain rang : \(next.title), au niveau \(next.level)")
+                            .font(.footnote)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .opacity(0.75)
+                    }
                 }
-                .font(.headline)
-                .multilineTextAlignment(.center)
-            }
-
-            rewards
-
-            if let next = catalog.nextRank(after: levelUp.to) {
-                Text("Prochain rang : \(next.title), au niveau \(next.level)")
-                    .font(.footnote)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .opacity(0.75)
             }
 
             // Un écrin gagné : on peut aller l'ouvrir tout de suite (l'onglet apparaît avec le premier).
@@ -154,7 +158,7 @@ struct EcrinCatchUpView: View {
         VStack(spacing: game.foldX != nil ? 10 : 14) {
             Image(systemName: "gift.fill").font(.system(size: 40)).foregroundStyle(Palette.gold).accessibilityHidden(true)
             Text("Des écrins t’attendent !").font(.title2.weight(.bold)).multilineTextAlignment(.center).accessibilityAddTraits(.isHeader)
-            Text("Tes niveaux t’ont rapporté \(count) écrins. Ouvre-les doucement : quelque part, le bijou scintille.")
+            Text("Tes huîtres et tes rangs t’ont rapporté \(count) écrins. Ouvre-les doucement : quelque part, le bijou scintille.")
                 .font(.subheadline).multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true).opacity(0.85)
             Button {
                 withAnimation { game.acknowledgeEcrinCatchUp(); game.tab = .ecrins }

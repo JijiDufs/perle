@@ -33,19 +33,26 @@ public enum MissionKind: String, Codable, Sendable {
     case open, lustreA, lustreS, rare, noCrack, sell, share, find, fish
 }
 
-/// Le poisson voleur : il chipe parfois une perle ordinaire juste après la révélation (src/core/appEconomy.ts).
+/// Le poisson voleur : il chipe parfois la perle juste après la révélation, quelle que soit sa rareté (src/core/appEconomy.ts).
 public struct FishThief: Codable, Sendable, Equatable {
-    /// Chance qu'une perle qui peut être volée le soit.
+    /// Chance qu'une perle soit volée.
     public let chance: Double
-    /// Rareté maximale (niveau) d'une perle qu'un poisson peut voler.
-    public let maxTier: Int
     /// Poussière d'or quand on rattrape le poisson.
     public let catchBonusDust: Int
     /// Le poisson arrive sur la perle (ms), puis s'enfuit avec (ms) : le temps pour le toucher.
     public let arriveMs: Double
-    public let fleeMs: Double
+    public private(set) var fleeMs: Double
     /// Tolérance autour du poisson pour le toucher, en part de la taille de l'huître.
     public let hitRadius: Double
+    /// Avec VoiceOver ou « Réduire les animations », la fuite dure ce nombre de fois plus longtemps (temps imposé).
+    public let assistedFleeFactor: Double
+
+    /// Le même poisson, qui fuit plus lentement (VoiceOver, « Réduire les animations »).
+    public var assisted: FishThief {
+        var slower = self
+        slower.fleeMs *= assistedFleeFactor
+        return slower
+    }
 
     /// Le poisson peut encore être touché, `elapsedMs` après le début du vol.
     public func canCatch(elapsedMs: Double) -> Bool {
@@ -53,10 +60,10 @@ public struct FishThief: Codable, Sendable, Equatable {
     }
 }
 
-/// D'où viennent les écrins dans l'app : les montées de niveau et la poussière d'or (`APP_ECRINS`), jamais l'argent réel.
+/// D'où viennent les écrins dans l'app (`APP_ECRINS`) : les huîtres ouvertes, les rangs, la poussière d'or, la boutique.
 public struct EcrinEconomy: Codable, Sendable, Equatable {
-    /// Un écrin tous les `levelEvery` niveaux, et `rankEcrins` de plus à chaque rang.
-    public let levelEvery: Int
+    /// Un écrin toutes les `oysterEvery` huîtres ouvertes, et `rankEcrins` de plus à chaque rang.
+    public let oysterEvery: Int
     public let rankEcrins: Int
     /// Un écrin acheté au comptoir.
     public let dustPrice: Int

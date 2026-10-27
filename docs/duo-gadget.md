@@ -142,7 +142,7 @@ Comment le donner, deux pistes :
 | Skin | Comment l'obtenir | Ce qu'il change |
 |---|---|---|
 | Huître du lagon | Offerte (celle de départ) | — |
-| **Bénitier** | 2 000 ✦ (environ 3 semaines de jeu régulier) ou 2,99 € | Le coquillage géant : valves ondulées à grosses côtes, bord en zigzag, manteau bleu-vert irisé à l'intérieur, plus grand à l'écran |
+| **Bénitier** | 3 000 ✦ (environ 3 semaines de jeu régulier, simulation du 2026-10-21) ou 2,99 € | Le coquillage géant : valves ondulées à grosses côtes, bord en zigzag, manteau bleu-vert irisé à l'intérieur, plus grand à l'écran |
 | **Première marée** | Exclusive aux inscrits (lien de l'e-mail de lancement, §6) | Coquille sable et écume, liseré argent ; ne sera plus jamais disponible |
 | **Huître d'or** (*golden oyster*) | **9,99 €, achat seulement** | Coquille d'or martelé, nacre champagne, reflets qui suivent l'angle, son et vibration dédiés au « pop », badge « Or » sur les cartes |
 
@@ -172,7 +172,7 @@ Choix de Jules (2026-10-08) : on peut **recharger ses huîtres** et **acheter de
 | Malle de poussière d'or | consommable | 9,99 € | 3 000 ✦ |
 | Écrin de velours (2026-10-27) | consommable | 0,99 € | 1 écrin (probabilités affichées à côté) |
 | Coffret de 5 écrins (2026-10-27) | consommable | 3,99 € | 5 écrins |
-| Bénitier | non consommable | 2,99 € | Le skin (aussi 2 000 ✦) |
+| Bénitier | non consommable | 2,99 € | Le skin (aussi 3 000 ✦) |
 | Huître d'or | non consommable | 9,99 € | Le skin, seulement en achat |
 
 **Revente des perles.** Le comptoir de la collection rachète les perles en double contre de la poussière d'or, au barème de l'app (§6 quater). On ne revend jamais le dernier exemplaire d'une sorte, ni une perle à marque rare en lot (décisions déjà prises, AGENTS.md §6). « Tout revendre » garde le plus bel exemplaire de chaque sorte.
@@ -194,21 +194,21 @@ Choix de Jules (2026-10-08) : on peut **recharger ses huîtres** et **acheter de
 
 | Source | Poussière d'or |
 |---|---|
-| Revendre un doublon — / ◆ / ◆◆ / ◆◆◆ / ★ / ★★ | 0 / 1 / 2 / 5 / 15 / 40 ✦ |
+| Revendre un doublon — / ◆ / ◆◆ / ◆◆◆ / ★ / ★★ | 0 / 1 / 2 / 4 / 10 / 25 ✦ (2026-10-21) |
 | Trouvaille « pièce d'or engloutie » | 5 ✦ |
 | Chaque mission du jour | 5 ✦ |
 | Les trois missions du jour terminées | + 10 ✦ |
 | Calendrier de connexion (jours 1 à 7) | 3 huîtres · 10 ✦ · 5 huîtres · 15 ✦ · 5 huîtres · 20 ✦ · 10 huîtres + 25 ✦ (`APP_CALENDAR`) |
-| Montée de niveau (1.1) | 5 ✦ (+ 5 huîtres) ; nouveau rang : + 20 ✦ (+ 10 huîtres) (`APP_LEVELS`) |
-| Succès (1.3), une seule fois chacun | bronze 5 ✦ (+ 3 huîtres), argent 10 ✦ (+ 5), or 25 ✦ (+ 10) ; album complété + 10 huîtres ; ≈ 440 ✦ pour les 32 (`APP_ACHIEVEMENT_REWARDS`) |
+| Montée de niveau (1.1) | 5 ✦ ; + 5 huîtres tous les 5 niveaux ; nouveau rang : + 20 ✦ + 5 huîtres (`APP_LEVELS`, 2026-10-21) |
+| Succès (1.3), une seule fois chacun | bronze 5 ✦, argent 10 ✦, or 25 ✦, pas d'huîtres (2026-10-21) ; ≈ 440 ✦ pour les 32 (`APP_ACHIEVEMENT_REWARDS`) |
 
-**Ce que ça donne par jour** (une fois les doublons arrivés : environ 2,5 ✦ par huître revendue en moyenne)
+**Ce que ça donne par jour** (simulation du vrai moteur, `EconomySimulationTests` dans `swift test`, 30 jours, 2026-10-21 ; revente ≈ 2 ✦ par huître, tout compris : revente, missions, calendrier, niveaux, succès, poisson)
 
-| Joueur | Huîtres par jour | Revente | Missions + calendrier | Total | Bénitier (2 000 ✦) |
+| Joueur | Séances par jour | Huîtres par jour | Poussière par jour | Bénitier (3 000 ✦) | 7 perles (médiane) |
 |---|---|---|---|---|---|
-| Occasionnel | 15 | ≈ 35 ✦ | ≈ 30 ✦ | ≈ 65 ✦ | ≈ 1 mois |
-| Régulier | 30 | ≈ 70 ✦ | ≈ 35 ✦ | ≈ 105 ✦ | ≈ 3 semaines |
-| Acharné (stock gratuit au maximum) | 72 | ≈ 165 ✦ | ≈ 35 ✦ | ≈ 200 ✦ | ≈ 10 jours |
+| Léger (2 séances, pas de pub) | 2 | ≈ 24 | ≈ 92 ✦ | ≈ 1 mois (J31) | J9 |
+| Régulier (3 séances, 3 pubs) | 3 | ≈ 44 | ≈ 143 ✦ | ≈ 3 semaines (J21) | J5 |
+| Gros (9 séances, 3 pubs) | 9 | ≈ 72 | ≈ 207 ✦ | ≈ 2 semaines (J14) | J3 |
 
 Les premiers jours, il y a peu de doublons (on garde toujours le premier exemplaire), donc encore moins de poussière.
 
@@ -217,10 +217,9 @@ Les premiers jours, il y a peu de doublons (on garde toujours le premier exempla
 | Article | Prix |
 |---|---|
 | Une huître (quand le stock est vide) | 20 ✦ |
-| Bénitier | 2 000 ✦ |
-| Un écrin (1.4), au comptoir ou sur l'onglet Écrins vide | 200 ✦ (`APP_ECRINS` ; les autres viennent des niveaux : 1 tous les 3, + 1 par rang) |
+| Bénitier | 3 000 ✦ |
 
-**Cohérence avec la boutique** : 2 000 ✦ en poussière achetée coûtent plus de 4,99 €, alors que le bénitier coûte 2,99 € en direct. Celui qui paie achète donc le skin, pas la poussière. Et 10 huîtres valent 200 ✦ ou 0,99 € : les deux prix se tiennent.
+**Cohérence avec la boutique** : 3 000 ✦ en poussière achetée coûtent 9,99 € (la Malle), alors que le bénitier coûte 2,99 € en direct. Celui qui paie achète donc le skin, pas la poussière. Et 10 huîtres valent 200 ✦ ou 0,99 € : les deux prix se tiennent.
 
 **Missions du jour** (3 tirées chaque jour parmi la liste, mêmes pour tous, graine = la date, comme dans la webapp)
 

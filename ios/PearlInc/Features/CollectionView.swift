@@ -631,22 +631,34 @@ struct JewelThumb: View {
     }
 }
 
-/// Les probabilités de chaque perle (et des trouvailles), toujours affichées (docs/duo-gadget.md §5, règle 3.1.1).
+/// Toutes les chances d'une huître, toujours affichées (docs/duo-gadget.md §5, règle 3.1.1) : perles, trouvailles par
+/// rareté, marques rares, poisson voleur, garantie (avec ce qu'il reste au joueur).
 struct OddsList: View {
     @Environment(GameModel.self) private var game
 
     var body: some View {
+        let catalog = game.catalog
         VStack(spacing: 10) {
-            ForEach(game.catalog.pearls) { pearl in
+            ForEach(catalog.pearls) { pearl in
                 row(Text(verbatim: "\(pearl.name)  \(pearl.rarity)"), pearl.probability)
             }
-            row(Text("Trouvaille, à la place de la perle"), game.catalog.findProbability)
-            row(Text("Poisson voleur, sur une perle ◆"), game.economy.fishThief.chance)
-            Text("Il emporte la perle qu’on vient de trouver : touche-le pendant qu’il s’enfuit pour la récupérer.")
-                .font(.caption).foregroundStyle(.white.opacity(0.65)).frame(maxWidth: .infinity, alignment: .leading)
-            Text("Garantie : une perle dorée ou plus rare au plus tard à la \(game.tuning.pityThreshold + 1)ᵉ huître.")
-                .font(.caption).foregroundStyle(.white.opacity(0.65)).frame(maxWidth: .infinity, alignment: .leading)
+            ForEach(1..<catalog.raritySymbols.count, id: \.self) { tier in
+                let chance = catalog.findChance(tier: tier)
+                if chance > 0 { row(Text("Trouvaille \(catalog.raritySymbols[tier]), à la place de la perle"), chance) }
+            }
+            note(Text("Garantie : une perle dorée ou plus rare en \(game.tuning.pityThreshold + 1) huîtres au plus. Encore \(game.player.guaranteeIn(tuning: game.tuning))."))
+            Divider().overlay(.white.opacity(0.2))
+            ForEach(catalog.markWeights, id: \.id) { mark in
+                row(Text("Marque « \(catalog.marks[mark.id]?.label ?? mark.id) », sur une perle"), catalog.markChance(mark.id, tuning: game.tuning))
+            }
+            note(Text("Une marque rare augmente la valeur de la perle, pas sa rareté."))
+            row(Text("Poisson voleur, sur une perle"), game.economy.fishThief.chance)
+            note(Text("Il emporte la perle qu’on vient de trouver, quelle que soit sa rareté : touche-le pendant qu’il s’enfuit pour la récupérer (+ \(game.economy.fishThief.catchBonusDust) ✦)."))
         }
+    }
+
+    private func note(_ text: Text) -> some View {
+        text.font(.caption).foregroundStyle(.white.opacity(0.65)).frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func row(_ label: Text, _ probability: Double) -> some View {

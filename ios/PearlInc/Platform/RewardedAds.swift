@@ -31,9 +31,6 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
     private(set) var isReady = false
     /// Le joueur doit pouvoir revoir ses choix de confidentialité (RGPD) : bouton dans les Réglages.
     private(set) var privacyOptionsRequired = false
-    /// Le formulaire de consentement de Google est passé (répondu, inutile ou indisponible) : les autres
-    /// fenêtres (calendrier) peuvent s'ouvrir sans passer dessous.
-    private(set) var consentAnswered = false
 
     @ObservationIgnored private var consentRequested = false
     @ObservationIgnored private var sdkStarted = false
@@ -52,7 +49,14 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
         #endif
     }
 
-    /// Au premier affichage du jeu : consentement (formulaire de Google si la loi l'exige),
+    /// Au lancement : seulement si le joueur a déjà répondu au formulaire (il ne s'ouvre donc pas). Sinon on attend
+    /// le moment où une pub peut servir (`start`), jamais pendant le tutoriel (audit P0-7).
+    func startIfConsentKnown() async {
+        let status = ConsentInformation.shared.consentStatus
+        if status == .obtained || status == .notRequired { await start() }
+    }
+
+    /// Quand une pub peut servir (marée basse, boutique) : consentement (formulaire de Google si la loi l'exige),
     /// puis démarrage d'AdMob et chargement de la première pub.
     func start() async {
         guard !consentRequested else { return }
@@ -63,7 +67,6 @@ final class RewardedAds: NSObject, FullScreenContentDelegate {
         } catch {
             // Hors ligne ou formulaire indisponible : le consentement d'une séance précédente reste valable.
         }
-        consentAnswered = true
         await afterConsent()
     }
 

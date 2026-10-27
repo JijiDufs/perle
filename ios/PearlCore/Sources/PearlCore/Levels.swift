@@ -20,8 +20,10 @@ public struct LevelEconomy: Codable, Sendable, Equatable {
         public let factor: Double
     }
     public let fastStart: FastStart
-    public let rewardOysters: Int
     public let rewardDust: Int
+    /// Des huîtres seulement tous les `rewardOystersEvery` niveaux (à chaque niveau, elles faisaient boule de neige).
+    public let rewardOysters: Int
+    public let rewardOystersEvery: Int
     public let rankRewardOysters: Int
     public let rankRewardDust: Int
     public let missionReputation: Int
@@ -40,7 +42,7 @@ public struct LevelProgress: Sendable, Equatable {
 public struct LevelReward: Sendable, Equatable {
     public let oysters: Int
     public let dust: Int
-    /// Écrins : un tous les 3 niveaux, un de plus à chaque rang (`APP_ECRINS`).
+    /// Écrins : un à chaque nouveau rang (`APP_ECRINS` ; les autres viennent des huîtres ouvertes).
     public let ecrins: Int
     /// Rang atteint à ce niveau, s'il y en a un.
     public let rank: Rank?
@@ -91,13 +93,15 @@ extension Catalog {
         ranks.first { $0.level > level }
     }
 
-    /// Récompense en arrivant au niveau `level` ; un bonus en changeant de rang.
+    /// Récompense en arrivant au niveau `level` : de la poussière d'or, des huîtres de temps en temps, un bonus en
+    /// changeant de rang.
     public func levelReward(_ level: Int) -> LevelReward {
         let rank = ranks.first { $0.level == level && $0.level > 1 }
         let levels = economy.levels
-        let ecrins = (level % economy.ecrins.levelEvery == 0 ? 1 : 0) + (rank == nil ? 0 : economy.ecrins.rankEcrins)
-        return LevelReward(oysters: levels.rewardOysters + (rank == nil ? 0 : levels.rankRewardOysters),
-                           dust: levels.rewardDust + (rank == nil ? 0 : levels.rankRewardDust), ecrins: ecrins, rank: rank)
+        let oysters = level % levels.rewardOystersEvery == 0 ? levels.rewardOysters : 0
+        return LevelReward(oysters: oysters + (rank == nil ? 0 : levels.rankRewardOysters),
+                           dust: levels.rewardDust + (rank == nil ? 0 : levels.rankRewardDust),
+                           ecrins: rank == nil ? 0 : economy.ecrins.rankEcrins, rank: rank)
     }
 
     /// Réputation d'un écrin ouvert : éclat parfait, premier bijou de sa rareté.

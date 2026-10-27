@@ -3,6 +3,7 @@ import SwiftUI
 /// Rester appuyé sur une carte et bouger le doigt : elle s'incline sous le doigt, comme une vraie carte
 /// qu'on fait jouer dans la lumière (le reflet suit le doigt), sans quitter le milieu de l'écran.
 /// En lâchant, elle revient à plat avec un petit rebond. Un toucher bref, sans bouger : `onTap`.
+/// Sans doigt, elle suit doucement les mouvements du téléphone (gyroscope, `DeviceTilt`), sauf avec « Réduire les animations ».
 struct CardTilt: ViewModifier {
     var onTap: (() -> Void)?
 
@@ -12,6 +13,8 @@ struct CardTilt: ViewModifier {
     private static let tapSlop = 10.0
     /// Un toucher plus long que ça (s) ne passe pas à l'huître suivante : on regardait la carte.
     private static let tapMaxSeconds = 0.35
+    /// Part de l'inclinaison maximale donnée par le téléphone : le doigt reste le geste fort.
+    private static let motionShare = 0.6
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// Le doigt sur la carte, de -1 (bord gauche / haut) à 1 (bord droit / bas) ; nil = pas de doigt.
@@ -21,10 +24,11 @@ struct CardTilt: ViewModifier {
     @State private var moved = false
 
     func body(content: Content) -> some View {
-        let tilt = touch ?? .zero
+        let motion = reduceMotion ? nil : DeviceTilt.shared.tilt
+        let tilt = touch ?? motion.map { CGPoint(x: $0.x * Self.motionShare, y: $0.y * Self.motionShare) } ?? .zero
         let amount = reduceMotion ? Self.maxTilt * 0.3 : Self.maxTilt
         content
-            .environment(\.cardLight, touch.map { CGPoint(x: ($0.x + 1) / 2, y: ($0.y + 1) / 2) })
+            .environment(\.cardLight, (touch ?? motion).map { CGPoint(x: ($0.x + 1) / 2, y: ($0.y + 1) / 2) })
             .onGeometryChange(for: CGSize.self) { $0.size } action: { cardSize = $0 }
             // Le coin sous le doigt s'enfonce, le coin opposé se soulève.
             .rotation3DEffect(.degrees(-tilt.y * amount), axis: (x: 1, y: 0, z: 0), perspective: 0.45)
@@ -33,6 +37,8 @@ struct CardTilt: ViewModifier {
             .animation(touch == nil ? .spring(response: 0.55, dampingFraction: 0.42) : .interactiveSpring(response: 0.16, dampingFraction: 0.8),
                        value: touch)
             .sensoryFeedback(.impact(weight: .light, intensity: 0.5), trigger: touch == nil) { _, released in !released }
+            .onAppear { DeviceTilt.shared.start() }
+            .onDisappear { DeviceTilt.shared.stop() }
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in

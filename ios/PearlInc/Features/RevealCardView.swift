@@ -27,6 +27,8 @@ struct RevealCardView: View {
                 .overlay(alignment: .bottom) {
                     if let dust = game.rescuedDust {
                         badge(Text("Rattrapée au vol ! + \(dust) ✦"), color: Color(hex: "#ff9d3c")).rotationEffect(.degrees(-3)).offset(y: 14)
+                    } else if game.revealEarnedEcrin {
+                        badge(Text("+ 1 écrin"), color: Palette.gold).rotationEffect(.degrees(-3)).offset(y: 14)
                     }
                 }
                 // Rester appuyé et bouger le doigt fait jouer la carte dans la lumière ; un toucher bref passe à la suivante.

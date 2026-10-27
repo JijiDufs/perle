@@ -251,11 +251,9 @@ private struct EmptyEcrins: View {
 
     var body: some View {
         let price = game.ecrinPrice
-        let level = game.catalog.levelProgress(reputation: game.player.reputation).level
-        let next = ((level + 1)...(level + 10)).first { game.catalog.levelReward($0).ecrins > 0 } ?? level + 1
         VStack(spacing: 14) {
             Text("Pas d’écrin pour l’instant").font(.title3.weight(.bold)).multilineTextAlignment(.center)
-            Text("Tu en gagnes un tous les \(game.economy.ecrins.levelEvery) niveaux et à chaque nouveau rang : le prochain au niveau \(next).")
+            Text("Tu en gagnes un toutes les \(game.economy.ecrins.oysterEvery) huîtres et à chaque nouveau rang : le prochain dans \(game.player.oystersUntilEcrin()) huîtres.")
                 .font(.subheadline).multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true).opacity(0.85)
             Button { game.buyEcrin() } label: { Text("Acheter un écrin · \(price) ✦") }
                 .buttonStyle(PearlButtonStyle())
@@ -365,7 +363,7 @@ struct EcrinOddsList: View {
             Group {
                 Text("Garantie : un bijou ★ ou plus rare au plus tard au \(t.ecrinPityThreshold + 1)ᵉ écrin.")
                 Text("Éclat parfait : valeur ×\(t.glintPerfectMultiplier.formatted()), et \(t.glintRareVariantChance.formatted(.percent.precision(.fractionLength(0)))) de chance d’une variante rare (Aurore, Nuit ou Givre) : valeur ×\(t.glintRareVariantMultiplier.formatted()).")
-                Text("Les écrins se gagnent tous les \(game.economy.ecrins.levelEvery) niveaux et à chaque nouveau rang, s’achètent \(game.ecrinPrice) ✦ au comptoir, ou dans la boutique. Ils comptent tous pour la garantie.")
+                Text("Les écrins se gagnent toutes les \(game.economy.ecrins.oysterEvery) huîtres et à chaque nouveau rang, s’achètent \(game.ecrinPrice) ✦ au comptoir, ou dans la boutique. Ils comptent tous pour la garantie.")
             }
             .font(.caption).foregroundStyle(.white.opacity(0.65)).frame(maxWidth: .infinity, alignment: .leading)
         }

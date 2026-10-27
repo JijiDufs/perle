@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import PearlCore
+import UIKit
 
 /// Relie le moteur (PearlCore), la source de geste, l'haptique, le son et la sauvegarde.
 /// Les règles restent dans PearlCore ; les vues affichent cet état et transmettent les gestes.
@@ -66,6 +67,8 @@ final class GameModel {
     private(set) var rescuedDust: Int?
     /// La carte affichée est la première de sa sorte (perle ou trouvaille).
     private(set) var revealIsNew = false
+    /// Cette huître a rapporté un écrin (un toutes les `oysterEvery`).
+    private(set) var revealEarnedEcrin = false
     /// Réputation montrée par l'anneau de niveau : elle ne bouge qu'à l'arrivée de la carte (pendant le
     /// suspense, l'anneau trahirait la rareté de la perle).
     private(set) var shownReputation = 0
@@ -144,8 +147,8 @@ final class GameModel {
     init() {
         let catalog = Catalog.shared
         var saved = Storage.load() ?? PlayerState.new(systemRng(), catalog.tuning, now: Clock.nowMs)
-        // App fermée pendant la fuite du poisson : on rend la perle.
-        _ = saved.resolveTheft(caught: true)
+        // App fermée pendant la fuite du poisson : on rend la perle, sans bonus.
+        saved.returnStolenPearl()
         player = saved
         shownReputation = saved.reputation
         current = saved.oyster
@@ -175,7 +178,10 @@ final class GameModel {
     var trembles: Bool { find.map { $0.tier >= 4 } ?? pearl.trembles }
     var revealTier: Int { find.map { min(3, $0.tier - 1) } ?? pearl.revealTier }
     var equippedSkin: AppSkin { economy.skin(player.equippedSkin) ?? economy.skins[0] }
-    var fishThief: FishThief { economy.fishThief }
+    /// Avec VoiceOver ou « Réduire les animations », le poisson fuit plus lentement (temps imposé).
+    var fishThief: FishThief {
+        UIAccessibility.isVoiceOverRunning || UIAccessibility.isReduceMotionEnabled ? economy.fishThief.assisted : economy.fishThief
+    }
 
     /// Millisecondes depuis que le poisson a chipé la perle ; nil s'il n'y a pas de vol en cours.
     func theftElapsedMs(at date: Date) -> Double? {
@@ -209,8 +215,11 @@ final class GameModel {
 
     var levelProgress: LevelProgress { catalog.levelProgress(reputation: shownReputation) }
 
-    /// Moment calme : huître posée, fermée, hors du tutoriel (jamais pendant la révélation ni la carte).
-    private var isCalm: Bool { stage == .playing && phase == .closed && angle == 0 && !inTutorial }
+    /// Le calendrier de connexion est ouvert : il passe avant les autres fenêtres (une seule à la fois).
+    var showingCalendar = false
+
+    /// Moment calme : huître posée, fermée, hors du tutoriel (jamais pendant la révélation, la carte ni le calendrier).
+    private var isCalm: Bool { stage == .playing && phase == .closed && angle == 0 && !inTutorial && !showingCalendar }
 
     /// La montée de niveau à fêter, seulement à un moment calme.
     var levelUpToShow: LevelUp? {
@@ -261,7 +270,8 @@ final class GameModel {
 
     /// La montée de niveau a été fêtée (bouton, ou sur le Duo : ouvrir le téléphone).
     func acknowledgeLevelUp() {
-        guard player.levelUp != nil else { return }
+        guard let levelUp = player.levelUp else { return }
+        Analytics.send(.level, ["level": String(levelUp.to), "retroactive": String(levelUp.retroactive)])
         player.acknowledgeLevelUp()
         save()
         audio.tap()
@@ -354,6 +364,7 @@ final class GameModel {
     func catchFish() {
         guard case .theft(let reveal) = stage, let elapsed = theftElapsedMs(at: Date()), fishThief.canCatch(elapsedMs: elapsed) else { return }
         let gained = player.catchThief()
+        Analytics.send(.fish, ["caught": "true", "rarity": pearl.rarity])
         showReputation()
         rescuedDust = gained
         if gained > 0 { dustBump += 1 }
@@ -386,6 +397,7 @@ final class GameModel {
         theftStartedAt = nil
         rescuedDust = nil
         revealIsNew = false
+        revealEarnedEcrin = false
         stage = .playing
     }
 
@@ -447,6 +459,7 @@ final class GameModel {
         theftStartedAt = nil
         rescuedDust = nil
         revealIsNew = false
+        revealEarnedEcrin = false
         stage = .playing
         ecrinStage = .playing
         glint = nil
@@ -470,6 +483,7 @@ final class GameModel {
         ads.show { [weak self] rewarded in
             self?.audio.setAdShowing(false)
             guard let self, rewarded, self.player.claimAdReward(day: Clock.dayKey()) != nil else { return }
+            Analytics.send(.ad)
             self.haptics.reveal(tier: 1)
             self.audio.reward()
             self.save()
@@ -492,6 +506,7 @@ final class GameModel {
 
     /// Un achat validé par StoreKit : le Core décide de ce qu'il donne.
     private func deliver(_ productId: String) {
+        Analytics.send(.purchase, ["product": productId])
         if let product = economy.consumables.first(where: { $0.id == productId }) {
             player.grant(product)
             if product.dust > 0 { dustBump += 1 }
@@ -524,6 +539,7 @@ final class GameModel {
 
     func claimDaily() {
         guard let reward = player.claimDaily(day: Clock.dayKey()) else { return }
+        Analytics.send(.calendar, ["streak": String(player.login.streak)])
         if reward.dust > 0 { dustBump += 1 }
         showReputation()
         haptics.reveal(tier: 1)
@@ -532,7 +548,11 @@ final class GameModel {
     }
 
     func claimMission(at index: Int) {
-        if let gained = player.claimMission(at: index) { gainedDust(gained); showReputation() }
+        let kind = player.missions.flatMap { $0.missions.indices.contains(index) ? $0.missions[index].kind : nil }
+        guard let gained = player.claimMission(at: index) else { return }
+        Analytics.send(.mission, ["kind": kind?.rawValue ?? ""])
+        gainedDust(gained)
+        showReputation()
     }
 
     func recordShare() {
@@ -841,9 +861,15 @@ final class GameModel {
         } else {
             revealIsNew = current.pearlId != "empty" && player.count(of: current.pearlId) == 0
         }
+        let ecrinsBefore = player.ecrins
         let reveal = player.reveal(lustre: lustre, cracked: cracked, now: Clock.nowMs, rng: rng, thiefRng: thiefRng, tuning: tuning)
+        revealEarnedEcrin = player.ecrins > ecrinsBefore
         if case .find(_, let dust) = reveal, dust > 0 { dustBump += 1 }
         save()
+        Analytics.send(.oyster, ["kind": find?.id ?? pearl.id, "rarity": find.map { catalog.raritySymbols[$0.tier] } ?? pearl.rarity,
+                                 "lustre": lustre.rawValue, "cracked": String(cracked), "input": hingeDriving ? "hinge" : "thumb",
+                                 "tutorial": String(inTutorial)])
+        if !inTutorial && player.oystersAvailable(now: Clock.nowMs, tuning: tuning) == 0 { Analytics.send(.tideOut) }
         let suspense = tuning.revealSuspenseMs(tier: tier)
         let style: Audio.RevealStyle = find != nil ? .find : pearl.id == "cursed" ? .cursed : pearl.glow == nil ? .empty : .pearl
         audio.lid()
@@ -883,10 +909,13 @@ final class GameModel {
             guard let self, case .theft = self.stage else { return }
             self.haptics.pop()
             self.audio.fish()
+            UIAccessibility.post(notification: .announcement,
+                                 argument: String(localized: "Un poisson emporte ta perle ! Action : l’attraper."))
             try? await Task.sleep(for: .milliseconds(Int(fish.fleeMs)))
             guard case .theft = self.stage else { return }
             _ = self.player.resolveTheft(caught: false)
             self.save()
+            Analytics.send(.fish, ["caught": "false", "rarity": self.pearl.rarity])
             self.haptics.crack()
             self.audio.reveal(.empty, tier: 0)
             self.theftStartedAt = nil
