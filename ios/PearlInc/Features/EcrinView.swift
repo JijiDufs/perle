@@ -170,17 +170,26 @@ struct EcrinView: View {
         let c = Canvas2D(context)
         let w = Double(size.width), h = Double(size.height)
         let t = reduceMotion ? 0 : date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 3600)
-        // Sur l'écran intérieur du Duo à moitié ouvert, l'écrin se pose sur la moitié droite (rien sur le pli).
-        let left = game.foldX.map { min(max(0, $0), w) } ?? 0
-        let span = w - left
         let visible = h - 190
-        // Sur l'écran intérieur du Duo, l'écrin est vu de profil : sa charnière vers le pli, son couvercle qui prend
-        // l'angle du téléphone (il ne passe sur le pli qu'au-delà de la révélation). Ailleurs, de trois quarts.
-        let profile = game.foldX != nil
-        // Charnière vers 40 % de la moitié d'écran : le couvercle ouvert à 140° (la révélation) touche à peine le pli.
-        let cx = left + span * (profile ? 0.64 : 0.5)
-        let cy = 100 + visible * 0.62
-        let bw = profile ? span * 0.7 : min(span * 0.86, visible * 0.68)
+        // Sur l'iPhone Duo, l'écrin est vu de dessus comme l'huître. Écran intérieur : sa charnière sur le pli, le
+        // plateau à droite, le couvercle ouvert à plat à gauche (c'est le téléphone qui le soulève) ; ouvrir le
+        // téléphone éclaire l'intérieur. Écran extérieur : fermé, charnière à gauche. iPhone classique : trois quarts.
+        let top = game.hasHinge || game.foldX != nil
+        let cx, cy, bw: Double
+        if let fold = game.foldX {
+            // Chaque moitié de l'écrin (plateau, couvercle) tient dans sa moitié d'écran.
+            bw = min(min(fold, w - fold) * 1.2, visible * 0.68)
+            cx = fold + bw * 0.35
+            cy = 100 + visible * 0.5
+        } else if top {
+            bw = min(w * 0.9, visible * 0.68)
+            cx = w / 2
+            cy = 100 + visible * 0.5
+        } else {
+            bw = min(w * 0.86, visible * 0.68)
+            cx = w / 2
+            cy = 100 + visible * 0.62
+        }
         let salon = SalonArt(time: t, focus: .init(x: cx, y: cy, w: bw * 0.8, h: bw * 0.45))
         salon.draw(c, w: w, h: h)
         guard let pending = game.shownEcrin, let rarity = game.shownRarity else {
@@ -197,12 +206,12 @@ struct EcrinView: View {
         let sparkleTier = variant != nil ? max(rarity.tier, 5) : rarity.tier
         let look = JewelArt.Look(pending.jewel, variant: variant?.id, catalog: game.catalog)
 
-        EcrinArt.drawShadow(c, cx: cx, cy: cy, width: bw, profile: profile)
+        EcrinArt.drawShadow(c, cx: cx, cy: cy, width: bw, top: top)
         let anchors = EcrinArt.draw(
-            c, cx: cx, cy: cy, width: bw, leather: EcrinArt.leathers[game.leather], angle: angle,
+            c, cx: cx, cy: cy, width: bw, leather: EcrinArt.leathers[game.leather], angle: game.foldX == nil ? angle : 180,
             dim: 1 - smoothstep(4, 140, angle),
             sweep: rarity.tier >= 4 && game.ecrinPhase == .closed && !reduceMotion ? (t * 0.5).truncatingRemainder(dividingBy: 1.6) - 0.3 : nil,
-            profile: profile,
+            top: top,
             drawJewel: { JewelArt.draw(c, 0, (JewelArt.yOffset(pending.jewel) - 0.5) * 0.66, 0.66 / 440, look) },
             drawEffects: { x, y, unit in
                 guard let glow else { return }
@@ -212,7 +221,8 @@ struct EcrinView: View {
         )
 
         // La lumière filtre par l'entrebâillement, au bord avant du couvercle.
-        let leak = smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle))
+        // (Pas sur l'écran intérieur du Duo : le couvercle y est déjà ouvert à plat.)
+        let leak = game.foldX == nil ? smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle)) : 0
         if leak > 0.001 { drawGlow(c, anchors.lidEdge.0, anchors.lidEdge.1, bw * 0.5, rarity.glow ?? "#fff1d6", leak * 0.6) }
 
         // Gerbe d'étoiles de l'éclat parfait ; deux vagues, à la couleur de la variante, si elle apparaît.

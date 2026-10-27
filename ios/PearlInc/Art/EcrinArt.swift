@@ -17,18 +17,12 @@ enum EcrinArt {
     private static let dist = 3.4
     /// Le couvercle s'ouvre jusqu'à ~115° quand le geste va jusqu'à 180°.
     private static let lidRatio = 0.64
-    /// Vue de profil (Duo à moitié ouvert) : on regarde l'écrin par le côté, à peine d'en haut.
-    private static let profilePitch = 8 * Double.pi / 180
-
-    /// La caméra : de trois quarts (vu d'assez haut), ou de profil (charnière à gauche, couvercle qui se lève vers le pli).
-    private static func camera(profile: Bool) -> (V3) -> V3 {
-        let tilt = profile ? profilePitch : pitch
-        let cosP = cos(tilt), sinP = sin(tilt)
-        return { p in
-            // De profil, l'avant de l'écrin (+z) part à droite de l'écran.
-            let (x, z) = profile ? (p.2, -p.0) : (p.0, p.2)
-            return (x, p.1 * cosP - z * sinP, p.1 * sinP + z * cosP)
-        }
+    /// La caméra : de trois quarts (vu d'assez haut), ou de dessus comme l'huître sur le Duo (charnière à gauche,
+    /// l'avant de l'écrin vers la droite de l'écran).
+    private static func camera(top: Bool) -> (V3) -> V3 {
+        if top { return { p in (p.2, p.0, p.1) } }
+        let cosP = cos(pitch), sinP = sin(pitch)
+        return { p in (p.0, p.1 * cosP - p.2 * sinP, p.1 * sinP + p.2 * cosP) }
     }
 
     private static func normalize(_ v: V3) -> V3 {
@@ -76,16 +70,17 @@ enum EcrinArt {
     /// Dessine l'écrin centré en (cx, cy), large de `width` ; `angle` : le geste (0…180°) ; `dim` : pénombre de
     /// l'intérieur (0…1) ; `sweep` : reflet sur le couvercle (0…1) ; `drawJewel` dessine le bijou couché sur le
     /// plateau (repère du plateau : 1 = largeur de l'écrin) ; `drawEffects` : lumière au-dessus du bijou (x, y, pt par unité).
-    /// `profile` (Duo à moitié ouvert) : vu de côté, le couvercle prend exactement l'angle du téléphone et le bijou
-    /// se tient debout sur le plateau, pour qu'on le voie.
+    /// `top` (iPhone Duo) : vu de dessus, le couvercle tourne de l'angle donné (180° = ouvert à plat, à gauche de la
+    /// charnière), le bijou est posé à l'endroit pour l'écran, et le satin du couvercle prend aussi la pénombre.
     @discardableResult
     static func draw(_ c: Canvas2D, cx: Double, cy: Double, width: Double, leather: String, angle: Double, dim: Double, sweep: Double?,
-                     profile: Bool = false, drawJewel: () -> Void, drawEffects: (Double, Double, Double) -> Void) -> Anchors {
+                     top: Bool = false, drawJewel: () -> Void, drawEffects: (Double, Double, Double) -> Void) -> Anchors {
         let scale = width * (dist - D / 2) * 0.98
-        let alpha = min(180, max(0, angle)) * (profile ? 1 : lidRatio) * .pi / 180
+        let alpha = min(180, max(0, angle)) * (top ? 1 : lidRatio) * .pi / 180
         let cosA = cos(alpha), sinA = sin(alpha)
 
-        let toCam = camera(profile: profile)
+        let toCam = camera(top: top)
+        let topView = top
         let centre = toCam((0, H * 0.5, 0))
         func project(_ p: V3) -> P2 {
             let q = toCam(p)
@@ -192,7 +187,8 @@ enum EcrinArt {
             c.save()
             poly(hull)
             c.clip()
-            inPlane(jewelOrigin, (1, 0, 0), (0, 0, 1), drawJewel)
+            // Vu de dessus, l'écrin est tourné d'un quart de tour : le bijou aussi, pour rester à l'endroit à l'écran.
+            if top { inPlane(jewelOrigin, (0, 0, 1), (-1, 0, 0), drawJewel) } else { inPlane(jewelOrigin, (1, 0, 0), (0, 0, 1), drawJewel) }
             drawEffects(jewelAt.0, jewelAt.1, pxPerUnit)
             if dim > 0.001 {
                 poly(shape.map { project(($0.0, H, $0.1)) })
@@ -293,7 +289,9 @@ enum EcrinArt {
                     c.arc(0, 0, 0.042, 0, .pi * 2)
                     c.fill()
                 }
-                inPlane(lid((0, H + T + 0.002, 0.115)), ax, az) {
+                // Vu de dessus, l'écrin est tourné d'un quart de tour : le nom passe sous le cartouche et tourne avec.
+                inPlane(lid(topView ? (-0.15, H + T + 0.002, -0.03) : (0, H + T + 0.002, 0.115)), ax, az) {
+                    if topView { c.rotate(.pi / 2) }
                     c.scale(0.001, 0.001)
                     c.fillStyle = "#e8c46a"
                     c.setFont(size: 36, weight: 600, serif: false)
@@ -348,6 +346,7 @@ enum EcrinArt {
                 c.restore()
                 // Le nom de la Maison, sur un petit écusson de satin.
                 inPlane(lid((0, H - 0.006, 0.02)), ix, iz) {
+                    if topView { c.rotate(.pi / 2) }
                     c.fillStyle = "rgba(245, 236, 218, 0.95)"
                     c.beginPath()
                     c.ellipse(0, 0, 0.17, 0.075, 0, 0, .pi * 2)
@@ -362,29 +361,13 @@ enum EcrinArt {
                     c.setFont(size: 32, weight: 400, serif: true)
                     c.fillText("Perles fines", 0, 20)
                 }
+                // Vu de dessus, le couvercle est déjà ouvert à plat : son intérieur reste dans l'ombre comme le plateau.
+                if top && dim > 0.001 {
+                    poly(shape.map { project(lid(($0.0, H, $0.1))) })
+                    c.fillStyle = "rgba(0,0,0,\(dim * 0.92))"
+                    c.fill()
+                }
             }
-        }
-
-        if profile {
-            // De profil, le bijou tient debout dans le coin ouvert entre le plateau et le couvercle (rien ne passe devant).
-            // `dim` ne sert pas ici.
-            // Le coin ouvert : entre le plateau et le couvercle, depuis la charnière (vide quand l'écrin est fermé).
-            let wedge = [project((0, H, -D / 2)), project((0, H, -D / 2 + 4)), project(lid((0, H, -D / 2 + 4)))]
-            let stand: V3 = (0, H + 0.21, 0.05)
-            let standAt = project(stand)
-            drawBase()
-            c.save()
-            poly(wedge)
-            c.clip()
-            inPlane(stand, (0, 0, 1), (0, -1, 0)) {
-                c.scale(0.6, 0.6)
-                drawJewel()
-            }
-            // Pas de pénombre : de profil, le couvercle cache déjà le bijou tant qu'il est peu ouvert.
-            drawEffects(standAt.0, standAt.1, scale / (dist - toCam(stand).2))
-            c.restore()
-            drawLid()
-            return Anchors(jewel: standAt, scale: scale / (dist - toCam(stand).2), lidEdge: project(lid((0, H, D / 2))))
         }
 
         // Ordre : tant qu'on voit le dessus du couvercle, il recouvre le bijou ; dès qu'on voit son satin, le bijou
@@ -400,9 +383,9 @@ enum EcrinArt {
     }
 
     /// Ombre de l'étui sur la table, sous son empreinte (à dessiner avant l'étui).
-    static func drawShadow(_ c: Canvas2D, cx: Double, cy: Double, width: Double, profile: Bool = false) {
+    static func drawShadow(_ c: Canvas2D, cx: Double, cy: Double, width: Double, top: Bool = false) {
         let scale = width * (dist - D / 2) * 0.98
-        let toCam = camera(profile: profile)
+        let toCam = camera(top: top)
         let centre = toCam((0, H * 0.5, 0))
         func project(_ p: V3) -> P2 {
             let q = toCam(p)
