@@ -53,6 +53,7 @@ struct RootView: View {
         // puis le calendrier de connexion s'il y a une case à récupérer aujourd'hui.
         .task {
             await game.cloud.sync()
+            await game.checkSignupGift()
             game.audio.start()
             await game.ads.start()
             offerCalendar()
@@ -68,13 +69,24 @@ struct RootView: View {
                 game.audio.start()
                 Notifications.cancel()
                 game.refresh()
-                Task { await game.cloud.sync() }
+                Task {
+                    await game.cloud.sync()
+                    await game.checkSignupGift()
+                }
                 // Au lancement, le formulaire de consentement de Google passe d'abord (la tâche ci-dessus) :
                 // sinon il s'ouvrirait par-dessus le calendrier.
                 if game.ads.consentAnswered { offerCalendar() }
             }
         }
         .sheet(isPresented: $showCalendar) { CalendarView() }
+        // Pas pendant les premières minutes ni pendant une ouverture : au prochain moment calme.
+        .alert("Merci d’avoir été là dès le début", isPresented: Binding(get: { game.signupThanks && game.stage == .playing && !game.inTutorial },
+                                                                         set: { if !$0 { game.signupThanks = false } })) {
+            Button("L’équiper") { if let skin = game.economy.skins.first(where: { $0.grant == "signup" }) { game.equip(skin.id) } }
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("La coquille Première marée est à toi. Tu la retrouves dans la Boutique.")
+        }
         .alert("Deux parties sur ce compte", isPresented: Binding(get: { game.cloud.setAside != nil }, set: { if !$0 { game.cloud.setAside = nil } }),
                presenting: game.cloud.setAside) { _ in
             Button("Garder celle-ci", role: .cancel) {}

@@ -163,7 +163,9 @@ private struct SkinCard: View {
                 }
             }
         } else if skin.grant == "signup" {
-            Text("Réservée aux inscrits").font(.caption).foregroundStyle(.white.opacity(0.7)).frame(minHeight: 36)
+            Text("Inscrit avant la sortie ? Connecte-toi avec l’e-mail de ton inscription (code par e-mail).")
+                .font(.caption).foregroundStyle(.white.opacity(0.7)).multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true).frame(minHeight: 36)
         }
     }
 }

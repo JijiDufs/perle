@@ -4,6 +4,26 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-27 (1.1, coquille des inscrits) · Jules · Claude Code · branche `claude/ios-1-1-sauvegarde-045c95`
+
+Les inscrits d'avant la sortie récupèrent la coquille « Première marée » dans l'app, grâce à leur compte (audit P0-8).
+
+**Fait**
+- **Supabase** (projet `ywyiidsldgfkguivuvox`, eu-west-1) : migration `20261027174257_early_signup_gift.sql` appliquée. `early_access_signups` (déjà là, vide) : e-mails en minuscules (contrainte), aucun droit pour `anon` / `authenticated`, RLS sans règle : illisible par les clients. Fonction `is_early_signup()` (`security definer`, appelable seulement connecté) : dit seulement si `auth.email()` (adresse vérifiée du compte) figure dans la liste. Vérifiée en SQL en se faisant passer pour un joueur, dans une transaction annulée : inscrit (même en majuscules) → oui, autre e-mail → non, invité → non ; l'adresse de test n'est pas restée. `get_advisors` : rien d'imprévu (fonction `security definer` et table sans règle voulues).
+- **App** : `Backend.isEarlySignup()` ; `GameModel.checkSignupGift()` au lancement, au retour dans l'app et à chaque changement de compte, tant que la coquille n'est pas à lui : coquille donnée une fois, sauvegardée (et donc envoyée au compte), fenêtre « Merci d'avoir été là dès le début » (« L'équiper » / OK) au moment calme (pas pendant le tutoriel ni une ouverture). Boutique : la carte de la coquille dit « Inscrit avant la sortie ? Connecte-toi avec l'e-mail de ton inscription (code par e-mail). » ; la phrase de l'écran « Ton adresse e-mail » reste. FR / EN.
+- Politique de confidentialité FR / EN : l'e-mail d'inscription (seul) est gardé dans une liste sur nos serveurs pour donner la coquille ; l'app ne peut pas la lire.
+- `swift test` (74), `npm test` (172), `npm run build`, build de l'app : verts.
+
+**À faire**
+- **Importer les e-mails des inscrits** (formulaires Tally `J9N7AJ` FR, 10 réponses, et `Me9oLY` EN, 6 réponses, au 2026-10-27) : la lecture des réponses a été refusée à la session (données personnelles), il faut l'accord explicite de Jules. Ensuite : `insert … on conflict do nothing`, en minuscules ; aucun e-mail dans le dépôt ni le journal. À refaire si de nouveaux inscrits arrivent avant la sortie.
+- Jules, iPhone réel : se connecter par code avec l'adresse d'inscription → fenêtre et coquille ; avec Apple « Masquer mon e-mail » → rien (adresse relais, attendu).
+- Fusion avec la branche d'équilibrage : elle cache la carte de la coquille dans la boutique tant qu'on ne l'a pas ; il faut la remontrer (avec la phrase ci-dessus) en fusionnant.
+
+**Fragile**
+- Pas vérifié au simulateur avec un vrai compte e-mail (pas de boîte de réception pour le code) : seul le refus (compte invité) a été vu dans l'app ; le oui est vérifié côté serveur.
+- Apple sans « Masquer mon e-mail » donne la coquille si l'adresse Apple est celle de l'inscription ; avec, non.
+- Le trigger `handle_user_upsert` (2026-10-12) donne aussi la coquille `huitre_pionniere` dans `user_skins` aux inscrits : l'app ne lit pas cette table (sans effet).
+
 ## 2026-10-27 (1.1, sauvegarde en ligne) · Jules · Claude Code · branche `claude/ios-1-1-sauvegarde-045c95`
 
 La partie se sauvegarde automatiquement sur le compte du joueur (audit P1-5, en partie P1-21). Part dans la 1.1 avec le lot d'équilibrage (autre branche). Décision en `AGENTS.md` §6.

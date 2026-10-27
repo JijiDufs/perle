@@ -3480,18 +3480,18 @@
         }
       }
     },
-    "Réservée aux inscrits" : {
+    "Inscrit avant la sortie ? Connecte-toi avec l’e-mail de ton inscription (code par e-mail)." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Early sign-ups only"
+            "value" : "Signed up before launch? Sign in with the email you signed up with (code by email)."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réservée aux inscrits"
+            "value" : "Inscrit avant la sortie ? Connecte-toi avec l’e-mail de ton inscription (code par e-mail)."
           }
         }
       }
@@ -4887,6 +4887,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lie ta partie à ton compte Apple pour la retrouver sur un autre iPhone"
+          }
+        }
+      }
+    },
+    "Merci d’avoir été là dès le début" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thanks for being here from the start"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merci d’avoir été là dès le début"
+          }
+        }
+      }
+    },
+    "L’équiper" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equip it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’équiper"
+          }
+        }
+      }
+    },
+    "La coquille Première marée est à toi. Tu la retrouves dans la Boutique." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The First Tide shell is yours. You’ll find it in the Shop."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La coquille Première marée est à toi. Tu la retrouves dans la Boutique."
           }
         }
       }

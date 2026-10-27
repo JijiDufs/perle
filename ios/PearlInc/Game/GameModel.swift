@@ -379,7 +379,23 @@ final class GameModel {
         guard user != cloud.user else { return }
         cloud.switchUser(user)
         start(Storage.load(user) ?? PlayerState.new(rng, tuning, now: Clock.nowMs))
-        Task { await cloud.sync() }
+        Task {
+            await cloud.sync()
+            await checkSignupGift()
+        }
+    }
+
+    /// La coquille des inscrits vient d'être donnée : fenêtre « Merci d'avoir été là dès le début ».
+    var signupThanks = false
+
+    /// Inscrit avant la sortie (même e-mail que l'inscription) : la coquille Première marée, une seule fois.
+    func checkSignupGift() async {
+        guard let skin = economy.skins.first(where: { $0.grant == "signup" }), !player.ownedSkins.contains(skin.id),
+              let user = cloud.user, await Backend.isEarlySignup(),
+              cloud.user == user, !player.ownedSkins.contains(skin.id) else { return }
+        player.grantSkin(skin.id)
+        save()
+        signupThanks = true
     }
 
     /// Après un conflit : reprendre la partie mise de côté.
