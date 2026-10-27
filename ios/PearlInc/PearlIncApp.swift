@@ -22,6 +22,8 @@ struct PearlIncApp: App {
                 }
             }
             .animation(.easeInOut(duration: 0.3), value: auth.session != nil)
+            // Chaque compte a sa partie (sur l'iPhone et sur le compte).
+            .onChange(of: auth.session?.user.id) { _, user in game.useAccount(user) }
             .preferredColorScheme(.dark)
         }
     }
@@ -71,12 +73,15 @@ struct RootView: View {
         // attend la première pub (marée basse, boutique) : il ne coupe plus la première huître (audit P0-7).
         .task {
             game.audio.start()
+            await game.cloud.sync()
+            await game.checkSignupGift()
             await game.ads.startIfConsentKnown()
             offerCalendar()
         }
         // « Tes huîtres sont revenues » : programmée en partant, retirée en revenant.
         .onChange(of: scenePhase) { _, phase in
             if phase == .background {
+                game.cloud.flush()
                 game.scheduleRefillNotification()
                 game.audio.stop()
             }
@@ -85,9 +90,28 @@ struct RootView: View {
                 Notifications.cancel()
                 game.refresh()
                 offerCalendar()
+                Task {
+                    await game.cloud.sync()
+                    await game.checkSignupGift()
+                }
             }
         }
         .sheet(isPresented: Binding(get: { game.showingCalendar }, set: { game.showingCalendar = $0 })) { CalendarView() }
+        // Pas pendant les premières minutes ni pendant une ouverture : au prochain moment calme.
+        .alert("Merci d’avoir été là dès le début", isPresented: Binding(get: { game.signupThanks && game.stage == .playing && !game.inTutorial },
+                                                                         set: { if !$0 { game.signupThanks = false } })) {
+            Button("L’équiper") { if let skin = game.economy.skins.first(where: { $0.grant == "signup" }) { game.equip(skin.id) } }
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("La coquille Première marée est à toi. Tu la retrouves dans la Boutique.")
+        }
+        .alert("Deux parties sur ce compte", isPresented: Binding(get: { game.cloud.setAside != nil }, set: { if !$0 { game.cloud.setAside = nil } }),
+               presenting: game.cloud.setAside) { _ in
+            Button("Garder celle-ci", role: .cancel) {}
+            Button("Reprendre l’autre") { game.swapSetAside() }
+        } message: { aside in
+            Text("On a gardé la plus avancée, ou la plus récente à égalité (\(aside.keptOysters) huîtres ouvertes). L’autre (\(aside.otherOysters) huîtres) est mise de côté sur cet iPhone : tu peux la reprendre maintenant.")
+        }
         // Déconnexion : retour à l'écran de connexion, sans musique.
         .onDisappear { game.audio.stop() }
     }

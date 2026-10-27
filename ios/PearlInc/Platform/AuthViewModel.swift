@@ -56,10 +56,14 @@ final class AuthViewModel: ObservableObject {
                 errorMessage = String(localized: "Apple n’a pas renvoyé d’identifiant. Réessaie dans un instant.")
                 return
             }
-            run {
-                try await supabase.auth.signInWithIdToken(
-                    credentials: OpenIDConnectCredentials(provider: .apple, idToken: idToken, nonce: nonce)
-                )
+            let credentials = OpenIDConnectCredentials(provider: .apple, idToken: idToken, nonce: nonce)
+            // Partie sans compte (Réglages) : on lie Apple au même compte, la partie reste la même.
+            if session?.user.isAnonymous == true {
+                run(failure: String(localized: "Ce compte Apple n’a pas pu être lié. S’il sert déjà à une autre partie, déconnecte-toi puis connecte-toi avec Apple.")) {
+                    try await supabase.auth.linkIdentityWithIdToken(credentials: credentials)
+                }
+            } else {
+                run { try await supabase.auth.signInWithIdToken(credentials: credentials) }
             }
         }
     }
@@ -107,7 +111,8 @@ final class AuthViewModel: ObservableObject {
     var accountKind: AccountKind? {
         guard let user = session?.user else { return nil }
         if user.isAnonymous { return .anonymous }
-        if case .string("apple") = user.appMetadata["provider"] { return .apple }
+        // Une partie sans compte liée à Apple garde « anonymous » comme premier fournisseur : on regarde les identités.
+        if user.identities?.contains(where: { $0.provider == "apple" }) == true { return .apple }
         return .email
     }
 

@@ -77,8 +77,7 @@ struct ShopView: View {
                         .font(.footnote).foregroundStyle(.white.opacity(0.75))
                 }
                 LazyVGrid(columns: columns, spacing: 14) {
-                    // Une coquille qu'on ne peut pas encore obtenir n'est pas montrée (Première marée viendra avec le compte).
-                    ForEach(game.economy.skins.filter { $0.grant != "signup" || game.player.ownedSkins.contains($0.id) }) { skin in
+                    ForEach(game.economy.skins) { skin in
                         SkinCard(skin: skin)
                     }
                 }
@@ -190,6 +189,10 @@ private struct SkinCard: View {
                         .disabled(game.player.dust < price)
                 }
             }
+        } else if skin.grant == "signup" {
+            Text("Inscrit avant la sortie ? Connecte-toi avec l’e-mail de ton inscription (code par e-mail).")
+                .font(.caption).foregroundStyle(.white.opacity(0.7)).multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true).frame(minHeight: 36)
         }
     }
 }

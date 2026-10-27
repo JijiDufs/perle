@@ -89,7 +89,7 @@ struct LoginView: View {
                 .foregroundStyle(.white)
                 .frame(height: 44)
 
-            Text("Sans compte, ta progression reste sur cet iPhone jusqu’à ce que tu ajoutes Apple ou un e-mail.")
+            Text("Sans compte, ta partie ne se retrouve pas sur un autre iPhone. Avec Apple ou un e-mail, elle est sauvegardée sur ton compte.")
                 .font(.footnote)
                 .foregroundStyle(.white.opacity(0.72))
                 .multilineTextAlignment(.center)

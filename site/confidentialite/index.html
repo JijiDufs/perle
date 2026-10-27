@@ -25,7 +25,7 @@
 <nav class="nav"><div class="nav-in"><a class="brand" href="/"><img src="/favicon.svg" alt="" width="22" height="22">Pearl Inc.</a><a class="lang" href="/en/privacy/" hreflang="en" lang="en">EN</a></div></nav>
 <main>
 <h1>Politique de confidentialité</h1>
-<p class="updated">Pearl Inc. · Dernière mise à jour : 19 octobre 2026</p>
+<p class="updated">Pearl Inc. · Dernière mise à jour : 27 octobre 2026</p>
 <p class="lead">Pearl Inc. collecte le moins de données possible : pas de revente, pas de pistage entre les apps, et des publicités seulement si tu choisis d'en regarder. Voici, sans jargon, ce que nous gardons, pourquoi, et combien de temps.</p>
 
 <h2>1. Qui est responsable de tes données</h2>
@@ -38,7 +38,7 @@
 <tbody>
 <tr><td>Tu t'inscris pour être prévenu de la sortie</td><td>E-mail, téléphone que tu utiliseras (facultatif), provenance de ta visite</td><td>T'annoncer la sortie, t'offrir le skin des inscrits, savoir quelle annonce a fonctionné</td><td>Jusqu'à 6 mois après la sortie du jeu</td></tr>
 <tr><td>Tu crées un compte dans l'app</td><td>Identifiant de compte, e-mail (si tu te connectes par e-mail ou avec Apple)</td><td>Faire fonctionner ton compte</td><td>Tant que ton compte existe</td></tr>
-<tr><td>Tu joues</td><td>Ta partie (collection, huîtres, poussière d'or, skins, missions)</td><td>Le jeu lui-même</td><td>Sur ton iPhone uniquement</td></tr>
+<tr><td>Tu joues</td><td>Ta partie (collection, huîtres, poussière d'or, skins, missions)</td><td>Le jeu lui-même, et la retrouver sur un autre iPhone</td><td>Sur ton iPhone, et sur nos serveurs tant que ton compte existe</td></tr>
 <tr><td>Tu ouvres le jeu, tu regardes une pub</td><td>Reçu par Google (AdMob) : adresse IP (position approximative), identifiant de l'appareil, interactions avec les pubs, diagnostics</td><td>Afficher les pubs récompensées (jamais personnalisées), les mesurer, lutter contre la fraude</td><td>Chez Google, selon ses propres règles</td></tr>
 <tr><td>Tu achètes dans l'app</td><td>Rien de ton paiement : Apple s'en charge</td><td>—</td><td>—</td></tr>
 </tbody>
@@ -56,6 +56,7 @@
 <p>Si tu t'inscris, nous recevons ton e-mail, ta réponse facultative sur le téléphone que tu utiliseras, ton accord, et la provenance de ta visite (réseau social, campagne, langue de la page, bouton cliqué). Nous nous en servons pour t'écrire à la sortie du jeu, t'offrir le skin réservé aux inscrits et savoir quelle annonce a le mieux fonctionné.</p>
 <p>Base légale : ton consentement, que tu peux retirer à tout moment (lien de désinscription dans l'e-mail, ou en nous écrivant). Si tu as moins de 15 ans, il faut l'accord d'un parent pour t'inscrire.</p>
 <p>Le formulaire est géré par Tally (Tally BV, Belgique), qui héberge ces données dans l'Union européenne.</p>
+<p>Pour t'offrir la coquille des inscrits dans l'app, nous gardons aussi ton e-mail (seul, sans le reste) dans une liste sur nos serveurs (Supabase, Irlande). L'app ne peut pas lire cette liste : quand tu te connectes, elle demande seulement si l'e-mail vérifié de ton compte y figure. Cette liste suit la même durée que l'inscription.</p>
 <h3>Hébergement et ressources techniques</h3>
 <p>Le site est hébergé par Vercel Inc. (États-Unis), qui conserve brièvement des journaux techniques (adresse IP, navigateur) pour la sécurité et le bon fonctionnement du service. Pour afficher la page, ton navigateur charge aussi la police d'écriture depuis Google Fonts (Google) et la bibliothèque 3D depuis cdnjs (Cloudflare) : ces services reçoivent ton adresse IP.</p>
 
@@ -67,10 +68,10 @@
 <li><strong>Avec Apple</strong> : Apple nous transmet un identifiant et une adresse e-mail. Tu peux choisir de masquer ta vraie adresse : Apple nous donne alors une adresse relais.</li>
 <li><strong>Par e-mail</strong> : nous t'envoyons un code à 6 chiffres à ton adresse.</li>
 </ul>
-<p>Nous nous servons de ton compte pour te reconnaître, pour t'offrir le skin des inscrits, et, plus tard, pour retrouver ta partie sur un autre iPhone. Base légale : la fourniture du jeu que tu as demandé.</p>
+<p>Nous nous servons de ton compte pour te reconnaître, pour t'offrir le skin des inscrits et pour sauvegarder ta partie, afin de la retrouver sur un autre iPhone. Base légale : la fourniture du jeu que tu as demandé.</p>
 <p>Les comptes sont gérés par Supabase, sur des serveurs situés en Irlande (Union européenne).</p>
 <h3>Ta partie</h3>
-<p>Ta collection, tes huîtres, ta poussière d'or, tes skins et tes missions sont enregistrés sur ton iPhone. Ils ne nous sont pas envoyés aujourd'hui. Si nous ajoutons la sauvegarde en ligne, nous mettrons cette page à jour avant de l'activer.</p>
+<p>Ta collection, tes huîtres, ta poussière d'or, tes skins et tes missions sont enregistrés sur ton iPhone et, depuis la version 1.1 de l'app, sauvegardés automatiquement sur nos serveurs (Supabase, Irlande), liés à ton compte, y compris sans compte (identifiant anonyme). Seul ton compte peut lire ou modifier ta partie. Elle est supprimée avec ton compte. Base légale : la fourniture du jeu que tu as demandé.</p>
 <h3>Les achats</h3>
 <p>Les achats intégrés passent par Apple. Nous ne voyons jamais tes coordonnées de paiement : l'app reçoit seulement la confirmation, signée par Apple, que l'achat a eu lieu.</p>
 <h3>La publicité</h3>
@@ -85,12 +86,12 @@
 <p>Nous ne te pistons pas entre les apps et les sites d'autres entreprises, nous ne vendons aucune donnée, et nous ne faisons nous-mêmes aucun profilage. Nous ne recevons de Google que des chiffres globaux (nombre de pubs vues, revenus), jamais de données sur toi.</p>
 
 <h2>5. Qui reçoit tes données</h2>
-<p>Seulement nous, et les prestataires qui nous aident à faire fonctionner le service, chacun pour son rôle : Apple (connexion avec Apple, achats), Supabase (comptes), Google (publicités de l'app, AdMob), Tally (inscriptions), Vercel (hébergement et mesure d'audience du site), X (pixel de conversion du site, seulement si tu acceptes les cookies), Google Fonts et Cloudflare (affichage du site).</p>
+<p>Seulement nous, et les prestataires qui nous aident à faire fonctionner le service, chacun pour son rôle : Apple (connexion avec Apple, achats), Supabase (comptes et sauvegarde des parties), Google (publicités de l'app, AdMob), Tally (inscriptions), Vercel (hébergement et mesure d'audience du site), X (pixel de conversion du site, seulement si tu acceptes les cookies), Google Fonts et Cloudflare (affichage du site).</p>
 <p>Certains de ces prestataires sont situés aux États-Unis. Ces transferts sont encadrés par le cadre de protection des données UE–États-Unis (Data Privacy Framework) ou par les clauses contractuelles types de la Commission européenne.</p>
 
 <h2>6. Tes droits</h2>
 <p>Tu peux à tout moment accéder à tes données, les corriger, les faire supprimer, en limiter l'usage, t'opposer à leur traitement, les récupérer dans un format lisible (portabilité), retirer ton consentement, et donner des directives sur leur sort après ton décès.</p>
-<p>Pour cela, écris-nous à <a href="mailto:laplateformemjh@gmail.com">laplateformemjh@gmail.com</a>. Nous répondons dans un délai d'un mois. Pour supprimer ton compte de jeu : dans l'app, Réglages (la roue dentée), puis « Supprimer mon compte ». Le compte et les données liées sont effacés tout de suite. Tu peux aussi nous écrire depuis l'adresse liée au compte (ou avec l'identifiant affiché dans les Réglages) : il est alors effacé sous 30 jours.</p>
+<p>Pour cela, écris-nous à <a href="mailto:laplateformemjh@gmail.com">laplateformemjh@gmail.com</a>. Nous répondons dans un délai d'un mois. Pour supprimer ton compte de jeu : dans l'app, Réglages (la roue dentée), puis « Supprimer mon compte ». Le compte et les données liées, dont ta partie sauvegardée, sont effacés tout de suite. Tu peux aussi nous écrire depuis l'adresse liée au compte (ou avec l'identifiant affiché dans les Réglages) : il est alors effacé sous 30 jours.</p>
 <p>Si tu estimes que tes droits ne sont pas respectés, tu peux adresser une réclamation à la CNIL (<a href="https://www.cnil.fr">cnil.fr</a>).</p>
 
 <h2>7. Sécurité</h2>

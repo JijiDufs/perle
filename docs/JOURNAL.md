@@ -4,6 +4,50 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-27 (1.1, coquille des inscrits) · Jules · Claude Code · branche `claude/ios-1-1-sauvegarde-045c95`
+
+Les inscrits d'avant la sortie récupèrent la coquille « Première marée » dans l'app, grâce à leur compte (audit P0-8).
+
+**Fait**
+- **Supabase** (projet `ywyiidsldgfkguivuvox`, eu-west-1) : migration `20261027174257_early_signup_gift.sql` appliquée. `early_access_signups` (déjà là, vide) : e-mails en minuscules (contrainte), aucun droit pour `anon` / `authenticated`, RLS sans règle : illisible par les clients. Fonction `is_early_signup()` (`security definer`, appelable seulement connecté) : dit seulement si `auth.email()` (adresse vérifiée du compte) figure dans la liste. Vérifiée en SQL en se faisant passer pour un joueur, dans une transaction annulée : inscrit (même en majuscules) → oui, autre e-mail → non, invité → non ; l'adresse de test n'est pas restée. `get_advisors` : rien d'imprévu (fonction `security definer` et table sans règle voulues).
+- **App** : `Backend.isEarlySignup()` ; `GameModel.checkSignupGift()` au lancement, au retour dans l'app et à chaque changement de compte, tant que la coquille n'est pas à lui : coquille donnée une fois, sauvegardée (et donc envoyée au compte), fenêtre « Merci d'avoir été là dès le début » (« L'équiper » / OK) au moment calme (pas pendant le tutoriel ni une ouverture). Boutique : la carte de la coquille dit « Inscrit avant la sortie ? Connecte-toi avec l'e-mail de ton inscription (code par e-mail). » ; la phrase de l'écran « Ton adresse e-mail » reste. FR / EN.
+- Politique de confidentialité FR / EN : l'e-mail d'inscription (seul) est gardé dans une liste sur nos serveurs pour donner la coquille ; l'app ne peut pas la lire.
+- `swift test` (74), `npm test` (172), `npm run build`, build de l'app : verts.
+
+**À faire**
+- **E-mails des inscrits importés le 2026-10-27 : 13** (liste donnée par Jules, en minuscules, sans doublon ; les formulaires Tally comptaient 16 réponses). Aucun e-mail dans le dépôt. Pour de nouveaux inscrits avant la sortie : `insert into public.early_access_signups (email) values (lower('…')) on conflict do nothing`.
+- Jules, iPhone réel : se connecter par code avec l'adresse d'inscription → fenêtre et coquille ; avec Apple « Masquer mon e-mail » → rien (adresse relais, attendu).
+- Fusion avec la branche d'équilibrage : elle cache la carte de la coquille dans la boutique tant qu'on ne l'a pas ; il faut la remontrer (avec la phrase ci-dessus) en fusionnant.
+
+**Fragile**
+- Pas vérifié au simulateur avec un vrai compte e-mail (pas de boîte de réception pour le code) : seul le refus (compte invité) a été vu dans l'app ; le oui est vérifié côté serveur.
+- Apple sans « Masquer mon e-mail » donne la coquille si l'adresse Apple est celle de l'inscription ; avec, non.
+- Le trigger `handle_user_upsert` (2026-10-12) donne aussi la coquille `huitre_pionniere` dans `user_skins` aux inscrits : l'app ne lit pas cette table (sans effet).
+
+## 2026-10-27 (1.1, sauvegarde en ligne) · Jules · Claude Code · branche `claude/ios-1-1-sauvegarde-045c95`
+
+La partie se sauvegarde automatiquement sur le compte du joueur (audit P1-5, en partie P1-21). Part dans la 1.1 avec le lot d'équilibrage (autre branche). Décision en `AGENTS.md` §6.
+
+**Fait**
+- **Supabase** : projet « Pearl Inc. » `ywyiidsldgfkguivuvox`, région **eu-west-1 (Irlande, UE)** = celui de `Backend.url`. La table `game_saves` existait déjà (migration du 2026-10-12, appliquée sans passer par le dépôt) : une ligne par compte (`user_id` → `profiles` → `auth.users`, `ON DELETE CASCADE`), état JSON, `revision`, `updated_at` ; RLS « chacun ne lit, ne crée et ne modifie que sa ligne » ; écriture par `save_game(p_state, p_expected_revision)`, qui refuse (`save_conflict`) si un autre iPhone a écrit entre-temps. Les trois migrations du 2026-10-12 sont recopiées dans `supabase/migrations/` telles qu'appliquées. Nouvelle migration `20261027125353_game_saves_ios.sql` (format `pearlinc.player.v1` par défaut, droits au plus juste : rien pour `anon`, `authenticated` réduit à lecture, création, modification), **appliquée le 2026-10-27** à la demande de Jules et vérifiée (droits, valeur par défaut, `schema_migrations`). `get_advisors` (sécurité) : rien de bloquant pour `game_saves` (les avertissements « anonymous » sont voulus : la partie sans compte se sauvegarde aussi).
+- **P0-11** : le fournisseur Apple est **activé** dans Supabase (`/auth/v1/settings` : `apple`, `email`, `anonymous_users`). Pas testable au simulateur (pas d'identifiant Apple).
+- **PearlCore** : `CloudSave.swift`, `cloudSaveDecision` (règle de conflit, pure) + `CloudSaveTests` (6 cas).
+- **App** : `Storage` range la partie **par compte** (`pearlinc.player.v1.<id>`), la partie de la 1.0 (`pearlinc.player.v1`) est reprise par le premier compte connecté ; état de synchronisation (`.sync` : date de sauvegarde, révision du compte) ; une sauvegarde identique n'est pas réécrite (le jeu sauvegarde chaque minute). `Platform/CloudSave.swift` : envoi regroupé (5 s au plus), hors du fil principal, une dernière fois au passage en arrière-plan (tâche de fond iOS) ; lecture du compte au lancement, au retour dans l'app et à la connexion ; hors ligne ou refus, on relit et on renvoie la fois suivante ; partie du compte illisible (version plus récente) → on n'y touche pas. `GameModel.useAccount` (changer de compte = changer de partie), `start` (remplacer la partie à l'écran), `eraseLocalGame` efface aussi la copie locale du compte supprimé. Fenêtre « Deux parties sur ce compte » (garder celle-ci / reprendre l'autre). Réglages : texte clair sur la sauvegarde (compte ou invité), bouton **« Continuer avec Apple » pour lier une partie sans compte** (`linkIdentityWithIdToken`, même identifiant, même partie) ; le type de compte se lit dans les identités (une partie invitée liée à Apple s'affiche « Connecté avec Apple »). Écran de connexion et confirmations (déconnexion, suppression) réécrits. FR / EN.
+- **Confidentialité** : `PrivacyInfo.xcprivacy` + « Contenu de jeu » (lié au compte, fonctionnement de l'app, pas de pistage). Politique du site FR et EN : la partie est conservée sur nos serveurs (Supabase, Irlande), liée au compte (même sans compte), supprimée avec lui ; date du 27 octobre.
+- **Tests** : `swift test` (74), `npm test` (172), `npm run build` verts. **Simulateur** (iPhone 17 Pro, seul allumé) : partie 1.0 présente (40 huîtres) + « Jouer sans compte » → reprise par le compte invité et envoyée (révision 1) ; calendrier récupéré → envoi regroupé (révision 2, + 10 ✦) ; **app effacée puis réinstallée → la partie revient du compte** (40 huîtres, 165 ✦), sans fenêtre de conflit ; conflit provoqué (révision locale dépassée) → fenêtre « Deux parties sur ce compte », « Reprendre l'autre » → partie échangée et envoyée ; Réglages d'une partie invitée (texte, bouton Apple) ; **suppression du compte → compte et ligne `game_saves` effacés** (vérifié en SQL), copie locale effacée, retour à la connexion. Le simulateur gardait dans ses préférences globales une « partie 1.0 » de test d'une session précédente, qui ressuscitait à chaque installation : écartée le temps du test, puis remise.
+
+**À faire**
+- Supabase : « Allow manual linking » activé par Jules le 2026-10-27 (nécessaire pour lier une partie invitée à Apple).
+- Jules, **App Store Connect → Confidentialité de l'app** : ajouter **« Contenu de jeu » (Gameplay Content)**, collecté, **lié à l'identité**, finalité **fonctionnement de l'app**, pas de pistage. (Identifiant utilisateur et adresse e-mail sont déjà déclarés.) Mettre en ligne la politique du site (Vercel) avant l'envoi de la 1.1.
+- Jules, iPhone réel : Se connecter avec Apple (P0-11), lier une partie invitée à Apple, deux iPhone sur le même compte, **mode avion puis retour du réseau** (non vérifiable au simulateur : pas de coupure réseau par appareil ; le chemin est le même que l'échec d'un envoi, relu et renvoyé au retour dans l'app ou à la sauvegarde suivante).
+- Plus tard : lier une partie invitée à un **e-mail** (`update(user:)` envoie un lien de confirmation, pas un code : il faudrait un modèle d'e-mail « changement d'adresse » avec code, ou un lien universel) ; afficher et reprendre une partie mise de côté après avoir fermé la fenêtre.
+
+**Fragile**
+- **Mur de connexion** : cette branche le garde (choix de Jules) ; la décision du 2026-10-21 (5) le retire. Si le lot d'équilibrage joue sans compte, la partie vit sous la clé sans compte (`pearlinc.player.v1`) et le premier compte connecté la reprend : rien n'est perdu, mais rien ne part sur un serveur tant qu'aucun compte (même invité) n'existe.
+- À égalité d'huîtres, « la plus récente » compare l'heure du téléphone à celle du serveur, et une partie juste relancée compte comme récente (le jeu sauvegarde au lancement). La perdante est mise de côté sur le téléphone ; si on ferme la fenêtre, elle ne se reprend plus (elle reste dans `UserDefaults`).
+- Se déconnecter d'une partie invitée la rend introuvable (le texte le dit).
+- Le trigger `sync_profile_from_save` calcule `profiles.level` avec la courbe de la webapp, pas le départ accéléré de l'app : sans effet dans l'app (statistique serveur seulement).
+- `Localizable.xcstrings` complété à la main (anciens textes remplacés à leur place).
 ## 2026-10-27 (écrins en achats intégrés) · Jules · Claude Code · branche `claude/ios-1-4-ecrins-20174f`
 
 Demande de Jules : vendre les écrins comme les huîtres, pour la version 1.1. Décision en `AGENTS.md` §6.

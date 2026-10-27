@@ -1,3 +1,4 @@
+import AuthenticationServices
 import SwiftUI
 import PearlCore
 
@@ -126,9 +127,9 @@ struct SettingsView: View {
             Button("Se déconnecter", role: .destructive) { auth.signOut() }
         } message: {
             if auth.accountKind == .anonymous {
-                Text("Sans compte, tu ne pourras plus revenir sur ce compte. Ta partie reste sur cet iPhone.")
+                Text("Sans compte, tu ne pourras plus revenir sur ce compte ni sur sa partie.")
             } else {
-                Text("Ta partie reste sur cet iPhone. Tu pourras te reconnecter avec le même compte.")
+                Text("Ta partie reste sur ton compte. Tu la retrouveras en te reconnectant avec le même compte.")
             }
         }
         .confirmationDialog("Supprimer ton compte ?", isPresented: $confirmDelete, titleVisibility: .visible) {
@@ -136,7 +137,7 @@ struct SettingsView: View {
                 auth.deleteAccount { game.eraseLocalGame() }
             }
         } message: {
-            Text("Ton compte et les données liées sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple.")
+            Text("Ton compte et ta partie sauvegardée sont effacés pour de bon. La partie sur cet iPhone (collection, huîtres, poussière d’or) repart de zéro. Les coquilles achetées reviennent avec « Restaurer les achats ». Les achats ne sont pas remboursés : pour cela, passe par Apple.")
         }
     }
 
@@ -165,6 +166,12 @@ struct SettingsView: View {
                 }
                 .accessibilityHint("Copie l’identifiant")
             }
+            if auth.accountKind == .anonymous {
+                SignInWithAppleButton(.continue, onRequest: auth.prepareAppleRequest, onCompletion: auth.handleAppleResult)
+                    .signInWithAppleButtonStyle(.white)
+                    .frame(height: 44)
+                    .accessibilityHint("Lie ta partie à ton compte Apple pour la retrouver sur un autre iPhone")
+            }
             Button { confirmSignOut = true } label: {
                 Label("Se déconnecter", systemImage: "rectangle.portrait.and.arrow.right")
             }
@@ -176,7 +183,9 @@ struct SettingsView: View {
         } footer: {
             VStack(alignment: .leading, spacing: 6) {
                 if auth.accountKind == .anonymous {
-                    Text("Sans compte, ta partie reste sur cet iPhone.")
+                    Text("Sans compte, ta partie est sauvegardée sur cet iPhone et sur un compte invité, mais elle ne se retrouve pas sur un autre iPhone, ni après une déconnexion. Continue avec Apple pour la garder.")
+                } else {
+                    Text("Ta partie est sauvegardée sur ton compte : reconnecte-toi sur un autre iPhone pour la retrouver.")
                 }
                 if let error = auth.errorMessage {
                     Text(error).foregroundStyle(Color(hex: 0xFFB4A8))
