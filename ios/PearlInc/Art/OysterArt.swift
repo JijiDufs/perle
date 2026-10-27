@@ -136,21 +136,26 @@ struct OysterArt {
         // Suspense : la perle palpite, de plus en plus vite selon la rareté.
         let pulse = revealed && suspense < 1 ? 1 + 0.1 * suspense * max(0, sin(t * (6 + Double(tier) * 3))) : 1
         radius *= pulse
+        // L'intérieur reste dans l'ombre tant que la coquille est peu ouverte.
+        let dim = revealed ? 0 : 1 - smoothstep(4, 140, angle)
+        let onFold = if case .fold = pose { true } else { false }
+        // Sur le pli du Duo, la nacre reste toujours visible (jamais de fond noir, même téléphone ouvert
+        // sur une huître pas encore commencée) : seule la perle apparaît avec l'ouverture.
+        var inside = c
+        if onFold { inside.opacity = 1 - dim }
         if pearlTaken {
             // Le poisson l'a prise.
         } else if let findId {
             // Une trouvaille ne se fêle pas (comme la webapp : drawFind à 0,2 L).
-            FindArt.draw(c, pearlCenter.x, pearlCenter.y, L * 0.2 * pulse, id: findId, t: t)
+            FindArt.draw(inside, pearlCenter.x, pearlCenter.y, L * 0.2 * pulse, id: findId, t: t)
         } else if let pearl {
-            PearlArt.draw(&c, pearlCenter.x, pearlCenter.y, radius, pearl, cracked: cracked)
+            PearlArt.draw(&inside, pearlCenter.x, pearlCenter.y, radius, pearl, cracked: cracked)
         }
 
         // Sur le pli du Duo, le couvercle est ouvert à plat sur l'autre moitié : on voit son intérieur.
-        if case .fold = pose { drawFlatLid(&c, hx, hy, L, ph, t, dim: revealed ? 0 : 1 - smoothstep(4, 140, angle)) }
+        if onFold { drawFlatLid(&c, hx, hy, L, ph, t) }
 
-        // L'intérieur reste dans l'ombre tant que la coquille est peu ouverte.
-        let dim = revealed ? 0 : 1 - smoothstep(4, 140, angle)
-        if dim > 0.001 { c.fill(interior, with: .color(rgba(0, 6, 8, dim * 0.94))) }
+        if dim > 0.001 && !onFold { c.fill(interior, with: .color(rgba(0, 6, 8, dim * 0.94))) }
 
         // Halo de la perle, puis couvercle par-dessus.
         let strength = Self.glowStrength[tier] * flicker * (cracked && !isFind ? 0.35 : 1) * (pearlTaken ? 0.2 : 1)
@@ -193,23 +198,18 @@ struct OysterArt {
         }
     }
 
-    /// Le couvercle ouvert à plat de l'autre côté du pli (prototype : valve gauche), intérieur visible,
-    /// dans l'ombre tant que le téléphone est peu ouvert.
-    private func drawFlatLid(_ c: inout GraphicsContext, _ hx: Double, _ hy: Double, _ L: Double, _ ph: ShellArt.Phases, _ t: Double, dim: Double) {
+    /// Le couvercle ouvert à plat de l'autre côté du pli (prototype : valve gauche), nacre visible.
+    private func drawFlatLid(_ c: inout GraphicsContext, _ hx: Double, _ hy: Double, _ L: Double, _ ph: ShellArt.Phases, _ t: Double) {
         let left = layoutDir + Double.pi
-        let interior: Path
         switch look {
         case .oyster(let palette, let rim, _):
             ShellArt.drawExterior(&c, hx, hy, left, L * 0.98, ph, palette)
             if let rim { c.stroke(ShellArt.path(ShellArt.outline(hx, hy, left, L * 0.98, ph, frill: 0.045)), with: .color(rim), lineWidth: max(1.5, L * 0.012)) }
             ShellArt.drawNacre(&c, hx, hy, left, L * 0.98 * 0.88, ph, t, palette)
-            interior = ShellArt.path(ShellArt.outline(hx, hy, left, L * 0.98 * 0.88, ph, frill: 0))
         case .clam:
             ClamArt.drawExterior(&c, hx, hy, left, L * 0.98, ph)
             ClamArt.drawInterior(&c, hx, hy, left, L * 0.98, ph, t, mantle: false)
-            interior = ClamArt.interiorPath(hx, hy, left, L * 0.98, ph)
         }
-        if dim > 0.001 { c.fill(interior, with: .color(rgba(0, 6, 8, dim * 0.94))) }
     }
 
     private var layoutDir: Double { if case .thumb = pose { Double.pi / 2 } else { 0 } }

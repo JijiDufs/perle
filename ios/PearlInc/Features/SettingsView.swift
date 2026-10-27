@@ -214,8 +214,9 @@ struct SettingsView: View {
 
 /// Les pages du site (support, légal) et le contact, dans la langue de l'app.
 enum SiteLinks {
+    /// `?app=1` : le site n'affiche alors ni la bannière cookies ni le pixel X (App Store 5.1.2, pas de pistage).
     private static func page(_ french: String, _ english: String) -> URL {
-        URL(string: "https://pearl-inc.app" + (AppLanguage.isFrench ? french : english))!
+        URL(string: "https://pearl-inc.app" + (AppLanguage.isFrench ? french : english) + "?app=1")!
     }
     static var support: URL { page("/support/", "/en/support/") }
     static var privacy: URL { page("/confidentialite/", "/en/privacy/") }

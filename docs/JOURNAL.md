@@ -210,6 +210,38 @@ Lot 1.1 de l'app iOS, « Niveaux et réputation » (`docs/ios-feuille-de-route.m
 
 **À faire**
 - Trancher les questions du lot 1.1 (§4 de la feuille de route), puis lancer sa session.
+## 2026-10-27 · Jules · Claude Code · branche `jules/app-1.0-build5`
+
+**Fait** : app iOS, iPhone Duo (écran intérieur) : la nacre de l'huître n'est plus jamais assombrie. Avant, toucher la carte téléphone ouvert laissait la nouvelle huître (angle 0, charnière désarmée) avec un fond noir. Maintenant seule la perle (ou la trouvaille) apparaît en fondu avec l'ouverture (`OysterArt.draw`, pose `.fold`). Le pouce et l'écran extérieur ne changent pas. Build de l'app : vert.
+
+**Reste à faire** : vérifier sur un vrai Duo (ou `-SimulatedHinge` / `-SimulatedFold`). Les écrins n'existent pas dans l'app iOS, rien à corriger de ce côté.
+
+---
+
+## 2026-10-22 · Jules · Claude Code · branche `jules/app-1.0-build5` (partie de `v1.0-build4`)
+
+Refus App Store de la 1.0 (build 4), règle **5.1.2(i)** : l'app ouvre des pages de pearl-inc.app qui proposent un cookie publicitaire (pixel X) sans demande ATT.
+`npm test`, `npm run build`, build de l'app : verts.
+
+**Cause réelle** (capture d'Apple, iPad) : le formulaire de consentement de Google (UMP, AdMob) au lancement, qui parle de « publicité personnalisée » sans demande ATT.
+
+**Fait**
+- **Build 4 renvoyé en vérification le 22 octobre** (réponse à Apple dans App Store Connect, notes de revue mises à jour), site déployé. Le message RGPD de Pearl Inc. est **dépublié** dans AdMob (état « Brouillon ») (Confidentialité et messages → Réglementations européennes) ; sans message publié, UMP n'affiche plus rien et les pubs se chargent (« pubs limitées » attendues dans l'EEE, moins payées). Les pages d'aide et légales n'ouvrent plus la bannière cookies d'elles-mêmes (seulement par le lien « Cookies »).
+- L'app ouvre les pages du site avec `?app=1` (`SiteLinks`) ; `site/consent.js` n'affiche alors ni bannière ni lien « Cookies » et ne charge jamais le pixel, pour toute la visite (`sessionStorage`), même en naviguant vers l'accueil.
+- Politiques de confidentialité FR / EN : « les pages ouvertes depuis l'app n'affichent pas la bannière et ne chargent jamais le pixel ».
+- **Build 5** (1.0), sans le travail de la 1.1.
+
+**Reste à faire**
+- Après l'accord d'Apple : la version est en **publication manuelle**, il faut cliquer « Publier » dans App Store Connect.
+- Vérifier sur iPhone (France) : aucune fenêtre au lancement, « Regarder une pub » marche (pubs limitées).
+- Renvoyer le build 4 avec la réponse à Apple. Le build 5 (`?app=1`) ne sert que si Apple refuse encore : il sera la base de la 1.0.1.
+- Retirer le formulaire UMP du code (build suivant) et la ligne « Confidentialité des pubs » : sans message publié, ils ne servent plus.
+- Fusionner cette branche dans `jules/app-1.0.1` (la 1.1 en a besoin aussi).
+
+**Fragile**
+- Une page du site ouverte depuis l'app dans un autre onglet perd le drapeau (`sessionStorage` est par onglet) : sans conséquence pour la revue.
+
+---
 
 ## 2026-10-20 (envoi) · Jules · Claude Code · branche `jules/ios-app`
 
