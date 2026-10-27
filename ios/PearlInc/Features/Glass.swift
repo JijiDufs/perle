@@ -142,3 +142,16 @@ extension EnvironmentValues {
     /// Les boutons passent sur plusieurs lignes au lieu de rétrécir (moitié d'écran du Duo).
     @Entry var buttonLabelWraps = false
 }
+
+/// Le contenu d'une fenêtre : à sa taille s'il tient, sinon il défile (texte au plus grand). Le bouton de la fenêtre
+/// reste en dehors, toujours visible (audit P0-9).
+struct FitOrScroll<Content: View>: View {
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        ViewThatFits(in: .vertical) {
+            content
+            ScrollView { content }.scrollBounceBehavior(.basedOnSize)
+        }
+    }
+}

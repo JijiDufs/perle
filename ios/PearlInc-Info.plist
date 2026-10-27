@@ -7,6 +7,8 @@
 		<key>UIColorName</key>
 		<string>LaunchBackground</string>
 	</dict>
+	<key>TelemetryDeckAppID</key>
+	<string></string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-1299710250358184~7375419878</string>
 	<key>SKAdNetworkItems</key>

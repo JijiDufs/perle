@@ -1093,9 +1093,9 @@
       0,
       1,
       2,
-      5,
-      15,
-      40
+      4,
+      10,
+      25
     ],
     "rareMissionTier": 2,
     "missions": [
@@ -1173,7 +1173,7 @@
         "name": "Bénitier",
         "description": "Le coquillage géant des lagons chauds. Il se referme sans prévenir.",
         "style": "clam",
-        "dustPrice": 2000,
+        "dustPrice": 3000,
         "productId": "app.pearlinc.skin.benitier",
         "grant": null
       },
@@ -1259,21 +1259,22 @@
       }
     ],
     "fishThief": {
-      "chance": 0.1,
-      "maxTier": 1,
+      "chance": 0.03,
       "catchBonusDust": 2,
       "arriveMs": 750,
       "fleeMs": 2800,
-      "hitRadius": 0.2
+      "hitRadius": 0.2,
+      "assistedFleeFactor": 2
     },
     "levels": {
       "fastStart": {
         "levels": 10,
         "factor": 0.5
       },
-      "rewardOysters": 5,
       "rewardDust": 5,
-      "rankRewardOysters": 10,
+      "rewardOysters": 5,
+      "rewardOystersEvery": 5,
+      "rankRewardOysters": 5,
       "rankRewardDust": 20,
       "missionReputation": 30,
       "calendarReputation": 15
@@ -1571,21 +1572,21 @@
     ],
     "achievementRewards": {
       "bronze": {
-        "oysters": 3,
+        "oysters": 0,
         "dust": 5,
         "reputation": 15
       },
       "argent": {
-        "oysters": 5,
+        "oysters": 0,
         "dust": 10,
         "reputation": 30
       },
       "or": {
-        "oysters": 10,
+        "oysters": 0,
         "dust": 25,
         "reputation": 60
       },
-      "albumOysters": 10
+      "albumOysters": 0
     }
   },
   "markWeights": [

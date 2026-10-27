@@ -2,11 +2,10 @@ import SwiftUI
 import PearlCore
 
 /// La boutique (docs/duo-gadget.md §6 bis, §6 ter) : huîtres (pub récompensée, poussière d'or, achats intégrés),
-/// poussière d'or, coquilles. Les prix en euros viennent de StoreKit ; les probabilités sont rappelées
-/// avant tout achat d'huîtres (règle 3.1.1 d'Apple).
+/// poussière d'or, coquilles. Les prix en euros viennent de StoreKit ; les probabilités sont dépliées
+/// au-dessus de tout achat d'huîtres (règle 3.1.1 d'Apple).
 struct ShopView: View {
     @Environment(GameModel.self) private var game
-    @State private var showOdds = false
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
     var body: some View {
@@ -22,6 +21,8 @@ struct ShopView: View {
 
                 Text("Huîtres").lagoonTitle()
                 VStack(spacing: 14) {
+                    Text("Chaque huître est un tirage :").font(.footnote.weight(.semibold)).frame(maxWidth: .infinity, alignment: .leading)
+                    OddsList()
                     TimelineView(.periodic(from: .now, by: 60)) { timeline in AdRewardButton(date: timeline.date) }
                     ForEach(game.economy.consumables.filter { $0.oysters > 0 }) { product in
                         ProductRow(title: product.name, detail: String(localized: "\(product.oysters) huîtres"), productId: product.id)
@@ -29,12 +30,6 @@ struct ShopView: View {
                     Button("Une huître · \(game.economy.oysterDustPrice) ✦") { game.buyOyster() }
                         .buttonStyle(GlassButtonStyle())
                         .disabled(game.player.dust < game.economy.oysterDustPrice)
-                    DisclosureGroup(isExpanded: $showOdds) {
-                        OddsList().padding(.top, 10)
-                    } label: {
-                        Text("Chaque huître est un tirage : voir les probabilités").font(.footnote.weight(.semibold))
-                    }
-                    .tint(.white)
                 }
                 .padding(18)
                 .glassPanel(shade: 0.25)
@@ -54,7 +49,10 @@ struct ShopView: View {
                         .font(.footnote).foregroundStyle(.white.opacity(0.75))
                 }
                 LazyVGrid(columns: columns, spacing: 14) {
-                    ForEach(game.economy.skins) { skin in SkinCard(skin: skin) }
+                    // Une coquille qu'on ne peut pas encore obtenir n'est pas montrée (Première marée viendra avec le compte).
+                    ForEach(game.economy.skins.filter { $0.grant != "signup" || game.player.ownedSkins.contains($0.id) }) { skin in
+                        SkinCard(skin: skin)
+                    }
                 }
 
                 VStack(spacing: 8) {
@@ -70,6 +68,8 @@ struct ShopView: View {
         }
         .statusBarFade()
         .background(LagoonBackground(dim: 0.82))
+        // Première pub possible : le formulaire de consentement de Google, s'il le faut (une seule fois).
+        .task { await game.ads.start() }
     }
 }
 
@@ -162,8 +162,6 @@ private struct SkinCard: View {
                         .disabled(game.player.dust < price)
                 }
             }
-        } else if skin.grant == "signup" {
-            Text("Réservée aux inscrits").font(.caption).foregroundStyle(.white.opacity(0.7)).frame(minHeight: 36)
         }
     }
 }

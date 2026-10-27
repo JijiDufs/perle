@@ -74,7 +74,9 @@ struct FishingView: View {
                     }
                     Spacer()
                     StatusPill(text: statusText, warning: game.tooFast)
-                        .padding(.bottom, 24)
+                    ObjectiveLines(mission: objectiveMission, guaranteeIn: showsObjective ? game.player.guaranteeIn(tuning: game.tuning) : nil)
+                        .padding(.horizontal, 24)
+                        .padding(.bottom, 16)
                 }
                 .besideFold(game.foldX)
                 .allowsHitTesting(false)
@@ -232,6 +234,16 @@ struct FishingView: View {
         return nil
     }
 
+    /// La ligne d'objectif sous l'huître (audit P1-7) : huître posée, hors tutoriel, sans bulle ni marée basse.
+    private var showsObjective: Bool {
+        game.stage == .playing && game.angle == 0 && !game.inTutorial && coachText == nil && !game.isTideOut(at: Date())
+    }
+
+    /// La mission du jour la plus proche d'être finie (nil : toutes récupérées).
+    private var objectiveMission: Mission? {
+        showsObjective ? game.player.missions?.nearest : nil
+    }
+
     /// Le poisson voleur, pendant qu'il emporte la perle.
     private func thief(at date: Date, size: CGSize, oyster: OysterArt, layout: OysterArt.Layout) -> ThiefFishArt? {
         guard let elapsed = game.theftElapsedMs(at: date) else { return nil }
@@ -283,6 +295,32 @@ struct FishingView: View {
         guard game.hasHinge || game.foldX != nil else { return .thumb }
         if let x = game.foldX { return .fold(x: x) }
         return .cover
+    }
+}
+
+/// Sous l'huître : la mission la plus proche, et la garantie (« Perle dorée garantie · encore N »).
+private struct ObjectiveLines: View {
+    let mission: Mission?
+    let guaranteeIn: Int?
+
+    var body: some View {
+        VStack(spacing: 4) {
+            if let mission {
+                if mission.isDone {
+                    Text("Mission terminée : \(GameText.mission(mission))")
+                } else {
+                    Text("\(GameText.mission(mission)) · \(mission.progress) / \(mission.goal)")
+                }
+            }
+            if let guaranteeIn {
+                Text("Perle dorée garantie · encore \(guaranteeIn)")
+            }
+        }
+        .font(.footnote.weight(.semibold).monospacedDigit())
+        .multilineTextAlignment(.center)
+        .foregroundStyle(.white.opacity(0.85))
+        .shadow(color: .black.opacity(0.35), radius: 3)
+        .accessibilityElement(children: .combine)
     }
 }
 

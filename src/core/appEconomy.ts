@@ -3,7 +3,7 @@
 // exportées vers ios/ par `npm run ios:export`. Montants provisoires (AGENTS.md §6).
 
 /** Poussière d'or d'un doublon revendu, selon sa rareté (— ◆ ◆◆ ◆◆◆ ★ ★★). Plus bas que la webapp. */
-export const APP_SELL_DUST_BY_TIER: readonly number[] = [0, 1, 2, 5, 15, 40];
+export const APP_SELL_DUST_BY_TIER: readonly number[] = [0, 1, 2, 4, 10, 25];
 
 export const APP_ECONOMY = {
   /** Une huître achetée avec la poussière d'or (quand le stock est vide). */
@@ -38,17 +38,20 @@ export const APP_CALENDAR: readonly { oysters: number; dust: number }[] = [
 
 /**
  * Niveaux et réputation de l'app (lot 1.1, docs/ios-feuille-de-route.md §4) : mêmes gains de réputation que la
- * webapp (src/tuning.ts), mais les 10 premiers niveaux vont plus vite, et les récompenses suivent l'économie lente
- * (surtout des huîtres, peu de poussière d'or, pas d'écrin). **Provisoire, à valider avec Mathys.**
+ * webapp (src/tuning.ts), mais les 10 premiers niveaux vont plus vite, et les récompenses suivent l'économie lente :
+ * surtout de la poussière d'or, des huîtres de temps en temps, pas d'écrin (équilibrage du 2026-10-21, vérifié par la
+ * simulation de ios/PearlCore EconomySimulationTests). **Provisoire, à valider avec Mathys.**
  */
 export const APP_LEVELS = {
   /** Niveau 1 : moitié de la réputation de la webapp ; l'écart se referme jusqu'au niveau 10 (voir `xpToNext`). */
   fastStart: { levels: 10, factor: 0.5 },
-  /** À chaque niveau (huîtres au-delà du maximum si besoin). */
-  rewardOysters: 5,
+  /** À chaque niveau, de la poussière d'or ; des huîtres (au-delà du maximum si besoin) seulement tous les
+   *  `rewardOystersEvery` niveaux : à chaque niveau, elles faisaient boule de neige (audit P0-1). */
   rewardDust: 5,
+  rewardOysters: 5,
+  rewardOystersEvery: 5,
   /** En plus, en arrivant à un nouveau rang (Perlier, Artisan…). */
-  rankRewardOysters: 10,
+  rankRewardOysters: 5,
   rankRewardDust: 20,
   /** Réputation d'une mission du jour récupérée, et de la case du calendrier (comme la webapp). */
   missionReputation: 30,
@@ -99,7 +102,7 @@ export const APP_SKINS: readonly AppSkin[] = [
   },
   {
     id: 'benitier', name: 'Bénitier', description: 'Le coquillage géant des lagons chauds. Il se referme sans prévenir.',
-    style: 'clam', dustPrice: 2000, productId: 'app.pearlinc.skin.benitier', grant: null,
+    style: 'clam', dustPrice: 3000, productId: 'app.pearlinc.skin.benitier', grant: null,
   },
   {
     id: 'premiere-maree', name: 'Première marée', description: 'Pour celles et ceux qui étaient là avant tout le monde.',
@@ -113,15 +116,13 @@ export const APP_SKINS: readonly AppSkin[] = [
 
 /**
  * Le poisson voleur (choix de Jules, 2026-10-20) : de temps en temps, juste après la révélation, un poisson
- * fond sur la perle et l'emporte. Seulement les perles ordinaires (◆ au plus) sans marque rare, jamais pendant
- * le tutoriel. Le toucher pendant sa fuite la rend (avec un peu de poussière d'or pour la peine) ; sinon elle est
- * perdue. Affiché dans les probabilités de la collection. **Provisoire, à valider avec Mathys.**
+ * fond sur la perle et l'emporte, **quelle que soit sa rareté** (choix de Jules, 2026-10-27), jamais pendant le
+ * tutoriel. Le toucher pendant sa fuite la rend (avec un peu de poussière d'or pour la peine) ; sinon elle est
+ * perdue. Affiché dans les probabilités. **Taux provisoire, à valider avec Mathys** (risqué sur une perle rare).
  */
 export const APP_FISH_THIEF = {
-  /** Chance qu'une perle qui peut être volée le soit (≈ 6 % des huîtres : blanches et rosées font 60 %). */
-  chance: 0.1,
-  /** Rareté maximale (niveau, 1 = ◆) d'une perle qu'un poisson peut voler. */
-  maxTier: 1,
+  /** Chance qu'une perle soit volée (≈ 2,6 % des huîtres : les perles en font 86 %). */
+  chance: 0.03,
   /** Poussière d'or quand on rattrape le poisson. */
   catchBonusDust: 2,
   /** Le poisson arrive sur la perle (ms), puis s'enfuit avec : le temps pour le toucher (ms). */
@@ -129,6 +130,8 @@ export const APP_FISH_THIEF = {
   fleeMs: 2800,
   /** Tolérance autour du poisson pour le toucher, en part de la taille de l'huître. */
   hitRadius: 0.2,
+  /** Avec VoiceOver ou « Réduire les animations », la fuite dure 2 fois plus longtemps (WCAG 2.2.1, temps imposé). */
+  assistedFleeFactor: 2,
 } as const;
 
 /** Produits consommables de la boutique Apple (le prix affiché vient de StoreKit). */
@@ -228,13 +231,13 @@ export const APP_ACHIEVEMENTS: readonly AppAchievement[] = [
 ];
 
 /**
- * Récompenses des succès dans l'app (économie lente, docs/duo-gadget.md §6 quater) : surtout des huîtres, un peu
- * de poussière d'or (la webapp donne 10 / 30 / 80 ✦ + 40 de réputation). Un album complété donne des huîtres en plus
- * (la webapp : un écrin). **Montants provisoires, à valider avec Mathys.**
+ * Récompenses des succès dans l'app (économie lente, docs/duo-gadget.md §6 quater) : un peu de poussière d'or et de
+ * réputation, et les titres ; plus d'huîtres depuis l'équilibrage du 2026-10-21 (elles faisaient boule de neige avec
+ * les niveaux). La webapp donne 10 / 30 / 80 ✦ + 40 de réputation, et un écrin par album. **Provisoire, à valider avec Mathys.**
  */
 export const APP_ACHIEVEMENT_REWARDS = {
-  bronze: { oysters: 3, dust: 5, reputation: 15 },
-  argent: { oysters: 5, dust: 10, reputation: 30 },
-  or: { oysters: 10, dust: 25, reputation: 60 },
-  albumOysters: 10,
+  bronze: { oysters: 0, dust: 5, reputation: 15 },
+  argent: { oysters: 0, dust: 10, reputation: 30 },
+  or: { oysters: 0, dust: 25, reputation: 60 },
+  albumOysters: 0,
 } as const;

@@ -29,7 +29,8 @@ private let levels = catalog.economy.levels
     let stock = player.stock.count
     let toFive = (1..<5).reduce(0) { $0 + catalog.xpToNext($1) }
     player.gainReputation(toFive)
-    let expectedOysters = 4 * levels.rewardOysters + levels.rankRewardOysters
+    // Niveaux 2 à 5 : des huîtres seulement au 5 (tous les `rewardOystersEvery` niveaux), qui est aussi un rang.
+    let expectedOysters = (levels.rewardOystersEvery == 5 ? levels.rewardOysters : 0) + levels.rankRewardOysters
     let expectedDust = 4 * levels.rewardDust + levels.rankRewardDust
     #expect(player.rewardedLevel == 5)
     #expect(player.levelUp == LevelUp(from: 1, to: 5, oysters: expectedOysters, dust: expectedDust, retroactive: false))

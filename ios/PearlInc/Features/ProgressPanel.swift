@@ -144,7 +144,7 @@ struct ProgressPanel: View {
             let rewards = game.economy.achievementRewards
             ScaleRow(label: String(localized: "Succès bronze / argent / or"),
                      value: "+\(rewards.bronze.reputation) / +\(rewards.argent.reputation) / +\(rewards.or.reputation)")
-            Text("Chaque niveau : \(levels.rewardOysters) huîtres et \(levels.rewardDust) ✦ ; nouveau rang : \(levels.rankRewardOysters) huîtres et \(levels.rankRewardDust) ✦ de plus.")
+            Text("Chaque niveau : \(levels.rewardDust) ✦, et \(levels.rewardOysters) huîtres tous les \(levels.rewardOystersEvery) niveaux ; nouveau rang : \(levels.rankRewardOysters) huîtres et \(levels.rankRewardDust) ✦ de plus.")
                 .font(.footnote)
                 .opacity(0.8)
                 .padding(.top, 4)

@@ -2,10 +2,11 @@ import SwiftUI
 import PearlCore
 
 /// Stock vide : « La marée remonte… », le compte à rebours, et de quoi continuer :
-/// une pub récompensée, une huître contre de la poussière d'or, ou la boutique.
+/// une pub récompensée, une huître contre de la poussière d'or (probabilités à portée de main).
 struct TideOutView: View {
     @Environment(GameModel.self) private var game
     @AppStorage(Notifications.settingKey) private var notify = false
+    @State private var showOdds = false
     let date: Date
     /// Écran intérieur du Duo, à moitié ouvert : le panneau tient dans une moitié (rien sur le pli).
     private var compact: Bool { game.foldX != nil }
@@ -30,6 +31,8 @@ struct TideOutView: View {
                 else { Text("Tu as \(game.player.dust) ✦. Revends tes perles en double dans la collection, ou recharge tes huîtres dans la boutique.") }
             }
                 .font(.footnote).multilineTextAlignment(.center).foregroundStyle(.white.opacity(0.8))
+            Button("Voir les probabilités") { showOdds = true }
+                .font(.footnote.weight(.semibold)).underline()
             // Le bon moment pour proposer la notification : le joueur attend ses huîtres.
             if notify {
                 Label("Je te préviens quand la marée est haute", systemImage: "bell.fill")
@@ -50,6 +53,16 @@ struct TideOutView: View {
         .foregroundStyle(.white)
         .shadow(color: .black.opacity(0.2), radius: 2)
         .padding(.horizontal, compact ? 8 : 16)
+        // Première pub possible : le formulaire de consentement de Google, s'il le faut (une seule fois).
+        .task { await game.ads.start() }
+        .sheet(isPresented: $showOdds) {
+            NavigationStack {
+                ScrollView { OddsList().padding(20) }
+                    .navigationTitle("Probabilités")
+                    .toolbar { Button("OK") { showOdds = false } }
+            }
+            .presentationBackground(.ultraThinMaterial)
+        }
     }
 }
 

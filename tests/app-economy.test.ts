@@ -15,29 +15,28 @@ import { DEFAULT_TUNING as t } from '../src/tuning';
 const dustPerOyster = PEARLS.reduce((sum, p) => sum + p.probability * APP_SELL_DUST_BY_TIER[pearlTier(p.id)], 0);
 
 describe('économie de l’app iOS', () => {
-  it('la revente rapporte environ 2,5 ✦ par huître', () => {
-    expect(dustPerOyster).toBeGreaterThan(2);
-    expect(dustPerOyster).toBeLessThan(3);
+  it('la revente rapporte environ 2 ✦ par huître', () => {
+    expect(dustPerOyster).toBeGreaterThan(1.5);
+    expect(dustPerOyster).toBeLessThan(2.5);
     expect(FIND_PROBABILITY).toBeLessThan(0.1);
   });
 
   it('le bénitier demande environ trois semaines de jeu régulier', () => {
     const benitier = APP_SKINS.find((s) => s.id === 'benitier')!;
     const missions = APP_ECONOMY.missionsPerDay * APP_ECONOMY.missionRewardDust + APP_ECONOMY.missionBonusDust;
+    // Le rythme réel (pubs, calendrier, niveaux, succès) est vérifié par la simulation Swift (EconomySimulationTests).
     const regularDay = 30 * dustPerOyster + missions;
     const days = benitier.dustPrice! / regularDay;
-    expect(days).toBeGreaterThan(14);
-    expect(days).toBeLessThan(35);
+    expect(days).toBeGreaterThan(21);
+    expect(days).toBeLessThan(45);
   });
 
-  it('le poisson voleur ne prend que des perles ordinaires, de temps en temps', () => {
-    expect(APP_FISH_THIEF.maxTier).toBeLessThanOrEqual(1);
-    const stealable = PEARLS.filter((p) => p.glow !== null && pearlTier(p.id) <= APP_FISH_THIEF.maxTier);
-    expect(stealable.every((p) => !p.goldenOrBetter)).toBe(true);
-    // Une huître sur 12 à 25 environ : une surprise, pas une punition.
-    const share = stealable.reduce((sum, p) => sum + p.probability, 0) * (1 - FIND_PROBABILITY) * APP_FISH_THIEF.chance;
-    expect(share).toBeGreaterThan(0.04);
-    expect(share).toBeLessThan(0.085);
+  it('le poisson voleur prend une perle de temps en temps, quelle que soit sa rareté', () => {
+    const pearls = PEARLS.filter((p) => p.glow !== null);
+    // Une huître sur 25 à 60 environ : une surprise rare (il peut prendre une perle rare, choix de Jules).
+    const share = pearls.reduce((sum, p) => sum + p.probability, 0) * APP_FISH_THIEF.chance;
+    expect(share).toBeGreaterThan(0.015);
+    expect(share).toBeLessThan(0.04);
     // On a le temps de le toucher.
     expect(APP_FISH_THIEF.fleeMs).toBeGreaterThanOrEqual(2000);
   });
@@ -48,7 +47,7 @@ describe('économie de l’app iOS', () => {
   });
 
   it('acheter le bénitier en poussière coûte plus cher que l’acheter directement', () => {
-    // Le plus gros pack qui ne suffit pas (1 200 ✦) coûte déjà plus que le skin (prix StoreKit, voir §6 ter).
+    // Seule la Malle (9,99 €) suffit : elle coûte plus que le skin (2,99 €, prix StoreKit, voir §6 ter).
     const packs = APP_CONSUMABLES.filter((c) => c.dust > 0).map((c) => c.dust);
     const benitier = APP_SKINS.find((s) => s.id === 'benitier')!;
     expect(packs.filter((d) => d >= benitier.dustPrice!).length).toBe(1);
@@ -83,8 +82,11 @@ describe('économie de l’app iOS', () => {
     expect(months).toBeLessThan(6);
   });
 
-  it('les niveaux donnent surtout des huîtres, peu de poussière d’or', () => {
-    expect(APP_LEVELS.rewardOysters * APP_ECONOMY.oysterDustPrice).toBeGreaterThan(10 * APP_LEVELS.rewardDust);
+  it('les niveaux donnent surtout de la poussière d’or, des huîtres de temps en temps', () => {
+    // Des huîtres à chaque niveau faisaient boule de neige (audit P0-1) : 205 huîtres à la première séance.
+    expect(APP_LEVELS.rewardOystersEvery).toBeGreaterThanOrEqual(5);
+    expect(APP_LEVELS.rewardOysters + APP_LEVELS.rankRewardOysters).toBeLessThanOrEqual(10);
+    expect(APP_LEVELS.rewardDust).toBeGreaterThan(0);
     // Les dix premiers niveaux (deux rangs compris) rapportent moins d'une journée de poussière d'un joueur régulier.
     expect(9 * APP_LEVELS.rewardDust + 2 * APP_LEVELS.rankRewardDust).toBeLessThan(105);
   });
@@ -116,12 +118,12 @@ describe('économie de l’app iOS', () => {
     }
   });
 
-  it('tous les succès réunis rapportent surtout des huîtres, moins d’un quart du bénitier en poussière', () => {
+  it('tous les succès réunis ne donnent pas d’huîtres, et moins d’un quart du bénitier en poussière', () => {
     const rewards = APP_ACHIEVEMENTS.map((a) => APP_ACHIEVEMENT_REWARDS[a.tier]);
     const dust = rewards.reduce((sum, r) => sum + r.dust, 0);
     const oysters = rewards.reduce((sum, r) => sum + r.oysters, 0) + APP_ACHIEVEMENTS.filter((a) => a.album).length * APP_ACHIEVEMENT_REWARDS.albumOysters;
     expect(dust).toBeLessThan(APP_SKINS.find((s) => s.id === 'benitier')!.dustPrice! / 4);
-    expect(oysters * APP_ECONOMY.oysterDustPrice).toBeGreaterThan(5 * dust);
+    expect(oysters).toBe(0);
   });
 
   it('un seul skin offert au départ', () => {

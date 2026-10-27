@@ -1,4 +1,4 @@
-// Le poisson voleur : il chipe parfois une perle ordinaire, qu'on récupère en le touchant à temps.
+// Le poisson voleur : il chipe parfois une perle, quelle que soit sa rareté, qu'on récupère en le touchant à temps.
 import Foundation
 import Testing
 @testable import PearlCore
@@ -27,16 +27,13 @@ private func open(_ count: Int, seed: UInt32 = 3, onTheft: (PearlCard) -> Bool? 
     return (player, stolen, during)
 }
 
-@Test func lePoissonNeVoleQueDesPerlesOrdinaires() {
-    let result = open(2000)
+@Test func lePoissonResteRare() {
+    let result = open(3000)
     #expect(!result.stolen.isEmpty)
-    for card in result.stolen {
-        #expect(catalog.tier(of: card.pearlId) <= fish.maxTier, "\(card.pearlId)")
-        #expect(card.traits?.mark == nil)
-    }
-    // Environ une huître sur 17 : une surprise, pas une punition.
-    let share = Double(result.stolen.count) / 2000
-    #expect(share > 0.03 && share < 0.09, "\(share)")
+    #expect(result.stolen.allSatisfy { $0.pearlId != "empty" })
+    // Toutes raretés (choix de Jules, 2026-10-27), mais rare : environ une huître sur 40.
+    let share = Double(result.stolen.count) / 3000
+    #expect(share > 0.015 && share < 0.04, "\(share)")
 }
 
 @Test func jamaisPendantLeTutoriel() {
@@ -64,12 +61,25 @@ private func open(_ count: Int, seed: UInt32 = 3, onTheft: (PearlCard) -> Bool? 
     #expect(result.player.stolenCard == nil)
 }
 
-@Test func unVolEnSuspensEstRenduALaRevelationSuivante() {
-    // App fermée pendant la fuite : on ne perd pas la perle.
-    let result = open(600, onTheft: { _ in nil })
-    let serials = Set(result.player.pearlCards.map(\.serial))
-    let resolved = result.stolen.filter { $0.serial != result.player.stolenCard?.serial }
-    #expect(resolved.allSatisfy { serials.contains($0.serial) })
+@Test func unVolEnSuspensEstRenduSansBonusALaRevelationSuivante() {
+    // App fermée pendant la fuite : la perle revient, sans la poussière d'or du poisson rattrapé (audit P2-2).
+    var player = open(400, onTheft: { _ in nil }).player
+    _ = player.resolveTheft(caught: false)
+    let stolen = PearlCard(serial: 9997, pearlId: "white", sizeMm: 6, value: 10, lustre: .B, cracked: false, foundAt: 0, traits: nil)
+    player.stolenCard = stolen
+    // Comme si la perle avait toujours été dans la collection.
+    var twin = player
+    twin.pearlCards.append(stolen)
+    twin.stolenCard = nil
+    _ = player.reveal(lustre: .B, cracked: false, now: 0, rng: seededRng(4), tuning: tuning)
+    _ = twin.reveal(lustre: .B, cracked: false, now: 0, rng: seededRng(4), tuning: tuning)
+    #expect(player.pearlCards.contains(stolen))
+    #expect(player == twin, "pas de bonus du poisson")
+}
+
+@Test func lePoissonFuitPlusLentementAvecVoiceOver() {
+    #expect(fish.assisted.fleeMs == fish.fleeMs * fish.assistedFleeFactor)
+    #expect(fish.assisted.canCatch(elapsedMs: fish.arriveMs + fish.fleeMs + 1))
 }
 
 @Test func leVolSeSauvegarde() throws {
