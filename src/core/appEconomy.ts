@@ -56,11 +56,11 @@ export const APP_LEVELS = {
 } as const;
 
 /**
- * Écrins de l'app (lot 1.4, choix de Jules 2026-10-21, docs/ios-feuille-de-route.md §4) : seulement aux montées de
- * niveau (un tous les `levelEvery` niveaux, un de plus à chaque rang, comme la webapp) et contre de la poussière d'or
- * au comptoir. **Jamais contre de l'argent réel**, ni en boutique ni en pub. Prix : 10 huîtres de poussière, la même
- * ancre que « Marée haute » (10 huîtres = 200 ✦ = 0,99 €). Pas de mission « ouvrir un écrin » : on n'en a pas tous les
- * jours. **Provisoire, à valider avec Mathys.**
+ * Écrins de l'app (lot 1.4, choix de Jules 2026-10-21, docs/ios-feuille-de-route.md §4) : aux montées de niveau (un
+ * tous les `levelEvery` niveaux, un de plus à chaque rang, comme la webapp), contre de la poussière d'or au comptoir,
+ * et en achat intégré comme les huîtres (choix de Jules 2026-10-27, voir `APP_CONSUMABLES`). Prix : 10 huîtres de
+ * poussière, la même ancre que « Marée haute » (10 huîtres = 200 ✦ = 0,99 €). Pas de mission « ouvrir un écrin » : on
+ * n'en a pas tous les jours. **Provisoire, à valider avec Mathys.**
  */
 export const APP_ECRINS = {
   levelEvery: 3,
@@ -144,13 +144,20 @@ export const APP_FISH_THIEF = {
   hitRadius: 0.2,
 } as const;
 
-/** Produits consommables de la boutique Apple (le prix affiché vient de StoreKit). */
-export const APP_CONSUMABLES: readonly { id: string; name: string; oysters: number; dust: number }[] = [
-  { id: 'app.pearlinc.oysters.10', name: 'Marée haute', oysters: 10, dust: 0 },
-  { id: 'app.pearlinc.oysters.30', name: 'Grande marée', oysters: 30, dust: 0 },
-  { id: 'app.pearlinc.dust.400', name: 'Bourse de poussière d’or', oysters: 0, dust: 400 },
-  { id: 'app.pearlinc.dust.1200', name: 'Coffret de poussière d’or', oysters: 0, dust: 1200 },
-  { id: 'app.pearlinc.dust.3000', name: 'Malle de poussière d’or', oysters: 0, dust: 3000 },
+/**
+ * Produits consommables de la boutique Apple (le prix affiché vient de StoreKit). Écrins depuis le 2026-10-27 (choix de
+ * Jules) : un écrin acheté n'est jamais moins cher que ses 200 ✦ achetés en pack (un test le vérifie avec
+ * `ios/PearlInc.storekit`), il compte pour la garantie ★ comme les autres, et ses probabilités sont affichées à côté du
+ * bouton d'achat.
+ */
+export const APP_CONSUMABLES: readonly { id: string; name: string; oysters: number; dust: number; ecrins: number }[] = [
+  { id: 'app.pearlinc.oysters.10', name: 'Marée haute', oysters: 10, dust: 0, ecrins: 0 },
+  { id: 'app.pearlinc.oysters.30', name: 'Grande marée', oysters: 30, dust: 0, ecrins: 0 },
+  { id: 'app.pearlinc.dust.400', name: 'Bourse de poussière d’or', oysters: 0, dust: 400, ecrins: 0 },
+  { id: 'app.pearlinc.dust.1200', name: 'Coffret de poussière d’or', oysters: 0, dust: 1200, ecrins: 0 },
+  { id: 'app.pearlinc.dust.3000', name: 'Malle de poussière d’or', oysters: 0, dust: 3000, ecrins: 0 },
+  { id: 'app.pearlinc.ecrin.1', name: 'Écrin de velours', oysters: 0, dust: 0, ecrins: 1 },
+  { id: 'app.pearlinc.ecrin.5', name: 'Coffret de 5 écrins', oysters: 0, dust: 0, ecrins: 5 },
 ];
 
 /**

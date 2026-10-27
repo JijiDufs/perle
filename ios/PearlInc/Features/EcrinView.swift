@@ -365,7 +365,7 @@ struct EcrinOddsList: View {
             Group {
                 Text("Garantie : un bijou ★ ou plus rare au plus tard au \(t.ecrinPityThreshold + 1)ᵉ écrin.")
                 Text("Éclat parfait : valeur ×\(t.glintPerfectMultiplier.formatted()), et \(t.glintRareVariantChance.formatted(.percent.precision(.fractionLength(0)))) de chance d’une variante rare (Aurore, Nuit ou Givre) : valeur ×\(t.glintRareVariantMultiplier.formatted()).")
-                Text("Les écrins se gagnent tous les \(game.economy.ecrins.levelEvery) niveaux et à chaque nouveau rang, ou s’achètent \(game.ecrinPrice) ✦ au comptoir. Jamais contre de l’argent réel.")
+                Text("Les écrins se gagnent tous les \(game.economy.ecrins.levelEvery) niveaux et à chaque nouveau rang, s’achètent \(game.ecrinPrice) ✦ au comptoir, ou dans la boutique. Ils comptent tous pour la garantie.")
             }
             .font(.caption).foregroundStyle(.white.opacity(0.65)).frame(maxWidth: .infinity, alignment: .leading)
         }

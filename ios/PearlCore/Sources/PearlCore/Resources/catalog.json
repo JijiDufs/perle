@@ -1201,31 +1201,50 @@
         "id": "app.pearlinc.oysters.10",
         "name": "Marée haute",
         "oysters": 10,
-        "dust": 0
+        "dust": 0,
+        "ecrins": 0
       },
       {
         "id": "app.pearlinc.oysters.30",
         "name": "Grande marée",
         "oysters": 30,
-        "dust": 0
+        "dust": 0,
+        "ecrins": 0
       },
       {
         "id": "app.pearlinc.dust.400",
         "name": "Bourse de poussière d’or",
         "oysters": 0,
-        "dust": 400
+        "dust": 400,
+        "ecrins": 0
       },
       {
         "id": "app.pearlinc.dust.1200",
         "name": "Coffret de poussière d’or",
         "oysters": 0,
-        "dust": 1200
+        "dust": 1200,
+        "ecrins": 0
       },
       {
         "id": "app.pearlinc.dust.3000",
         "name": "Malle de poussière d’or",
         "oysters": 0,
-        "dust": 3000
+        "dust": 3000,
+        "ecrins": 0
+      },
+      {
+        "id": "app.pearlinc.ecrin.1",
+        "name": "Écrin de velours",
+        "oysters": 0,
+        "dust": 0,
+        "ecrins": 1
+      },
+      {
+        "id": "app.pearlinc.ecrin.5",
+        "name": "Coffret de 5 écrins",
+        "oysters": 0,
+        "dust": 0,
+        "ecrins": 5
       }
     ],
     "calendar": [
@@ -2834,7 +2853,9 @@
       "app.pearlinc.oysters.30": "Spring tide",
       "app.pearlinc.dust.400": "Pouch of gold dust",
       "app.pearlinc.dust.1200": "Casket of gold dust",
-      "app.pearlinc.dust.3000": "Trunk of gold dust"
+      "app.pearlinc.dust.3000": "Trunk of gold dust",
+      "app.pearlinc.ecrin.1": "Velvet jewel case",
+      "app.pearlinc.ecrin.5": "Set of 5 jewel cases"
     },
     "ranks": {
       "pecheur": "Fisher",

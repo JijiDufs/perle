@@ -373,10 +373,12 @@ public struct PlayerState: Codable, Sendable, Equatable {
         return true
     }
 
-    /// Un achat consommable de la boutique Apple (huîtres et / ou poussière d'or).
+    /// Un achat consommable de la boutique Apple (huîtres, poussière d'or ou écrins). Les écrins achetés se tirent comme
+    /// les autres (`ensureEcrin`) : ils comptent pour la garantie ★.
     public mutating func grant(_ product: AppConsumable) {
         stock.count += product.oysters
         dust += product.dust
+        ecrins += product.ecrins
     }
 
     // MARK: - Pub récompensée

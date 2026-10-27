@@ -106,6 +106,36 @@
       "productID": "app.pearlinc.skin.or",
       "referenceName": "Huître d’or",
       "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "0.99",
+      "familyShareable": false,
+      "internalID": "6740000008",
+      "localizations": [
+        {
+          "description": "Un écrin à ouvrir : un bijou tiré au hasard (probabilités affichées dans le jeu).",
+          "displayName": "Écrin de velours",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "app.pearlinc.ecrin.1",
+      "referenceName": "Écrin de velours",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "3.99",
+      "familyShareable": false,
+      "internalID": "6740000009",
+      "localizations": [
+        {
+          "description": "Cinq écrins à ouvrir : cinq bijoux tirés au hasard (probabilités affichées dans le jeu).",
+          "displayName": "Coffret de 5 écrins",
+          "locale": "fr_FR"
+        }
+      ],
+      "productID": "app.pearlinc.ecrin.5",
+      "referenceName": "Coffret de 5 écrins",
+      "type": "Consumable"
     }
   ],
   "settings": {

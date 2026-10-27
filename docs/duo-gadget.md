@@ -170,6 +170,8 @@ Choix de Jules (2026-10-08) : on peut **recharger ses huîtres** et **acheter de
 | Bourse de poussière d'or | consommable | 1,99 € | 400 ✦ |
 | Coffret de poussière d'or | consommable | 4,99 € | 1 200 ✦ |
 | Malle de poussière d'or | consommable | 9,99 € | 3 000 ✦ |
+| Écrin de velours (2026-10-27) | consommable | 0,99 € | 1 écrin (probabilités affichées à côté) |
+| Coffret de 5 écrins (2026-10-27) | consommable | 3,99 € | 5 écrins |
 | Bénitier | non consommable | 2,99 € | Le skin (aussi 2 000 ✦) |
 | Huître d'or | non consommable | 9,99 € | Le skin, seulement en achat |
 

@@ -495,6 +495,7 @@ final class GameModel {
         if let product = economy.consumables.first(where: { $0.id == productId }) {
             player.grant(product)
             if product.dust > 0 { dustBump += 1 }
+            if product.ecrins > 0 && tab == .ecrins { prepareEcrin() }
             haptics.reveal(tier: 2)
             audio.purchase()
             save()

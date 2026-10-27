@@ -20,6 +20,8 @@ public struct AppConsumable: Codable, Sendable, Identifiable, Equatable {
     public internal(set) var name: String
     public let oysters: Int
     public let dust: Int
+    /// Écrins à ouvrir (depuis le 2026-10-27).
+    public let ecrins: Int
 }
 
 public struct MissionTemplate: Codable, Sendable, Equatable {

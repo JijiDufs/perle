@@ -2903,22 +2903,6 @@
         }
       }
     },
-    "Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres et la poussière d’or restent dans ta partie." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paid with your Apple account. Shells you buy can be restored on a new phone; oysters and gold dust stay in your game."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres et la poussière d’or restent dans ta partie."
-          }
-        }
-      }
-    },
     "Parfois, rien. C’est la mer. La prochaine sera peut-être la bonne." : {
       "localizations" : {
         "en" : {
@@ -5187,22 +5171,6 @@
         }
       }
     },
-    "Les écrins se gagnent tous les %lld niveaux et à chaque nouveau rang, ou s’achètent %lld ✦ au comptoir. Jamais contre de l’argent réel." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jewel cases are earned every %1$lld levels and with each new rank, or bought for %2$lld ✦ at the counter. Never for real money."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les écrins se gagnent tous les %lld niveaux et à chaque nouveau rang, ou s’achètent %lld ✦ au comptoir. Jamais contre de l’argent réel."
-          }
-        }
-      }
-    },
     "Mes bijoux" : {
       "localizations" : {
         "en" : {
@@ -5787,6 +5755,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Écrins"
+          }
+        }
+      }
+    },
+    "Les écrins se gagnent tous les %lld niveaux et à chaque nouveau rang, s’achètent %lld ✦ au comptoir, ou dans la boutique. Ils comptent tous pour la garantie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jewel cases are earned every %1$lld levels and with each new rank, bought for %2$lld ✦ at the counter, or in the shop. They all count towards the guarantee."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les écrins se gagnent tous les %lld niveaux et à chaque nouveau rang, s’achètent %lld ✦ au comptoir, ou dans la boutique. Ils comptent tous pour la garantie."
+          }
+        }
+      }
+    },
+    "Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres, les écrins et la poussière d’or restent dans ta partie." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paid with your Apple account. Shells you buy can be restored on a new phone; oysters, jewel cases and gold dust stay in your game."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres, les écrins et la poussière d’or restent dans ta partie."
+          }
+        }
+      }
+    },
+    "Un écrin · %lld ✦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One jewel case · %lld ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un écrin · %lld ✦"
+          }
+        }
+      }
+    },
+    "Chaque écrin est un tirage : ce qu’il peut contenir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every jewel case is a draw: what it can hold"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque écrin est un tirage : ce qu’il peut contenir"
           }
         }
       }

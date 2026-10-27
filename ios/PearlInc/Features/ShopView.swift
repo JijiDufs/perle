@@ -2,8 +2,8 @@ import SwiftUI
 import PearlCore
 
 /// La boutique (docs/duo-gadget.md §6 bis, §6 ter) : huîtres (pub récompensée, poussière d'or, achats intégrés),
-/// poussière d'or, coquilles. Les prix en euros viennent de StoreKit ; les probabilités sont rappelées
-/// avant tout achat d'huîtres (règle 3.1.1 d'Apple).
+/// poussière d'or, écrins, coquilles. Les prix en euros viennent de StoreKit ; les probabilités sont rappelées
+/// avant tout achat d'huîtres ou d'écrins (règle 3.1.1 d'Apple).
 struct ShopView: View {
     @Environment(GameModel.self) private var game
     @State private var showOdds = false
@@ -39,6 +39,22 @@ struct ShopView: View {
                 .padding(18)
                 .glassPanel(shade: 0.25)
 
+                Text("Écrins").lagoonTitle()
+                VStack(spacing: 14) {
+                    ForEach(game.economy.consumables.filter { $0.ecrins > 0 }) { product in
+                        ProductRow(title: product.name, detail: String(localized: "\(product.ecrins) écrins"), productId: product.id)
+                    }
+                    Button("Un écrin · \(game.ecrinPrice) ✦") { game.buyEcrin() }
+                        .buttonStyle(GlassButtonStyle())
+                        .disabled(game.player.dust < game.ecrinPrice)
+                    // Chaque écrin est un tirage : les probabilités restent affichées à côté des boutons (règle 3.1.1).
+                    Text("Chaque écrin est un tirage : ce qu’il peut contenir").font(.footnote.weight(.semibold))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    EcrinOddsList()
+                }
+                .padding(18)
+                .glassPanel(shade: 0.25)
+
                 Text("Poussière d’or").lagoonTitle()
                 VStack(spacing: 12) {
                     ForEach(game.economy.consumables.filter { $0.dust > 0 }) { product in
@@ -60,7 +76,7 @@ struct ShopView: View {
                 VStack(spacing: 8) {
                     Button("Restaurer les achats") { game.restorePurchases() }
                         .buttonStyle(GlassButtonStyle())
-                    Text("Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres et la poussière d’or restent dans ta partie.")
+                    Text("Paiement par ton compte Apple. Les coquilles achetées se restaurent sur un nouveau téléphone ; les huîtres, les écrins et la poussière d’or restent dans ta partie.")
                         .font(.caption).multilineTextAlignment(.center).foregroundStyle(.white.opacity(0.6))
                 }
             }

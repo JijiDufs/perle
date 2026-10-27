@@ -130,6 +130,8 @@ export const CATALOG_ENGLISH: CatalogEnglish = {
     'app.pearlinc.dust.400': 'Pouch of gold dust',
     'app.pearlinc.dust.1200': 'Casket of gold dust',
     'app.pearlinc.dust.3000': 'Trunk of gold dust',
+    'app.pearlinc.ecrin.1': 'Velvet jewel case',
+    'app.pearlinc.ecrin.5': 'Set of 5 jewel cases',
   },
   ranks: {
     pecheur: 'Fisher',

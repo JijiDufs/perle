@@ -259,3 +259,15 @@ private func parity() throws -> Parity {
     let types = Set(player.jewelCards.map(\.jewel.type)).intersection(catalog.jewels.mainTypes).count
     #expect(player.progress(of: catalog.achievement("types-bijoux")!).done == types)
 }
+
+@Test func lesEcrinsAchetesSeTirentCommeLesAutresEtComptentPourLaGarantie() throws {
+    let pack = try #require(catalog.economy.consumables.first { $0.ecrins == 5 })
+    var player = PlayerState.new(seededRng(4), tuning, now: 0)
+    player.jewelDraw = JewelDrawState(sinceStarOrBetter: tuning.ecrinPityThreshold)
+    player.grant(pack)
+    #expect(player.ecrins == 5 && player.dust == 0)
+    player.ensureEcrin(rng: seededRng(6))
+    let jewel = try #require(player.currentEcrin?.jewel)
+    #expect(catalog.jewelRarity(jewel.rarityId).tier >= 4, "la garantie ★ vaut aussi pour un écrin acheté")
+    #expect(player.ecrins == 4 && player.jewelDraw.sinceStarOrBetter == 0)
+}

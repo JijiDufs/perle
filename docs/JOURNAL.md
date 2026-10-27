@@ -4,6 +4,32 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-27 (écrins en achats intégrés) · Jules · Claude Code · branche `claude/ios-1-4-ecrins-20174f`
+
+Demande de Jules : vendre les écrins comme les huîtres, pour la version 1.1. Décision en `AGENTS.md` §6.
+
+**Fait**
+- `APP_CONSUMABLES` (`appEconomy.ts`) : champ `ecrins` ; **Écrin de velours** (`app.pearlinc.ecrin.1`, 1 écrin) et **Coffret de 5 écrins** (`app.pearlinc.ecrin.5`, 5 écrins). Textes anglais (`catalogEnglish.ts`). `ios/PearlInc.storekit` : les deux produits (0,99 $ et 3,99 $). Test : un écrin acheté n'est jamais moins cher que 200 ✦ achetés au meilleur pack.
+- PearlCore : `AppConsumable.ecrins`, `grant` ajoute les écrins à ouvrir ; test : un écrin acheté passe par le même tirage et déclenche la garantie ★.
+- App : section **Écrins** de la boutique (les deux achats, l'écrin à 200 ✦, et les probabilités des bijoux affichées en clair juste en dessous) ; un achat livré pendant qu'on est sur l'onglet Écrins pose l'écrin tout de suite ; textes des probabilités et du pied de boutique mis à jour (FR / EN).
+- `npm test`, `npm run build`, `swift test` verts ; build Xcode OK.
+
+**À créer dans App Store Connect (Pearl Inc. → Achats intégrés → +, « Consommable »)**
+
+| Nom de référence | Identifiant du produit | Prix | Nom affiché FR / EN | Description FR / EN |
+|---|---|---|---|---|
+| Écrin de velours | `app.pearlinc.ecrin.1` | 0,99 $ (palier 1) | Écrin de velours / Velvet jewel case | Un écrin à ouvrir : un bijou tiré au hasard, probabilités affichées dans le jeu. / One jewel case to open: a random jewel, odds shown in the game. |
+| Coffret de 5 écrins | `app.pearlinc.ecrin.5` | 3,99 $ | Coffret de 5 écrins / Set of 5 jewel cases | Cinq écrins à ouvrir : cinq bijoux tirés au hasard, probabilités affichées dans le jeu. / Five jewel cases to open: five random jewels, odds shown in the game. |
+
+Pour chacun : disponibilité **sans la Belgique ni la Chine** (comme les autres achats), capture de revue (la boutique, section Écrins, en 1320 × 2868), puis l'ajouter à la version avant d'envoyer. Notes de revue : « Jewel cases are consumables like oyster refills: each one opens to a random jewel; the full odds are shown in the shop next to the purchase buttons, on the Jewel cases screen and in Settings → Odds. »
+
+**Non vérifié**
+- L'achat lui-même au simulateur : le fichier StoreKit n'est pris en compte qu'en lançant l'app depuis Xcode, que je ne peux pas piloter (menus refusés). À essayer dans Xcode (schéma PearlInc, destination iPhone 17e, onglet Boutique → Écrin de velours) ou en TestFlight sandbox.
+- La section Écrins de la boutique à l'écran (seul le build a été vérifié).
+
+**Fragile**
+- Ordre des prix : 1 écrin 0,99 $ = 200 ✦ achetés au plus petit pack (1,99 $ les 400 ✦) ; au meilleur pack (8,99 $ les 3 000 ✦) 200 ✦ valent 0,60 $. Si les packs de poussière changent de prix, relancer le test d'économie.
+
 ## 2026-10-21 (lot 1.4) · Jules · Claude Code · branche `claude/ios-1-4-ecrins-20174f`
 
 Lot 1.4 de l'app iOS, « Écrins et bijoux » (`docs/ios-feuille-de-route.md`). Décision en `AGENTS.md` §6.
@@ -22,7 +48,6 @@ Lot 1.4 de l'app iOS, « Écrins et bijoux » (`docs/ios-feuille-de-route.md`). 
 - Après la fusion : `graphify update .` dans le dossier principal.
 
 **Fragile**
-- **Argent réel → poussière → écrin** : les packs de poussière (1,99 $ = 400 ✦) achètent indirectement 2 écrins. Ce n'est pas nouveau (les huîtres s'achètent déjà), mais si l'on veut « jamais d'écrin payé » au sens strict, il faudrait séparer la poussière gagnée de la poussière achetée. À trancher.
 - VoiceOver donne l'éclat parfait à chaque fois (comme l'huître ouverte par VoiceOver a un lustre régulier) : un joueur voyant pourrait s'en servir.
 - « Écrin complet » et « Venu des Abysses » demandent la légende (0,5 %, ≈ 7 % des écrins de garantie) : objectif de long terme.
 - Au simulateur, les touchers sur la barre d'onglets ne passent qu'avec un appui de ≈ 0,45 s, et les captures arrivent souvent avec une action de retard.

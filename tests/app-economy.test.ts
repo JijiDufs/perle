@@ -1,4 +1,6 @@
 // Garde-fous de l'économie de l'app iOS (docs/duo-gadget.md §6 quater).
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ACHIEVEMENTS } from '../src/core/achievements';
 import { APP_ACHIEVEMENT_REWARDS, APP_ACHIEVEMENTS, APP_CONSUMABLES, APP_ECONOMY, APP_ECRINS, APP_FISH_THIEF, APP_LEVELS, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
@@ -135,8 +137,18 @@ describe('économie de l’app iOS', () => {
     // Revendre le bijou d'un écrin rapporte bien moins que son prix : pas de boucle écrin → poussière → écrin.
     const resale = JEWEL_RARITIES.reduce((sum, j) => sum + j.probability * APP_SELL_DUST_BY_TIER[j.tier], 0);
     expect(resale * 20).toBeLessThan(APP_ECRINS.dustPrice);
-    // Jamais contre de l'argent réel : aucun produit de la boutique ne donne d'écrin.
-    for (const product of APP_CONSUMABLES) expect(Object.keys(product)).not.toContain('ecrins');
+  });
+
+  it('un écrin acheté n’est jamais moins cher que ses 200 ✦ achetés en pack (prix de PearlInc.storekit)', () => {
+    const storekit = JSON.parse(readFileSync(resolve(__dirname, '../ios/PearlInc.storekit'), 'utf8')) as { products: { productID: string; displayPrice: string }[] };
+    const price = (id: string) => Number(storekit.products.find((p) => p.productID === id)!.displayPrice);
+    const cheapestDust = Math.min(...APP_CONSUMABLES.filter((c) => c.dust > 0).map((c) => price(c.id) / c.dust));
+    const ecrins = APP_CONSUMABLES.filter((c) => c.ecrins > 0);
+    expect(ecrins.length).toBeGreaterThan(0);
+    for (const product of ecrins) {
+      expect(product.oysters + product.dust, product.id).toBe(0);
+      expect(price(product.id) / product.ecrins, product.id).toBeGreaterThanOrEqual(cheapestDust * APP_ECRINS.dustPrice);
+    }
   });
 
   it('les niveaux donnent quelques écrins la première semaine, puis environ un par semaine', () => {
