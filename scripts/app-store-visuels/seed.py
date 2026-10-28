@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Écrit une partie « vitrine » dans le simulateur démarré (app installée, connectée « sans compte »)
-pour les captures App Store : collection fournie, 1 240 ✦, et l'huître posée contient la perle voulue.
-usage: python3 seed.py <pearlId|find:<id>> [skin] [stock] [dust]   (puis relancer l'app)"""
+"""Écrit une partie « vitrine » dans le simulateur démarré (app installée, partie sur le téléphone)
+pour les captures App Store : collection fournie (perles, trouvailles, bijoux), 1 240 ✦, niveau 14, et l'huître
+posée contient la perle voulue. La partie passe par vitrine/ (le vrai moteur) : succès, niveau et bijoux cohérents.
+usage: python3 seed.py <pearlId|find:<id>> [skin] [stock] [dust] [écrins à ouvrir] [rareté de l'écrin posé:variante]
+       ex. seed.py golden lagon 10 1240 3 rubis:aurore   (puis relancer l'app)"""
 import json, sys, time, subprocess, random
 
 import os
@@ -52,6 +54,8 @@ target = sys.argv[1] if len(sys.argv) > 1 else 'cursed'
 skin = sys.argv[2] if len(sys.argv) > 2 else 'lagon'
 stock = int(sys.argv[3]) if len(sys.argv) > 3 else 10
 dust = int(sys.argv[4]) if len(sys.argv) > 4 else 1240
+ecrins = sys.argv[5] if len(sys.argv) > 5 else '3'
+ecrin, _, variant = (sys.argv[6] if len(sys.argv) > 6 else 'rubis:aurore').partition(':')
 if target.startswith('find:'):
     oyster = {'pearlId': 'empty', 'sizeMm': 0, 'findId': target[5:], 'traits': None}
 else:
@@ -70,11 +74,20 @@ state = {
         {'kind': 'rare', 'goal': 1, 'progress': 1, 'claimed': True}]},
     'noCrackStreak': 7, 'adRewards': None,
     'login': {'lastClaimDay': day, 'calendarIndex': 5, 'streak': 5, 'bestStreak': 12, 'jokerUsedDay': None},
+    'reputation': 0, 'rewardedLevel': 1, 'ecrins': 0,
 }
-hexdata = json.dumps(state, ensure_ascii=False).encode().hex()
+# Niveau 14, écrins, bijoux, succès et titre « Chasseur de géantes » par le vrai moteur (vitrine/).
+data = subprocess.run(['swift', 'run', '-c', 'release', '--package-path', os.path.join(os.path.dirname(__file__), 'vitrine'), 'vitrine',
+                       '14', ecrins, ecrin or '-', '82', variant or '-', 'perle-geante'],
+                      input=json.dumps(state, ensure_ascii=False).encode(), capture_output=True, check=True).stdout
+hexdata = data.hex()
 dev = 'booted'
 PL = subprocess.run(['xcrun','simctl','get_app_container',dev,'app.pearlinc.PearlInc','data'],capture_output=True,text=True).stdout.strip() + '/Library/Preferences/app.pearlinc.PearlInc.plist'
 subprocess.run(['xcrun', 'simctl', 'terminate', dev, 'app.pearlinc.PearlInc'], capture_output=True)
-subprocess.run(['xcrun', 'simctl', 'spawn', dev, 'defaults', 'write', PL, 'pearlinc.player.v1', '-data', hexdata], check=True)
+# Depuis la 1.1, une partie par compte (pearlinc.player.v1.<compte>) : on écrit la vitrine partout.
+import plistlib
+keys = [k for k in plistlib.load(open(PL, 'rb')) if k.startswith('pearlinc.player.v1') and not k.endswith(('.sync', '.aside'))] if os.path.exists(PL) else []
+for key in set(keys) | {'pearlinc.player.v1'}:
+    subprocess.run(['xcrun', 'simctl', 'spawn', dev, 'defaults', 'write', PL, key, '-data', hexdata], check=True)
 subprocess.run(['xcrun', 'simctl', 'spawn', dev, 'defaults', 'write', PL, 'pearlinc.calendar.offeredDay', day], check=True)
-print('seeded', target, skin, len(cards), 'cards')
+print('seeded', target, skin, len(cards), 'cards', 'écrin', ecrin, variant)

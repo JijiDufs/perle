@@ -10,12 +10,12 @@ struct ResourceBar: View {
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { timeline in
-            HStack(spacing: 8) {
+            HStack(spacing: 6) {
                 if !game.inTutorial { LevelRing { showProgress = true } }
                 // Pendant le tutoriel, les huîtres sont offertes : les compteurs arrivent après.
                 if !game.inTutorial { counters(at: timeline.date) }
 
-                Spacer()
+                Spacer(minLength: 0)
 
                 if !game.inTutorial {
                     Button { showMissions = true } label: {
@@ -49,13 +49,18 @@ struct ResourceBar: View {
                 Text(GameText.countdown(next)).font(.caption.monospacedDigit()).foregroundStyle(.white.opacity(0.65))
             }
         }
+        // À sa largeur, sur une ligne : « 1,345 » et le minuteur passaient à la ligne quand la barre était pleine.
+        .fixedSize()
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(game.oystersAvailable(at: date)) huîtres")
 
         Chip {
             Text("✦").foregroundStyle(Palette.gold)
-            Text("\(game.player.dust)").monospacedDigit()
+            // Abrégé au-delà de 10 000 (« 12K ») : la barre tient sur la largeur d'un iPhone, minuteur compris.
+            Text(game.player.dust < 10_000 ? game.player.dust.formatted() : game.player.dust.formatted(.number.notation(.compactName)))
+                .monospacedDigit()
         }
+        .fixedSize()
         .phaseAnimator([1.0, 1.2, 1.0], trigger: game.dustBump) { content, scale in
             content.scaleEffect(scale)
         }
@@ -68,7 +73,7 @@ private struct Chip<Content: View>: View {
 
     var body: some View {
         HStack(spacing: 6) { content }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, 10)
             .padding(.vertical, 8)
             .glass(Capsule())
     }

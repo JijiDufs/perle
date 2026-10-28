@@ -1,6 +1,7 @@
 // Rendu haute définition de l'art du jeu (code de dessin de l'app iOS) pour les visuels App Store :
-// scènes du lagon (×3, comme sur iPhone), perles et trouvailles sur fond transparent. Lancé par render.sh.
+// scènes du lagon (×3, comme sur iPhone), perles, trouvailles et bijoux sur fond transparent. Lancé par render.sh.
 import AppKit
+import PearlCore
 import SwiftUI
 
 struct PearlEntry: Decodable { let id: String; let color: String; let glow: String? }
@@ -90,6 +91,20 @@ struct FindSolo: View {
     }
 }
 
+/// Un bijou seul, sur fond transparent, avec son halo (tiré par le moteur des écrins, graine fixe).
+struct JewelSolo: View {
+    var look: JewelArt.Look
+    var glow: String
+    var side: Double = 900
+    var body: some View {
+        Canvas { c, size in
+            PearlArt.glow(&c, side / 2, side / 2, side * 0.5, glow, 0.7, additive: false)
+            JewelArt.draw(Canvas2D(c), side / 2, side * JewelArt.yOffset(look.jewel), side / 440, look)
+        }
+        .frame(width: side, height: side)
+    }
+}
+
 let W = 1320.0, H = 2868.0
 MainActor.assumeIsolated {
     let golden = look("golden", shape: "ronde", overtone: "dore")
@@ -107,5 +122,17 @@ MainActor.assumeIsolated {
     save(Scene(w: 440, h: 956, angle: 34, pearl: golden, length: 318, cy: 520, time: 1.7), "hero-golden-34", scale: 3)
     for (id, glow) in [("canard", "#ffe066"), ("cartouche", "#9ad1ff"), ("piece-or", "#ffd76a"), ("champignon", "#ff7a7a"), ("bouteille", "#9ff0d0"), ("dentier", "#ffffff")] {
         save(FindSolo(id: id, glow: glow), "find-\(id)")
+    }
+    // Bijoux : le premier de chaque rareté tiré par le moteur (comme la partie vitrine), un diadème pour le rubis.
+    let catalog = Catalog.shared
+    let rng = seededRng(2026)
+    var draw = JewelDrawState.initial
+    var byRarity: [String: [Jewel]] = [:]
+    for _ in 0..<5000 { let r = catalog.rollJewel(draw, rng); draw = r.state; byRarity[r.jewel.rarityId, default: []].append(r.jewel) }
+    for (rarity, variant) in [("toc", nil), ("perles", nil), ("saphir", nil), ("emeraude", nil), ("diamant", nil), ("rubis", "aurore")] as [(String, String?)] {
+        let jewels = byRarity[rarity]!
+        let jewel = rarity == "rubis" ? jewels.first { $0.type == "diademe" } ?? jewels[0] : jewels[0]
+        let glow = variant.flatMap { catalog.jewelVariant($0)?.glow } ?? catalog.jewelRarity(rarity).glow ?? "#fff1d6"
+        save(JewelSolo(look: JewelArt.Look(jewel, variant: variant, catalog: catalog), glow: glow), "jewel-\(rarity)")
     }
 }

@@ -4,6 +4,29 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-28 (1.1, fiche App Store) · Jules · Claude Code · branche `jules/app-1.1-testflight`
+
+Textes et visuels de la fiche App Store refaits pour la 1.1 (écrins), **mis en ligne dans App Store Connect**, et bug de la barre du haut corrigé, avant l'envoi à Apple.
+
+**Fait**
+- `docs/app-store/fiche.md` : fiche 1.1 FR / EN : sous-titre proposé « Huîtres, perles et bijoux » / « Oysters, pearls and jewels » (celui de la 1.0 reste noté), texte promotionnel (écrins), **nouveautés de la version**, mots-clés (écrin, joaillerie, diadème…), description complète (écrins, éclat parfait, variantes, garantie ★ au 21ᵉ écrin, niveaux et rangs, 41 succès, collection, sauvegarde sur le compte, tirages payants signalés). Achats : les 2 écrins ajoutés (FR / EN). Notes de revue : écrins, probabilités des bijoux, poisson voleur à 3 % de toutes les perles (le texte de la 1.0 disait 10 % des ◆). Chiffres vérifiés dans `catalog.json` ; longueurs comptées.
+- **10 visuels** FR et EN (1320 × 2868), à la place des 8 de la 1.0 : huître, geste, perle maudite, **écrin sur l'éclat parfait (variante Aurore)**, **bijoux (diadème de rubis Aurore + bijoux dessinés)**, raretés, collection, trouvailles, coquilles, **progression (niveau 14, rangs, titre)**. Toutes les captures refaites au simulateur sur l'app 1.1 (barre du haut avec l'anneau de niveau, onglet Écrins).
+- `scripts/app-store-visuels/` : `seed.py` écrit la partie vitrine sous toutes les clés de partie (une par compte depuis la 1.1) et la fait passer par `vitrine/` (paquet Swift sur PearlCore : succès, niveau, bijoux tirés par le vrai moteur, écrin posé avec son angle d'éclat et sa variante, aucune fenêtre au lancement). Le dessin haute définition (`art.swift`) devient la cible `art` du même paquet (lien vers `ios/PearlInc/Art`) : `JewelArt` a besoin de PearlCore. `render.sh` : 10 visuels.
+
+- **App Store Connect** (version 1.1, par Chrome) : texte promotionnel, description, nouveautés et mots-clés en français et en anglais ; les 8 visuels de la 1.0 retirés (ils restent dans la bibliothèque de ressources) et les 10 nouveaux chargés, dans l'ordre, pour les deux langues (emplacement « iPhone avec Dynamic Island », 1206 × 2622 : copies réduites des 1320 × 2868). Apple refuse « ★ » dans la description (remplacé par « d'au moins une étoile ») et compte double les lettres accentuées des mots-clés (« gemme » retiré). Sous-titre « Trouve la perle rare » et notes de revue, déjà réglés par Jules, laissés tels quels.
+- **Barre du haut** (`ResourceBar`) : la pastille des huîtres (minuteur compris) et celle de la poussière d'or gardent leur largeur sur une ligne ; espacements un peu réduits ; au-delà de 10 000 ✦, montant abrégé (« 12K », « 12 k »). Vérifié au simulateur : 9 999 ✦ et 12 345 ✦ avec le minuteur, en anglais et en français. Avant : « 1,34 / 5 » sur deux lignes en anglais.
+- **Build 7** (correctif de la barre).
+
+**À faire**
+- Jules : archiver et envoyer le **build 7** (Xcode → Product → Archive), le choisir sur la page de la version 1.1 à la place du build 6, puis « Ajouter pour vérification ».
+- Achats `app.pearlinc.ecrin.1` / `.5` : encore « Finaliser avant soumission » ; il leur manque **la capture pour la revue** (la Boutique avec les écrins, prise dans TestFlight pour voir les prix), puis les rattacher à la version 1.1.
+
+**Fragile**
+- Les captures des coquilles servent aux deux langues (pas de texte, seulement « 1 240 » dans la barre).
+- Simulateur : l'audio s'y bloque parfois (« coreaudio… deadlocked ») et l'app se ferme au changement d'onglet ; c'est le simulateur (le plantage est dans `AVAudioEngine`), un redémarrage du simulateur règle le problème. À garder à l'œil sur iPhone réel.
+
+---
+
 ## 2026-10-27 (1.1 pour TestFlight) · Jules · Claude Code · branche `jules/app-1.1-testflight`
 
 Retours de Jules sur le build de test : « 90 huîtres en 5 min », probabilités des écrins trop envahissantes, un écrin toutes les 12 huîtres, la carte qui suit le gyroscope. `npm test` (176), `npm run build`, `swift test` (92, simulation comprise) : verts.
