@@ -1,11 +1,12 @@
 import SwiftUI
 import PearlCore
 
-/// La boutique (docs/duo-gadget.md §6 bis, §6 ter) : huîtres (pub récompensée, poussière d'or, achats intégrés),
-/// poussière d'or, écrins, coquilles. Les prix en euros viennent de StoreKit ; les probabilités sont affichées
-/// au-dessus des achats d'huîtres et se déplient au-dessus des achats d'écrins (règle 3.1.1 d'Apple).
+/// La boutique (docs/duo-gadget.md §6 bis, §6 ter) : coquilles, huîtres (pub récompensée, poussière d'or, achats
+/// intégrés), écrins, poussière d'or. Les prix en euros viennent de StoreKit ; les probabilités se déplient (ⓘ) juste
+/// au-dessus des achats d'huîtres et d'écrins (règle 3.1.1 d'Apple).
 struct ShopView: View {
     @Environment(GameModel.self) private var game
+    @State private var showOysterOdds = false
     @State private var showEcrinOdds = false
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
@@ -20,10 +21,21 @@ struct ShopView: View {
                 .shadow(color: .black.opacity(0.3), radius: 6)
                 .padding(.top, 16)
 
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Coquilles").lagoonTitle()
+                    Text("Purement cosmétiques : elles ne changent ni les perles ni les chances.")
+                        .font(.footnote).foregroundStyle(.white.opacity(0.75))
+                }
+                LazyVGrid(columns: columns, spacing: 14) {
+                    ForEach(game.economy.skins) { skin in
+                        SkinCard(skin: skin)
+                    }
+                }
+
                 Text("Huîtres").lagoonTitle()
                 VStack(spacing: 14) {
-                    Text("Chaque huître est un tirage :").font(.footnote.weight(.semibold)).frame(maxWidth: .infinity, alignment: .leading)
-                    OddsList()
+                    OddsDisclosure(title: "Chaque huître est un tirage : voir les probabilités", expanded: $showOysterOdds)
+                    if showOysterOdds { OddsList() }
                     TimelineView(.periodic(from: .now, by: 60)) { timeline in AdRewardButton(date: timeline.date) }
                     ForEach(game.economy.consumables.filter { $0.oysters > 0 }) { product in
                         ProductRow(title: product.name, detail: String(localized: "\(product.oysters) huîtres"), productId: product.id)
@@ -37,20 +49,7 @@ struct ShopView: View {
 
                 Text("Écrins").lagoonTitle()
                 VStack(spacing: 14) {
-                    // Chaque écrin est un tirage : les probabilités se déplient juste au-dessus des achats (règle 3.1.1).
-                    Button {
-                        withAnimation(.snappy) { showEcrinOdds.toggle() }
-                    } label: {
-                        HStack {
-                            Label("Chaque écrin est un tirage : voir les probabilités", systemImage: "info.circle")
-                            Spacer(minLength: 8)
-                            Image(systemName: "chevron.down").rotationEffect(.degrees(showEcrinOdds ? 180 : 0))
-                        }
-                        .font(.footnote.weight(.semibold))
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityValue(showEcrinOdds ? Text("Affichées") : Text("Masquées"))
+                    OddsDisclosure(title: "Chaque écrin est un tirage : voir les probabilités", expanded: $showEcrinOdds)
                     if showEcrinOdds { EcrinOddsList() }
                     ForEach(game.economy.consumables.filter { $0.ecrins > 0 }) { product in
                         ProductRow(title: product.name, detail: String(localized: "\(product.ecrins) écrins"), productId: product.id)
@@ -71,17 +70,6 @@ struct ShopView: View {
                 .padding(18)
                 .glassPanel(shade: 0.25)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Coquilles").lagoonTitle()
-                    Text("Purement cosmétiques : elles ne changent ni les perles ni les chances.")
-                        .font(.footnote).foregroundStyle(.white.opacity(0.75))
-                }
-                LazyVGrid(columns: columns, spacing: 14) {
-                    ForEach(game.economy.skins) { skin in
-                        SkinCard(skin: skin)
-                    }
-                }
-
                 VStack(spacing: 8) {
                     Button("Restaurer les achats") { game.restorePurchases() }
                         .buttonStyle(GlassButtonStyle())
@@ -97,6 +85,28 @@ struct ShopView: View {
         .background(LagoonBackground(dim: 0.82))
         // Première pub possible : le formulaire de consentement de Google, s'il le faut (une seule fois).
         .task { await game.ads.start() }
+    }
+}
+
+/// Chaque huître, chaque écrin est un tirage : ⓘ qui déplie les probabilités juste au-dessus des achats (règle 3.1.1).
+private struct OddsDisclosure: View {
+    let title: LocalizedStringKey
+    @Binding var expanded: Bool
+
+    var body: some View {
+        Button {
+            withAnimation(.snappy) { expanded.toggle() }
+        } label: {
+            HStack {
+                Label(title, systemImage: "info.circle")
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.down").rotationEffect(.degrees(expanded ? 180 : 0))
+            }
+            .font(.footnote.weight(.semibold))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityValue(expanded ? Text("Affichées") : Text("Masquées"))
     }
 }
 

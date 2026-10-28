@@ -187,7 +187,7 @@ Nom affiché : 35 caractères au plus ; description : 55 au plus. Remplir les de
 | `app.pearlinc.ecrin.1` (1.1) | Consommable | Écrin de velours | Un écrin à ouvrir : un bijou au hasard. | Velvet jewel case | One case to open: a random jewel. |
 | `app.pearlinc.ecrin.5` (1.1) | Consommable | Coffret de 5 écrins | Cinq écrins à ouvrir : cinq bijoux au hasard. | Set of 5 jewel cases | Five cases to open: five random jewels. |
 
-**Capture pour la revue** (une par achat, au moins 640 × 920 : une capture **plein écran**, jamais recadrée) : la Boutique, prise depuis TestFlight (les prix n'apparaissent pas hors de Xcode). La même capture peut servir à plusieurs achats : le haut de la Boutique pour les 5 consommables, les coquilles pour les 2 skins, les écrins (avec leurs probabilités dépliées) pour les 2 achats d'écrins.
+**Capture pour la revue** (une par achat, au moins 640 × 920 : une capture **plein écran**, jamais recadrée) : la Boutique, prise depuis TestFlight (les prix n'apparaissent pas hors de Xcode). La même capture peut servir à plusieurs achats : les coquilles (en tête de la Boutique) pour les 2 skins, la section Huîtres pour les huîtres, la section Écrins (ⓘ des probabilités au-dessus des achats) pour les 2 achats d'écrins.
 
 **Version 1.1** : les 2 achats d'écrins sont nouveaux ; sur la page de la version 1.1, section « Achats intégrés et abonnements », **les ajouter** avant d'envoyer : un nouvel achat n'est examiné qu'avec une version.
 
@@ -204,7 +204,7 @@ iPhone Duo: on iPhone Duo (iOS 27.1), the hinge angle opens the oyster (and the 
 
 What's new in 1.1: jewel cases (the "Jewel cases" tab appears with the first case: one every 12 oysters opened and one at every new rank, or 200 gold dust at the counter, or as an in-app purchase). Swipe up to open the case; hold still where the jewel sparkles for a perfect glint. Also: levels and ranks, 41 achievements, a richer collection (Pearls / Jewels / Finds), and the game is saved to the player's account (Supabase, EU).
 
-Odds: the probability of every pearl and every jewel is shown before any purchase: in the Shop (oysters: "Every oyster is a draw: see the odds"; jewel cases: the ⓘ "see the odds" line above the jewel case purchases), on the Jewel cases tab ("Odds" button) and in Settings. A golden pearl or better is guaranteed within 26 oysters, a ★ jewel or better within 21 jewel cases. Bought jewel cases are drawn exactly like earned ones. Shells and purchases never change the odds.
+Odds: the probability of every pearl and every jewel is shown before any purchase: in the Shop (tap the ⓘ line "Every oyster is a draw: see the odds" right above the oyster purchases, and "Every jewel case is a draw: see the odds" right above the jewel case purchases), on the Jewel cases tab ("Odds" button) and in Settings. A golden pearl or better is guaranteed within 26 oysters, a ★ jewel or better within 21 jewel cases. Bought jewel cases are drawn exactly like earned ones. Shells and purchases never change the odds.
 
 Thief fish: now and then (shown in the odds: 3% of pearls, any rarity), a fish snatches the pearl that was just revealed. Tapping the fish while it swims away gets the pearl back (+2 gold dust); otherwise the pearl is lost. It swims twice as slowly with VoiceOver or Reduce Motion. It is random: it may take 30 to 40 oysters to see it.
 

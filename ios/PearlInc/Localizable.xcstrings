@@ -4891,18 +4891,18 @@
         }
       }
     },
-    "Chaque huître est un tirage :" : {
+    "Chaque huître est un tirage : voir les probabilités" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Every oyster is a draw:"
+            "value" : "Every oyster is a draw: see the odds"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque huître est un tirage :"
+            "value" : "Chaque huître est un tirage : voir les probabilités"
           }
         }
       }

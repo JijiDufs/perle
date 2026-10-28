@@ -4,6 +4,20 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-10-28 (1.1, boutique) · Jules · Claude Code · branche `jules/app-1.1-testflight`
+
+Demande de Jules avant la soumission : le ⓘ des probabilités aussi pour les huîtres, et les coquilles en premier dans la boutique. Décision ajoutée en `AGENTS.md` §6.
+
+**Fait**
+- `ShopView` : ordre coquilles → huîtres → écrins → poussière d'or ; probabilités des huîtres repliées derrière « Chaque huître est un tirage : voir les probabilités » (ⓘ, chevron), juste au-dessus des achats d'huîtres. Le bouton ⓘ est partagé avec les écrins (`OddsDisclosure`). Texte FR / EN (`Localizable.xcstrings`). Vérifié au simulateur (repli, dépli, ordre).
+- **Build 8**. Le build 7 (correctif de la barre du haut) a été envoyé à App Store Connect avant ce changement : choisir le **8** pour la version 1.1.
+- Capture pour la revue des achats d'écrins refaite avec la nouvelle boutique.
+
+**À faire**
+- App Store Connect (session expirée, Jules doit se reconnecter) : capture de revue sur les 2 achats d'écrins, build 8 sur la version 1.1, achats rattachés, phrase des probabilités dans les notes de revue (le ⓘ des huîtres), puis « Ajouter pour vérification » avec l'accord de Jules.
+
+---
+
 ## 2026-10-28 (1.1, fiche App Store) · Jules · Claude Code · branche `jules/app-1.1-testflight`
 
 Textes et visuels de la fiche App Store refaits pour la 1.1 (écrins), **mis en ligne dans App Store Connect**, et bug de la barre du haut corrigé, avant l'envoi à Apple.
