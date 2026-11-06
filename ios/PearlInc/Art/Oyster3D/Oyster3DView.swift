@@ -99,8 +99,8 @@ struct Oyster3DView: UIViewRepresentable {
         let style = OysterStyle.forSkin(skin)
         let ph = ShellArt.phases(seed: seed)
         // Bénitier : 4 ou 5 grands plis arrondis, éventail large (moins qu'en 2D, il débordait de l'écran), valve bombée.
-        let s = ValveShape(phases: ph, frills: style.frills, ribs: style.clam ? (ph.2 > 3.15 ? 5 : 4) : 0,
-                           spread: style.clam ? 1.3 : 1.42, domeHeight: style.clam ? 0.12 : 0.05)
+        let s = ValveShape(phases: ph, frills: style.frills, ribs: style.clam ? (style.ribCount > 0 ? style.ribCount : ph.2 > 3.15 ? 5 : 4) : 0,
+                           spread: style.clam ? 1.3 : 1.42, domeHeight: style.clam ? 0.12 : 0.05, ribDepth: style.ribDepth, scallop: style.scallop)
         shape = s
         nacre = Self.material(Self.texture("oyster3d-nacre", saturation: style.nacreSaturation, brightness: style.nacreBrightness),
                               roughness: style.nacreRoughness, clearcoat: 1, tint: style.nacreTint)
@@ -139,19 +139,20 @@ struct Oyster3DView: UIViewRepresentable {
     /// Le voile nacré translucide posé sur la nacre autour de la perle (le manteau de l'huître, en joli), et l'ombre de
     /// la perle dessinée dessus (`pearlRadius` en unités de valve ; nil : huître vide). Il suit le creux de la valve.
     private func placeVeil(_ s: ValveShape, pearlRadius: Double?) {
-        guard let texture = Self.veilTexture(s.phases, pearlRadius: pearlRadius, mantle: OysterStyle.forSkin(skin).mantle) else { return }
+        guard let texture = Self.veilTexture(s.phases, pearlRadius: pearlRadius, style: OysterStyle.forSkin(skin)) else { return }
         var material = UnlitMaterial()
         material.color = .init(texture: .init(texture))
         material.blending = .transparent(opacity: 1.0)
         material.opacityThreshold = 0.02
         veil.model = ModelComponent(mesh: ValveMesh.make(s, scale: 1, up: true) { rho, phi in
-            (-s.bowl(rho) + s.rimWave(rho, phi) + s.ribRelief(rho, phi) + 0.004, nil)
+            (-s.bowl(rho) + s.rimWave(rho, phi) + s.ribRelief(rho, phi) + 0.012, nil)  // assez au-dessus de la nacre pour ne pas scintiller avec elle
         }, materials: [material])
     }
 
     /// Le voile, dessiné dans le repère de la texture projetée de `ValveMesh` (u = 0,5 + x / 1,8 ; v = 0,46 − z / 1,3).
     /// `mantle` : le manteau du bénitier (bleu-vert tacheté, presque opaque, comme `ClamArt`) à la place du voile ivoire.
-    private static func veilTexture(_ ph: ShellArt.Phases, pearlRadius: Double?, mantle: Bool) -> TextureResource? {
+    private static func veilTexture(_ ph: ShellArt.Phases, pearlRadius: Double?, style: OysterStyle) -> TextureResource? {
+        let mantle = style.mantle
         let w = 1024.0, k = w / Double(ValveMesh.uvSpan.x), h = Double(ValveMesh.uvSpan.y) * k
         let renderer = ImageRenderer(content: Canvas { c, _ in
             let cx = w / 2, cy = (0.06 + 0.54 * Double(ValveMesh.uvSpan.y)) * k
@@ -170,9 +171,11 @@ struct Oyster3DView: UIViewRepresentable {
             let body = outline(1, 0)
             if mantle {
                 // Le manteau du bénitier : chair bleu-vert, bord frisé plus clair, « yeux » clairs cerclés de sombre.
+                let m = style.mantleColors
+                // Opaque : RealityKit trame le semi-transparent en quadrillage (vu au simulateur).
                 c.fill(body, with: .radialGradient(Gradient(stops: [
-                    .init(color: Color(hex: "#39d6c2").opacity(0.92), location: 0), .init(color: Color(hex: "#1c8fb0").opacity(0.9), location: 0.45),
-                    .init(color: Color(hex: "#2a4da0").opacity(0.88), location: 0.78), .init(color: Color(hex: "#3a2366").opacity(0.85), location: 1)]),
+                    .init(color: Color(hex: m[0]), location: 0), .init(color: Color(hex: m[1]), location: 0.45),
+                    .init(color: Color(hex: m[2]), location: 0.78), .init(color: Color(hex: m[3]), location: 1)]),
                     center: CGPoint(x: cx, y: cy - ry * 0.1), startRadius: 0, endRadius: rx * 1.1))
                 // Rayures sombres qui rayonnent, puis le bord frisé plus clair.
                 for i in 0..<14 {
@@ -183,14 +186,14 @@ struct Oyster3DView: UIViewRepresentable {
                                         control: CGPoint(x: cx + cos(a + 0.25) * rx * 0.6, y: cy + sin(a + 0.25) * ry * 0.6))
                     c.stroke(stripe, with: .color(rgba(20, 40, 110, 0.3)), lineWidth: k * 0.02)
                 }
-                c.stroke(outline(1.02, 0.03), with: .color(rgba(140, 240, 225, 0.6)), lineWidth: 6)
+                c.stroke(outline(1.02, 0.03), with: .color(Color(hex: style.mantleRim).opacity(0.65)), lineWidth: 6)
                 var seed = (ph.0 * 1000).rounded(.down) + 7
                 func rand() -> Double { seed = (seed * 16807).truncatingRemainder(dividingBy: 2_147_483_647); return seed / 2_147_483_647 }
                 for _ in 0..<70 {
                     let a = rand() * 2 * .pi, d = 0.3 + 0.65 * sqrt(rand())
                     let p = CGPoint(x: cx + cos(a) * rx * d, y: cy + sin(a) * ry * d), r = k * (0.008 + rand() * 0.012)
                     c.fill(Path(ellipseIn: CGRect(x: p.x - r * 1.6, y: p.y - r * 1.6, width: r * 3.2, height: r * 3.2)), with: .color(rgba(10, 30, 70, 0.35)))
-                    c.fill(Path(ellipseIn: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2)), with: .color(rgba(200, 255, 245, 0.75)))
+                    c.fill(Path(ellipseIn: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2)), with: .color(Color(hex: style.mantleDots).opacity(0.8)))
                 }
             } else {
                 // Translucide : ivoire au centre, rosé au bord, la nacre reste visible dessous ; une dentelle plus claire autour.
@@ -312,9 +315,18 @@ struct OysterStyle {
     var nacreSaturation: Float = 0.35
     var nacreBrightness: Float = 0.08
     var nacreRoughness: Float = 0.16
-    /// Bénitier : éventail large à gros plis, et son manteau bleu-vert à la place du voile.
+    /// Part de la couleur « grise » sur une couche sur deux (0,35 : une nuance ; 0,9 : de l'émail).
+    var altMix: Float = 0.35
+    /// Bénitier : éventail large à gros plis (nombre, profondeur, feston du bord), et son manteau à la place du voile.
     var clam = false
     var mantle = false
+    var ribCount = 0  // 0 : 4 ou 5 selon la graine
+    var ribDepth: Float = 0.11
+    var scallop: Float = 0.1
+    /// Le manteau : dégradé du centre au bord, « yeux » clairs, bord frisé.
+    var mantleColors = ["#39d6c2", "#1c8fb0", "#2a4da0", "#3a2366"]
+    var mantleDots = "#c8fff5"
+    var mantleRim = "#8cf0e1"
 
     /// Huître du lagon : brun foncé mat, bandes aux écarts du dessin 2D, volants serrés, sept couches.
     static let lagoon = OysterStyle(deep: [0.08, 0.05, 0.04], mid: [0.2, 0.14, 0.11], warm: [0.32, 0.24, 0.18], lip: [0.55, 0.47, 0.38], grey: [0.26, 0.24, 0.26],
@@ -337,11 +349,41 @@ struct OysterStyle {
                                   lamellaStep: 0.014, lamellaRiser: 0.02,
                                   nacreSaturation: 0.08, nacreBrightness: 0.15, nacreRoughness: 0.3, clam: true, mantle: true)
 
+    /// Essai à trancher par Jules (`defaults write app.pearlinc.PearlInc OysterVariant 1…4`) : quatre bénitiers, quatre ors.
+    static let clamVariants: [OysterStyle] = [
+        clam,  // 1. Craie : le bénitier actuel.
+        // 2. Maxima : cinq plis profonds, couches rousses, manteau bleu électrique.
+        { var s = clam; s.ribCount = 5; s.ribDepth = 0.13; s.lamellaStep = 0.018
+          s.deep = [0.45, 0.3, 0.18]; s.mid = [0.8, 0.68, 0.5]; s.warm = [0.92, 0.85, 0.7]; s.lip = [0.98, 0.95, 0.86]; s.grey = [0.62, 0.45, 0.3]; s.altMix = 0.5
+          s.mantleColors = ["#3ad0ff", "#1b6fd6", "#1a2f9a", "#0b1446"]; s.mantleDots = "#9ff5ff"; s.mantleRim = "#8be8ff"; return s }(),
+        // 3. Corail : quatre plis, coquille rosée incrustée d'algues vertes, manteau vert à liseré orangé.
+        { var s = clam; s.ribCount = 4; s.ribDepth = 0.1; s.edges = [0.9, 0.72, 0.54, 0.36]
+          s.deep = [0.35, 0.3, 0.22]; s.mid = [0.7, 0.58, 0.5]; s.warm = [0.88, 0.76, 0.66]; s.lip = [0.98, 0.92, 0.86]; s.grey = [0.45, 0.58, 0.42]; s.altMix = 0.5
+          s.mantleColors = ["#5de8c0", "#1fa98a", "#1d6f6a", "#163a4a"]; s.mantleDots = "#ffe29a"; s.mantleRim = "#ff9a4a"; return s }(),
+        // 4. Porcelaine : cinq plis très profonds et lisses, deux rangs d'écailles, vernis, manteau violet.
+        { var s = clam; s.ribCount = 5; s.ribDepth = 0.14; s.scallop = 0.13; s.edges = [0.8, 0.45]; s.lamellaStep = 0.01; s.roughness = 0.35; s.clearcoat = 0.6
+          s.deep = [0.6, 0.6, 0.58]; s.mid = [0.86, 0.86, 0.84]; s.warm = [0.95, 0.95, 0.93]; s.lip = [1, 1, 1]; s.grey = [0.8, 0.82, 0.8]
+          s.mantleColors = ["#7a6cf0", "#4a3fc8", "#2d2a86", "#1a1544"]; s.mantleDots = "#e9e4ff"; s.mantleRim = "#c8c0ff"; return s }(),
+    ]
+    static let goldVariants: [OysterStyle] = [
+        gold,  // 1. Or martelé : l'actuel.
+        // 2. Or poli : plus métallique et plus lisse, couleurs plus claires.
+        { var s = gold; s.metallic = 0.7; s.roughness = 0.18; s.clearcoat = 1
+          s.deep = [0.45, 0.3, 0.08]; s.mid = [0.75, 0.55, 0.18]; s.warm = [0.95, 0.78, 0.35]; s.lip = [1, 0.95, 0.7]; s.grey = [0.85, 0.68, 0.3]; return s }(),
+        // 3. Or et émail : une couche sur deux en émail bleu-vert profond, le reste en or verni.
+        { var s = gold; s.metallic = 0.5; s.roughness = 0.3; s.clearcoat = 0.9; s.grey = [0.02, 0.22, 0.3]; s.altMix = 0.9; return s }(),
+        // 4. Or rose antique : creux très sombres, bords clairs, nacre champagne rosé.
+        { var s = gold; s.metallic = 0.5; s.roughness = 0.45; s.clearcoat = 0.5
+          s.deep = [0.25, 0.1, 0.06]; s.mid = [0.62, 0.38, 0.28]; s.warm = [0.86, 0.6, 0.45]; s.lip = [1, 0.85, 0.72]; s.grey = [0.7, 0.45, 0.35]
+          s.nacreTint = [1, 0.9, 0.84]; return s }(),
+    ]
+
     static func forSkin(_ id: String) -> OysterStyle {
-        switch UserDefaults.standard.string(forKey: "OysterSkin") ?? id {  // réglage de test : voir un skin sans le posséder
-        case "or": gold
+        let variant = max(0, min(3, UserDefaults.standard.integer(forKey: "OysterVariant") - 1))
+        return switch UserDefaults.standard.string(forKey: "OysterSkin") ?? id {  // réglage de test : voir un skin sans le posséder
+        case "or": goldVariants[variant]
         case "premiere-maree": firstTide
-        case "benitier": clam
+        case "benitier": clamVariants[variant]
         case "rousse": rousse
         default: lagoon
         }
@@ -360,8 +402,10 @@ struct ValveShape {
     var ribs = 0
     var breadth: Float = 1.0
     var spread: Float = 1.42
-    /// Bombé du couvercle (le bénitier est plus profond).
+    /// Bombé du couvercle (le bénitier est plus profond) ; profondeur des plis et feston du bord.
     var domeHeight: Float = 0.05
+    var ribDepth: Float = 0.11
+    var scallop: Float = 0.1
 
     /// Rayon du contour dans la direction f (0 : vers le joueur, ±π : derrière la charnière), longueur 1.
     /// Rien derrière la charnière (sinon, couvercle levé, ce dos passerait sous la valve du bas) : la
@@ -374,7 +418,7 @@ struct ValveShape {
             guard a <= spread else { return max(0.01, edge * (1 - (a - spread) / 0.12)) }
             let u = (f + spread) / (2 * spread)
             return pow(max(0, cos(f * 0.92)), 0.3) * (1 + 0.035 * sin(2 * f + Float(phases.0)) + 0.02 * sin(5 * f + Float(phases.1)))
-                * (1 + 0.1 * cos(2 * .pi * (u * Float(ribs) - 0.5)))
+                * (1 + scallop * cos(2 * .pi * (u * Float(ribs) - 0.5)))
         }
         let r = a <= 1.42 ? pow(cos(a), 0.55) : max(0.01, 0.35 * (1 - (a - 1.42) / 0.12))
         return r * (1 + 0.06 * sin(3 * f + Float(phases.0)) + 0.04 * sin(7 * f + Float(phases.1)))
@@ -389,7 +433,7 @@ struct ValveShape {
         return cos(2 * .pi * (u * Float(ribs) - 0.5))
     }
     /// Relief des plis : de grandes ondulations arrondies qui rayonnent depuis la charnière, profondes au bord.
-    func ribRelief(_ rho: Float, _ phi: Float) -> Float { 0.11 * ribPhase(phi) * pow(rho, 1.3) }
+    func ribRelief(_ rho: Float, _ phi: Float) -> Float { ribDepth * ribPhase(phi) * pow(rho, 1.3) }
 
     /// Creux de la valve du bas : nul à la charnière et au bord, le plus profond à mi-longueur (la perle).
     func bowl(_ rho: Float) -> Float { Self.depth * 4 * rho * (1 - rho) }
@@ -516,7 +560,7 @@ enum ShellTexture {
                 let u = (Float(x % segment) + 0.5) / Float(segment)
                 var c = u < 0.18 ? mix(deep, mid, u / 0.18) : u < 0.86 ? mix(mid, warm, (u - 0.18) / 0.68) : mix(warm, lip, (u - 0.86) / 0.14)
                 c *= 1 + 0.05 * sin(u * 25 + Float(layer) * 1.3) // stries de croissance
-                if layer % 2 == greyLayers { c = mix(c, grey * (0.6 + u * 0.6), 0.35) }
+                if layer % 2 == greyLayers { c = mix(c, grey * (0.6 + u * 0.6), style.altMix) }
                 c *= tint
                 let noise = Float((x * 73 + y * 151) % 17) / 17 * 0.05 - 0.025
                 let i = (y * width + x) * 4

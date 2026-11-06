@@ -70,7 +70,10 @@ enum PearlArt {
                 sheen.addFilter(.colorMultiply(Color(hex: tint)))
                 sheen.draw(image, in: rect)
             }
-            marksAndCrack(&c, x, y, rad, pearl, cracked: cracked)
+            // Marques et fêlure limitées à la photo (la fêlure dépassait d'un bouton, plus plat que son rayon).
+            var onPearl = c
+            onPearl.clipToLayer { layer in layer.draw(image, in: rect) }
+            marksAndCrack(&onPearl, x, y, rad, pearl, cracked: cracked)
             return
         }
         let shape = outline(x, y, rad, pearl)
