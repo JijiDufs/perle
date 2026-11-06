@@ -8,10 +8,11 @@ im = Image.open(src).convert('RGB')
 ch, cw = im.height // rows, im.width // cols
 for i, name in enumerate(names):
     if name == '-': continue
-    # « nom@b » : on coupe le bas de la case (ce qui dépasse de la rangée suivante).
-    name, _, flag = name.partition('@')
+    # « nom@b » coupe le bas de la case (ce qui dépasse de la rangée suivante), « @l » / « @r » son bord gauche / droit.
+    name, _, flags = name.partition('@')
     r, c = divmod(i, cols)
-    cell = im.crop((c*cw, r*ch, (c+1)*cw, (r+1)*ch - (ch // 8 if flag == 'b' else 0)))
+    left, right = (cw // 16 if f in flags else 0 for f in 'lr')
+    cell = im.crop((c*cw + left, r*ch, (c+1)*cw - right, (r+1)*ch - (ch // 8 if 'b' in flags else 0)))
     red, green, blue = cell.split()
     alpha = ImageChops.lighter(ImageChops.lighter(red, green), blue).point(lambda v: max(0, min(255, (v - 14) * 255 // 30)))
     # Ouverture morphologique : enlève les points clairs isolés du fond, garde les chaînes fines.
