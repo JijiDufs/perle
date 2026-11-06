@@ -19,7 +19,7 @@ else:
     boxes = [[c * cw, r * ch, (c + 1) * cw, (r + 1) * ch] for r in range(rows) for c in range(cols)]
 for i, name in enumerate(names):
     if name == '-': continue
-    # « nom@b » coupe le bas de la case (ce qui dépasse de la rangée suivante), « @l » / « @r » son bord gauche / droit.
+    # « nom@b » coupe le bas de la case (ce qui dépasse de la rangée suivante), « @l » / « @r » son bord gauche / droit, « @c » ses coins.
     name, _, flags = name.partition('@')
     x0, y0, x1, y1 = boxes[i]
     left, right = ((x1 - x0) // 16 if f in flags else 0 for f in 'lr')
@@ -33,6 +33,9 @@ for i, name in enumerate(names):
     alpha = light.point(lambda v: max(0, min(255, (v - floor) * 255 // 30)))
     # Ouverture morphologique : enlève les points clairs isolés du fond, garde les chaînes fines.
     solid = alpha.point(lambda v: 255 if v > 40 else 0).filter(ImageFilter.MinFilter(speck)).filter(ImageFilter.MaxFilter(speck + 4))
+    if 'c' in flags:  # « @c » efface les quatre coins de la case (restes des coins arrondis d'un cadre)
+        for cx, cy in ((0, 0), (w - w // 10, 0), (0, h - h // 10), (w - w // 10, h - h // 10)):
+            solid.paste(0, (cx, cy, cx + w // 10, cy + h // 10))
     alpha = ImageChops.darker(alpha, solid)
     box = solid.getbbox()
     assert box, name
