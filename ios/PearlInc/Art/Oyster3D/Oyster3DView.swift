@@ -132,10 +132,11 @@ struct Oyster3DView: UIViewRepresentable {
             let sample = lidLayers.sample(rho, phi)
             return (s.dome(rho) + sample.height + s.rimWave(rho, phi) * 1.2 + s.ribRelief(rho, phi), sample.uv)
         }, materials: [shell]))
-        // Dessous du couvercle ; le bénitier a la coquille épaisse (sa tranche de porcelaine se voit au bord).
-        let thickness: Float = style.isClam ? 0.035 : 0.008
+        // Dessous du couvercle. Bénitier : une face intérieure plate, qui part du niveau de la charnière (sinon le
+        // dessous, bombé, s'en écartait de 0,065 : les deux valves ne se rejoignaient pas et on voyait entre elles,
+        // retour de Jules) ; la valve est donc épaisse au sommet et fine au bord, comme une vraie.
         lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.02, up: false) { rho, phi in
-            (s.dome(rho) - thickness + s.rimWave(rho, phi) + s.ribRelief(rho, phi), nil)
+            ((style.isClam ? 0 : s.dome(rho) - 0.008) + s.rimWave(rho, phi) + s.ribRelief(rho, phi), nil)
         }, materials: [nacre]))
     }
 
