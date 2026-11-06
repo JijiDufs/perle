@@ -159,16 +159,15 @@ struct Oyster3DView: UIViewRepresentable {
         let w = 1024.0, k = w / Double(ValveMesh.uvSpan.x), h = Double(ValveMesh.uvSpan.y) * k
         let renderer = ImageRenderer(content: Canvas { c, _ in
             let cx = w / 2, cy = (0.06 + 0.54 * Double(ValveMesh.uvSpan.y)) * k
-            // Le manteau du bénitier est centré plus en arrière (z = −0,3) et assez grand pour couvrir toute la porcelaine
-            // jusqu'à la charnière et aux côtés (le maillage s'arrête là) : il ne laisse de marge de porcelaine que devant.
-            // Sinon une bande blanche en arc restait le long de la charnière, retour de Jules.
-            let rx = (mantle ? 0.72 : 0.36) * k, ry = (mantle ? 0.72 : 0.4) * k, oy = mantle ? cy - 0.36 * k : cy
+            // Le manteau dépasse la charnière et les côtés (le maillage s'arrête là) : avec un bord frisé plus court,
+            // selon la graine, un coin de porcelaine blanche se voyait entre lui et la charnière.
+            let rx = (mantle ? 0.72 : 0.36) * k, ry = (mantle ? 0.64 : 0.4) * k
             func outline(_ scale: Double, _ lace: Double) -> Path {
                 var path = Path()
                 for i in 0...180 {
                     let a = Double(i) / 180 * 2 * .pi
                     let frill = scale * (1 + 0.03 * sin(a * 18 + ph.2) + 0.025 * sin(a * 7 + ph.0) + lace * sin(a * 40 + ph.1))
-                    let p = CGPoint(x: cx + cos(a) * rx * frill, y: oy + sin(a) * ry * frill)
+                    let p = CGPoint(x: cx + cos(a) * rx * frill, y: cy + sin(a) * ry * frill)
                     if i == 0 { path.move(to: p) } else { path.addLine(to: p) }
                 }
                 path.closeSubpath()
@@ -182,14 +181,14 @@ struct Oyster3DView: UIViewRepresentable {
                 c.fill(body, with: .radialGradient(Gradient(stops: [
                     .init(color: Color(hex: m[0]), location: 0), .init(color: Color(hex: m[1]), location: 0.45),
                     .init(color: Color(hex: m[2]), location: 0.78), .init(color: Color(hex: m[3]), location: 1)]),
-                    center: CGPoint(x: cx, y: oy + ry * 0.2), startRadius: 0, endRadius: rx * 1.1))
+                    center: CGPoint(x: cx, y: cy - ry * 0.1), startRadius: 0, endRadius: rx * 1.1))
                 // Rayures sombres qui rayonnent, puis le bord frisé plus clair.
                 for i in 0..<14 {
                     let a = Double(i) / 14 * 2 * .pi + ph.1
                     var stripe = Path()
-                    stripe.move(to: CGPoint(x: cx + cos(a) * rx * 0.2, y: oy + sin(a) * ry * 0.2))
-                    stripe.addQuadCurve(to: CGPoint(x: cx + cos(a) * rx * 0.95, y: oy + sin(a) * ry * 0.95),
-                                        control: CGPoint(x: cx + cos(a + 0.25) * rx * 0.6, y: oy + sin(a + 0.25) * ry * 0.6))
+                    stripe.move(to: CGPoint(x: cx + cos(a) * rx * 0.2, y: cy + sin(a) * ry * 0.2))
+                    stripe.addQuadCurve(to: CGPoint(x: cx + cos(a) * rx * 0.95, y: cy + sin(a) * ry * 0.95),
+                                        control: CGPoint(x: cx + cos(a + 0.25) * rx * 0.6, y: cy + sin(a + 0.25) * ry * 0.6))
                     c.stroke(stripe, with: .color(rgba(20, 40, 110, 0.3)), lineWidth: k * 0.02)
                 }
                 c.stroke(outline(1.02, 0.03), with: .color(Color(hex: style.mantleRim).opacity(0.65)), lineWidth: 6)
@@ -197,7 +196,7 @@ struct Oyster3DView: UIViewRepresentable {
                 func rand() -> Double { seed = (seed * 16807).truncatingRemainder(dividingBy: 2_147_483_647); return seed / 2_147_483_647 }
                 for _ in 0..<70 {
                     let a = rand() * 2 * .pi, d = 0.3 + 0.65 * sqrt(rand())
-                    let p = CGPoint(x: cx + cos(a) * rx * d, y: oy + sin(a) * ry * d), r = k * (0.008 + rand() * 0.012)
+                    let p = CGPoint(x: cx + cos(a) * rx * d, y: cy + sin(a) * ry * d), r = k * (0.008 + rand() * 0.012)
                     c.fill(Path(ellipseIn: CGRect(x: p.x - r * 1.6, y: p.y - r * 1.6, width: r * 3.2, height: r * 3.2)), with: .color(rgba(10, 30, 70, 0.35)))
                     c.fill(Path(ellipseIn: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2)), with: .color(Color(hex: style.mantleDots).opacity(0.8)))
                 }
