@@ -57,11 +57,11 @@ enum PearlArt {
             Gradient(colors: [rgba(60, 40, 30, 0.45), rgba(60, 40, 30, 0)]),
             center: CGPoint(x: x + rad * 0.2, y: y + rad * 0.3), startRadius: rad * 0.2, endRadius: rad * 1.35))
 
-        if let image = photo(pearl) {
-            // Photo de la perle (essai assets) ; le reflet la teinte, marques et fêlure restent dessinées par-dessus.
+        if let (image, ownOvertone) = photo(pearl) {
+            // Photo de la perle (essai assets) : une par forme et par reflet ; marques et fêlure restent dessinées par-dessus.
             let size = rad * 2.27, rect = CGRect(x: x - size / 2, y: y - size / 2, width: size, height: size)
             c.draw(image, in: rect)
-            if let tint = pearl.overtoneColor {
+            if !ownOvertone, let tint = pearl.overtoneColor {  // pas de photo pour ce reflet : la photo de la forme, teintée
                 var sheen = c
                 sheen.opacity = pearl.overtone == "arc-en-ciel" ? 0.4 : 0.22
                 sheen.addFilter(.colorMultiply(Color(hex: tint)))
@@ -117,13 +117,18 @@ enum PearlArt {
         marksAndCrack(&c, x, y, rad, pearl, cracked: cracked)
     }
 
-    /// Photo `pearl-<perle>-<forme>` (PearlPhotos) ; aucune pour la marque en cœur, qui change le contour. `-PearlDrawn` force le dessin.
+    /// Photo `pearl-<perle>-<forme>-<reflet>` (PearlPhotos), sinon `pearl-<perle>-<forme>` (vrai en second : la photo a son reflet).
+    /// La marque en cœur a ses photos (forme « coeur »). `-PearlDrawn` force le dessin.
     nonisolated(unsafe) private static var photos: [String: Image?] = [:]  // lu et écrit seulement en dessinant (fil principal)
-    private static func photo(_ pearl: PearlLook) -> Image? {
-        guard pearl.mark != "coeur", !ProcessInfo.processInfo.arguments.contains("-PearlDrawn") else { return nil }
+    private static func photo(_ pearl: PearlLook) -> (Image, Bool)? {
+        guard !ProcessInfo.processInfo.arguments.contains("-PearlDrawn") else { return nil }
         // Sans traits (encyclopédie) : la forme type de la perle (la maudite n'est jamais ronde).
         let fallback = ["baroque": "baroque", "cursed": "presque-ronde"][pearl.id] ?? "ronde"
-        let name = "pearl-\(pearl.id)-\(pearl.shape ?? fallback)"
+        let base = "pearl-\(pearl.id)-\(pearl.mark == "coeur" ? "coeur" : pearl.shape ?? fallback)"
+        if let overtone = pearl.overtone, let image = load(base + "-" + overtone) { return (image, true) }
+        return load(base).map { ($0, false) }
+    }
+    private static func load(_ name: String) -> Image? {
         if photos[name] == nil {
             photos[name] = Bundle.main.url(forResource: name, withExtension: "png")
                 .flatMap { UIImage(contentsOfFile: $0.path) }.map { Image(uiImage: $0) }
