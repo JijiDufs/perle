@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Le poisson voleur : il fond sur la perle depuis un bord de l'écran, la happe, puis file vers l'autre bord
-/// en ondulant, la perle dans la bouche, avec un sillage de bulles. Dessiné par code, comme le lagon.
+/// en ondulant, la perle dans la bouche, avec un sillage de bulles. En photo (essai assets), animé par code.
 /// Aucune règle ici : la scène reçoit le temps écoulé et les durées du Core (`FishThief`).
 struct ThiefFishArt {
     /// Temps écoulé depuis le début du vol (ms).
@@ -81,7 +81,17 @@ struct ThiefFishArt {
                       carrying: carrying ? pearl : nil, pearlRadius: pearlRadius, glow: glow)
     }
 
-    /// Le poisson lui-même (orange à rayures bleu nuit, nageoires, œil malicieux), tête vers `heading`.
+    /// La photo du poisson et son rapport hauteur / largeur (`thief-fish.png`, à côté de ce fichier).
+    nonisolated(unsafe) private static var photoCache: (Image, Double)??  // lu et écrit seulement en dessinant (fil principal)
+    private static var photo: (Image, Double)? {
+        if photoCache == nil {
+            photoCache = .some(Bundle.main.url(forResource: "thief-fish", withExtension: "png")
+                .flatMap { UIImage(contentsOfFile: $0.path) }.map { (Image(uiImage: $0), $0.size.height / $0.size.width) })
+        }
+        return photoCache ?? nil
+    }
+
+    /// Le poisson lui-même (la photo, ou rien si elle manque), tête vers `heading`.
     /// `carrying` : la perle qu'il tient dans la bouche.
     static func drawFish(_ c: inout GraphicsContext, at center: CGPoint, length: Double, heading: Double, flap: Double, time: Double,
                          carrying pearl: PearlLook? = nil, pearlRadius: Double = 0, glow: String? = nil) {
@@ -96,74 +106,18 @@ struct ThiefFishArt {
         // Ombre douce sous lui.
         g.fill(Path(ellipseIn: CGRect(x: -0.45, y: 0.22, width: 0.9, height: 0.14)), with: .color(.black.opacity(0.12)))
 
-        // Queue fourchue qui bat.
-        var tail = Path()
-        tail.move(to: CGPoint(x: -0.36, y: 0))
-        tail.addQuadCurve(to: CGPoint(x: -0.62, y: -0.24 + flap * 0.25), control: CGPoint(x: -0.5, y: -0.06))
-        tail.addQuadCurve(to: CGPoint(x: -0.54, y: 0.02 + flap * 0.1), control: CGPoint(x: -0.56, y: -0.08))
-        tail.addQuadCurve(to: CGPoint(x: -0.62, y: 0.24 + flap * 0.25), control: CGPoint(x: -0.56, y: 0.12))
-        tail.addQuadCurve(to: CGPoint(x: -0.36, y: 0), control: CGPoint(x: -0.5, y: 0.06))
-        g.fill(tail, with: .linearGradient(Gradient(colors: [Color(hex: "#ff8a2a"), Color(hex: "#ffcf4a")]),
-                                           startPoint: CGPoint(x: -0.36, y: 0), endPoint: CGPoint(x: -0.62, y: 0)))
-
-        // Nageoire du dos et du ventre.
-        var dorsal = Path()
-        dorsal.move(to: CGPoint(x: -0.2, y: -0.17))
-        dorsal.addQuadCurve(to: CGPoint(x: 0.18, y: -0.19), control: CGPoint(x: -0.06, y: -0.42 + flap * 0.05))
-        dorsal.closeSubpath()
-        g.fill(dorsal, with: .color(Color(hex: "#f2711c")))
-        var ventral = Path()
-        ventral.move(to: CGPoint(x: -0.08, y: 0.17))
-        ventral.addQuadCurve(to: CGPoint(x: 0.12, y: 0.18), control: CGPoint(x: -0.02, y: 0.34 - flap * 0.05))
-        ventral.closeSubpath()
-        g.fill(ventral, with: .color(Color(hex: "#f2711c")))
-
-        // Corps en goutte, dégradé chaud.
-        var body = Path()
-        body.move(to: CGPoint(x: 0.5, y: 0.02))
-        body.addCurve(to: CGPoint(x: -0.38, y: 0), control1: CGPoint(x: 0.42, y: -0.3), control2: CGPoint(x: -0.2, y: -0.24))
-        body.addCurve(to: CGPoint(x: 0.5, y: 0.02), control1: CGPoint(x: -0.2, y: 0.24), control2: CGPoint(x: 0.42, y: 0.3))
-        body.closeSubpath()
-        g.fill(body, with: .linearGradient(Gradient(colors: [Color(hex: "#ffb347"), Color(hex: "#ff7a1a"), Color(hex: "#ffd36b")]),
-                                           startPoint: CGPoint(x: 0, y: -0.25), endPoint: CGPoint(x: 0, y: 0.25)))
-        // Deux rayures bleu nuit cerclées de blanc.
-        var stripes = g
-        stripes.clip(to: body)
-        for x in [0.16, -0.14] {
-            var band = Path()
-            band.move(to: CGPoint(x: x + 0.04, y: -0.3))
-            band.addQuadCurve(to: CGPoint(x: x + 0.04, y: 0.3), control: CGPoint(x: x - 0.06, y: 0))
-            stripes.stroke(band, with: .color(.white.opacity(0.95)), lineWidth: 0.11)
-            stripes.stroke(band, with: .color(Color(hex: "#1b2f6b")), lineWidth: 0.06)
+        // Le poisson en photo (essai assets : Kling 3.0, détouré par la luminosité), le nez vers +x, la bouche au bord droit ;
+        // il tangue un peu au rythme de la queue.
+        if let (photo, aspect) = Self.photo {
+            var fish = g
+            fish.rotate(by: .radians(flap * 0.12))
+            fish.draw(photo, in: CGRect(x: -0.5, y: -aspect / 2, width: 1, height: aspect))
         }
-        // Reflet sur le dos.
-        stripes.fill(Path(ellipseIn: CGRect(x: -0.18, y: -0.2, width: 0.5, height: 0.12)), with: .color(.white.opacity(0.22)))
-        g.stroke(body, with: .color(Color(hex: "#b44a0a").opacity(0.55)), lineWidth: 0.012)
-
-        // Nageoire de côté qui rame.
-        var pectoral = Path()
-        pectoral.move(to: CGPoint(x: 0.08, y: 0.05))
-        pectoral.addQuadCurve(to: CGPoint(x: -0.06, y: 0.16 + flap * 0.12), control: CGPoint(x: -0.04, y: 0.02))
-        pectoral.addQuadCurve(to: CGPoint(x: 0.08, y: 0.05), control: CGPoint(x: 0.04, y: 0.14))
-        g.fill(pectoral, with: .color(Color(hex: "#ffe08a").opacity(0.9)))
-
-        // Œil malicieux, sourcil froncé.
-        g.fill(Path(ellipseIn: CGRect(x: 0.24, y: -0.12, width: 0.13, height: 0.13)), with: .color(.white))
-        g.fill(Path(ellipseIn: CGRect(x: 0.29, y: -0.09, width: 0.07, height: 0.07)), with: .color(Color(hex: "#101820")))
-        g.fill(Path(ellipseIn: CGRect(x: 0.31, y: -0.085, width: 0.025, height: 0.025)), with: .color(.white))
-        var brow = Path()
-        brow.move(to: CGPoint(x: 0.23, y: -0.17))
-        brow.addLine(to: CGPoint(x: 0.37, y: -0.13))
-        g.stroke(brow, with: .color(Color(hex: "#5a2206")), style: StrokeStyle(lineWidth: 0.025, lineCap: .round))
-
-        // Bouche.
-        var lip = Path()
-        lip.move(to: CGPoint(x: 0.44, y: 0.0))
-        lip.addQuadCurve(to: CGPoint(x: 0.5, y: 0.07), control: CGPoint(x: 0.52, y: 0.02))
-        g.stroke(lip, with: .color(Color(hex: "#b44a0a")), style: StrokeStyle(lineWidth: 0.022, lineCap: .round))
 
         // La perle dans la bouche, qui brille encore (dessinée à l'échelle de l'écran, comme dans l'huître).
         if let pearl {
+            // Un peu plus petite que dans l'huître (la photo de la perle déborde de son rayon), au bout des lèvres.
+            let pearlRadius = pearlRadius * 0.75
             let local = CGPoint(x: (0.5 * length + pearlRadius * 0.6) * (left ? -1 : 1), y: 0.04 * length)
             let turn = left ? heading - .pi : heading
             let mouth = CGPoint(x: center.x + local.x * cos(turn) - local.y * sin(turn), y: center.y + local.x * sin(turn) + local.y * cos(turn))
