@@ -19,16 +19,29 @@ struct FishingView: View {
         ZStack {
             // Le lagon et l'huître dans la même scène, comme dans le prototype : l'horizon et l'ombre suivent l'huître.
             TimelineView(.animation(paused: reduceMotion && game.stage == .playing)) { timeline in
-                Canvas { context, size in
-                    let oyster = art(at: timeline.date)
-                    let layout = OysterArt.layout(size: size, look: oyster.look, pose: oyster.pose)
-                    let lagoon = LagoonArt(time: reduceMotion ? 0 : oyster.time, focus: layout.focus)
-                    lagoon.draw(&context, size: size)
-                    oyster.draw(&context, size: size)
-                    lagoon.drawOverlay(&context, size: size)
-                    oyster.drawRevealEffects(&context, size: size)
-                    if let fish = thief(at: timeline.date, size: size, oyster: oyster, layout: layout) {
-                        fish.draw(&context, pearl: oyster.pearl, pearlRadius: oyster.pearlRadius(layout.L), glow: oyster.glowColor)
+                let oyster = art(at: timeline.date)
+                let in3D = shows3D(oyster)
+                ZStack {
+                    Canvas { context, size in
+                        let layout = OysterArt.layout(size: size, look: oyster.look, pose: oyster.pose)
+                        LagoonArt(time: reduceMotion ? 0 : oyster.time, focus: layout.focus).draw(&context, size: size)
+                        if !in3D {
+                            oyster.draw(&context, size: size)
+                            drawFront(&context, size: size, oyster: oyster, date: timeline.date)
+                        }
+                    }
+                    // Essai 3D : la coquille en volume entre le lagon et ce qui passe devant (reflets, halo, poisson).
+                    if in3D {
+                        GeometryReader { proxy in
+                            let layout = OysterArt.layout(size: proxy.size, look: oyster.look, pose: oyster.pose)
+                            Oyster3DView(angle: oyster.angle,
+                                         pearlHex: oyster.pearl?.glow == nil || oyster.pearlTaken ? nil : oyster.pearl?.color,
+                                         pearlRadius: oyster.pearlRadius(1), glowHex: oyster.glowColor)
+                                .frame(width: layout.L * 3, height: layout.L * 3)
+                                .position(x: layout.hx, y: layout.hy + layout.L * 0.3)
+                                .allowsHitTesting(false)
+                        }
+                        Canvas { context, size in drawFront(&context, size: size, oyster: oyster, date: timeline.date) }
                     }
                 }
             }
@@ -248,6 +261,22 @@ struct FishingView: View {
     /// La mission du jour la plus proche d'être finie (nil : toutes récupérées).
     private var objectiveMission: Mission? {
         showsObjective ? game.player.missions?.nearest : nil
+    }
+
+    /// Essai 3D : au pouce seulement, avec la coquille d'huître (pas le bénitier).
+    private func shows3D(_ oyster: OysterArt) -> Bool {
+        guard Oyster3DView.isEnabled, oyster.pose == .thumb, case .oyster = oyster.look else { return false }
+        return true
+    }
+
+    /// Ce qui passe devant la coquille : reflets du lagon, halo de la révélation, poisson voleur.
+    private func drawFront(_ context: inout GraphicsContext, size: CGSize, oyster: OysterArt, date: Date) {
+        let layout = OysterArt.layout(size: size, look: oyster.look, pose: oyster.pose)
+        LagoonArt(time: reduceMotion ? 0 : oyster.time, focus: layout.focus).drawOverlay(&context, size: size)
+        oyster.drawRevealEffects(&context, size: size)
+        if let fish = thief(at: date, size: size, oyster: oyster, layout: layout) {
+            fish.draw(&context, pearl: oyster.pearl, pearlRadius: oyster.pearlRadius(layout.L), glow: oyster.glowColor)
+        }
     }
 
     /// Le poisson voleur, pendant qu'il emporte la perle.

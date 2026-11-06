@@ -4,6 +4,23 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-11-06 (essai huître 3D) · Jules · Claude Code · branche `jules/essai-huitre-3d`
+
+**Essai, pas une décision** : la 3D et les images générées vont contre le §6 (« tout en code », « 3D hors V1 »). Branche à montrer à Mathys avant toute fusion. Aperçu : `docs/essai-huitre-3d.jpg` (fermée, entrouverte, ouverte).
+
+**Fait**
+- **L'huître en vrai volume au pouce** (`Art/Oyster3D/Oyster3DView.swift`, RealityKit, `ARView` sans AR sur fond transparent) : deux valves construites par code (contour en goutte, 13 volants, creux de la nacre, dôme à gradins du couvercle), le couvercle tourne sur sa charnière avec le même angle que le dessin 2D (aucune règle dans la vue). Lumière principale avec ombre, lumière d'appoint, lueur de la couleur de la perle dans l'entrebâillement. Perle : sphère en nacre grise teintée de sa couleur.
+- **Textures tirées des images générées** (Higgsfield, `gpt_image_2_6` à partir de la référence de Jules : une valve du bas et un couvercle isolés), recadrées en `oyster3d-nacre.jpg`, `oyster3d-shell.jpg`, `oyster3d-pearl.jpg` (≈ 210 Ko en tout).
+- `FishingView` : lagon dessous, coquille 3D, puis reflets du lagon, halo de la révélation et poisson voleur devant. Le dessin 2D reste pour le Duo, l'écran extérieur et le bénitier ; `-Oyster2D` au lancement le remet partout.
+- Les modèles 3D de Higgsfield n'ont pas servi : SAM 3D a échoué 4 fois (crédits rendus), `image_to_3d` coûte 20 à 30 crédits par valve.
+
+**Pas fait / fragile**
+- Vérifié au simulateur (iPhone 17 Pro) : fermée, entrouverte, ouverte, carte ; perles rosée et noire de la bonne couleur. **Une perle dorée est apparue noire** avec un reflet `sheen` sur le matériau, retiré depuis ; pas revérifié sur une dorée.
+- Pas en 3D : formes des perles (goutte, baroque, jumelle, marques), fêlure, trouvailles (rien dans la valve), skins (huître d'or), tremblement des rares, bénitier, poses du Duo.
+- Pas essayé sur un vrai iPhone (performances, batterie, chauffe). Les textures mettent ≈ 1 s à charger au lancement (l'huître n'apparaît pas tout de suite).
+
+---
+
 ## 2026-11-06 (retours iPhone Duo) · Jules · Claude Code · branche `jules/duo-retours`
 
 Premier retour d'un joueur sur un vrai iPhone Duo : « on ne peut jouer que dans un sens », « les sons et effets donnent l'impression de casser le téléphone », « on peut se spoiler la perle », « on navigue téléphone ouvert et on ne pense pas à le fermer ». Décision ajoutée en `AGENTS.md` §6.
