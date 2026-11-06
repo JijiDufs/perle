@@ -145,8 +145,10 @@ final class Canvas2D {
     }
 
     /// Une image, dans le repère courant (comme drawImage du navigateur).
-    func drawImage(_ image: Image, _ x: Double, _ y: Double, _ w: Double, _ h: Double) {
-        drawingContext().draw(image, in: CGRect(x: x, y: y, width: w, height: h))
+    func drawImage(_ image: Image, _ x: Double, _ y: Double, _ w: Double, _ h: Double, filters: [GraphicsContext.Filter] = []) {
+        var g = drawingContext()
+        for filter in filters { g.addFilter(filter) }
+        g.draw(image, in: CGRect(x: x, y: y, width: w, height: h))
     }
 
     // MARK: - Interne

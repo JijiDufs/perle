@@ -12,14 +12,17 @@ enum JewelArt {
         let metal: String
         let gem: String?
         /// Suffixe des photos d'essai : rien dans le métal par défaut de la rareté, « -<couleur> » sinon (ex. « -e9b19a »).
+        /// C'est le métal du bijou de base : une variante rare reprend sa photo, teintée (`variantFilters`).
         let photoSuffix: String
+        let variant: String?
 
         init(_ jewel: Jewel, variant: String?, catalog: Catalog) {
             let look = catalog.jewelLook(jewel, variant: variant)
             self.jewel = jewel
             metal = look.metal
             gem = look.gem
-            photoSuffix = look.metal == catalog.jewelRarity(jewel.rarityId).metal ? "" : "-" + look.metal.dropFirst().lowercased()
+            photoSuffix = jewel.metal == catalog.jewelRarity(jewel.rarityId).metal ? "" : "-" + jewel.metal.dropFirst().lowercased()
+            self.variant = variant
         }
     }
 
@@ -247,19 +250,36 @@ enum JewelArt {
         }
     }
 
+    /// Les variantes rares sur une photo : la photo du bijou de base, désaturée puis teintée (Aurore rose, Nuit bleu nuit, Givre glacé).
+    private static func variantFilters(_ variant: String?) -> [GraphicsContext.Filter] {
+        let tint: (saturation: Double, color: String, brightness: Double)
+        switch variant {
+        case "aurore": tint = (0.3, "#ffcfea", 0.04)
+        case "nuit": tint = (0.4, "#8c96ff", -0.04)
+        case "givre": tint = (0.2, "#e2f5ff", 0.07)
+        default: return []
+        }
+        return [.saturation(tint.saturation), .colorMultiply(Color(hex: tint.color)), .brightness(tint.brightness)]
+    }
+
     /// Essai d'assets : une photo `jewel-<rareté>-<type>-<style>[-<couleur du métal>]` du bundle si elle existe
-    /// (sans suffixe : métal par défaut de la rareté ; les variantes Aurore, Nuit, Givre n'en ont pas). `-JewelDrawn` force le dessin par code.
-    /// shortcut: la taille de la pierre (ovale, poire…) n'est pas suivie par la photo ; une photo par taille si l'essai est gardé.
+    /// (sans suffixe : métal par défaut de la rareté ; une variante Aurore, Nuit, Givre prend celle de son bijou de base). `-JewelDrawn` force le dessin par code.
+    /// shortcut: photos par taille seulement pour la bague et le collier solitaires, dans le métal par défaut ; ailleurs la taille n'est pas suivie.
     nonisolated(unsafe) private static var photos: [String: Image?] = [:]  // lu et écrit seulement en dessinant (fil principal)
     private static func photo(_ look: Look) -> Image? {
         let jewel = look.jewel
         guard !ProcessInfo.processInfo.arguments.contains("-JewelDrawn") else { return nil }
-        let name = "jewel-\(jewel.rarityId)-\(jewel.type)-\(jewel.style)\(look.photoSuffix)"
-        if let cached = photos[name] { return cached }
-        let image = Bundle.main.url(forResource: name, withExtension: "png")
-            .flatMap { UIImage(contentsOfFile: $0.path) }.map { Image(uiImage: $0) }
-        photos[name] = image
-        return image
+        let base = "jewel-\(jewel.rarityId)-\(jewel.type)-\(jewel.style)"
+        // Une photo par taille de pierre (« -poire ») quand elle existe, sinon la photo du modèle.
+        let names = (jewel.cut.map { ["\(base)-\($0)\(look.photoSuffix)"] } ?? []) + ["\(base)\(look.photoSuffix)"]
+        for name in names {
+            if photos[name] == nil {
+                photos[name] = Bundle.main.url(forResource: name, withExtension: "png")
+                    .flatMap { UIImage(contentsOfFile: $0.path) }.map { Image(uiImage: $0) }
+            }
+            if let image = photos[name] ?? nil { return image }
+        }
+        return nil
     }
 
     /// Où placer le bijou dans un carré, en fraction de la hauteur, pour qu'il y paraisse centré.
@@ -282,7 +302,7 @@ enum JewelArt {
         if let photo = photo(look) {
             // Essai : photo générée (Kling), centrée dans le carré du bijou, quelle que soit sa hauteur de dessin.
             let size = 400 * s
-            c.drawImage(photo, x - size / 2, y + (0.5 - yOffset(jewel)) * 440 * s - size / 2, size, size)
+            c.drawImage(photo, x - size / 2, y + (0.5 - yOffset(jewel)) * 440 * s - size / 2, size, size, filters: variantFilters(look.variant))
             return
         }
         let style = jewel.style
