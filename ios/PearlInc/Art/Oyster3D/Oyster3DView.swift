@@ -130,16 +130,12 @@ struct Oyster3DView: UIViewRepresentable {
         // Couvercle : lamelles empilées depuis la charnière (les bandes concentriques du 2D), nacre dessous.
         lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.06, up: true, rings: 150) { rho, phi in
             let sample = lidLayers.sample(rho, phi)
-            // Bénitier : le dessus s'amincit jusqu'à la charnière (sinon la pile des volants y faisait une pointe
-            // blanche visible sous le couvercle levé, retour de Jules).
-            let taper: Float = style.isClam ? min(1, rho / 0.3) * min(1, rho / 0.3) : 1
-            return ((s.dome(rho) + sample.height) * taper + s.rimWave(rho, phi) * 1.2 + s.ribRelief(rho, phi), sample.uv)
+            return (s.dome(rho) + sample.height + s.rimWave(rho, phi) * 1.2 + s.ribRelief(rho, phi), sample.uv)
         }, materials: [shell]))
         // Dessous du couvercle ; le bénitier a la coquille épaisse (sa tranche de porcelaine se voit au bord).
         let thickness: Float = style.isClam ? 0.035 : 0.008
         lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.02, up: false) { rho, phi in
-            let taper: Float = style.isClam ? min(1, rho / 0.3) * min(1, rho / 0.3) : 1
-            return (s.dome(rho) * taper - thickness + s.rimWave(rho, phi) + s.ribRelief(rho, phi), nil)
+            (s.dome(rho) - thickness + s.rimWave(rho, phi) + s.ribRelief(rho, phi), nil)
         }, materials: [nacre]))
     }
 
@@ -419,7 +415,8 @@ struct ValveShape {
         return cos(2 * .pi * (u * Float(ribs) - 0.5))
     }
     /// Relief des plis : de grandes ondulations arrondies qui rayonnent depuis la charnière, profondes au bord.
-    func ribRelief(_ rho: Float, _ phi: Float) -> Float { ribDepth * ribPhase(phi) * pow(rho, 1.3) }
+    /// Sur le bénitier, les plis se lisent jusqu'à la charnière (sinon la base du couvercle faisait une bande plate, retour de Jules).
+    func ribRelief(_ rho: Float, _ phi: Float) -> Float { ribDepth * ribPhase(phi) * pow(rho, ribs > 0 ? 0.6 : 1.3) }
 
     /// Creux de la valve du bas : nul à la charnière et au bord, le plus profond à mi-longueur (la perle).
     func bowl(_ rho: Float) -> Float { Self.depth * 4 * rho * (1 - rho) }
