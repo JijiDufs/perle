@@ -50,6 +50,9 @@ struct Oyster3DView: UIViewRepresentable {
     private let lid = Entity()
     private let bottom = Entity()
     private let pearl = ModelEntity()
+    /// Le voile nacré autour de la perle, avec l'ombre de celle-ci.
+    private let veil = ModelEntity()
+    private var shape: ValveShape?
     private var glow = PointLight()
     private var pearlKey = ""
     private var seed = Int.min
@@ -61,6 +64,7 @@ struct Oyster3DView: UIViewRepresentable {
         root.addChild(lidPivot)
         root.addChild(bottom)
         root.addChild(pearl)
+        root.addChild(veil)
 
         // Lumière : une principale qui projette l'ombre du couvercle, une douce en face, et la lueur dans la valve.
         let sun = DirectionalLight()
@@ -91,6 +95,7 @@ struct Oyster3DView: UIViewRepresentable {
     private func build(seed: Int) {
         let style = OysterStyle.current
         let s = ValveShape(phases: ShellArt.phases(seed: seed), frills: style.frills)
+        shape = s
         let shell = Self.material(ShellTexture.make(layers: style.edges.count + 1, seed: seed, style: style), roughness: style.roughness, clearcoat: style.clearcoat)
         // Les couches du couvercle, trois sur le bord de la valve du bas.
         let lidLayers = Lamellae(edges: style.edges, step: 0.022, riser: 0.03, wave: style.wave, waveFrequency: style.waveFrequency, phase: Float(s.phases.2))
@@ -118,10 +123,62 @@ struct Oyster3DView: UIViewRepresentable {
         }, materials: [Self.nacre]))
     }
 
+    /// Le voile nacré translucide posé sur la nacre autour de la perle (le manteau de l'huître, en joli), et l'ombre de
+    /// la perle dessinée dessus (`pearlRadius` en unités de valve ; nil : huître vide). Il suit le creux de la valve.
+    private func placeVeil(_ s: ValveShape, pearlRadius: Double?) {
+        guard let texture = Self.veilTexture(s.phases, pearlRadius: pearlRadius) else { return }
+        var material = UnlitMaterial()
+        material.color = .init(texture: .init(texture))
+        material.blending = .transparent(opacity: 1.0)
+        material.opacityThreshold = 0.02
+        veil.model = ModelComponent(mesh: ValveMesh.make(s, scale: 1, up: true) { rho, phi in
+            (-s.bowl(rho) + s.rimWave(rho, phi) + 0.004, nil)
+        }, materials: [material])
+    }
+
+    /// Le voile, dessiné dans le repère de la texture projetée de `ValveMesh` (u = 0,5 + x / 1,5 ; v = 0,46 − z / 1,3).
+    private static func veilTexture(_ ph: ShellArt.Phases, pearlRadius: Double?) -> TextureResource? {
+        let w = 512.0, k = w / 1.5, h = 1.3 * k
+        let renderer = ImageRenderer(content: Canvas { c, _ in
+            let cx = w / 2, cy = (0.06 + 0.54 * 1.3) * k, rx = 0.36 * k, ry = 0.4 * k
+            func outline(_ scale: Double, _ lace: Double) -> Path {
+                var path = Path()
+                for i in 0...180 {
+                    let a = Double(i) / 180 * 2 * .pi
+                    let frill = scale * (1 + 0.03 * sin(a * 18 + ph.2) + 0.025 * sin(a * 7 + ph.0) + lace * sin(a * 40 + ph.1))
+                    let p = CGPoint(x: cx + cos(a) * rx * frill, y: cy + sin(a) * ry * frill)
+                    if i == 0 { path.move(to: p) } else { path.addLine(to: p) }
+                }
+                path.closeSubpath()
+                return path
+            }
+            // Translucide : ivoire au centre, rosé au bord, la nacre reste visible dessous ; une dentelle plus claire autour.
+            let body = outline(1, 0)
+            c.fill(body, with: .radialGradient(Gradient(stops: [
+                .init(color: rgba(255, 250, 240, 0.55), location: 0), .init(color: rgba(246, 228, 216, 0.5), location: 0.7),
+                .init(color: rgba(232, 200, 194, 0.38), location: 1)]),
+                center: CGPoint(x: cx - rx * 0.1, y: cy - ry * 0.15), startRadius: 0, endRadius: rx * 1.05))
+            c.stroke(body, with: .color(rgba(255, 255, 255, 0.5)), lineWidth: 3)
+            c.stroke(outline(1.06, 0.02), with: .color(rgba(255, 250, 245, 0.35)), lineWidth: 2)
+            if let pearlRadius {
+                // L'ombre de la perle, à plat sur la nacre (la perle elle-même est dessinée sans, pour qu'elles ne se chevauchent pas).
+                let r = pearlRadius * k
+                c.fill(Path(CGRect(x: cx - r * 2, y: cy - r * 2, width: r * 4, height: r * 4)), with: .radialGradient(
+                    Gradient(colors: [rgba(60, 40, 30, 0.4), rgba(60, 40, 30, 0)]),
+                    center: CGPoint(x: cx + r * 0.15, y: cy + r * 0.35), startRadius: r * 0.3, endRadius: r * 1.3))
+            }
+        }.frame(width: w, height: h))
+        renderer.scale = 1
+        renderer.isOpaque = false
+        guard let image = renderer.cgImage.flatMap(Ecrin3DScene.straightAlpha) else { return nil }
+        return try? TextureResource.generate(from: image, options: .init(semantic: .color))
+    }
+
     func update(angle: Double, pearl: PearlLook?, cracked: Bool, pearlRadius: Double, glowHex: String?, seed: Int) {
         if seed != self.seed {
             self.seed = seed
             build(seed: seed)
+            pearlKey = ""  // la perle et le voile suivent la nouvelle valve
         }
         let theta = Float(min(max(angle, 0), 180) * .pi / 180)
         lidPivot.orientation = simd_quatf(angle: -theta, axis: [1, 0, 0])
@@ -130,7 +187,7 @@ struct Oyster3DView: UIViewRepresentable {
         if key != pearlKey {
             pearlKey = key
             if let pearl {
-                let r = Float(pearlRadius)
+                let r = Float(pearlRadius) * 1.3  // un peu plus grande que son rayon de jeu, pour remplir la valve (choix de Jules)
                 // La perle de la carte (forme, reflet, marque, fêlure), dessinée par PearlArt et posée sur un carré
                 // tourné vers la caméra, comme le bijou dans l'écrin : on voit dans l'huître ce que la carte montrera.
                 var material = UnlitMaterial()
@@ -144,6 +201,7 @@ struct Oyster3DView: UIViewRepresentable {
             } else {
                 self.pearl.isEnabled = false
             }
+            if let shape { placeVeil(shape, pearlRadius: pearl == nil ? nil : pearlRadius * 1.3) }
         }
 
         // La lueur monte avec l'entrebâillement, puis se fond dans la lumière du jour.
@@ -155,7 +213,7 @@ struct Oyster3DView: UIViewRepresentable {
     /// La perle dessinée comme sur la carte (`PearlArt`), le carré faisant quatre rayons (ombre comprise).
     private static func pearlTexture(_ pearl: PearlLook, cracked: Bool) -> TextureResource? {
         let px = 384.0
-        let renderer = ImageRenderer(content: Canvas { context, _ in PearlArt.draw(&context, px / 2, px / 2, px / 4, pearl, cracked: cracked) }
+        let renderer = ImageRenderer(content: Canvas { context, _ in PearlArt.draw(&context, px / 2, px / 2, px / 4, pearl, cracked: cracked, shadow: false) }
             .frame(width: px, height: px))
         renderer.scale = 1
         renderer.isOpaque = false

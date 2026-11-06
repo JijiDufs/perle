@@ -17,7 +17,8 @@ struct PearlLook {
 enum PearlArt {
     private static let rainbow = ["#ff8aa8", "#ffd88a", "#a8ffb0", "#8ad8ff", "#c8a0ff", "#ff8aa8"]
 
-    static func draw(_ c: inout GraphicsContext, _ x: Double, _ y: Double, _ rad: Double, _ pearl: PearlLook, cracked: Bool) {
+    /// `shadow` : l'ombre portée sous la perle (false dans l'huître 3D, où elle est dessinée sur la nacre).
+    static func draw(_ c: inout GraphicsContext, _ x: Double, _ y: Double, _ rad: Double, _ pearl: PearlLook, cracked: Bool, shadow: Bool = true) {
         guard pearl.glow != nil else {
             // Huître vide : une petite tache, rien de plus.
             let r = rad * 0.13
@@ -30,11 +31,11 @@ enum PearlArt {
             twin.mark = nil
             var behind = twin
             behind.seed = (pearl.seed + 0.37).truncatingRemainder(dividingBy: 1)
-            paint(&c, x + rad * 0.52, y - rad * 0.2, rad * 0.7, behind, cracked: false)
-            paint(&c, x - rad * 0.2, y + rad * 0.08, rad * 0.88, twin, cracked: cracked)
+            paint(&c, x + rad * 0.52, y - rad * 0.2, rad * 0.7, behind, cracked: false, shadow: shadow)
+            paint(&c, x - rad * 0.2, y + rad * 0.08, rad * 0.88, twin, cracked: cracked, shadow: shadow)
             return
         }
-        paint(&c, x, y, rad, pearl, cracked: cracked)
+        paint(&c, x, y, rad, pearl, cracked: cracked, shadow: shadow)
     }
 
     /// Halo lumineux. `additive` brille fort sur fond sombre ; false sur la nacre (éclaire sans brûler).
@@ -49,13 +50,15 @@ enum PearlArt {
             center: CGPoint(x: x, y: y), startRadius: 0, endRadius: rad))
     }
 
-    private static func paint(_ c: inout GraphicsContext, _ x: Double, _ y: Double, _ rad: Double, _ pearl: PearlLook, cracked: Bool) {
+    private static func paint(_ c: inout GraphicsContext, _ x: Double, _ y: Double, _ rad: Double, _ pearl: PearlLook, cracked: Bool, shadow: Bool) {
         let rgb = tintedRGB(pearl)
         let color = rgbColor(rgb, 0)
         let cursed = pearl.id == "cursed"
-        c.fill(Path(CGRect(x: x - rad * 2, y: y - rad * 2, width: rad * 4, height: rad * 4)), with: .radialGradient(
-            Gradient(colors: [rgba(60, 40, 30, 0.45), rgba(60, 40, 30, 0)]),
-            center: CGPoint(x: x + rad * 0.2, y: y + rad * 0.3), startRadius: rad * 0.2, endRadius: rad * 1.35))
+        if shadow {
+            c.fill(Path(CGRect(x: x - rad * 2, y: y - rad * 2, width: rad * 4, height: rad * 4)), with: .radialGradient(
+                Gradient(colors: [rgba(60, 40, 30, 0.45), rgba(60, 40, 30, 0)]),
+                center: CGPoint(x: x + rad * 0.2, y: y + rad * 0.3), startRadius: rad * 0.2, endRadius: rad * 1.35))
+        }
 
         if let (image, ownOvertone) = photo(pearl) {
             // Photo de la perle (essai assets) : une par forme et par reflet ; marques et fêlure restent dessinées par-dessus.
@@ -160,14 +163,27 @@ enum PearlArt {
             bright.fill(star, with: .color(.white.opacity(0.95)))
         }
         if cracked {
-            var crack = Path()
-            crack.move(to: CGPoint(x: x - rad * 0.1, y: y - rad * 0.9))
-            crack.addLine(to: CGPoint(x: x + rad * 0.12, y: y - rad * 0.3))
-            crack.addLine(to: CGPoint(x: x - rad * 0.08, y: y + rad * 0.1))
-            crack.addLine(to: CGPoint(x: x + rad * 0.2, y: y + rad * 0.7))
-            crack.move(to: CGPoint(x: x + rad * 0.12, y: y - rad * 0.3))
-            crack.addLine(to: CGPoint(x: x + rad * 0.55, y: y - rad * 0.15))
-            c.stroke(crack, with: .color(rgba(40, 24, 20, 0.85)), lineWidth: max(1, rad * 0.045))
+            // Fêlure : un trait brisé qui zigzague (crans tirés de la graine), avec son ombre diffuse et un liseré
+            // clair, comme une nacre éclatée ; plus un simple trait noir sur les perles en photo.
+            func fissure(_ points: [(Double, Double)]) -> Path {
+                var path = Path()
+                for (i, (px, py)) in points.enumerated() {
+                    guard i > 0 else { path.move(to: CGPoint(x: x + px * rad, y: y + py * rad)); continue }
+                    let (qx, qy) = points[i - 1]
+                    for k in 1...4 {
+                        let t = Double(k) / 4, j = k < 4 ? 0.035 * sin(Double(i * 5 + k) * 2.7 + pearl.seed * 9) : 0
+                        path.addLine(to: CGPoint(x: x + (qx + (px - qx) * t + j) * rad, y: y + (qy + (py - qy) * t - j) * rad))
+                    }
+                }
+                return path
+            }
+            for path in [fissure([(-0.1, -0.9), (0.12, -0.3), (-0.08, 0.1), (0.2, 0.7)]), fissure([(0.12, -0.3), (0.55, -0.15)])] {
+                c.stroke(path, with: .color(rgba(40, 24, 20, 0.22)), lineWidth: max(2, rad * 0.08))
+                var light = c
+                light.translateBy(x: max(0.7, rad * 0.018), y: max(0.7, rad * 0.018))
+                light.stroke(path, with: .color(rgba(255, 255, 255, 0.6)), lineWidth: max(1, rad * 0.02))
+                c.stroke(path, with: .color(rgba(40, 24, 20, 0.75)), lineWidth: max(0.8, rad * 0.022))
+            }
         }
     }
 
