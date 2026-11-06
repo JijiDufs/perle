@@ -415,8 +415,8 @@ struct ValveShape {
         return cos(2 * .pi * (u * Float(ribs) - 0.5))
     }
     /// Relief des plis : de grandes ondulations arrondies qui rayonnent depuis la charnière, profondes au bord.
-    /// Sur le bénitier, les plis se lisent jusqu'à la charnière (sinon la base du couvercle faisait une bande plate, retour de Jules).
-    func ribRelief(_ rho: Float, _ phi: Float) -> Float { ribDepth * ribPhase(phi) * pow(rho, ribs > 0 ? 0.6 : 1.3) }
+    /// Sur le bénitier, les plis s'effacent avant la charnière : leurs creux y dessinaient un V sombre sous le couvercle levé (retour de Jules).
+    func ribRelief(_ rho: Float, _ phi: Float) -> Float { ribDepth * ribPhase(phi) * pow(rho, ribs > 0 ? 2.4 : 1.3) }
 
     /// Creux de la valve du bas : nul à la charnière et au bord, le plus profond à mi-longueur (la perle).
     func bowl(_ rho: Float) -> Float { Self.depth * 4 * rho * (1 - rho) }
