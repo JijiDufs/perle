@@ -11,15 +11,15 @@ enum JewelArt {
         let jewel: Jewel
         let metal: String
         let gem: String?
-        /// Le bijou est dans le métal par défaut de sa rareté (celui des photos d'essai).
-        let defaultMetal: Bool
+        /// Suffixe des photos d'essai : rien dans le métal par défaut de la rareté, « -<couleur> » sinon (ex. « -e9b19a »).
+        let photoSuffix: String
 
         init(_ jewel: Jewel, variant: String?, catalog: Catalog) {
             let look = catalog.jewelLook(jewel, variant: variant)
             self.jewel = jewel
             metal = look.metal
             gem = look.gem
-            defaultMetal = look.metal == catalog.jewelRarity(jewel.rarityId).metal
+            photoSuffix = look.metal == catalog.jewelRarity(jewel.rarityId).metal ? "" : "-" + look.metal.dropFirst().lowercased()
         }
     }
 
@@ -247,14 +247,14 @@ enum JewelArt {
         }
     }
 
-    /// Essai d'assets : une photo `jewel-<rareté>-<type>-<style>` du bundle, seulement dans le métal par défaut
-    /// de la rareté et sans variante (la photo ne montre qu'un métal). `-JewelDrawn` force le dessin par code.
+    /// Essai d'assets : une photo `jewel-<rareté>-<type>-<style>[-<couleur du métal>]` du bundle si elle existe
+    /// (sans suffixe : métal par défaut de la rareté ; les variantes Aurore, Nuit, Givre n'en ont pas). `-JewelDrawn` force le dessin par code.
     /// shortcut: la taille de la pierre (ovale, poire…) n'est pas suivie par la photo ; une photo par taille si l'essai est gardé.
     nonisolated(unsafe) private static var photos: [String: Image?] = [:]  // lu et écrit seulement en dessinant (fil principal)
     private static func photo(_ look: Look) -> Image? {
         let jewel = look.jewel
-        guard !ProcessInfo.processInfo.arguments.contains("-JewelDrawn"), look.defaultMetal else { return nil }
-        let name = "jewel-\(jewel.rarityId)-\(jewel.type)-\(jewel.style)"
+        guard !ProcessInfo.processInfo.arguments.contains("-JewelDrawn") else { return nil }
+        let name = "jewel-\(jewel.rarityId)-\(jewel.type)-\(jewel.style)\(look.photoSuffix)"
         if let cached = photos[name] { return cached }
         let image = Bundle.main.url(forResource: name, withExtension: "png")
             .flatMap { UIImage(contentsOfFile: $0.path) }.map { Image(uiImage: $0) }
