@@ -8,11 +8,37 @@ struct EcrinView: View {
     @Environment(GameModel.self) private var game
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showOdds = false
+    /// Essai : l'écrin 3D (iPhone classique) ; les effets dessinés par-dessus lisent ses points à l'écran ici.
+    @State private var probe = Ecrin3DProbe()
+
+    private enum Layer { case all, back, front }
 
     var body: some View {
         ZStack {
             TimelineView(.animation(paused: reduceMotion && game.ecrinPhase == .closed)) { timeline in
-                Canvas { context, size in draw(context, size: size, date: timeline.date) }
+                let in3D = Ecrin3DView.isEnabled && game.shownEcrin != nil
+                    && !(game.hasHinge || game.foldX != nil || game.foldY != nil)
+                GeometryReader { geo in
+                    ZStack {
+                        Canvas { context, size in draw(context, size: size, date: timeline.date, layer: in3D ? .back : .all) }
+                        if in3D, let pending = game.shownEcrin {
+                            let box = Self.classicBox(geo.size)
+                            let side = box.bw * Ecrin3DView.viewSpan
+                            let variant = game.variantRevealed ? game.pendingVariant : nil
+                            let look = JewelArt.Look(pending.jewel, variant: variant?.id, catalog: game.catalog)
+                            Ecrin3DView(angle: game.ecrinAngle, leatherHex: EcrinArt.leathers[game.leather],
+                                        dim: 1 - smoothstep(4, 140, game.ecrinAngle),
+                                        jewelKey: "\(pending.jewel)|\(variant?.id ?? "")",
+                                        drawJewel: { c in JewelArt.draw(c, 0, (JewelArt.yOffset(pending.jewel) - 0.5) * 0.66, 0.66 / 440, look) },
+                                        origin: CGPoint(x: box.cx - side / 2, y: box.cy - side / 2), probe: probe)
+                                .frame(width: side, height: side)
+                                .position(x: box.cx, y: box.cy)
+                                .allowsHitTesting(false)
+                            Canvas { context, size in draw(context, size: size, date: timeline.date, layer: .front) }
+                                .allowsHitTesting(false)
+                        }
+                    }
+                }
             }
             .ignoresSafeArea()
             .contentShape(Rectangle())
@@ -167,7 +193,14 @@ struct EcrinView: View {
 
     // MARK: - Dessin
 
-    private func draw(_ context: GraphicsContext, size: CGSize, date: Date) {
+    /// Place de l'écrin sur iPhone classique (trois quarts).
+    private static func classicBox(_ size: CGSize) -> (cx: Double, cy: Double, bw: Double) {
+        let w = Double(size.width), visible = Double(size.height) - 190
+        return (w / 2, 100 + visible * 0.62, min(w * 0.86, visible * 0.68))
+    }
+
+    /// `layer` : tout le dessin 2D, ou, avec l'écrin 3D, le fond (salon, ombre) puis le dessus (lumières, étoiles).
+    private func draw(_ context: GraphicsContext, size: CGSize, date: Date, layer: Layer) {
         let c = Canvas2D(context)
         let w = Double(size.width), h = Double(size.height)
         let t = reduceMotion ? 0 : date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 3600)
@@ -194,13 +227,12 @@ struct EcrinView: View {
             cx = w / 2
             cy = 100 + visible * 0.5
         } else {
-            bw = min(w * 0.86, visible * 0.68)
-            cx = w / 2
-            cy = 100 + visible * 0.62
+            let box = Self.classicBox(size)
+            cx = box.cx; cy = box.cy; bw = box.bw
         }
         let salon = across == nil ? SalonArt(time: t, focus: .init(x: cx, y: cy, w: bw * 0.8, h: bw * 0.45))
             : SalonArt(time: t, focus: .init(x: w - cy, y: cx, w: bw * 0.45, h: bw * 0.8))
-        salon.draw(c, w: w, h: h)
+        if layer != .front { salon.draw(c, w: w, h: h) }
         guard let pending = game.shownEcrin, let rarity = game.shownRarity else {
             salon.drawOverlay(c, w: w, h: h)
             return
@@ -220,19 +252,26 @@ struct EcrinView: View {
             c.rotate(.pi / 2)
         }
 
-        EcrinArt.drawShadow(c, cx: cx, cy: cy, width: bw, top: top)
-        let anchors = EcrinArt.draw(
+        if layer != .front { EcrinArt.drawShadow(c, cx: cx, cy: cy, width: bw, top: top) }
+        if layer == .back { return }
+        let effects: (Double, Double, Double) -> Void = { x, y, unit in
+            guard let glow else { return }
+            drawGlow(c, x, y, unit * (0.32 + Double(sparkleTier) * 0.04), glow, open * (0.12 + 0.45 * sparkle) + suspense * 0.3)
+            JewelArt.drawSparkles(c, x, y, tier: sparkleTier, glow: glow, t: t, alpha: open * (0.15 + 0.85 * sparkle) + suspense * 0.5, scale: unit / 700)
+        }
+        let anchors: EcrinArt.Anchors
+        if layer == .front {
+            guard let probed = probe.anchors else { salon.drawOverlay(c, w: w, h: h); return }
+            anchors = probed
+            effects(probed.jewel.0, probed.jewel.1, probed.scale)
+        } else { anchors = EcrinArt.draw(
             c, cx: cx, cy: cy, width: bw, leather: EcrinArt.leathers[game.leather], angle: onFold ? 180 : angle,
             dim: 1 - smoothstep(4, 140, angle),
             sweep: rarity.tier >= 4 && game.ecrinPhase == .closed && !reduceMotion ? (t * 0.5).truncatingRemainder(dividingBy: 1.6) - 0.3 : nil,
             top: top,
             drawJewel: { JewelArt.draw(c, 0, (JewelArt.yOffset(pending.jewel) - 0.5) * 0.66, 0.66 / 440, look) },
-            drawEffects: { x, y, unit in
-                guard let glow else { return }
-                drawGlow(c, x, y, unit * (0.32 + Double(sparkleTier) * 0.04), glow, open * (0.12 + 0.45 * sparkle) + suspense * 0.3)
-                JewelArt.drawSparkles(c, x, y, tier: sparkleTier, glow: glow, t: t, alpha: open * (0.15 + 0.85 * sparkle) + suspense * 0.5, scale: unit / 700)
-            }
-        )
+            drawEffects: effects
+        ) }
 
         // La lumière filtre par l'entrebâillement, au bord avant du couvercle.
         // (Pas sur l'écran intérieur du Duo : le couvercle y est déjà ouvert à plat.)
