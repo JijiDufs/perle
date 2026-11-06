@@ -37,7 +37,10 @@ struct Oyster3DView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: ARView, context: Context) {
-        context.coordinator.update(angle: angle, pearl: pearl, cracked: cracked, pearlRadius: pearlRadius, glowHex: glowHex, seed: seed, skin: skin)
+        // Réglage de test (`defaults write app.pearlinc.PearlInc OysterTestAngle 120`) : couvercle figé à cet angle, pour regarder la 3D posément.
+        let testAngle = UserDefaults.standard.double(forKey: "OysterTestAngle")
+        context.coordinator.update(angle: testAngle > 0 ? testAngle : angle, pearl: pearl, cracked: cracked, pearlRadius: pearlRadius,
+                                   glowHex: glowHex, seed: seed, skin: skin)
     }
 }
 
@@ -156,7 +159,9 @@ struct Oyster3DView: UIViewRepresentable {
         let w = 1024.0, k = w / Double(ValveMesh.uvSpan.x), h = Double(ValveMesh.uvSpan.y) * k
         let renderer = ImageRenderer(content: Canvas { c, _ in
             let cx = w / 2, cy = (0.06 + 0.54 * Double(ValveMesh.uvSpan.y)) * k
-            let rx = (mantle ? 0.64 : 0.36) * k, ry = (mantle ? 0.56 : 0.4) * k
+            // Le manteau dépasse la charnière et les côtés (le maillage s'arrête là) : avec un bord frisé plus court,
+            // selon la graine, un coin de porcelaine blanche se voyait entre lui et la charnière.
+            let rx = (mantle ? 0.72 : 0.36) * k, ry = (mantle ? 0.64 : 0.4) * k
             func outline(_ scale: Double, _ lace: Double) -> Path {
                 var path = Path()
                 for i in 0...180 {
