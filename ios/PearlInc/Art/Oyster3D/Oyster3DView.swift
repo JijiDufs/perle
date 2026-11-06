@@ -99,8 +99,8 @@ struct Oyster3DView: UIViewRepresentable {
         let style = OysterStyle.forSkin(skin)
         let ph = ShellArt.phases(seed: seed)
         // Bénitier : 4 ou 5 grands plis arrondis, éventail large (moins qu'en 2D, il débordait de l'écran), valve bombée.
-        let s = ValveShape(phases: ph, frills: style.frills, ribs: style.clam ? (style.ribCount > 0 ? style.ribCount : ph.2 > 3.15 ? 5 : 4) : 0,
-                           spread: style.clam ? 1.3 : 1.42, domeHeight: style.clam ? 0.12 : 0.05, ribDepth: style.ribDepth, scallop: style.scallop)
+        let s = ValveShape(phases: ph, frills: style.frills, ribs: style.isClam ? (style.ribCount > 0 ? style.ribCount : 5) : 0,
+                           breadth: 1.0, spread: style.isClam ? 1.5 : 1.42, domeHeight: style.isClam ? 0.1 : 0.05, ribDepth: style.ribDepth, scallop: style.scallop)
         shape = s
         nacre = Self.material(Self.texture("oyster3d-nacre", saturation: style.nacreSaturation, brightness: style.nacreBrightness),
                               roughness: style.nacreRoughness, clearcoat: 1, tint: style.nacreTint)
@@ -125,12 +125,10 @@ struct Oyster3DView: UIViewRepresentable {
         // Couvercle : lamelles empilées depuis la charnière (les bandes concentriques du 2D), nacre dessous.
         lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.06, up: true, rings: 150) { rho, phi in
             let sample = lidLayers.sample(rho, phi)
-            // Bénitier : les écailles des couches se dressent sur les crêtes des plis, s'effacent dans les creux.
-            let scute: Float = s.ribs > 0 ? 0.4 + 1.2 * max(0, s.ribPhase(phi)) : 1
-            return (s.dome(rho) + sample.height * scute + s.rimWave(rho, phi) * 1.2 + s.ribRelief(rho, phi), sample.uv)
+            return (s.dome(rho) + sample.height + s.rimWave(rho, phi) * 1.2 + s.ribRelief(rho, phi), sample.uv)
         }, materials: [shell]))
         // Dessous du couvercle ; le bénitier a la coquille épaisse (sa tranche de porcelaine se voit au bord).
-        let thickness: Float = style.clam ? 0.035 : 0.008
+        let thickness: Float = style.isClam ? 0.035 : 0.008
         lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.02, up: false) { rho, phi in
             (s.dome(rho) - thickness + s.rimWave(rho, phi) + s.ribRelief(rho, phi), nil)
         }, materials: [nacre]))
@@ -318,7 +316,7 @@ struct OysterStyle {
     /// Part de la couleur « grise » sur une couche sur deux (0,35 : une nuance ; 0,9 : de l'émail).
     var altMix: Float = 0.35
     /// Bénitier : éventail large à gros plis (nombre, profondeur, feston du bord), et son manteau à la place du voile.
-    var clam = false
+    var isClam = false
     var mantle = false
     var ribCount = 0  // 0 : 4 ou 5 selon la graine
     var ribDepth: Float = 0.11
@@ -343,49 +341,21 @@ struct OysterStyle {
     static let firstTide = OysterStyle(deep: [0.3, 0.26, 0.19], mid: [0.55, 0.48, 0.36], warm: [0.74, 0.67, 0.54], lip: [0.95, 0.93, 0.86], grey: [0.62, 0.63, 0.65],
                                        roughness: 0.7, clearcoat: 0.2, edges: lagoon.edges, wave: 0.045, waveFrequency: 24, frills: 26, nacreTint: [0.92, 0.97, 1])
     /// Bénitier : porcelaine crème à gros plis, manteau bleu-vert tacheté (comme `ClamArt`).
-    /// Craie et porcelaine, couches grises verdâtres une sur deux ; six rangs d'écailles concentriques, droits (les plis font le relief).
-    static let clam = OysterStyle(deep: [0.48, 0.44, 0.37], mid: [0.74, 0.7, 0.62], warm: [0.9, 0.87, 0.8], lip: [0.98, 0.97, 0.93], grey: [0.6, 0.62, 0.55],
-                                  roughness: 0.82, clearcoat: 0.05, edges: [0.92, 0.8, 0.68, 0.56, 0.44, 0.32], wave: 0, waveFrequency: 10, frills: 14,
-                                  lamellaStep: 0.014, lamellaRiser: 0.02,
-                                  nacreSaturation: 0.08, nacreBrightness: 0.15, nacreRoughness: 0.3, clam: true, mantle: true)
-
-    /// Essai à trancher par Jules (`defaults write app.pearlinc.PearlInc OysterVariant 1…4`) : quatre bénitiers, quatre ors.
-    static let clamVariants: [OysterStyle] = [
-        clam,  // 1. Craie : le bénitier actuel.
-        // 2. Maxima : cinq plis profonds, couches rousses, manteau bleu électrique.
-        { var s = clam; s.ribCount = 5; s.ribDepth = 0.13; s.lamellaStep = 0.018
-          s.deep = [0.45, 0.3, 0.18]; s.mid = [0.8, 0.68, 0.5]; s.warm = [0.92, 0.85, 0.7]; s.lip = [0.98, 0.95, 0.86]; s.grey = [0.62, 0.45, 0.3]; s.altMix = 0.5
-          s.mantleColors = ["#3ad0ff", "#1b6fd6", "#1a2f9a", "#0b1446"]; s.mantleDots = "#9ff5ff"; s.mantleRim = "#8be8ff"; return s }(),
-        // 3. Corail : quatre plis, coquille rosée incrustée d'algues vertes, manteau vert à liseré orangé.
-        { var s = clam; s.ribCount = 4; s.ribDepth = 0.1; s.edges = [0.9, 0.72, 0.54, 0.36]
-          s.deep = [0.35, 0.3, 0.22]; s.mid = [0.7, 0.58, 0.5]; s.warm = [0.88, 0.76, 0.66]; s.lip = [0.98, 0.92, 0.86]; s.grey = [0.45, 0.58, 0.42]; s.altMix = 0.5
-          s.mantleColors = ["#5de8c0", "#1fa98a", "#1d6f6a", "#163a4a"]; s.mantleDots = "#ffe29a"; s.mantleRim = "#ff9a4a"; return s }(),
-        // 4. Porcelaine : cinq plis très profonds et lisses, deux rangs d'écailles, vernis, manteau violet.
-        { var s = clam; s.ribCount = 5; s.ribDepth = 0.14; s.scallop = 0.13; s.edges = [0.8, 0.45]; s.lamellaStep = 0.01; s.roughness = 0.35; s.clearcoat = 0.6
-          s.deep = [0.6, 0.6, 0.58]; s.mid = [0.86, 0.86, 0.84]; s.warm = [0.95, 0.95, 0.93]; s.lip = [1, 1, 1]; s.grey = [0.8, 0.82, 0.8]
-          s.mantleColors = ["#7a6cf0", "#4a3fc8", "#2d2a86", "#1a1544"]; s.mantleDots = "#e9e4ff"; s.mantleRim = "#c8c0ff"; return s }(),
-    ]
-    static let goldVariants: [OysterStyle] = [
-        gold,  // 1. Or martelé : l'actuel.
-        // 2. Or poli : plus métallique et plus lisse, couleurs plus claires.
-        { var s = gold; s.metallic = 0.7; s.roughness = 0.18; s.clearcoat = 1
-          s.deep = [0.45, 0.3, 0.08]; s.mid = [0.75, 0.55, 0.18]; s.warm = [0.95, 0.78, 0.35]; s.lip = [1, 0.95, 0.7]; s.grey = [0.85, 0.68, 0.3]; return s }(),
-        // 3. Or et émail : une couche sur deux en émail bleu-vert profond, le reste en or verni.
-        { var s = gold; s.metallic = 0.5; s.roughness = 0.3; s.clearcoat = 0.9; s.grey = [0.02, 0.22, 0.3]; s.altMix = 0.9; return s }(),
-        // 4. Or rose antique : creux très sombres, bords clairs, nacre champagne rosé.
-        { var s = gold; s.metallic = 0.5; s.roughness = 0.45; s.clearcoat = 0.5
-          s.deep = [0.25, 0.1, 0.06]; s.mid = [0.62, 0.38, 0.28]; s.warm = [0.86, 0.6, 0.45]; s.lip = [1, 0.85, 0.72]; s.grey = [0.7, 0.45, 0.35]
-          s.nacreTint = [1, 0.9, 0.84]; return s }(),
-    ]
+    /// D'après les photos de Jules (valve de bénitier vue de dessus) : un éventail compact et arrondi, beige mat taché de
+    /// brun, cinq plis arrondis, et des volants concentriques empilés (neuf rangs à grosse lèvre) parallèles au bord.
+    static let clam = OysterStyle(deep: [0.5, 0.42, 0.33], mid: [0.78, 0.73, 0.64], warm: [0.86, 0.82, 0.74], lip: [0.94, 0.91, 0.85], grey: [0.72, 0.66, 0.56],
+                                  roughness: 0.85, clearcoat: 0.05, edges: stride(from: 0.95, through: 0.2, by: -0.095).map { Float($0) }, wave: 0.012,
+                                  waveFrequency: 20, frills: 14, lamellaStep: 0.022, lamellaRiser: 0.035,
+                                  nacreSaturation: 0.08, nacreBrightness: 0.15, nacreRoughness: 0.3, altMix: 0.2, isClam: true, mantle: true,
+                                  ribDepth: 0.1, scallop: 0.1)
 
     static func forSkin(_ id: String) -> OysterStyle {
-        let variant = max(0, min(3, UserDefaults.standard.integer(forKey: "OysterVariant") - 1))
         return switch UserDefaults.standard.string(forKey: "OysterSkin") ?? id {  // réglage de test : voir un skin sans le posséder
-        case "or": goldVariants[variant]
-        case "premiere-maree": firstTide
-        case "benitier": clamVariants[variant]
-        case "rousse": rousse
-        default: lagoon
+        case "or": Self.gold
+        case "premiere-maree": Self.firstTide
+        case "benitier": Self.clam
+        case "rousse": Self.rousse
+        default: Self.lagoon
         }
     }
 }
@@ -413,12 +383,15 @@ struct ValveShape {
     func radius(_ f: Float) -> Float {
         let a = abs(f)
         if ribs > 0 {
-            // Bénitier : éventail plus ouvert, festonné par les plis (ClamArt.outline).
-            let edge = pow(max(0, cos(spread * 0.92)), 0.3)
-            guard a <= spread else { return max(0.01, edge * (1 - (a - spread) / 0.12)) }
+            // Bénitier (photos de Jules) : un éventail compact et tout en rondeur, large devant, épaules rondes, et
+            // rien derrière la charnière (un dos rond y passait sous la valve du bas) ; le bord festonné par les plis.
+            let half = Float.pi / 2
+            guard a <= half + 0.12 else { return 0.01 }
+            let round = (0.25 + 0.75 * pow((1 + cos(min(a, half))) / 2, 0.9)) * (a <= half ? 1 : 1 - (a - half) / 0.12)
             let u = (f + spread) / (2 * spread)
-            return pow(max(0, cos(f * 0.92)), 0.3) * (1 + 0.035 * sin(2 * f + Float(phases.0)) + 0.02 * sin(5 * f + Float(phases.1)))
-                * (1 + scallop * cos(2 * .pi * (u * Float(ribs) - 0.5)))
+            let fade = a <= spread ? 1 - pow(a / spread, 6) : 0  // le feston s'efface sur les épaules
+            return round * (1 + 0.03 * sin(2 * f + Float(phases.0)) + 0.015 * sin(5 * f + Float(phases.1)))
+                * (1 + scallop * fade * cos(2 * .pi * (u * Float(ribs) - 0.5)))
         }
         let r = a <= 1.42 ? pow(cos(a), 0.55) : max(0.01, 0.35 * (1 - (a - 1.42) / 0.12))
         return r * (1 + 0.06 * sin(3 * f + Float(phases.0)) + 0.04 * sin(7 * f + Float(phases.1)))
