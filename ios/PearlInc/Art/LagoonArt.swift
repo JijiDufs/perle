@@ -17,6 +17,47 @@ struct LagoonArt {
     var focus: Focus
     /// Ombre douce du sujet sur le sable.
     var shadow = true
+    /// Essai de fonds (réglage de test `LagoonStyle` : lagon, profondeur, nuit, clair) : à trancher avec Jules.
+    var style = Style.current
+
+    /// Les couleurs et effets qui changent d'un fond à l'autre ; les formes restent celles du lagon.
+    struct Style {
+        var water: [String], sand: [String]
+        var haze: (Double, Double, Double), hazeAlpha: Double
+        /// Récif au loin (nil : aucun), flouté quand `blurReef`.
+        var reef: [String]?, blurReef = false
+        var rayTint: (Double, Double, Double), rayGain: Double
+        var causticGain: Double
+        var seaweedAlpha: Double, starfish = true
+        var vignetteTint: (Double, Double, Double), vignetteAlpha: Double
+        /// Grain du sable, plancton lumineux.
+        var grain = false, glowMotes = false
+
+        static let lagoon = Style(water: ["#7fe3dc", "#2fb7bd", "#11808c", "#0b5f6c"], sand: ["#2c8f8e", "#6fb3a0", "#c9c39a", "#a8a07a"],
+                                  haze: (24, 128, 138), hazeAlpha: 0.85, reef: ["#0f6c78", "#0d6170"], rayTint: (255, 255, 225), rayGain: 1,
+                                  causticGain: 1, seaweedAlpha: 0.85, vignetteTint: (0, 20, 30), vignetteAlpha: 0.55)
+        /// Profondeur : horizon noyé et flou, sable grenu, algues translucides, lumière plus marquée.
+        static let depth = Style(water: ["#9ff0e6", "#3cc2c4", "#157f8c", "#0a5261"], sand: ["#1f7d84", "#5aa796", "#d9d2a8", "#b3a97f"],
+                                 haze: (30, 135, 142), hazeAlpha: 0.97, reef: ["#136e7c", "#105f6e"], blurReef: true, rayTint: (255, 250, 220), rayGain: 1.5,
+                                 causticGain: 1.6, seaweedAlpha: 0.55, vignetteTint: (0, 25, 35), vignetteAlpha: 0.7, grain: true)
+        /// Nuit de nacre : eau bleu nuit, rayons de lune, plancton lumineux ; la coquille blanche ressort.
+        static let night = Style(water: ["#1b5a7a", "#0e3a58", "#07233a", "#03131f"], sand: ["#0a2a3c", "#1b4254", "#4f5a5e", "#2f3c42"],
+                                 haze: (12, 50, 70), hazeAlpha: 0.9, reef: ["#0a2e44", "#071f30"], blurReef: true, rayTint: (210, 235, 255), rayGain: 0.9,
+                                 causticGain: 0.7, seaweedAlpha: 0.35, starfish: false, vignetteTint: (0, 5, 12), vignetteAlpha: 0.75, glowMotes: true)
+        /// Eau claire : lagon pâle presque blanc, sable crème, caustiques nettes, pas de récif.
+        static let clear = Style(water: ["#eafffb", "#9fe9e2", "#4fcfcf", "#24a8b4"], sand: ["#5fc2b8", "#a6ddc7", "#f1ead0", "#d9ceaa"],
+                                 haze: (150, 225, 220), hazeAlpha: 0.9, reef: nil, rayTint: (255, 255, 240), rayGain: 1.2,
+                                 causticGain: 1.9, seaweedAlpha: 0.45, vignetteTint: (20, 90, 100), vignetteAlpha: 0.4, grain: true)
+
+        static let current: Style = {
+            switch UserDefaults.standard.string(forKey: "LagoonStyle") {
+            case "profondeur": return depth
+            case "nuit": return night
+            case "clair": return clear
+            default: return lagoon
+            }
+        }()
+    }
 
     private static let tau = Double.pi * 2
 
@@ -48,7 +89,8 @@ struct LagoonArt {
     func drawOverlay(_ c: inout GraphicsContext, size: CGSize) {
         let w = Double(size.width), h = Double(size.height)
         c.fill(Path(CGRect(origin: .zero, size: size)), with: .radialGradient(
-            Gradient(colors: [rgba(0, 20, 30, 0), rgba(0, 20, 30, 0.55)]),
+            Gradient(colors: [rgba(style.vignetteTint.0, style.vignetteTint.1, style.vignetteTint.2, 0),
+                              rgba(style.vignetteTint.0, style.vignetteTint.1, style.vignetteTint.2, style.vignetteAlpha)]),
             center: CGPoint(x: w / 2, y: h / 2), startRadius: min(w, h) * 0.35, endRadius: max(w, h) * 0.8))
     }
 
@@ -68,13 +110,18 @@ struct LagoonArt {
 
         // L'eau : claire près de la surface, turquoise profond vers le fond.
         c.fill(Path(CGRect(x: 0, y: 0, width: w, height: horizon + 2)), with: .linearGradient(
-            Gradient(stops: [.init(color: Color(hex: "#7fe3dc"), location: 0), .init(color: Color(hex: "#2fb7bd"), location: 0.18),
-                             .init(color: Color(hex: "#11808c"), location: 0.62), .init(color: Color(hex: "#0b5f6c"), location: 1)]),
+            Gradient(stops: [.init(color: Color(hex: style.water[0]), location: 0), .init(color: Color(hex: style.water[1]), location: 0.18),
+                             .init(color: Color(hex: style.water[2]), location: 0.62), .init(color: Color(hex: style.water[3]), location: 1)]),
             startPoint: .zero, endPoint: CGPoint(x: 0, y: horizon)))
 
         // Le récif au loin, noyé dans la brume bleue.
-        for (depth, hex) in [(0.16, "#0f6c78"), (0.07, "#0d6170")] {
-            let color = Color(hex: hex)
+        for (depth, hex) in zip([0.16, 0.07], style.reef ?? []) {
+            // Flouté : trois copies décalées et transparentes.
+            let color = Color(hex: hex).opacity(style.blurReef ? 0.4 : 1)
+            let copies = style.blurReef ? [-6.0, 0, 6] : [0]
+            for shift in copies {
+            var c = c
+            c.translateBy(x: 0, y: shift)
             var reef = Path()
             reef.move(to: CGPoint(x: 0, y: horizon))
             var x = 0.0
@@ -100,12 +147,13 @@ struct LagoonArt {
                     c.stroke(fan, with: .color(color), lineWidth: 2)
                 }
             }
+            }
         }
 
         // Le sable : brume turquoise à l'horizon, plus clair et chaud vers le bas.
         c.fill(Path(CGRect(x: 0, y: horizon, width: w, height: h - horizon)), with: .linearGradient(
-            Gradient(stops: [.init(color: Color(hex: "#2c8f8e"), location: 0), .init(color: Color(hex: "#6fb3a0"), location: 0.18),
-                             .init(color: Color(hex: "#c9c39a"), location: 0.55), .init(color: Color(hex: "#a8a07a"), location: 1)]),
+            Gradient(stops: [.init(color: Color(hex: style.sand[0]), location: 0), .init(color: Color(hex: style.sand[1]), location: 0.18),
+                             .init(color: Color(hex: style.sand[2]), location: 0.55), .init(color: Color(hex: style.sand[3]), location: 1)]),
             startPoint: CGPoint(x: 0, y: horizon), endPoint: CGPoint(x: 0, y: h)))
 
         // Rides du sable, plus serrées près de l'horizon (perspective).
@@ -124,6 +172,20 @@ struct LagoonArt {
             }
         }
 
+        // Grain du sable : une poussière de points clairs et sombres, plus dense vers le bas.
+        if style.grain {
+            let grain = Self.seeded(23)
+            for _ in 0..<900 {
+                let k = grain()
+                let y = horizon + (h - horizon) * k * k
+                let x = grain() * w
+                let r = 0.5 + grain() * 1.1 * (0.4 + k)
+                let light = grain() > 0.45
+                c.fill(Path(ellipseIn: CGRect(x: x - r, y: y - r * 0.7, width: r * 2, height: r * 1.4)),
+                       with: .color(light ? rgba(255, 252, 235, 0.06 + 0.18 * k) : rgba(50, 60, 50, 0.05 + 0.12 * k)))
+            }
+        }
+
         // Galets et petits coquillages semés.
         for _ in 0..<26 {
             let k = 0.15 + rand() * 0.85
@@ -137,7 +199,7 @@ struct LagoonArt {
             pebble.fill(Path(ellipseIn: CGRect(x: -r * 1.4, y: -r * 0.8, width: r * 2.8, height: r * 1.6)), with: .color(color))
         }
         // Deux étoiles de mer.
-        for (sx, sy, sr) in [(w * 0.12, horizon + (h - horizon) * 0.78, 13.0), (w * 0.88, horizon + (h - horizon) * 0.55, 9.0)] {
+        for (sx, sy, sr) in [(w * 0.12, horizon + (h - horizon) * 0.78, 13.0), (w * 0.88, horizon + (h - horizon) * 0.55, 9.0)] where style.starfish {
             var star = Path()
             for p in 0..<10 {
                 let a = Double(p) / 10 * Self.tau - .pi / 2
@@ -153,8 +215,9 @@ struct LagoonArt {
         let hazeTop = horizon - horizon * 0.22
         let hazeBottom = horizon + (h - horizon) * 0.22
         c.fill(Path(CGRect(x: 0, y: hazeTop, width: w, height: hazeBottom - hazeTop)), with: .linearGradient(
-            Gradient(stops: [.init(color: rgba(18, 120, 132, 0), location: 0), .init(color: rgba(24, 128, 138, 0.85), location: 0.5),
-                             .init(color: rgba(40, 140, 140, 0), location: 1)]),
+            Gradient(stops: [.init(color: rgba(style.haze.0, style.haze.1, style.haze.2, 0), location: 0),
+                             .init(color: rgba(style.haze.0, style.haze.1, style.haze.2, style.hazeAlpha), location: 0.5),
+                             .init(color: rgba(style.haze.0, style.haze.1, style.haze.2, 0), location: 1)]),
             startPoint: CGPoint(x: 0, y: hazeTop), endPoint: CGPoint(x: 0, y: hazeBottom)))
     }
 
@@ -189,7 +252,7 @@ struct LagoonArt {
             let top = w * (0.035 + 0.02 * sin(ii * 3.1))
             let spread = w * (0.12 + 0.05 * sin(ii * 2.3))
             let skew = w * 0.16
-            let alpha = 0.08 + 0.05 * sin(t * 0.6 + ii * 2.1)
+            let alpha = (0.08 + 0.05 * sin(t * 0.6 + ii * 2.1)) * style.rayGain
             var ray = Path()
             ray.move(to: CGPoint(x: x0, y: 0))
             ray.addLine(to: CGPoint(x: x0 + top, y: 0))
@@ -197,7 +260,7 @@ struct LagoonArt {
             ray.addLine(to: CGPoint(x: x0 + skew - spread * 0.2, y: bottom))
             ray.closeSubpath()
             light.fill(ray, with: .linearGradient(
-                Gradient(stops: [.init(color: rgba(255, 255, 225, alpha), location: 0), .init(color: rgba(220, 255, 240, alpha * 0.45), location: 0.6),
+                Gradient(stops: [.init(color: rgba(style.rayTint.0, style.rayTint.1, style.rayTint.2, alpha), location: 0), .init(color: rgba(220, 255, 240, alpha * 0.45), location: 0.6),
                                  .init(color: rgba(220, 255, 240, 0), location: 1)]),
                 startPoint: .zero, endPoint: CGPoint(x: 0, y: bottom)))
         }
@@ -223,7 +286,7 @@ struct LagoonArt {
                 let dy = (t * speed * 0.6).truncatingRemainder(dividingBy: tile * sy)
                 var sheet = c
                 sheet.blendMode = .plusLighter
-                sheet.opacity = 0.32 * alpha * fade
+                sheet.opacity = min(1, 0.32 * alpha * fade * style.causticGain)
                 sheet.clip(to: Path(strip))
                 sheet.translateBy(x: 0, y: horizon)
                 sheet.scaleBy(x: 2, y: 2)
@@ -269,7 +332,7 @@ struct LagoonArt {
             var blade = Path()
             blade.addLines(left + right.reversed())
             blade.closeSubpath()
-            c.fill(blade, with: .color(Color(hex: hex).opacity(0.85)))
+            c.fill(blade, with: .color(Color(hex: hex).opacity(style.seaweedAlpha)))
             c.stroke(vein, with: .color(Color(hex: "#d8ffd0").opacity(0.18)), lineWidth: 1)
         }
     }
@@ -311,8 +374,17 @@ struct LagoonArt {
         for m in motes {
             let x = mod(m.x + sin(t * 0.3 + m.phase) * m.drift + t * 3, w)
             let y = mod(m.y - t * m.drift * 0.6, h)
+            let pulse = 0.25 + 0.25 * sin(t + m.phase)
+            if style.glowMotes {
+                // Plancton lumineux : un halo turquoise autour de chaque grain.
+                var glow = c
+                glow.blendMode = .plusLighter
+                glow.fill(Path(ellipseIn: CGRect(x: x - m.r * 4, y: y - m.r * 4, width: m.r * 8, height: m.r * 8)),
+                          with: .radialGradient(Gradient(colors: [rgba(120, 240, 230, pulse * 0.9), rgba(120, 240, 230, 0)]),
+                                                center: CGPoint(x: x, y: y), startRadius: 0, endRadius: m.r * 4))
+            }
             c.fill(Path(ellipseIn: CGRect(x: x - m.r, y: y - m.r, width: m.r * 2, height: m.r * 2)),
-                   with: .color(rgba(235, 255, 245, 0.25 + 0.25 * sin(t + m.phase))))
+                   with: .color(rgba(235, 255, 245, pulse)))
         }
         let travel = h - horizon * 0.2
         for b in bubbles {
