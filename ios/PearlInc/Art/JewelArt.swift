@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 import PearlCore
 
 /// Dessin procédural des bijoux, porté de src/art/jewel.ts (repris du prototype Duo).
@@ -11,12 +11,15 @@ enum JewelArt {
         let jewel: Jewel
         let metal: String
         let gem: String?
+        /// Le bijou est dans le métal par défaut de sa rareté (celui des photos d'essai).
+        let defaultMetal: Bool
 
         init(_ jewel: Jewel, variant: String?, catalog: Catalog) {
             let look = catalog.jewelLook(jewel, variant: variant)
             self.jewel = jewel
             metal = look.metal
             gem = look.gem
+            defaultMetal = look.metal == catalog.jewelRarity(jewel.rarityId).metal
         }
     }
 
@@ -244,6 +247,21 @@ enum JewelArt {
         }
     }
 
+    /// Essai d'assets : une photo `jewel-<rareté>-<type>-<style>` du bundle, seulement dans le métal par défaut
+    /// de la rareté et sans variante (la photo ne montre qu'un métal). `-JewelDrawn` force le dessin par code.
+    /// shortcut: la taille de la pierre (ovale, poire…) n'est pas suivie par la photo ; une photo par taille si l'essai est gardé.
+    nonisolated(unsafe) private static var photos: [String: Image?] = [:]  // lu et écrit seulement en dessinant (fil principal)
+    private static func photo(_ look: Look) -> Image? {
+        let jewel = look.jewel
+        guard !ProcessInfo.processInfo.arguments.contains("-JewelDrawn"), look.defaultMetal else { return nil }
+        let name = "jewel-\(jewel.rarityId)-\(jewel.type)-\(jewel.style)"
+        if let cached = photos[name] { return cached }
+        let image = Bundle.main.url(forResource: name, withExtension: "png")
+            .flatMap { UIImage(contentsOfFile: $0.path) }.map { Image(uiImage: $0) }
+        photos[name] = image
+        return image
+    }
+
     /// Où placer le bijou dans un carré, en fraction de la hauteur, pour qu'il y paraisse centré.
     static func yOffset(_ jewel: Jewel) -> Double {
         switch jewel.type {
@@ -261,6 +279,12 @@ enum JewelArt {
         defer { c.restore() }
         c.lineCap = "round"
         let jewel = look.jewel
+        if let photo = photo(look) {
+            // Essai : photo générée (Kling), centrée dans le carré du bijou, quelle que soit sa hauteur de dessin.
+            let size = 400 * s
+            c.drawImage(photo, x - size / 2, y + (0.5 - yOffset(jewel)) * 440 * s - size / 2, size, size)
+            return
+        }
         let style = jewel.style
         let toc = jewel.rarityId == "toc"
         let metalColor = look.metal

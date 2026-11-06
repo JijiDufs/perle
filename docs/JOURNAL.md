@@ -3,6 +3,23 @@
 Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
+## 2026-11-06 (essai assets bijoux) · Jules · Claude Code · branche `jules/essai-assets-bijoux`
+
+**Essai, pas une décision** : des photos générées à la place du dessin par code vont contre le §6 (« tout en code », « pas d'assets graphiques »). À montrer à Mathys avant toute fusion.
+
+**Fait**
+- **15 bijoux au saphir en photo** (`ios/PearlInc/Art/JewelPhotos/jewel-saphir-<type>-<style>.png`, 512 px, fond transparent) : planche de référence n° 11 de Jules refaite dans Kling (modèle Nano Banana Pro, 35 crédits : trop cher, Kling 3.0 Omni à 4 crédits pour la suite), découpée en grille et détourée avec Vision (`VNGenerateForegroundInstanceMaskRequest`).
+- `JewelArt.draw` affiche la photo `jewel-<rareté>-<type>-<style>` si elle existe et si le bijou est dans le métal par défaut de sa rareté (or blanc pour le saphir), sinon le dessin habituel. `-JewelDrawn` force le dessin. `Canvas2D.drawImage` ajouté.
+
+**Reste à faire**
+- Les autres raretés (émeraude, rubis, diamant, or, argent, perles, fantaisie), les métaux secondaires (une photo par métal), les tailles de pierre (la photo du solitaire est toujours ovale), les variantes Aurore / Nuit / Givre (restent dessinées).
+- Kling 3.0 Omni (4 crédits) a mal suivi la consigne (cadres et or jaune gardés, collier manquant) : à essayer image par image ou avec une autre consigne.
+
+**Fragile**
+- Photos et dessins se côtoient dans la collection : le contraste se voit tant que tout n'est pas refait.
+
+---
+
 
 ## 2026-11-06 (essai huître 3D) · Jules · Claude Code · branche `jules/essai-huitre-3d`
 

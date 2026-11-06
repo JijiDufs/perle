@@ -144,6 +144,11 @@ final class Canvas2D {
         g.draw(label, at: CGPoint(x: x, y: y), anchor: .center)
     }
 
+    /// Une image, dans le repère courant (comme drawImage du navigateur).
+    func drawImage(_ image: Image, _ x: Double, _ y: Double, _ w: Double, _ h: Double) {
+        drawingContext().draw(image, in: CGRect(x: x, y: y, width: w, height: h))
+    }
+
     // MARK: - Interne
 
     /// Contexte de dessin : repère courant, mode de fusion et transparence.
