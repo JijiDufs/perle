@@ -1,4 +1,5 @@
 import Foundation
+import PearlCore
 
 /// L'écrin en 3D, porté de src/art/ecrin3d.ts : un écrin plat de joaillier en cuir, vu de trois quarts.
 /// Base et couvercle sont des prismes aux coins à peine arrondis ; le couvercle s'ouvre comme un livre, sur sa
@@ -383,6 +384,23 @@ enum EcrinArt {
     }
 
     /// Ombre de l'étui sur la table, sous son empreinte (à dessiner avant l'étui).
+    /// Le bijou sur le plateau (repère du plateau : 1 = largeur de l'écrin), à une taille crédible pour l'écrin :
+    /// les petits bijoux (puces, pendants, bagues, broches) prennent moins de place que les créoles, colliers et diadèmes.
+    static func drawJewel(_ c: Canvas2D, _ jewel: Jewel, _ look: JewelArt.Look) {
+        let size = 0.66 * trayScale(jewel)
+        JewelArt.draw(c, 0, (JewelArt.yOffset(jewel) - 0.5) * size, size / 440, look)
+    }
+
+    private static func trayScale(_ jewel: Jewel) -> Double {
+        switch jewel.type {
+        case "boucles": ["puces": 0.5, "pendants": 0.68][jewel.style] ?? 1
+        case "bague": 0.62
+        case "broche": 0.72
+        case "pendentif": 0.85
+        default: 1
+        }
+    }
+
     static func drawShadow(_ c: Canvas2D, cx: Double, cy: Double, width: Double, top: Bool = false) {
         let scale = width * (dist - D / 2) * 0.98
         let toCam = camera(top: top)

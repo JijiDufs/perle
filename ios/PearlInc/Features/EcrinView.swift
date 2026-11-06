@@ -27,9 +27,10 @@ struct EcrinView: View {
                             let variant = game.variantRevealed ? game.pendingVariant : nil
                             let look = JewelArt.Look(pending.jewel, variant: variant?.id, catalog: game.catalog)
                             Ecrin3DView(angle: game.ecrinAngle, leatherHex: EcrinArt.leathers[game.leather],
-                                        dim: 1 - smoothstep(4, 140, game.ecrinAngle),
+                                        // La scène 3D a déjà son ombre : le bijou ne reste dans la pénombre qu'à peine entrouvert.
+                                        dim: 1 - smoothstep(2, 45, game.ecrinAngle),
                                         jewelKey: "\(pending.jewel)|\(variant?.id ?? "")",
-                                        drawJewel: { c in JewelArt.draw(c, 0, (JewelArt.yOffset(pending.jewel) - 0.5) * 0.66, 0.66 / 440, look) },
+                                        drawJewel: { c in EcrinArt.drawJewel(c, pending.jewel, look) },
                                         origin: CGPoint(x: box.cx - side / 2, y: box.cy - side / 2), probe: probe)
                                 .frame(width: side, height: side)
                                 .position(x: box.cx, y: box.cy)
@@ -269,7 +270,7 @@ struct EcrinView: View {
             dim: 1 - smoothstep(4, 140, angle),
             sweep: rarity.tier >= 4 && game.ecrinPhase == .closed && !reduceMotion ? (t * 0.5).truncatingRemainder(dividingBy: 1.6) - 0.3 : nil,
             top: top,
-            drawJewel: { JewelArt.draw(c, 0, (JewelArt.yOffset(pending.jewel) - 0.5) * 0.66, 0.66 / 440, look) },
+            drawJewel: { EcrinArt.drawJewel(c, pending.jewel, look) },
             drawEffects: effects
         ) }
 

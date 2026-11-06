@@ -71,7 +71,7 @@ final class Ecrin3DProbe {
         let gold = Self.gold()
 
         // Base : cuir, filet d'or sur la tranche, plateau de velours en creux, fermoir à poussoir.
-        let base = ModelEntity(mesh: .generateBox(width: W, height: H, depth: D, cornerRadius: R * 0.5), materials: [])
+        let base = ModelEntity(mesh: .generateBox(width: W, height: H, depth: D, cornerRadius: R * 0.2), materials: [])
         base.position = [0, H / 2, 0]
         root.addChild(base)
         leatherEntities.append(base)
@@ -88,8 +88,14 @@ final class Ecrin3DProbe {
         root.addChild(jewel)
 
         // Couvercle : il tourne autour de la charnière (axe x, à l'arrière, au ras du dessus de la base).
-        lidPivot.position = [0, H + 0.002, -D / 2]
-        let lid = ModelEntity(mesh: .generateBox(width: W, height: T, depth: D, cornerRadius: R * 0.5), materials: [])
+        // Charnière au ras de l'arête arrière de la base, couverte d'un dos de cuir : les deux moitiés restent attachées.
+        lidPivot.position = [0, H, -D / 2]
+        let spine = ModelEntity(mesh: .generateCylinder(height: W - 0.03, radius: 0.014), materials: [])
+        spine.position = lidPivot.position
+        spine.orientation = simd_quatf(angle: .pi / 2, axis: [0, 0, 1])
+        root.addChild(spine)
+        leatherEntities.append(spine)
+        let lid = ModelEntity(mesh: .generateBox(width: W, height: T, depth: D, cornerRadius: R * 0.2), materials: [])
         lid.position = [0, T / 2, D / 2]
         lidPivot.addChild(lid)
         leatherEntities.append(lid)
@@ -146,7 +152,7 @@ final class Ecrin3DProbe {
         if shade != dimKey, let jewelTexture {
             dimKey = shade
             var material = UnlitMaterial()
-            let k = 1 - shade * 0.85
+            let k = 1 - shade * 0.75
             material.color = .init(tint: UIColor(white: k, alpha: 1), texture: .init(jewelTexture))
             material.blending = .transparent(opacity: 1.0)
             material.opacityThreshold = 0.02
@@ -224,8 +230,27 @@ final class Ecrin3DProbe {
         let renderer = ImageRenderer(content: Canvas { context, _ in draw(Canvas2D(context)) }.frame(width: w, height: h))
         renderer.scale = 1
         renderer.isOpaque = opaque
-        guard let image = renderer.cgImage else { return nil }
+        guard let image = renderer.cgImage.flatMap({ opaque ? $0 : straightAlpha($0) }) else { return nil }
         return try? TextureResource.generate(from: image, options: .init(semantic: .color))
+    }
+
+    /// RealityKit lit les couleurs comme non prémultipliées : sans cette conversion, les pixels mi-transparents
+    /// (métal fin, éclats des diamants) sont assombris deux fois, et les diamants et diadèmes paraissent sombres.
+    private static func straightAlpha(_ image: CGImage) -> CGImage? {
+        let w = image.width, h = image.height
+        var pixels = [UInt8](repeating: 0, count: w * h * 4)
+        let space = CGColorSpace(name: CGColorSpace.sRGB)!
+        guard let context = CGContext(data: &pixels, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4, space: space,
+                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        context.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
+        for i in stride(from: 0, to: pixels.count, by: 4) where pixels[i + 3] > 0 && pixels[i + 3] < 255 {
+            let a = Int(pixels[i + 3])
+            for k in 0..<3 { pixels[i + k] = UInt8(min(255, Int(pixels[i + k]) * 255 / a)) }
+        }
+        guard let provider = CGDataProvider(data: Data(pixels) as CFData) else { return nil }
+        return CGImage(width: w, height: h, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: w * 4, space: space,
+                       bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.last.rawValue), provider: provider,
+                       decode: nil, shouldInterpolate: true, intent: .defaultIntent)
     }
 
     private static func jewelTexture(_ drawJewel: @escaping (Canvas2D) -> Void) -> TextureResource? {
