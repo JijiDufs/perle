@@ -42,7 +42,7 @@ struct Oyster3DView: UIViewRepresentable {
 }
 
 /// La scène : la valve du bas posée à plat, le couvercle sur sa charnière, la perle, les lumières.
-/// La charnière est à z = −0,5 ; une valve mesure 1 de la charnière au bord côté joueur ; la vue SwiftUI fait 3 L × 4,4 L.
+/// La charnière est à z = −0,5 ; une valve mesure 1 de la charnière au bord côté joueur ; la vue SwiftUI fait 3 L × 5,6 L.
 @MainActor final class Oyster3DScene {
     static let cameraElevation: Float = 58
     /// La nacre du skin porté (l'image générée, blanchie : elle était trop rose, retour de Jules).
@@ -85,8 +85,10 @@ struct Oyster3DView: UIViewRepresentable {
 
         // Caméra de trois quarts, au-dessus et devant : la charnière en haut de l'écran, comme au pouce.
         let camera = PerspectiveCamera()
-        camera.camera.fieldOfViewInDegrees = 30
-        let target: SIMD3<Float> = [0, 0.05, -0.47]
+        // Champ vertical élargi avec la vue (30° pour 4,4 L) : même taille à l'écran, même perspective, plus de place derrière
+        // la charnière ; la visée remonte d'autant pour que la charnière reste à sa place.
+        camera.camera.fieldOfViewInDegrees = 37.6
+        let target: SIMD3<Float> = [0, 0.37, -0.98]
         let elevation: Float = Self.cameraElevation * .pi / 180, distance: Float = 8.6
         camera.look(at: target, from: target + [0, distance * sin(elevation), distance * cos(elevation)], relativeTo: nil)
         root.addChild(camera)
@@ -238,7 +240,9 @@ struct Oyster3DView: UIViewRepresentable {
                 material.blending = .transparent(opacity: 1.0)
                 material.opacityThreshold = 0.02
                 self.pearl.model = ModelComponent(mesh: .generatePlane(width: 4 * r, depth: 4 * r), materials: [material])
-                self.pearl.position = [0, -ValveShape.depth + r * 0.9, 0.06]
+                // Posée sur le voile (ou le manteau du bénitier, qui bombe au milieu d'un pli) : le bas du carré incliné ne doit pas passer dessous.
+                let floor = shape.map { -$0.bowl(0.56) + $0.ribRelief(0.56, .pi / 2) + 0.012 } ?? -ValveShape.depth
+                self.pearl.position = [0, floor + r * 1.2, 0.06]
                 self.pearl.orientation = simd_quatf(angle: (90 - Self.cameraElevation) * .pi / 180, axis: [1, 0, 0])
                 self.pearl.isEnabled = true
             } else {

@@ -38,8 +38,9 @@ struct FishingView: View {
                                          pearl: oyster.pearl?.glow == nil || oyster.pearlTaken ? nil : oyster.pearl, cracked: oyster.cracked,
                                          pearlRadius: oyster.pearlRadius(1), glowHex: oyster.glowColor, seed: oyster.shapeSeed,
                                          skin: game.player.equippedSkin)
-                                .frame(width: layout.L * 3, height: layout.L * 4.4)
-                                .position(x: layout.hx, y: layout.hy + layout.L * 0.06)
+                                // Plus haute que large : couché à 180°, le couvercle s'étend loin derrière la charnière (il était coupé net).
+                                .frame(width: layout.L * 3, height: layout.L * 5.6)
+                                .position(x: layout.hx, y: layout.hy - layout.L * 0.54)
                                 .allowsHitTesting(false)
                         }
                         Canvas { context, size in drawFront(&context, size: size, oyster: oyster, date: timeline.date) }
