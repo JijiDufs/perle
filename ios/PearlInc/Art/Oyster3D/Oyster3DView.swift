@@ -143,7 +143,7 @@ struct Oyster3DView: UIViewRepresentable {
     /// Le voile nacré translucide posé sur la nacre autour de la perle (le manteau de l'huître, en joli), et l'ombre de
     /// la perle dessinée dessus (`pearlRadius` en unités de valve ; nil : huître vide). Il suit le creux de la valve.
     private func placeVeil(_ s: ValveShape, pearlRadius: Double?) {
-        guard let texture = Self.veilTexture(s.phases, pearlRadius: pearlRadius, style: OysterStyle.forSkin(skin)) else { return }
+        guard let texture = Self.veilTexture(s, pearlRadius: pearlRadius, style: OysterStyle.forSkin(skin)) else { return }
         var material = UnlitMaterial()
         material.color = .init(texture: .init(texture))
         material.blending = .transparent(opacity: 1.0)
@@ -155,8 +155,8 @@ struct Oyster3DView: UIViewRepresentable {
 
     /// Le voile, dessiné dans le repère de la texture projetée de `ValveMesh` (u = 0,5 + x / 1,8 ; v = 0,46 − z / 1,3).
     /// `mantle` : le manteau du bénitier (bleu-vert tacheté, presque opaque, comme `ClamArt`) à la place du voile ivoire.
-    private static func veilTexture(_ ph: ShellArt.Phases, pearlRadius: Double?, style: OysterStyle) -> TextureResource? {
-        let mantle = style.mantle
+    private static func veilTexture(_ s: ValveShape, pearlRadius: Double?, style: OysterStyle) -> TextureResource? {
+        let ph = s.phases, mantle = style.mantle
         let w = 1024.0, k = w / Double(ValveMesh.uvSpan.x), h = Double(ValveMesh.uvSpan.y) * k
         let renderer = ImageRenderer(content: Canvas { c, _ in
             let cx = w / 2, cy = (0.06 + 0.54 * Double(ValveMesh.uvSpan.y)) * k
@@ -174,7 +174,20 @@ struct Oyster3DView: UIViewRepresentable {
                 path.closeSubpath()
                 return path
             }
-            let body = outline(1, 0)
+            // Le manteau du bénitier suit le contour de la valve, réduit depuis la charnière (comme `ClamArt`, L × 0,8) :
+            // une marge de porcelaine devant et sur les côtés, aucune le long de la charnière (bande blanche, retour de Jules).
+            func mantleOutline(_ scale: Double, _ lace: Double) -> Path {
+                var path = Path()
+                for i in 0...160 {
+                    let f = -Double.pi / 2 + Double(i) / 160 * .pi
+                    let r = Double(s.radius(Float(f))) * scale * (1 + 0.025 * sin(f * 18 + ph.2) + lace * sin(f * 40 + ph.1))
+                    let p = CGPoint(x: cx - Double(s.breadth) * r * sin(f) * k, y: (Double(ValveShape.hinge) + r * cos(f) + 0.54 * Double(ValveMesh.uvSpan.y)) * k)
+                    if i == 0 { path.move(to: p) } else { path.addLine(to: p) }
+                }
+                path.closeSubpath()
+                return path
+            }
+            let body = mantle ? mantleOutline(0.86, 0) : outline(1, 0)
             if mantle {
                 // Le manteau du bénitier : chair bleu-vert, bord frisé plus clair, « yeux » clairs cerclés de sombre.
                 let m = style.mantleColors
@@ -183,7 +196,9 @@ struct Oyster3DView: UIViewRepresentable {
                     .init(color: Color(hex: m[0]), location: 0), .init(color: Color(hex: m[1]), location: 0.45),
                     .init(color: Color(hex: m[2]), location: 0.78), .init(color: Color(hex: m[3]), location: 1)]),
                     center: CGPoint(x: cx, y: cy - ry * 0.1), startRadius: 0, endRadius: rx * 1.1))
-                // Rayures sombres qui rayonnent, puis le bord frisé plus clair.
+                // Rayures sombres qui rayonnent, puis le bord frisé plus clair ; le tout découpé par le manteau.
+                var c = c
+                c.clip(to: body)
                 for i in 0..<14 {
                     let a = Double(i) / 14 * 2 * .pi + ph.1
                     var stripe = Path()
@@ -192,7 +207,7 @@ struct Oyster3DView: UIViewRepresentable {
                                         control: CGPoint(x: cx + cos(a + 0.25) * rx * 0.6, y: cy + sin(a + 0.25) * ry * 0.6))
                     c.stroke(stripe, with: .color(rgba(20, 40, 110, 0.3)), lineWidth: k * 0.02)
                 }
-                c.stroke(outline(1.02, 0.03), with: .color(Color(hex: style.mantleRim).opacity(0.65)), lineWidth: 6)
+                c.stroke(mantleOutline(0.875, 0.02), with: .color(Color(hex: style.mantleRim).opacity(0.65)), lineWidth: 6)
                 var seed = (ph.0 * 1000).rounded(.down) + 7
                 func rand() -> Double { seed = (seed * 16807).truncatingRemainder(dividingBy: 2_147_483_647); return seed / 2_147_483_647 }
                 for _ in 0..<70 {
