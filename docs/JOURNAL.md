@@ -19,10 +19,14 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
   - **fantaisie** en laiton et en argenté (strass), **diadèmes** (rubis, diamant, légende ; générés sans modèle, `text_to_image`), étoile de mer à l'émeraude, bague du toc « qui verdit » ;
   - **tailles de pierre du diamant** : bague solitaire émeraude / princesse / ovale / cœur, collier solitaire rond / poire / cœur. `JewelArt` cherche d'abord `…-<taille>`, puis la photo sans taille. Méthode qui marche pour une mise en page nouvelle : composer une planche de référence avec des photos déjà découpées (PIL), puis demander à Kling de la retoucher ;
   - **variantes Aurore / Nuit / Givre** sans image : la photo du bijou de base, teintée par filtres (`variantFilters` : saturation, couleur, luminosité ; `Canvas2D.drawImage` prend des filtres). Vu en jeu : puces au diamant en Nuit, pendentif cœur en strass.
+- **Fin des bijoux** (6 planches Kling 3.0, 24 crédits) :
+  - **toutes les tailles de pierre** de la bague et du collier solitaires, dans le métal par défaut : diamant (8 tailles), saphir, émeraude, rubis, fantaisie (celles de leur rareté). Méthode : Kling suit mal « change la taille » case par case (3 sur 9) ; j'ai donc collé la bonne pierre d'une photo sur l'autre (PIL, `scratchpad/transplant.py`), fait nettoyer la planche par Kling, puis recoloré les diamants obtenus en saphir, émeraude et rubis (une seule consigne par planche : ça, Kling le suit) ;
+  - étoile de mer au rubis en or rose, bagues du toc « bonbon » et « fête foraine » ;
+  - fleur et étoile au saphir en or jaune : les broches à l'émeraude, vert décalé vers le bleu par code (0 crédit, Kling les avait laissées vertes) ; tailles de la fantaisie argentée : copies des photos du diamant en platine.
 
 **Reste à faire**
-- Restent dessinés : les tailles de pierre hors diamant (et bague rond / marquise / coussin / poire, collier princesse / ovale / marquise / émeraude / coussin au diamant), l'étoile de mer au rubis en or rose (sortie jaune), la fleur et l'étoile au saphir en or jaune (restées en or blanc), les bagues du toc « bonbon » et « fête foraine » (sorties en disques, sans anneau). Chacun ≈ 4 crédits par planche.
-- Pas vus en jeu : diadèmes, légende, photos par taille (même chemin de code que les autres).
+- Restent dessinés : bague cœur et colliers ovale / cœur de la fantaisie en laiton (Kling les a laissés argentés). Une taille dans un métal secondaire prend la photo du solitaire de ce métal (pierre ovale ou ronde).
+- Pas vus en jeu : diadèmes, légende, la plupart des tailles (vues : bague émeraude taille poire, bague bonbon du toc ; même chemin de code pour les autres). Bague marquise au diamant (et ses recolorations) : un vide autour de la pierre ; colliers ovale et coussin : la pierre touche à peine la chaîne.
 - Ensuite (ordre de Jules) : les perles en photo, puis les écrins en 3D, puis les retours sur l'huître (demi-cercle, plus sombre, nacre moins vive, texture différente à chaque huître, poisson voleur et skins dans la nouvelle DA).
 
 **Fragile**
