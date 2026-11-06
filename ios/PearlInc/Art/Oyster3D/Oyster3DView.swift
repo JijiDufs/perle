@@ -34,7 +34,7 @@ struct Oyster3DView: UIViewRepresentable {
 }
 
 /// La scène : la valve du bas posée à plat, le couvercle sur sa charnière, la perle, les lumières.
-/// Une valve mesure 1 de long (z de −0,5 à la charnière à +0,5 côté joueur) ; la vue SwiftUI fait 3 × L.
+/// Une valve mesure 1 de long (z de −0,5 à la charnière à +0,5 côté joueur) ; la vue SwiftUI fait 3 L × 4,4 L (l’huître prend toute la largeur).
 @MainActor final class Oyster3DScene {
     private static let shape = ValveShape()
     /// Six couches sur le couvercle, trois sur le bord de la valve du bas.
@@ -96,8 +96,8 @@ struct Oyster3DView: UIViewRepresentable {
         // Caméra de trois quarts, au-dessus et devant : la charnière en haut de l'écran, comme au pouce.
         let camera = PerspectiveCamera()
         camera.camera.fieldOfViewInDegrees = 30
-        let target: SIMD3<Float> = [0, 0, -0.2]
-        let elevation: Float = 58 * .pi / 180, distance: Float = 5.6
+        let target: SIMD3<Float> = [0, 0, -0.35]
+        let elevation: Float = 58 * .pi / 180, distance: Float = 7.1
         camera.look(at: target, from: target + [0, distance * sin(elevation), distance * cos(elevation)], relativeTo: nil)
         root.addChild(camera)
 
@@ -150,7 +150,7 @@ struct Oyster3DView: UIViewRepresentable {
 
 /// Forme commune aux deux valves : contour en goutte (plus étroit vers la charnière), volants du bord.
 struct ValveShape {
-    var halfWidth: Float = 0.4
+    var halfWidth: Float = 0.5
     var halfLength: Float = 0.5
     var frills: Float = 13
     var depth: Float = 0.13
