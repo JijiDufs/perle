@@ -57,6 +57,19 @@ enum PearlArt {
             Gradient(colors: [rgba(60, 40, 30, 0.45), rgba(60, 40, 30, 0)]),
             center: CGPoint(x: x + rad * 0.2, y: y + rad * 0.3), startRadius: rad * 0.2, endRadius: rad * 1.35))
 
+        if let image = photo(pearl) {
+            // Photo de la perle (essai assets) ; le reflet la teinte, marques et fêlure restent dessinées par-dessus.
+            let size = rad * 2.27, rect = CGRect(x: x - size / 2, y: y - size / 2, width: size, height: size)
+            c.draw(image, in: rect)
+            if let tint = pearl.overtoneColor {
+                var sheen = c
+                sheen.opacity = pearl.overtone == "arc-en-ciel" ? 0.4 : 0.22
+                sheen.addFilter(.colorMultiply(Color(hex: tint)))
+                sheen.draw(image, in: rect)
+            }
+            marksAndCrack(&c, x, y, rad, pearl, cracked: cracked)
+            return
+        }
         let shape = outline(x, y, rad, pearl)
         c.fill(shape, with: .radialGradient(
             Gradient(stops: [.init(color: .white, location: 0), .init(color: color, location: 0.24),
@@ -101,7 +114,24 @@ enum PearlArt {
         c.fill(rotatedEllipse(x - rad * 0.35, y - rad * 0.42, rad * 0.22, rad * 0.13, -0.6), with: .color(.white.opacity(0.85)))
         c.fill(rotatedEllipse(x + rad * 0.45, y + rad * 0.28, rad * 0.1, rad * 0.035, -0.55),
                with: .color(cursed ? rgba(255, 92, 143, 0.62) : .white.opacity(0.34)))
+        marksAndCrack(&c, x, y, rad, pearl, cracked: cracked)
+    }
 
+    /// Photo `pearl-<perle>-<forme>` (PearlPhotos) ; aucune pour la marque en cœur, qui change le contour. `-PearlDrawn` force le dessin.
+    nonisolated(unsafe) private static var photos: [String: Image?] = [:]  // lu et écrit seulement en dessinant (fil principal)
+    private static func photo(_ pearl: PearlLook) -> Image? {
+        guard pearl.mark != "coeur", !ProcessInfo.processInfo.arguments.contains("-PearlDrawn") else { return nil }
+        // Sans traits (encyclopédie) : la forme type de la perle (la maudite n'est jamais ronde).
+        let fallback = ["baroque": "baroque", "cursed": "presque-ronde"][pearl.id] ?? "ronde"
+        let name = "pearl-\(pearl.id)-\(pearl.shape ?? fallback)"
+        if photos[name] == nil {
+            photos[name] = Bundle.main.url(forResource: name, withExtension: "png")
+                .flatMap { UIImage(contentsOfFile: $0.path) }.map { Image(uiImage: $0) }
+        }
+        return photos[name] ?? nil
+    }
+
+    private static func marksAndCrack(_ c: inout GraphicsContext, _ x: Double, _ y: Double, _ rad: Double, _ pearl: PearlLook, cracked: Bool) {
         if pearl.mark == "lune" {
             // Lunaire : un croissant pâle sur la nacre.
             let mx = x + rad * 0.28, my = y + rad * 0.22, mr = rad * 0.26
