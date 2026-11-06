@@ -236,7 +236,7 @@ final class Ecrin3DProbe {
 
     /// RealityKit lit les couleurs comme non prémultipliées : sans cette conversion, les pixels mi-transparents
     /// (métal fin, éclats des diamants) sont assombris deux fois, et les diamants et diadèmes paraissent sombres.
-    private static func straightAlpha(_ image: CGImage) -> CGImage? {
+    static func straightAlpha(_ image: CGImage) -> CGImage? {
         let w = image.width, h = image.height
         var pixels = [UInt8](repeating: 0, count: w * h * 4)
         let space = CGColorSpace(name: CGColorSpace.sRGB)!

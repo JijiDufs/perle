@@ -11,8 +11,9 @@ import CoreImage.CIFilterBuiltins
 struct Oyster3DView: UIViewRepresentable {
     /// Ouverture du couvercle, en degrés (0 : fermée, 180 : à plat).
     var angle: Double
-    /// Couleur de la perle ; nil : rien dans la valve (huître vide, trouvaille, perle volée).
-    var pearlHex: String?
+    /// La perle, telle que la carte la montre (forme, reflet, marque) ; nil : rien dans la valve (huître vide, trouvaille, perle volée).
+    var pearl: PearlLook?
+    var cracked: Bool
     /// Rayon de la perle, pour une valve de longueur 1.
     var pearlRadius: Double
     /// Lumière qui filtre par l'entrebâillement ; nil : noire.
@@ -34,13 +35,14 @@ struct Oyster3DView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: ARView, context: Context) {
-        context.coordinator.update(angle: angle, pearlHex: pearlHex, pearlRadius: pearlRadius, glowHex: glowHex, seed: seed)
+        context.coordinator.update(angle: angle, pearl: pearl, cracked: cracked, pearlRadius: pearlRadius, glowHex: glowHex, seed: seed)
     }
 }
 
 /// La scène : la valve du bas posée à plat, le couvercle sur sa charnière, la perle, les lumières.
 /// La charnière est à z = −0,5 ; une valve mesure 1 de la charnière au bord côté joueur ; la vue SwiftUI fait 3 L × 4,4 L.
 @MainActor final class Oyster3DScene {
+    static let cameraElevation: Float = 58
     /// Nacre blanchie (l'image générée est trop rose, retour de Jules), les reflets restent par le vernis.
     private static let nacre = material(texture("oyster3d-nacre", saturation: 0.35, brightness: 0.08), roughness: 0.16, clearcoat: 1)
     private let root = AnchorEntity(world: .zero)
@@ -78,7 +80,7 @@ struct Oyster3DView: UIViewRepresentable {
         let camera = PerspectiveCamera()
         camera.camera.fieldOfViewInDegrees = 30
         let target: SIMD3<Float> = [0, 0.05, -0.47]
-        let elevation: Float = 58 * .pi / 180, distance: Float = 8.6
+        let elevation: Float = Self.cameraElevation * .pi / 180, distance: Float = 8.6
         camera.look(at: target, from: target + [0, distance * sin(elevation), distance * cos(elevation)], relativeTo: nil)
         root.addChild(camera)
 
@@ -116,7 +118,7 @@ struct Oyster3DView: UIViewRepresentable {
         }, materials: [Self.nacre]))
     }
 
-    func update(angle: Double, pearlHex: String?, pearlRadius: Double, glowHex: String?, seed: Int) {
+    func update(angle: Double, pearl: PearlLook?, cracked: Bool, pearlRadius: Double, glowHex: String?, seed: Int) {
         if seed != self.seed {
             self.seed = seed
             build(seed: seed)
@@ -124,22 +126,23 @@ struct Oyster3DView: UIViewRepresentable {
         let theta = Float(min(max(angle, 0), 180) * .pi / 180)
         lidPivot.orientation = simd_quatf(angle: -theta, axis: [1, 0, 0])
 
-        let key = "\(pearlHex ?? "-")/\(pearlRadius)"
+        let key = (pearl.map { "\($0.id)/\($0.shape ?? "")/\($0.overtone ?? "")/\($0.mark ?? "")/\($0.seed)/\(cracked)" } ?? "-") + "/\(pearlRadius)"
         if key != pearlKey {
             pearlKey = key
-            if let pearlHex {
+            if let pearl {
                 let r = Float(pearlRadius)
-                var material = PhysicallyBasedMaterial()
-                // Nacre grise teintée de la couleur de la perle : des reflets qui tournent, pas une bille unie.
-                material.baseColor = .init(tint: UIColor(Color(hex: pearlHex)), texture: Self.texture("oyster3d-pearl").map { .init($0) })
-                material.roughness = 0.2
-                material.clearcoat = 1.0
-                material.clearcoatRoughness = 0.03
-                pearl.model = ModelComponent(mesh: .generateSphere(radius: r), materials: [material])
-                pearl.position = [0, -ValveShape.depth + r * 0.9, 0.06]
-                pearl.isEnabled = true
+                // La perle de la carte (forme, reflet, marque, fêlure), dessinée par PearlArt et posée sur un carré
+                // tourné vers la caméra, comme le bijou dans l'écrin : on voit dans l'huître ce que la carte montrera.
+                var material = UnlitMaterial()
+                if let texture = Self.pearlTexture(pearl, cracked: cracked) { material.color = .init(texture: .init(texture)) }
+                material.blending = .transparent(opacity: 1.0)
+                material.opacityThreshold = 0.02
+                self.pearl.model = ModelComponent(mesh: .generatePlane(width: 4 * r, depth: 4 * r), materials: [material])
+                self.pearl.position = [0, -ValveShape.depth + r * 0.9, 0.06]
+                self.pearl.orientation = simd_quatf(angle: (90 - Self.cameraElevation) * .pi / 180, axis: [1, 0, 0])
+                self.pearl.isEnabled = true
             } else {
-                pearl.isEnabled = false
+                self.pearl.isEnabled = false
             }
         }
 
@@ -147,6 +150,17 @@ struct Oyster3DView: UIViewRepresentable {
         let open = Float(min(1, angle / 35) * max(0.35, 1 - max(0, angle - 70) / 110))
         glow.light.color = glowHex.map { UIColor(Color(hex: $0)) } ?? .black
         glow.light.intensity = glowHex == nil ? 0 : 3000 * open
+    }
+
+    /// La perle dessinée comme sur la carte (`PearlArt`), le carré faisant quatre rayons (ombre comprise).
+    private static func pearlTexture(_ pearl: PearlLook, cracked: Bool) -> TextureResource? {
+        let px = 384.0
+        let renderer = ImageRenderer(content: Canvas { context, _ in PearlArt.draw(&context, px / 2, px / 2, px / 4, pearl, cracked: cracked) }
+            .frame(width: px, height: px))
+        renderer.scale = 1
+        renderer.isOpaque = false
+        guard let image = renderer.cgImage.flatMap(Ecrin3DScene.straightAlpha) else { return nil }
+        return try? TextureResource.generate(from: image, options: .init(semantic: .color))
     }
 
     /// Image du dossier, le cas échéant désaturée et éclaircie.
