@@ -73,6 +73,7 @@ struct FishingView: View {
                             .padding(.horizontal, 24)
                     }
                     Spacer()
+                    if showsFoldHint { FoldHint(horizontal: game.foldY != nil).transition(.opacity) }
                     StatusPill(text: statusText, warning: game.tooFast)
                     ObjectiveLines(mission: objectiveMission, guaranteeIn: showsObjective ? game.player.guaranteeIn(tuning: game.tuning) : nil)
                         .padding(.horizontal, 24)
@@ -180,6 +181,7 @@ struct FishingView: View {
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(duration: 0.4, bounce: 0.1), value: showProgress)
         .animation(.easeInOut(duration: 0.3), value: coachText)
         .animation(.easeInOut(duration: 0.3), value: showsGhostHand)
+        .animation(.easeInOut(duration: 0.3), value: showsFoldHint)
         // Pendant le tutoriel, rien que l'huître : les onglets arrivent avec la première huître libre.
         .toolbar(game.inTutorial ? .hidden : .visible, for: .tabBar)
         .animation(.easeInOut(duration: 0.4), value: game.inTutorial)
@@ -209,6 +211,11 @@ struct FishingView: View {
               game.achievementCatchUpToShow == nil, game.ecrinCatchUpToShow == nil else { return nil }
         if stockTipExpired && game.step == game.catalog.tutorialPearls.count { return nil }
         return Coach.duringGesture(step: game.step, phase: game.phase, hinge: game.hasHinge, hingeArmed: game.hingeArmed, tuning: game.tuning)
+    }
+
+    /// iPhone Duo, charnière pas encore armée : le petit téléphone qui montre qu'il faut le refermer.
+    private var showsFoldHint: Bool {
+        game.hasHinge && !game.hingeArmed && game.stage == .playing && game.phase == .closed && game.angle == 0 && !game.isTideOut(at: Date())
     }
 
     private var showsGhostHand: Bool {
@@ -291,8 +298,9 @@ struct FishingView: View {
     /// Au pouce, l'huître est vue de dessus, charnière en haut. Sur l'iPhone Duo, elle est couchée comme
     /// sur pearl-inc.app : charnière au bord gauche de l'écran extérieur, puis sur le pli de l'écran intérieur.
     private var pose: OysterArt.Pose {
-        guard game.hasHinge || game.foldX != nil else { return .thumb }
+        guard game.hasHinge || game.foldX != nil || game.foldY != nil else { return .thumb }
         if let x = game.foldX { return .fold(x: x) }
+        if let y = game.foldY { return .foldAcross(y: y) }
         return .cover
     }
 }

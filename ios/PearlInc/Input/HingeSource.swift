@@ -7,11 +7,12 @@ import os
 /// (PearlCore/Hinge.swift). On passe par UIHingeInteraction, qui donne aussi l'état de départ
 /// (`onHingeChange` de SwiftUI ne prévient qu'aux changements).
 /// En Debug, l'argument de lancement `-SimulatedHinge` remplace la charnière par un curseur.
-/// Donne aussi la position du pli de l'écran intérieur (abscisse en points dans la fenêtre, nil sur
-/// l'écran extérieur ou sans charnière) : la charnière de l'huître s'y aligne, comme sur pearl-inc.app.
+/// Donne aussi la position du pli de l'écran intérieur (abscisse d'un pli vertical, ou ordonnée d'un pli
+/// horizontal quand on tient l'écran en paysage ; en points dans la fenêtre, nil sur l'écran extérieur ou sans
+/// charnière) : la charnière de l'huître s'y aligne, comme sur pearl-inc.app.
 struct HingeInput: ViewModifier {
     let onChange: (Double?) -> Void
-    let onFold: (Double?) -> Void
+    let onFold: (_ x: Double?, _ y: Double?) -> Void
 
     func body(content: Content) -> some View {
         if #available(iOS 27.1, *), !HingeInput.simulated {
@@ -40,7 +41,7 @@ struct HingeInput: ViewModifier {
 }
 
 extension View {
-    func hingeInput(_ onChange: @escaping (Double?) -> Void, fold onFold: @escaping (Double?) -> Void) -> some View {
+    func hingeInput(_ onChange: @escaping (Double?) -> Void, fold onFold: @escaping (_ x: Double?, _ y: Double?) -> Void) -> some View {
         modifier(HingeInput(onChange: onChange, onFold: onFold))
     }
 }
@@ -48,7 +49,7 @@ extension View {
 @available(iOS 27.1, *)
 private struct HingeObserver: UIViewRepresentable {
     let onChange: (Double?) -> Void
-    let onFold: (Double?) -> Void
+    let onFold: (_ x: Double?, _ y: Double?) -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(onChange: onChange) }
 
@@ -76,8 +77,8 @@ private struct HingeObserver: UIViewRepresentable {
 
     /// Lit le pli (zone réservée « division ») à chaque mise en page, donc à chaque changement d'écran.
     final class FoldView: UIView {
-        var onFold: ((Double?) -> Void)?
-        private var lastFold: Double??
+        var onFold: ((_ x: Double?, _ y: Double?) -> Void)?
+        private var lastFold: [Double?]?
 
         override func layoutSubviews() {
             super.layoutSubviews()
@@ -91,14 +92,16 @@ private struct HingeObserver: UIViewRepresentable {
 
         func reportFold() {
             guard let window else { return }
-            // Pli vertical seulement (téléphone ouvert comme un livre), même à plat (zone inactive).
-            let fold = reservedRegions(kind: .division, options: .includeInactive)
+            // Pli vertical (écran tenu en portrait, ouvert comme un livre) ou horizontal (tenu en paysage),
+            // même à plat (zone inactive).
+            let division = reservedRegions(kind: .division, options: .includeInactive)
                 .map { convert($0.frame, to: window) }
-                .first { $0.height > $0.width }
-                .map { Double($0.midX) }
-            guard lastFold != .some(fold) else { return }
-            lastFold = .some(fold)
-            onFold?(fold)
+                .first
+            let x = division.flatMap { $0.height > $0.width ? Double($0.midX) : nil }
+            let y = division.flatMap { $0.height > $0.width ? nil : Double($0.midY) }
+            guard lastFold != [x, y] else { return }
+            lastFold = [x, y]
+            onFold?(x, y)
         }
     }
 

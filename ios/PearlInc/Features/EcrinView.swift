@@ -32,6 +32,7 @@ struct EcrinView: View {
                 Spacer()
                 if game.shownEcrin != nil && game.ecrinStage == .playing {
                     if game.firstEcrin { glintGauge }
+                    if game.hasHinge && !game.hingeArmed && game.ecrinPhase == .closed { FoldHint(horizontal: game.foldY != nil) }
                     status
                 }
             }
@@ -174,13 +175,20 @@ struct EcrinView: View {
         // Sur l'iPhone Duo, l'écrin est vu de dessus comme l'huître. Écran intérieur : sa charnière sur le pli, le
         // plateau à droite, le couvercle ouvert à plat à gauche (c'est le téléphone qui le soulève) ; ouvrir le
         // téléphone éclaire l'intérieur. Écran extérieur : fermé, charnière à gauche. iPhone classique : trois quarts.
-        let top = game.hasHinge || game.foldX != nil
+        let onFold = game.foldX != nil || game.foldY != nil
+        let top = game.hasHinge || onFold
+        // Écran intérieur tenu en paysage (pli horizontal) : l'écrin se pose comme sur un pli vertical, dans un repère
+        // tourné d'un quart de tour (couvercle en haut, plateau en bas). `fw` : la longueur perpendiculaire au pli.
+        let across = game.foldX == nil ? game.foldY : nil
+        let fw = across == nil ? w : h
         let cx, cy, bw: Double
-        if let fold = game.foldX {
-            // Chaque moitié de l'écrin (plateau, couvercle) tient dans sa moitié d'écran.
-            bw = min(min(fold, w - fold) * 1.2, visible * 0.68)
+        if let fold = game.foldX ?? across {
+            // Chaque moitié de l'écrin (plateau, couvercle) tient dans sa moitié d'écran (en paysage, de la place
+            // reste sous le plateau pour le message).
+            let half = across == nil ? min(fold, fw - fold) : min(fold, (fw - fold) * 0.8)
+            bw = min(half * 1.2, (across == nil ? visible : w) * 0.68)
             cx = fold + bw * 0.35
-            cy = 100 + visible * 0.5
+            cy = across == nil ? 100 + visible * 0.5 : w / 2
         } else if top {
             bw = min(w * 0.9, visible * 0.68)
             cx = w / 2
@@ -190,7 +198,8 @@ struct EcrinView: View {
             cx = w / 2
             cy = 100 + visible * 0.62
         }
-        let salon = SalonArt(time: t, focus: .init(x: cx, y: cy, w: bw * 0.8, h: bw * 0.45))
+        let salon = across == nil ? SalonArt(time: t, focus: .init(x: cx, y: cy, w: bw * 0.8, h: bw * 0.45))
+            : SalonArt(time: t, focus: .init(x: w - cy, y: cx, w: bw * 0.45, h: bw * 0.8))
         salon.draw(c, w: w, h: h)
         guard let pending = game.shownEcrin, let rarity = game.shownRarity else {
             salon.drawOverlay(c, w: w, h: h)
@@ -205,10 +214,15 @@ struct EcrinView: View {
         let glow = variant?.glow ?? rarity.glow
         let sparkleTier = variant != nil ? max(rarity.tier, 5) : rarity.tier
         let look = JewelArt.Look(pending.jewel, variant: variant?.id, catalog: game.catalog)
+        if across != nil {
+            c.save()
+            c.translate(w, 0)
+            c.rotate(.pi / 2)
+        }
 
         EcrinArt.drawShadow(c, cx: cx, cy: cy, width: bw, top: top)
         let anchors = EcrinArt.draw(
-            c, cx: cx, cy: cy, width: bw, leather: EcrinArt.leathers[game.leather], angle: game.foldX == nil ? angle : 180,
+            c, cx: cx, cy: cy, width: bw, leather: EcrinArt.leathers[game.leather], angle: onFold ? 180 : angle,
             dim: 1 - smoothstep(4, 140, angle),
             sweep: rarity.tier >= 4 && game.ecrinPhase == .closed && !reduceMotion ? (t * 0.5).truncatingRemainder(dividingBy: 1.6) - 0.3 : nil,
             top: top,
@@ -222,7 +236,7 @@ struct EcrinView: View {
 
         // La lumière filtre par l'entrebâillement, au bord avant du couvercle.
         // (Pas sur l'écran intérieur du Duo : le couvercle y est déjà ouvert à plat.)
-        let leak = game.foldX == nil ? smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle)) : 0
+        let leak = !onFold ? smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle)) : 0
         if leak > 0.001 { drawGlow(c, anchors.lidEdge.0, anchors.lidEdge.1, bw * 0.5, rarity.glow ?? "#fff1d6", leak * 0.6) }
 
         // Gerbe d'étoiles de l'éclat parfait ; deux vagues, à la couleur de la variante, si elle apparaît.
@@ -240,6 +254,7 @@ struct EcrinView: View {
                 }
             }
         }
+        if across != nil { c.restore() }
         salon.drawOverlay(c, w: w, h: h)
     }
 }

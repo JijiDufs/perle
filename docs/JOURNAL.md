@@ -4,6 +4,23 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
 
+## 2026-11-06 (retours iPhone Duo) · Jules · Claude Code · branche `jules/duo-retours`
+
+Premier retour d'un joueur sur un vrai iPhone Duo : « on ne peut jouer que dans un sens », « les sons et effets donnent l'impression de casser le téléphone », « on peut se spoiler la perle », « on navigue téléphone ouvert et on ne pense pas à le fermer ». Décision ajoutée en `AGENTS.md` §6.
+
+**Fait**
+- **Spoiler** (`OysterArt`) : sur le pli de l'écran intérieur, aucun couvercle ne cache la perle ; elle apparaissait dès qu'on entrouvrait le téléphone (40 % d'opacité à 60°) avec son halo plein dès 25°. Elle n'apparaît plus qu'à la révélation ; avant, seulement une lueur faible de sa couleur (comme l'entrebâillement au pouce). Plus de tremblement des perles rares sur le Duo (l'écran du téléphone semblait trembler, et ça trahissait la rareté).
+- **Sons et vibrations à la charnière** (`GameModel.popFeedback`) : plus de crans de résistance (le téléphone a déjà sa propre résistance) ; le pop et la fêlure deviennent un « bloup » et deux notes douces (`APP_AUDIO.hingePop`, `hingeCrack` dans `src/tuning.ts`, exportés) avec une vibration « soft » au lieu du claquement rigide et de la triple alerte. Écrin compris. Au pouce, rien ne change.
+- **Refermer le téléphone** : la règle ne change pas (choix de Jules) ; un petit téléphone animé qui se referme (`FoldHint`) s'affiche au-dessus de « Referme le téléphone, puis ouvre-le », à la Pêche et aux Écrins, tant que la charnière n'est pas armée.
+- **Paysage sur l'écran intérieur** : `Info.plist` déclare portrait + paysage ; `Platform/Orientation.swift` (`OrientationDelegate`) ne permet le paysage que lorsqu'un pli est là (écran intérieur), portrait partout ailleurs (iPhone classique, écran extérieur). `HingeSource` lit aussi le pli horizontal (`foldY` dans `GameModel`). Huître : nouvelle pose `.foldAcross(y:)`, charnière sur le pli, couvercle à plat en haut, perle en bas. Écrin : la mise en page du pli vertical, tournée d'un quart de tour.
+
+**Pas vérifié**
+- Rien n'a été essayé sur un Duo ni au simulateur (choix de Jules : le simulateur du Duo sature le Mac). Seulement `npm test`, `npm run build`, `swift test` et la compilation de l'app.
+- Paysage : on suppose que le portrait de l'écran intérieur = pli vertical (ce que lisait déjà `HingeSource`). Les fenêtres (carte, fête de niveau, panneaux) prennent toute la largeur en paysage et passent sur le pli ; le message sous l'huître peut toucher le bas de la valve. À regarder avec des testeurs équipés.
+- Les deux nouveaux sons n'ont pas été écoutés.
+
+---
+
 ## 2026-10-28 (1.1, boutique) · Jules · Claude Code · branche `jules/app-1.1-testflight`
 
 Demande de Jules avant la soumission : le ⓘ des probabilités aussi pour les huîtres, et les coquilles en premier dans la boutique. Décision ajoutée en `AGENTS.md` §6.

@@ -45,6 +45,17 @@ struct OysterArt {
         /// Écran intérieur : charnière de l'huître sur le pli du téléphone (abscisse x) ; le couvercle,
         /// ouvert à plat, occupe la moitié gauche (c'est le téléphone qui le soulève), la perle la droite.
         case fold(x: Double)
+        /// Écran intérieur tenu en paysage : pli horizontal (ordonnée y) ; le couvercle, ouvert à plat, occupe
+        /// la moitié du haut, la perle celle du bas (comme au pouce, charnière en haut).
+        case foldAcross(y: Double)
+
+        /// Sur un pli de l'écran intérieur (vertical ou horizontal).
+        var isFold: Bool {
+            switch self {
+            case .fold, .foldAcross: true
+            case .thumb, .cover: false
+            }
+        }
     }
 
     /// Où se pose la coquille : charnière (hx, hy), longueur L et direction de la valve du bas.
@@ -88,6 +99,10 @@ struct OysterArt {
             let half = min(x, width - x)
             let L = min(half * 0.86, visible * 0.62) * clam
             return Layout(hx: x, hy: top + visible * 0.5, L: L, dir: 0)
+        case .foldAcross(let y):
+            // Chaque valve tient dans sa moitié ; en bas, de la place pour le message et l'objectif.
+            let L = min(y * 0.86, (height - y) * 0.7, width * 0.42) * clam
+            return Layout(hx: width / 2, hy: y, L: L)
         }
     }
 
@@ -107,8 +122,8 @@ struct OysterArt {
         let ph = ShellArt.phases(seed: shapeSeed)
         let down = layout.dir
 
-        // Tremblement des plus rares.
-        if trembles && angle == 0 && !revealed && t.truncatingRemainder(dividingBy: 2.4) < 0.45 {
+        // Tremblement des plus rares. Pas sur le Duo : c'est l'écran du téléphone qui semblait trembler.
+        if trembles && pose == .thumb && angle == 0 && !revealed && t.truncatingRemainder(dividingBy: 2.4) < 0.45 {
             layout.hx += sin(t * 90) * 3
             layout.hy += cos(t * 70) * 2
         }
@@ -138,11 +153,12 @@ struct OysterArt {
         radius *= pulse
         // L'intérieur reste dans l'ombre tant que la coquille est peu ouverte.
         let dim = revealed ? 0 : 1 - smoothstep(4, 140, angle)
-        let onFold = if case .fold = pose { true } else { false }
+        let onFold = pose.isFold
         // Sur le pli du Duo, la nacre reste toujours visible (jamais de fond noir, même téléphone ouvert
-        // sur une huître pas encore commencée) : seule la perle apparaît avec l'ouverture.
+        // sur une huître pas encore commencée). Aucun couvercle ne cache la perle : elle n'apparaît qu'à la
+        // révélation, sinon on la voyait en entrouvrant le téléphone (retour d'un testeur, 2026-11-06).
         var inside = c
-        if onFold { inside.opacity = 1 - dim }
+        if onFold { inside.opacity = revealed ? 1 : 0 }
         if pearlTaken {
             // Le poisson l'a prise.
         } else if let findId {
@@ -153,16 +169,17 @@ struct OysterArt {
         }
 
         // Sur le pli du Duo, le couvercle est ouvert à plat sur l'autre moitié : on voit son intérieur.
-        if onFold { drawFlatLid(&c, hx, hy, L, ph, t) }
+        if onFold { drawFlatLid(&c, hx, hy, down + Double.pi, L, ph, t) }
 
         if dim > 0.001 && !onFold { c.fill(interior, with: .color(rgba(0, 6, 8, dim * 0.94))) }
 
         // Halo de la perle, puis couvercle par-dessus.
         let strength = Self.glowStrength[tier] * flicker * (cracked && !isFind ? 0.35 : 1) * (pearlTaken ? 0.2 : 1)
-        PearlArt.glow(&c, pearlCenter.x, pearlCenter.y, radius * (4 + Double(tier) * 0.8), glowColor,
-                      (revealed ? 1 : smoothstep(1, 25, angle)) * strength, additive: false)
+        // Sur le pli, avant la révélation, seulement une lueur comme celle de l'entrebâillement au pouce.
+        let shown = revealed ? 1 : onFold ? 0.35 * smoothstep(0.5, 10, angle) * (1 - smoothstep(40, 95, angle)) : smoothstep(1, 25, angle)
+        PearlArt.glow(&c, pearlCenter.x, pearlCenter.y, radius * (4 + Double(tier) * 0.8), glowColor, shown * strength, additive: false)
 
-        if case .fold = pose { return }
+        if onFold { return }
 
         // Le couvercle se replie vers sa charnière : vers le haut au pouce, vers la gauche sur l'écran extérieur du Duo.
         let lift = cos(theta)
@@ -199,8 +216,7 @@ struct OysterArt {
     }
 
     /// Le couvercle ouvert à plat de l'autre côté du pli (prototype : valve gauche), nacre visible.
-    private func drawFlatLid(_ c: inout GraphicsContext, _ hx: Double, _ hy: Double, _ L: Double, _ ph: ShellArt.Phases, _ t: Double) {
-        let left = layoutDir + Double.pi
+    private func drawFlatLid(_ c: inout GraphicsContext, _ hx: Double, _ hy: Double, _ left: Double, _ L: Double, _ ph: ShellArt.Phases, _ t: Double) {
         switch look {
         case .oyster(let palette, let rim, _):
             ShellArt.drawExterior(&c, hx, hy, left, L * 0.98, ph, palette)
@@ -211,8 +227,6 @@ struct OysterArt {
             ClamArt.drawInterior(&c, hx, hy, left, L * 0.98, ph, t, mantle: false)
         }
     }
-
-    private var layoutDir: Double { if case .thumb = pose { Double.pi / 2 } else { 0 } }
 
     /// Par-dessus le décor (après la vignette du lagon) : le halo qui envahit l'écran pendant la révélation,
     /// et l'éclair blanc des ★.

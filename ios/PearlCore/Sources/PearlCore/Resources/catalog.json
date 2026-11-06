@@ -119,6 +119,28 @@
       "frequency": 600,
       "gain": 0.12
     },
+    "hingePop": {
+      "notes": [
+        392,
+        523
+      ],
+      "wave": "sine",
+      "gapMs": 45,
+      "attackMs": 8,
+      "decayMs": 260,
+      "gain": 0.1
+    },
+    "hingeCrack": {
+      "notes": [
+        466,
+        349
+      ],
+      "wave": "triangle",
+      "gapMs": 70,
+      "attackMs": 6,
+      "decayMs": 220,
+      "gain": 0.08
+    },
     "pulseStartFrequency": 150,
     "pulseEndFrequency": 75,
     "pulseDurationMs": 180,

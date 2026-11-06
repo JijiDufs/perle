@@ -2,6 +2,7 @@ import SwiftUI
 
 @main
 struct PearlIncApp: App {
+    @UIApplicationDelegateAdaptor(OrientationDelegate.self) private var orientation
     @State private var game = GameModel()
     @StateObject private var auth = AuthViewModel()
 
@@ -65,7 +66,12 @@ struct RootView: View {
         }
         #endif
         // iPhone Duo : ouvrir le téléphone ouvre l'huître (ou l'écrin), le refermer passe au suivant.
-        .hingeInput({ game.hingeChanged(degrees: $0) }, fold: { if !HingeInput.simulatedFold { game.foldChanged(x: $0) } })
+        .hingeInput({ game.hingeChanged(degrees: $0) }, fold: { x, y in
+            guard !HingeInput.simulatedFold else { return }
+            game.foldChanged(x: x, y: y)
+            // L'écran intérieur se tient dans les deux sens ; l'écran extérieur et l'iPhone classique restent en portrait.
+            OrientationDelegate.allowLandscape(x != nil || y != nil)
+        })
         .fullScreenCover(isPresented: Binding(get: { game.ads.isShowing }, set: { if !$0 && game.ads.isShowing { game.ads.finish(rewarded: false) } })) {
             SimulatedAdView(ads: game.ads)
         }

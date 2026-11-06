@@ -125,8 +125,10 @@ final class GameModel {
     private(set) var hasHinge = false
     /// La charnière peut ouvrir l'huître (téléphone refermé depuis son arrivée).
     private(set) var hingeArmed = false
-    /// iPhone Duo, écran intérieur : abscisse du pli (points, dans la fenêtre) ; nil sur l'écran extérieur.
+    /// iPhone Duo, écran intérieur tenu en portrait : abscisse du pli (points, dans la fenêtre) ; nil sinon.
     private(set) var foldX: Double?
+    /// iPhone Duo, écran intérieur tenu en paysage : ordonnée du pli horizontal ; nil sinon.
+    private(set) var foldY: Double?
     @ObservationIgnored private let haptics = Haptics()
     /// Musique d'ambiance et effets sonores (aux mêmes moments que l'haptique).
     @ObservationIgnored let audio = Audio(settings: Catalog.shared.audio)
@@ -353,8 +355,9 @@ final class GameModel {
     }
 
     /// Le pli de l'écran intérieur a bougé (on est passé d'un écran à l'autre).
-    func foldChanged(x: Double?) {
+    func foldChanged(x: Double?, y: Double? = nil) {
         foldX = x
+        foldY = y
     }
 
     /// VoiceOver : ouverture lente et régulière, sans fêlure.
@@ -729,7 +732,8 @@ final class GameModel {
     private func handleEcrin(_ sample: OpeningSample, distance: Double) {
         guard let glint, ecrinStage == .playing else { return }
         let events = glint.push(sample)
-        if glint.phase == .resisting, distance - ecrinLastTick >= tuning.resistanceTickDistance {
+        // Sur la charnière, pas de crans : le téléphone a déjà sa propre résistance (retour d'un testeur du Duo).
+        if !ecrinHingeDriving, glint.phase == .resisting, distance - ecrinLastTick >= tuning.resistanceTickDistance {
             ecrinLastTick = distance
             haptics.tick()
             audio.tick(step: Int(distance / tuning.resistanceTickDistance))
@@ -752,8 +756,7 @@ final class GameModel {
         for event in events {
             switch event {
             case .pop:
-                haptics.pop()
-                audio.pop()
+                popFeedback(hinge: ecrinHingeDriving)
                 if !ecrinHingeDriving { ecrinThumb.lockAfterPop(tuning: tuning) }
                 startGlintTicker()
             case .perfect:
@@ -854,7 +857,8 @@ final class GameModel {
         // Même seuil d'alerte que la webapp (features/oyster/oysterScreen.ts).
         tooFast = inFragileZone && engine.velocity > tuning.maxSafeVelocity * 0.6
 
-        if engine.phase == .resisting, distance - lastTickDistance >= tuning.resistanceTickDistance {
+        // Sur la charnière, pas de crans : le téléphone a déjà sa propre résistance (retour d'un testeur du Duo).
+        if !hingeDriving, engine.phase == .resisting, distance - lastTickDistance >= tuning.resistanceTickDistance {
             lastTickDistance = distance
             haptics.tick()
             audio.tick(step: Int(distance / tuning.resistanceTickDistance))
@@ -862,17 +866,28 @@ final class GameModel {
         for event in events {
             switch event {
             case .pop:
-                haptics.pop()
-                audio.pop()
+                popFeedback(hinge: hingeDriving)
                 if !hingeDriving { thumb.lockAfterPop(tuning: tuning) }
             case .crack:
                 cracked = true
-                haptics.crack()
+                if hingeDriving { haptics.softCrack() } else { haptics.crack() }
                 // Comme la webapp : une huître vide n'a rien à fêler.
-                if pearl.glow != nil { audio.crack() }
+                if pearl.glow != nil { if hingeDriving { audio.hingeCrack() } else { audio.crack() } }
             case .reveal(let lustre, let wasCracked):
                 startReveal(lustre: lustre, cracked: wasCracked)
             }
+        }
+    }
+
+    /// La coquille (ou l'écrin) cède. Sur la charnière du Duo, un « bloup » doux : un claquement sec donnait
+    /// l'impression de casser le téléphone (retour d'un testeur).
+    private func popFeedback(hinge: Bool) {
+        if hinge {
+            haptics.softPop()
+            audio.hingePop()
+        } else {
+            haptics.pop()
+            audio.pop()
         }
     }
 

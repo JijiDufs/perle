@@ -34,6 +34,8 @@ public struct AudioTuning: Codable, Sendable, Equatable {
     public var pop: NoiseSound
     public var crack: NoiseSound
     public var lid: NoiseSound
+    public var hingePop: ToneSound
+    public var hingeCrack: ToneSound
 
     public var pulseStartFrequency: Double
     public var pulseEndFrequency: Double

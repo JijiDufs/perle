@@ -348,6 +348,10 @@ export interface AppAudio {
   crack: NoiseSound;
   /** Le couvercle s'ouvre en grand (début du suspense). */
   lid: NoiseSound;
+  /** iPhone Duo, la charnière ouvre : la coquille cède en « bloup » doux et la perle se fêle en deux notes, au lieu des
+   *  bruits secs qui donnaient l'impression de casser le téléphone (retour d'un testeur, 2026-11-06). */
+  hingePop: ToneSound;
+  hingeCrack: ToneSound;
   /** Battement du suspense : un son grave qui descend, plus fort pour les perles rares. */
   pulseStartFrequency: number;
   pulseEndFrequency: number;
@@ -414,6 +418,8 @@ export const APP_AUDIO: Readonly<AppAudio> = {
   pop: { durationMs: 90, frequency: 1400, gain: 0.6 },
   crack: { durationMs: 150, frequency: 3200, gain: 0.5 },
   lid: { durationMs: 400, frequency: 600, gain: 0.12 },
+  hingePop: { notes: [392, 523], wave: 'sine', gapMs: 45, attackMs: 8, decayMs: 260, gain: 0.1 },
+  hingeCrack: { notes: [466, 349], wave: 'triangle', gapMs: 70, attackMs: 6, decayMs: 220, gain: 0.08 },
   pulseStartFrequency: 150,
   pulseEndFrequency: 75,
   pulseDurationMs: 180,

@@ -153,6 +153,12 @@ final class Audio {
     /// La perle se fêle.
     func crack() { play(noise(settings.crack, frequency: settings.crack.frequency)) }
 
+    /// Sur la charnière du Duo : la coquille cède en « bloup » doux, pas en claquement.
+    func hingePop() { play(cached("hingePop") { SoundSynth.tones(settings.hingePop, notes: settings.hingePop.notes, sampleRate: settings.sampleRate) }) }
+
+    /// Sur la charnière du Duo : la perle se fêle, deux notes qui descendent au lieu du craquement.
+    func hingeCrack() { play(cached("hingeCrack") { SoundSynth.tones(settings.hingeCrack, notes: settings.hingeCrack.notes, sampleRate: settings.sampleRate) }) }
+
     /// Le couvercle s'ouvre en grand : début du suspense.
     func lid() { play(noise(settings.lid, frequency: settings.lid.frequency)) }
 
