@@ -213,8 +213,15 @@ struct Oyster3DView: UIViewRepresentable {
     /// La perle dessinée comme sur la carte (`PearlArt`), le carré faisant quatre rayons (ombre comprise).
     private static func pearlTexture(_ pearl: PearlLook, cracked: Bool) -> TextureResource? {
         let px = 384.0
-        let renderer = ImageRenderer(content: Canvas { context, _ in PearlArt.draw(&context, px / 2, px / 2, px / 4, pearl, cracked: cracked, shadow: false) }
-            .frame(width: px, height: px))
+        let renderer = ImageRenderer(content: Canvas { context, _ in
+            PearlArt.draw(&context, px / 2, px / 2, px / 4, pearl, cracked: cracked, shadow: false)
+            // Éclaircie d'un cinquième dans la valve seulement (la carte reste telle quelle) : les photos sont sombres
+            // en leur milieu et la nacre autour est très claire (retour de Jules).
+            var light = context
+            light.blendMode = .plusLighter
+            light.opacity = 0.2
+            PearlArt.draw(&light, px / 2, px / 2, px / 4, pearl, cracked: cracked, shadow: false)
+        }.frame(width: px, height: px))
         renderer.scale = 1
         renderer.isOpaque = false
         guard let image = renderer.cgImage.flatMap(Ecrin3DScene.straightAlpha) else { return nil }
