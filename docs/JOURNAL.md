@@ -8,7 +8,7 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 **Essai, pas une décision** : des photos générées à la place du dessin par code vont contre le §6 (« tout en code », « pas d'assets graphiques »). À montrer à Mathys avant toute fusion.
 
 **Fait**
-- **15 bijoux au saphir en photo** (`ios/PearlInc/Art/JewelPhotos/jewel-saphir-<type>-<style>.png`, 512 px, fond transparent) : planche de référence n° 11 de Jules refaite dans Kling (modèle Nano Banana Pro, 35 crédits : trop cher, Kling 3.0 Omni à 4 crédits pour la suite), découpée en grille et détourée avec Vision (`VNGenerateForegroundInstanceMaskRequest`).
+- **15 bijoux au saphir en photo** (`ios/PearlInc/Art/JewelPhotos/jewel-saphir-<type>-<style>.png`, 512 px, fond transparent) : planche de référence n° 11 de Jules refaite dans Kling (modèle Nano Banana Pro, 35 crédits : trop cher, Kling 3.0 Omni à 4 crédits pour la suite), découpée en grille et détourée par la luminosité (fond noir pur → transparent ; Vision perdait les brins de chaîne trop fins).
 - `JewelArt.draw` affiche la photo `jewel-<rareté>-<type>-<style>` si elle existe et si le bijou est dans le métal par défaut de sa rareté (or blanc pour le saphir), sinon le dessin habituel. `-JewelDrawn` force le dessin. `Canvas2D.drawImage` ajouté.
 
 **Reste à faire**
