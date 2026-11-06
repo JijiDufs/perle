@@ -36,7 +36,7 @@ struct FishingView: View {
                             let layout = OysterArt.layout(size: proxy.size, look: oyster.look, pose: oyster.pose)
                             Oyster3DView(angle: oyster.angle,
                                          pearlHex: oyster.pearl?.glow == nil || oyster.pearlTaken ? nil : oyster.pearl?.color,
-                                         pearlRadius: oyster.pearlRadius(1), glowHex: oyster.glowColor)
+                                         pearlRadius: oyster.pearlRadius(1), glowHex: oyster.glowColor, seed: oyster.shapeSeed)
                                 .frame(width: layout.L * 3, height: layout.L * 4.4)
                                 .position(x: layout.hx, y: layout.hy + layout.L * 0.06)
                                 .allowsHitTesting(false)
