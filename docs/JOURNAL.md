@@ -10,7 +10,8 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 **Fait**
 - **L'huître en vrai volume au pouce** (`Art/Oyster3D/Oyster3DView.swift`, RealityKit, `ARView` sans AR sur fond transparent) : deux valves construites par code (contour en goutte, 13 volants, creux de la nacre, dôme à gradins du couvercle), le couvercle tourne sur sa charnière avec le même angle que le dessin 2D (aucune règle dans la vue). Lumière principale avec ombre, lumière d'appoint, lueur de la couleur de la perle dans l'entrebâillement. Perle : sphère en nacre grise teintée de sa couleur.
-- **Textures tirées des images générées** (Higgsfield, `gpt_image_2_6` à partir de la référence de Jules : une valve du bas et un couvercle isolés), recadrées en `oyster3d-nacre.jpg`, `oyster3d-shell.jpg`, `oyster3d-pearl.jpg` (≈ 210 Ko en tout).
+- **Nacre** : texture tirée d'une image générée (Higgsfield, `gpt_image_2_6` à partir de la référence de Jules), `oyster3d-nacre.jpg` ; la perle prend la même nacre en gris (`oyster3d-pearl.jpg`).
+- **Coquille sculptée, sans image** (retour de Jules sur la 1re version : « on dirait du papier peint », les volants étaient peints sur une forme lisse). Le couvercle est fait de 6 lamelles empilées autour d'un sommet près de la charnière, chacune avec son bord ondulé et roulé en relief (`Lamellae`) ; le bord de la valve du bas en a 3. La couleur est calculée (`ShellTexture`) : pied sombre sous la couche du dessus, brun strié, bord clair, une couche sur deux plus grise.
 - `FishingView` : lagon dessous, coquille 3D, puis reflets du lagon, halo de la révélation et poisson voleur devant. Le dessin 2D reste pour le Duo, l'écran extérieur et le bénitier ; `-Oyster2D` au lancement le remet partout.
 - Les modèles 3D de Higgsfield n'ont pas servi : SAM 3D a échoué 4 fois (crédits rendus), `image_to_3d` coûte 20 à 30 crédits par valve.
 

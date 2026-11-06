@@ -37,6 +37,9 @@ struct Oyster3DView: UIViewRepresentable {
 /// Une valve mesure 1 de long (z de −0,5 à la charnière à +0,5 côté joueur) ; la vue SwiftUI fait 3 × L.
 @MainActor final class Oyster3DScene {
     private static let shape = ValveShape()
+    /// Six couches sur le couvercle, trois sur le bord de la valve du bas.
+    private static let lidLayers = Lamellae(edges: [0.93, 0.8, 0.67, 0.54, 0.41, 0.28], step: 0.022, riser: 0.03)
+    private static let skirtLayers = Lamellae(edges: [0.97, 0.935, 0.9], step: 0.01, riser: 0.012, wave: 0.02)
     private let root = AnchorEntity(world: .zero)
     private let lidPivot = Entity()
     private let pearl = ModelEntity()
@@ -45,26 +48,31 @@ struct Oyster3DView: UIViewRepresentable {
 
     func install(in view: ARView) {
         let s = Self.shape
-        let nacre = Self.material(texture: "oyster3d-nacre", roughness: 0.16, clearcoat: 1)
-        let shell = Self.material(texture: "oyster3d-shell", roughness: 0.42, clearcoat: 0.5)
+        let nacre = Self.material(Self.texture("oyster3d-nacre"), roughness: 0.16, clearcoat: 1)
+        let shell = Self.material(ShellTexture.make(layers: Self.lidLayers.edges.count + 1), roughness: 0.62, clearcoat: 0.25)
 
-        // Valve du bas : nacre creusée, et l'extérieur brun qui déborde en volants tout autour.
+        // Valve du bas : nacre creusée, et l'extérieur brun qui déborde tout autour en trois lamelles.
         root.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1, up: true) { rho, phi in
-            -s.depth * (1 - rho * rho) + s.rimWave(rho, phi)
+            (-s.depth * (1 - rho * rho) + s.rimWave(rho, phi), nil)
         }, materials: [nacre]))
-        root.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.1, up: true) { rho, phi in
-            -s.depth * 1.08 * (1 - rho * rho) - 0.012 + s.rimWave(rho, phi) * 1.4
+        let skirt = Self.skirtLayers
+        root.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.1, up: true, rings: 90) { rho, phi in
+            let layers = skirt.sample(rho, phi)
+            return (-s.depth * 1.08 * (1 - rho * rho) - 0.02 + layers.height + s.rimWave(rho, phi) * 1.2, layers.uv)
         }, materials: [shell]))
 
-        // Couvercle : dôme à gradins dehors, nacre dessous ; il tourne autour de la charnière (axe x).
+        // Couvercle : lamelles empilées autour d'un sommet près de la charnière (comme une vraie huître),
+        // nacre dessous ; il tourne autour de la charnière (axe x).
         lidPivot.position = [0, 0.004, -s.halfLength]
         let lid = Entity()
         lid.position = [0, 0, s.halfLength]
-        lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.1, up: true) { rho, phi in
-            s.dome * pow(1 - rho * rho, 0.7) + 0.012 * sin(rho * 7 * .pi) * rho + s.rimWave(rho, phi) * 1.4
+        let layers = Self.lidLayers
+        lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.1, up: true, rings: 150, apexZ: -0.6) { rho, phi in
+            let sample = layers.sample(rho, phi)
+            return (0.05 * pow(1 - rho * rho, 0.6) + sample.height + s.rimWave(rho, phi) * 1.2, sample.uv)
         }, materials: [shell]))
         lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.02, up: false) { rho, phi in
-            s.dome * 0.7 * pow(1 - rho * rho, 0.7) - 0.006 + s.rimWave(rho, phi)
+            (0.05 * pow(1 - rho * rho, 0.7) - 0.008 + s.rimWave(rho, phi), nil)
         }, materials: [nacre]))
         lidPivot.addChild(lid)
         root.addChild(lidPivot)
@@ -129,9 +137,9 @@ struct Oyster3DView: UIViewRepresentable {
         Bundle.main.url(forResource: name, withExtension: "jpg").flatMap { try? TextureResource.load(contentsOf: $0) }
     }
 
-    private static func material(texture name: String, roughness: Float, clearcoat: Float) -> PhysicallyBasedMaterial {
+    private static func material(_ texture: TextureResource?, roughness: Float, clearcoat: Float) -> PhysicallyBasedMaterial {
         var material = PhysicallyBasedMaterial()
-        if let texture = texture(name) { material.baseColor = .init(texture: .init(texture)) }
+        if let texture { material.baseColor = .init(texture: .init(texture)) }
         material.roughness = .init(floatLiteral: roughness)
         material.clearcoat = .init(floatLiteral: clearcoat)
         material.clearcoatRoughness = 0.1
@@ -151,23 +159,27 @@ struct ValveShape {
     /// Le bord ondule aussi en hauteur.
     func rimWave(_ rho: Float, _ phi: Float) -> Float { 0.02 * sin(frills * phi + 0.7) * pow(rho, 6) }
 
-    /// Point du contour (x, z) pour rho 0…1 (centre → bord) et phi (π/2 : côté joueur, −π/2 : charnière).
-    func footprint(_ rho: Float, _ phi: Float, scale: Float) -> SIMD2<Float> {
+    /// Point (x, z) pour rho 0…1 (du sommet au bord) et phi (π/2 : côté joueur, −π/2 : charnière).
+    /// Le sommet est au centre, ou décalé vers la charnière (apexZ < 0) pour les lamelles du couvercle.
+    func footprint(_ rho: Float, _ phi: Float, scale: Float, apexZ: Float = 0) -> SIMD2<Float> {
         let back = max(0, -sin(phi))
-        let frill = 1 + 0.05 * sin(frills * phi + 0.7) * pow(rho, 3)
-        let r = rho * frill * scale
-        return [halfWidth * (1 - 0.35 * back) * r * cos(phi), halfLength * r * sin(phi)]
+        let frill = 1 + 0.05 * sin(frills * phi + 0.7)
+        let edge = SIMD2<Float>(halfWidth * (1 - 0.35 * back) * frill * scale * cos(phi), halfLength * frill * scale * sin(phi))
+        let apex = SIMD2<Float>(0, apexZ * halfLength)
+        return apex + (edge - apex) * rho
     }
 }
 
 /// Une valve en grille polaire (anneaux × rayons), normales calculées, texture projetée de dessus.
 enum ValveMesh {
-    static let rings = 30, spokes = 132
+    static let spokes = 180
 
-    static func make(_ s: ValveShape, scale: Float, up: Bool, height: (Float, Float) -> Float) -> MeshResource {
+    /// `surface` donne la hauteur et, pour la coquille, ses coordonnées de texture (nil : projetée de dessus).
+    static func make(_ s: ValveShape, scale: Float, up: Bool, rings: Int = 30, apexZ: Float = 0,
+                     surface: (Float, Float) -> (Float, SIMD2<Float>?)) -> MeshResource {
         func point(_ rho: Float, _ phi: Float) -> SIMD3<Float> {
-            let p = s.footprint(rho, phi, scale: scale)
-            return [p.x, height(rho, phi), p.y]
+            let p = s.footprint(rho, phi, scale: scale, apexZ: apexZ)
+            return [p.x, surface(rho, phi).0, p.y]
         }
         var positions: [SIMD3<Float>] = [], normals: [SIMD3<Float>] = [], uvs: [SIMD2<Float>] = []
         let e: Float = 0.002
@@ -181,7 +193,7 @@ enum ValveMesh {
                 positions.append(p)
                 normals.append(n.x.isNaN ? (up ? [0, 1, 0] : [0, -1, 0]) : n)
                 // L'image a la charnière en haut (v = 1) et le bord côté joueur en bas.
-                uvs.append([0.5 + p.x / (2.2 * s.halfWidth * scale), 0.5 - p.z / (2.2 * s.halfLength * scale)])
+                uvs.append(surface(rho, phi).1 ?? [0.5 + p.x / (2.2 * s.halfWidth * scale), 0.5 - p.z / (2.2 * s.halfLength * scale)])
             }
         }
         var indices: [UInt32] = []
@@ -198,5 +210,78 @@ enum ValveMesh {
         descriptor.textureCoordinates = MeshBuffers.TextureCoordinates(uvs)
         descriptor.primitives = .triangles(indices)
         return try! MeshResource.generate(from: [descriptor])
+    }
+}
+
+/// Les lamelles d'une coquille d'huître : des couches empilées, chacune avec son bord ondulé en relief.
+/// C'est la forme qui fait les reliefs (la lumière les suit), la texture ne fait que les colorer.
+struct Lamellae {
+    /// Où chaque couche s'arrête (rho), du bord vers le sommet.
+    var edges: [Float]
+    /// Hauteur d'une marche.
+    var step: Float
+    /// Largeur de la tombée du bord.
+    var riser: Float
+    /// Ondulation du bord de chaque couche.
+    var wave: Float = 0.045
+
+    private func edge(_ k: Int, _ phi: Float) -> Float {
+        // Moins de volants sur les petites couches du sommet ; fréquences entières (pas de couture à phi = 0).
+        edges[k] * (1 + wave * sin(Float(max(4, 12 - k * 2 + k / 2)) * phi + Float(k) * 2.1))
+    }
+
+    /// Hauteur ajoutée, et coordonnées de texture : u avance de couche en couche, du sommet vers le bord
+    /// (continu d'une couche à l'autre : la couleur change net au bord, pas en dents de peigne).
+    func sample(_ rho: Float, _ phi: Float) -> (height: Float, uv: SIMD2<Float>) {
+        var height: Float = 0, layer = 0
+        for k in edges.indices {
+            let b = edge(k, phi)
+            // Chaque couche monte d'une marche ; son bord roule un peu avant de tomber, et ondule en hauteur.
+            let lip = exp(-pow((rho - (b - riser * 1.4)) / (riser * 0.8), 2)) * (0.45 + 0.3 * sin((14 + Float(k)) * phi + Float(k)))
+            height += step * (1 - smooth(b - riser, b, rho) + lip)
+            if rho < b { layer = k + 1 }
+        }
+        let outer = layer == 0 ? 1 : edge(layer - 1, phi)
+        let inner = layer < edges.count ? edge(layer, phi) : 0
+        let u = min(1, max(0, (rho - inner) / max(0.001, outer - inner)))
+        return (height, [(Float(edges.count - layer) + u) / Float(edges.count + 1), 0.5])
+    }
+
+    private func smooth(_ a: Float, _ b: Float, _ x: Float) -> Float {
+        let t = min(1, max(0, (x - a) / (b - a)))
+        return t * t * (3 - 2 * t)
+    }
+}
+
+/// La couleur des lamelles, calculée (pas d'image) : pied sombre sous la couche du dessus, brun strié,
+/// bord clair ; une couche sur deux un peu plus grise, comme sur une vraie huître.
+enum ShellTexture {
+    static func make(layers: Int) -> TextureResource? {
+        let segment = 64, width = layers * segment, height = 4
+        var pixels = [UInt8](repeating: 255, count: width * height * 4)
+        func mix(_ a: SIMD3<Float>, _ b: SIMD3<Float>, _ t: Float) -> SIMD3<Float> { a + (b - a) * min(1, max(0, t)) }
+        let deep = SIMD3<Float>(0.13, 0.09, 0.08), mid = SIMD3<Float>(0.33, 0.25, 0.21)
+        let warm = SIMD3<Float>(0.47, 0.37, 0.3), lip = SIMD3<Float>(0.76, 0.7, 0.62), grey = SIMD3<Float>(0.4, 0.38, 0.41)
+        for y in 0..<height {
+            for x in 0..<width {
+                // Une couche par segment ; u : 0 au pied (sous la couche du dessus), 1 au bord.
+                let layer = x / segment
+                let u = (Float(x % segment) + 0.5) / Float(segment)
+                var c = u < 0.18 ? mix(deep, mid, u / 0.18) : u < 0.86 ? mix(mid, warm, (u - 0.18) / 0.68) : mix(warm, lip, (u - 0.86) / 0.14)
+                c *= 1 + 0.05 * sin(u * 25 + Float(layer) * 1.3) // stries de croissance
+                if layer % 2 == 1 { c = mix(c, grey * (0.6 + u * 0.6), 0.35) }
+                let noise = Float((x * 73 + y * 151) % 17) / 17 * 0.05 - 0.025
+                let i = (y * width + x) * 4
+                pixels[i] = UInt8(min(255, max(0, (c.x + noise) * 255)))
+                pixels[i + 1] = UInt8(min(255, max(0, (c.y + noise) * 255)))
+                pixels[i + 2] = UInt8(min(255, max(0, (c.z + noise) * 255)))
+            }
+        }
+        guard let provider = CGDataProvider(data: Data(pixels) as CFData),
+              let image = CGImage(width: width, height: height, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: width * 4,
+                                  space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue),
+                                  provider: provider, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
+        else { return nil }
+        return try? TextureResource.generate(from: image, options: .init(semantic: .color))
     }
 }
