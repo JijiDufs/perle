@@ -36,7 +36,8 @@ struct FishingView: View {
                             let layout = OysterArt.layout(size: proxy.size, look: oyster.look, pose: oyster.pose)
                             Oyster3DView(angle: oyster.angle,
                                          pearl: oyster.pearl?.glow == nil || oyster.pearlTaken ? nil : oyster.pearl, cracked: oyster.cracked,
-                                         pearlRadius: oyster.pearlRadius(1), glowHex: oyster.glowColor, seed: oyster.shapeSeed)
+                                         pearlRadius: oyster.pearlRadius(1), glowHex: oyster.glowColor, seed: oyster.shapeSeed,
+                                         skin: game.player.equippedSkin)
                                 .frame(width: layout.L * 3, height: layout.L * 4.4)
                                 .position(x: layout.hx, y: layout.hy + layout.L * 0.06)
                                 .allowsHitTesting(false)
@@ -263,11 +264,8 @@ struct FishingView: View {
         showsObjective ? game.player.missions?.nearest : nil
     }
 
-    /// Essai 3D : au pouce seulement, avec la coquille d'huître (pas le bénitier).
-    private func shows3D(_ oyster: OysterArt) -> Bool {
-        guard Oyster3DView.isEnabled, oyster.pose == .thumb, case .oyster = oyster.look else { return false }
-        return true
-    }
+    /// Essai 3D : au pouce seulement (huître et bénitier).
+    private func shows3D(_ oyster: OysterArt) -> Bool { Oyster3DView.isEnabled && oyster.pose == .thumb }
 
     /// Ce qui passe devant la coquille : reflets du lagon, halo de la révélation, poisson voleur.
     private func drawFront(_ context: inout GraphicsContext, size: CGSize, oyster: OysterArt, date: Date) {

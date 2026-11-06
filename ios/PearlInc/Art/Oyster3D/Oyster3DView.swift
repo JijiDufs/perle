@@ -20,6 +20,8 @@ struct Oyster3DView: UIViewRepresentable {
     var glowHex: String?
     /// Graine de la forme (numéro de série de l'huître), la même que le dessin 2D.
     var seed: Int
+    /// Le skin porté (`APP_SKINS`) : couleurs, vernis, nacre, et la forme du bénitier.
+    var skin: String
 
     static var isEnabled: Bool { !ProcessInfo.processInfo.arguments.contains("-Oyster2D") }
 
@@ -35,7 +37,7 @@ struct Oyster3DView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: ARView, context: Context) {
-        context.coordinator.update(angle: angle, pearl: pearl, cracked: cracked, pearlRadius: pearlRadius, glowHex: glowHex, seed: seed)
+        context.coordinator.update(angle: angle, pearl: pearl, cracked: cracked, pearlRadius: pearlRadius, glowHex: glowHex, seed: seed, skin: skin)
     }
 }
 
@@ -43,8 +45,8 @@ struct Oyster3DView: UIViewRepresentable {
 /// La charnière est à z = −0,5 ; une valve mesure 1 de la charnière au bord côté joueur ; la vue SwiftUI fait 3 L × 4,4 L.
 @MainActor final class Oyster3DScene {
     static let cameraElevation: Float = 58
-    /// Nacre blanchie (l'image générée est trop rose, retour de Jules), les reflets restent par le vernis.
-    private static let nacre = material(texture("oyster3d-nacre", saturation: 0.35, brightness: 0.08), roughness: 0.16, clearcoat: 1)
+    /// La nacre du skin porté (l'image générée, blanchie : elle était trop rose, retour de Jules).
+    private var nacre = PhysicallyBasedMaterial()
     private let root = AnchorEntity(world: .zero)
     private let lidPivot = Entity()
     private let lid = Entity()
@@ -56,6 +58,7 @@ struct Oyster3DView: UIViewRepresentable {
     private var glow = PointLight()
     private var pearlKey = ""
     private var seed = Int.min
+    private var skin = ""
 
     func install(in view: ARView) {
         lidPivot.position = [0, 0.004, ValveShape.hinge]
@@ -93,54 +96,66 @@ struct Oyster3DView: UIViewRepresentable {
 
     /// Les deux valves, tirées de la graine : contour, volants, couleurs. Reconstruites à chaque huître.
     private func build(seed: Int) {
-        let style = OysterStyle.current
-        let s = ValveShape(phases: ShellArt.phases(seed: seed), frills: style.frills)
+        let style = OysterStyle.forSkin(skin)
+        let ph = ShellArt.phases(seed: seed)
+        // Bénitier : 4 ou 5 grands plis arrondis, éventail large (moins qu'en 2D, il débordait de l'écran), valve bombée.
+        let s = ValveShape(phases: ph, frills: style.frills, ribs: style.clam ? (ph.2 > 3.15 ? 5 : 4) : 0,
+                           spread: style.clam ? 1.3 : 1.42, domeHeight: style.clam ? 0.12 : 0.05)
         shape = s
-        let shell = Self.material(ShellTexture.make(layers: style.edges.count + 1, seed: seed, style: style), roughness: style.roughness, clearcoat: style.clearcoat)
+        nacre = Self.material(Self.texture("oyster3d-nacre", saturation: style.nacreSaturation, brightness: style.nacreBrightness),
+                              roughness: style.nacreRoughness, clearcoat: 1, tint: style.nacreTint)
+        let shell = Self.material(ShellTexture.make(layers: style.edges.count + 1, seed: seed, style: style),
+                                  roughness: style.roughness, clearcoat: style.clearcoat, metallic: style.metallic)
         // Les couches du couvercle, trois sur le bord de la valve du bas.
-        let lidLayers = Lamellae(edges: style.edges, step: 0.022, riser: 0.03, wave: style.wave, waveFrequency: style.waveFrequency, phase: Float(s.phases.2))
+        let lidLayers = Lamellae(edges: style.edges, step: style.lamellaStep, riser: style.lamellaRiser, wave: style.wave, waveFrequency: style.waveFrequency, phase: Float(s.phases.2))
         let skirtLayers = Lamellae(edges: [0.97, 0.935, 0.9], step: 0.01, riser: 0.012, wave: 0.02, waveFrequency: style.waveFrequency, phase: Float(s.phases.1))
         bottom.children.removeAll()
         lid.children.removeAll()
 
         // Valve du bas : nacre creusée, et l'extérieur brun qui déborde tout autour en trois lamelles.
         bottom.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1, up: true) { rho, phi in
-            (-s.bowl(rho) + s.rimWave(rho, phi), nil)
-        }, materials: [Self.nacre]))
+            (-s.bowl(rho) + s.rimWave(rho, phi) + s.ribRelief(rho, phi), nil)
+        }, materials: [nacre]))
         bottom.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.06, up: true, rings: 90) { rho, phi in
             let layers = skirtLayers.sample(rho, phi)
             // 0,05 sous la nacre : ses trois couches (0,03) ne doivent pas la percer là où le creux est nul (charnière).
-            return (-s.bowl(rho) * 1.08 - 0.05 + layers.height + s.rimWave(rho, phi) * 1.2, layers.uv)
+            return (-s.bowl(rho) * 1.08 - 0.05 + layers.height + s.rimWave(rho, phi) * 1.2 + s.ribRelief(rho, phi), layers.uv)
         }, materials: [shell]))
 
         // Couvercle : lamelles empilées depuis la charnière (les bandes concentriques du 2D), nacre dessous.
         lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.06, up: true, rings: 150) { rho, phi in
             let sample = lidLayers.sample(rho, phi)
-            return (s.dome(rho) + sample.height + s.rimWave(rho, phi) * 1.2, sample.uv)
+            // Bénitier : les écailles des couches se dressent sur les crêtes des plis, s'effacent dans les creux.
+            let scute: Float = s.ribs > 0 ? 0.4 + 1.2 * max(0, s.ribPhase(phi)) : 1
+            return (s.dome(rho) + sample.height * scute + s.rimWave(rho, phi) * 1.2 + s.ribRelief(rho, phi), sample.uv)
         }, materials: [shell]))
+        // Dessous du couvercle ; le bénitier a la coquille épaisse (sa tranche de porcelaine se voit au bord).
+        let thickness: Float = style.clam ? 0.035 : 0.008
         lid.addChild(ModelEntity(mesh: ValveMesh.make(s, scale: 1.02, up: false) { rho, phi in
-            (s.dome(rho) - 0.008 + s.rimWave(rho, phi), nil)
-        }, materials: [Self.nacre]))
+            (s.dome(rho) - thickness + s.rimWave(rho, phi) + s.ribRelief(rho, phi), nil)
+        }, materials: [nacre]))
     }
 
     /// Le voile nacré translucide posé sur la nacre autour de la perle (le manteau de l'huître, en joli), et l'ombre de
     /// la perle dessinée dessus (`pearlRadius` en unités de valve ; nil : huître vide). Il suit le creux de la valve.
     private func placeVeil(_ s: ValveShape, pearlRadius: Double?) {
-        guard let texture = Self.veilTexture(s.phases, pearlRadius: pearlRadius) else { return }
+        guard let texture = Self.veilTexture(s.phases, pearlRadius: pearlRadius, mantle: OysterStyle.forSkin(skin).mantle) else { return }
         var material = UnlitMaterial()
         material.color = .init(texture: .init(texture))
         material.blending = .transparent(opacity: 1.0)
         material.opacityThreshold = 0.02
         veil.model = ModelComponent(mesh: ValveMesh.make(s, scale: 1, up: true) { rho, phi in
-            (-s.bowl(rho) + s.rimWave(rho, phi) + 0.004, nil)
+            (-s.bowl(rho) + s.rimWave(rho, phi) + s.ribRelief(rho, phi) + 0.004, nil)
         }, materials: [material])
     }
 
-    /// Le voile, dessiné dans le repère de la texture projetée de `ValveMesh` (u = 0,5 + x / 1,5 ; v = 0,46 − z / 1,3).
-    private static func veilTexture(_ ph: ShellArt.Phases, pearlRadius: Double?) -> TextureResource? {
-        let w = 512.0, k = w / 1.5, h = 1.3 * k
+    /// Le voile, dessiné dans le repère de la texture projetée de `ValveMesh` (u = 0,5 + x / 1,8 ; v = 0,46 − z / 1,3).
+    /// `mantle` : le manteau du bénitier (bleu-vert tacheté, presque opaque, comme `ClamArt`) à la place du voile ivoire.
+    private static func veilTexture(_ ph: ShellArt.Phases, pearlRadius: Double?, mantle: Bool) -> TextureResource? {
+        let w = 1024.0, k = w / Double(ValveMesh.uvSpan.x), h = Double(ValveMesh.uvSpan.y) * k
         let renderer = ImageRenderer(content: Canvas { c, _ in
-            let cx = w / 2, cy = (0.06 + 0.54 * 1.3) * k, rx = 0.36 * k, ry = 0.4 * k
+            let cx = w / 2, cy = (0.06 + 0.54 * Double(ValveMesh.uvSpan.y)) * k
+            let rx = (mantle ? 0.64 : 0.36) * k, ry = (mantle ? 0.56 : 0.4) * k
             func outline(_ scale: Double, _ lace: Double) -> Path {
                 var path = Path()
                 for i in 0...180 {
@@ -152,14 +167,40 @@ struct Oyster3DView: UIViewRepresentable {
                 path.closeSubpath()
                 return path
             }
-            // Translucide : ivoire au centre, rosé au bord, la nacre reste visible dessous ; une dentelle plus claire autour.
             let body = outline(1, 0)
-            c.fill(body, with: .radialGradient(Gradient(stops: [
-                .init(color: rgba(255, 250, 240, 0.55), location: 0), .init(color: rgba(246, 228, 216, 0.5), location: 0.7),
-                .init(color: rgba(232, 200, 194, 0.38), location: 1)]),
-                center: CGPoint(x: cx - rx * 0.1, y: cy - ry * 0.15), startRadius: 0, endRadius: rx * 1.05))
-            c.stroke(body, with: .color(rgba(255, 255, 255, 0.5)), lineWidth: 3)
-            c.stroke(outline(1.06, 0.02), with: .color(rgba(255, 250, 245, 0.35)), lineWidth: 2)
+            if mantle {
+                // Le manteau du bénitier : chair bleu-vert, bord frisé plus clair, « yeux » clairs cerclés de sombre.
+                c.fill(body, with: .radialGradient(Gradient(stops: [
+                    .init(color: Color(hex: "#39d6c2").opacity(0.92), location: 0), .init(color: Color(hex: "#1c8fb0").opacity(0.9), location: 0.45),
+                    .init(color: Color(hex: "#2a4da0").opacity(0.88), location: 0.78), .init(color: Color(hex: "#3a2366").opacity(0.85), location: 1)]),
+                    center: CGPoint(x: cx, y: cy - ry * 0.1), startRadius: 0, endRadius: rx * 1.1))
+                // Rayures sombres qui rayonnent, puis le bord frisé plus clair.
+                for i in 0..<14 {
+                    let a = Double(i) / 14 * 2 * .pi + ph.1
+                    var stripe = Path()
+                    stripe.move(to: CGPoint(x: cx + cos(a) * rx * 0.2, y: cy + sin(a) * ry * 0.2))
+                    stripe.addQuadCurve(to: CGPoint(x: cx + cos(a) * rx * 0.95, y: cy + sin(a) * ry * 0.95),
+                                        control: CGPoint(x: cx + cos(a + 0.25) * rx * 0.6, y: cy + sin(a + 0.25) * ry * 0.6))
+                    c.stroke(stripe, with: .color(rgba(20, 40, 110, 0.3)), lineWidth: k * 0.02)
+                }
+                c.stroke(outline(1.02, 0.03), with: .color(rgba(140, 240, 225, 0.6)), lineWidth: 6)
+                var seed = (ph.0 * 1000).rounded(.down) + 7
+                func rand() -> Double { seed = (seed * 16807).truncatingRemainder(dividingBy: 2_147_483_647); return seed / 2_147_483_647 }
+                for _ in 0..<70 {
+                    let a = rand() * 2 * .pi, d = 0.3 + 0.65 * sqrt(rand())
+                    let p = CGPoint(x: cx + cos(a) * rx * d, y: cy + sin(a) * ry * d), r = k * (0.008 + rand() * 0.012)
+                    c.fill(Path(ellipseIn: CGRect(x: p.x - r * 1.6, y: p.y - r * 1.6, width: r * 3.2, height: r * 3.2)), with: .color(rgba(10, 30, 70, 0.35)))
+                    c.fill(Path(ellipseIn: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2)), with: .color(rgba(200, 255, 245, 0.75)))
+                }
+            } else {
+                // Translucide : ivoire au centre, rosé au bord, la nacre reste visible dessous ; une dentelle plus claire autour.
+                c.fill(body, with: .radialGradient(Gradient(stops: [
+                    .init(color: rgba(255, 250, 240, 0.55), location: 0), .init(color: rgba(246, 228, 216, 0.5), location: 0.7),
+                    .init(color: rgba(232, 200, 194, 0.38), location: 1)]),
+                    center: CGPoint(x: cx - rx * 0.1, y: cy - ry * 0.15), startRadius: 0, endRadius: rx * 1.05))
+                c.stroke(body, with: .color(rgba(255, 255, 255, 0.5)), lineWidth: 6)
+                c.stroke(outline(1.06, 0.02), with: .color(rgba(255, 250, 245, 0.35)), lineWidth: 4)
+            }
             if let pearlRadius {
                 // L'ombre de la perle, à plat sur la nacre (la perle elle-même est dessinée sans, pour qu'elles ne se chevauchent pas).
                 let r = pearlRadius * k
@@ -174,9 +215,10 @@ struct Oyster3DView: UIViewRepresentable {
         return try? TextureResource.generate(from: image, options: .init(semantic: .color))
     }
 
-    func update(angle: Double, pearl: PearlLook?, cracked: Bool, pearlRadius: Double, glowHex: String?, seed: Int) {
-        if seed != self.seed {
+    func update(angle: Double, pearl: PearlLook?, cracked: Bool, pearlRadius: Double, glowHex: String?, seed: Int, skin: String) {
+        if seed != self.seed || skin != self.skin {
             self.seed = seed
+            self.skin = skin
             build(seed: seed)
             pearlKey = ""  // la perle et le voile suivent la nouvelle valve
         }
@@ -241,10 +283,13 @@ struct Oyster3DView: UIViewRepresentable {
         return try? TextureResource.generate(from: image, options: .init(semantic: .color))
     }
 
-    private static func material(_ texture: TextureResource?, roughness: Float, clearcoat: Float) -> PhysicallyBasedMaterial {
+    private static func material(_ texture: TextureResource?, roughness: Float, clearcoat: Float, metallic: Float = 0,
+                                 tint: SIMD3<Float> = [1, 1, 1]) -> PhysicallyBasedMaterial {
         var material = PhysicallyBasedMaterial()
-        if let texture { material.baseColor = .init(texture: .init(texture)) }
+        let color = UIColor(red: CGFloat(tint.x), green: CGFloat(tint.y), blue: CGFloat(tint.z), alpha: 1)
+        material.baseColor = .init(tint: color, texture: texture.map { .init($0) })
         material.roughness = .init(floatLiteral: roughness)
+        material.metallic = .init(floatLiteral: metallic)
         material.clearcoat = .init(floatLiteral: clearcoat)
         material.clearcoatRoughness = 0.1
         material.faceCulling = .none
@@ -252,23 +297,55 @@ struct Oyster3DView: UIViewRepresentable {
     }
 }
 
-/// Rendu de la coquille, choisi par Jules parmi quatre essais (2026-11-06) : brun foncé mat, bandes aux
-/// écarts du dessin 2D, volants serrés. Le second est gardé pour un futur skin (`OysterStyle 2` dans les
-/// réglages de l'app, en attendant qu'il soit branché sur un skin).
+/// Le rendu de la coquille selon le skin : couleurs des lamelles, vernis, nacre, et la forme du bénitier.
+/// L'huître du lagon est le rendu choisi par Jules parmi quatre essais (2026-11-06).
 struct OysterStyle {
     var deep: SIMD3<Float>, mid: SIMD3<Float>, warm: SIMD3<Float>, lip: SIMD3<Float>, grey: SIMD3<Float>
     var roughness: Float, clearcoat: Float
     var edges: [Float], wave: Float, waveFrequency: Int, frills: Float
+    var metallic: Float = 0
+    /// Hauteur d'une couche et largeur de sa tombée.
+    var lamellaStep: Float = 0.022
+    var lamellaRiser: Float = 0.03
+    /// La nacre : teinte, désaturation et éclaircissement de l'image, rugosité.
+    var nacreTint: SIMD3<Float> = [1, 1, 1]
+    var nacreSaturation: Float = 0.35
+    var nacreBrightness: Float = 0.08
+    var nacreRoughness: Float = 0.16
+    /// Bénitier : éventail large à gros plis, et son manteau bleu-vert à la place du voile.
+    var clam = false
+    var mantle = false
 
-    static let all: [OysterStyle] = [
-        // Sombre : sept couches, la petite du sommet comprise (Jules trouvait le haut trop grand avec six).
-        OysterStyle(deep: [0.08, 0.05, 0.04], mid: [0.2, 0.14, 0.11], warm: [0.32, 0.24, 0.18], lip: [0.55, 0.47, 0.38], grey: [0.26, 0.24, 0.26],
-                    roughness: 0.72, clearcoat: 0.1, edges: [0.915, 0.83, 0.745, 0.66, 0.575, 0.49, 0.32], wave: 0.045, waveFrequency: 24, frills: 26),
-        // Rousse vernie : brun roux mouillé, vagues larges et douces. Pour un skin.
-        OysterStyle(deep: [0.14, 0.07, 0.05], mid: [0.36, 0.2, 0.14], warm: [0.55, 0.34, 0.22], lip: [0.8, 0.66, 0.52], grey: [0.38, 0.33, 0.33],
-                    roughness: 0.45, clearcoat: 0.6, edges: [0.93, 0.8, 0.67, 0.54, 0.41, 0.28], wave: 0.03, waveFrequency: 10, frills: 12),
-    ]
-    static var current: OysterStyle { all[max(0, min(all.count - 1, UserDefaults.standard.integer(forKey: "OysterStyle") - 1))] }
+    /// Huître du lagon : brun foncé mat, bandes aux écarts du dessin 2D, volants serrés, sept couches.
+    static let lagoon = OysterStyle(deep: [0.08, 0.05, 0.04], mid: [0.2, 0.14, 0.11], warm: [0.32, 0.24, 0.18], lip: [0.55, 0.47, 0.38], grey: [0.26, 0.24, 0.26],
+                                    roughness: 0.72, clearcoat: 0.1, edges: [0.915, 0.83, 0.745, 0.66, 0.575, 0.49, 0.32], wave: 0.045, waveFrequency: 24, frills: 26)
+    /// Rousse vernie : brun roux mouillé, vagues larges et douces. Gardée par Jules pour un futur skin, pas encore au catalogue
+    /// (`defaults write app.pearlinc.PearlInc OysterSkin rousse` pour la voir).
+    static let rousse = OysterStyle(deep: [0.14, 0.07, 0.05], mid: [0.36, 0.2, 0.14], warm: [0.55, 0.34, 0.22], lip: [0.8, 0.66, 0.52], grey: [0.38, 0.33, 0.33],
+                                    roughness: 0.45, clearcoat: 0.6, edges: [0.93, 0.8, 0.67, 0.54, 0.41, 0.28], wave: 0.03, waveFrequency: 10, frills: 12)
+    /// Huître d'or : or martelé, nacre champagne (la palette 2D `ShellPalette.gold`).
+    static let gold = OysterStyle(deep: [0.3, 0.19, 0.04], mid: [0.6, 0.42, 0.12], warm: [0.82, 0.62, 0.22], lip: [1, 0.9, 0.6], grey: [0.72, 0.56, 0.22],
+                                  roughness: 0.4, clearcoat: 0.7, edges: lagoon.edges, wave: 0.045, waveFrequency: 24, frills: 26, metallic: 0.35,
+                                  nacreTint: [1, 0.93, 0.76], nacreSaturation: 0.5, nacreBrightness: 0.1)
+    /// Première marée : sable mouillé et écume, nacre bleutée (`ShellPalette.firstTide`).
+    static let firstTide = OysterStyle(deep: [0.3, 0.26, 0.19], mid: [0.55, 0.48, 0.36], warm: [0.74, 0.67, 0.54], lip: [0.95, 0.93, 0.86], grey: [0.62, 0.63, 0.65],
+                                       roughness: 0.7, clearcoat: 0.2, edges: lagoon.edges, wave: 0.045, waveFrequency: 24, frills: 26, nacreTint: [0.92, 0.97, 1])
+    /// Bénitier : porcelaine crème à gros plis, manteau bleu-vert tacheté (comme `ClamArt`).
+    /// Craie et porcelaine, couches grises verdâtres une sur deux ; six rangs d'écailles concentriques, droits (les plis font le relief).
+    static let clam = OysterStyle(deep: [0.48, 0.44, 0.37], mid: [0.74, 0.7, 0.62], warm: [0.9, 0.87, 0.8], lip: [0.98, 0.97, 0.93], grey: [0.6, 0.62, 0.55],
+                                  roughness: 0.82, clearcoat: 0.05, edges: [0.92, 0.8, 0.68, 0.56, 0.44, 0.32], wave: 0, waveFrequency: 10, frills: 14,
+                                  lamellaStep: 0.014, lamellaRiser: 0.02,
+                                  nacreSaturation: 0.08, nacreBrightness: 0.15, nacreRoughness: 0.3, clam: true, mantle: true)
+
+    static func forSkin(_ id: String) -> OysterStyle {
+        switch UserDefaults.standard.string(forKey: "OysterSkin") ?? id {  // réglage de test : voir un skin sans le posséder
+        case "or": gold
+        case "premiere-maree": firstTide
+        case "benitier": clam
+        case "rousse": rousse
+        default: lagoon
+        }
+    }
 }
 
 /// Forme commune aux deux valves, celle du dessin 2D (`ShellArt.outline`) : un éventail en demi-cercle
@@ -279,20 +356,45 @@ struct ValveShape {
     static let depth: Float = 0.13
     var phases: ShellArt.Phases
     var frills: Float
+    /// Bénitier (`ClamArt`) : nombre de plis (0 : huître), élargissement latéral, demi-ouverture de l'éventail.
+    var ribs = 0
+    var breadth: Float = 1.0
+    var spread: Float = 1.42
+    /// Bombé du couvercle (le bénitier est plus profond).
+    var domeHeight: Float = 0.05
 
     /// Rayon du contour dans la direction f (0 : vers le joueur, ±π : derrière la charnière), longueur 1.
+    /// Rien derrière la charnière (sinon, couvercle levé, ce dos passerait sous la valve du bas) : la
+    /// valve se referme sur la charnière en quelques degrés, comme le trait droit du 2D.
     func radius(_ f: Float) -> Float {
         let a = abs(f)
-        // Rien derrière la charnière (sinon, couvercle levé, ce dos passerait sous la valve du bas) : la
-        // valve se referme sur la charnière en quelques degrés, comme le trait droit du 2D.
+        if ribs > 0 {
+            // Bénitier : éventail plus ouvert, festonné par les plis (ClamArt.outline).
+            let edge = pow(max(0, cos(spread * 0.92)), 0.3)
+            guard a <= spread else { return max(0.01, edge * (1 - (a - spread) / 0.12)) }
+            let u = (f + spread) / (2 * spread)
+            return pow(max(0, cos(f * 0.92)), 0.3) * (1 + 0.035 * sin(2 * f + Float(phases.0)) + 0.02 * sin(5 * f + Float(phases.1)))
+                * (1 + 0.1 * cos(2 * .pi * (u * Float(ribs) - 0.5)))
+        }
         let r = a <= 1.42 ? pow(cos(a), 0.55) : max(0.01, 0.35 * (1 - (a - 1.42) / 0.12))
         return r * (1 + 0.06 * sin(3 * f + Float(phases.0)) + 0.04 * sin(7 * f + Float(phases.1)))
     }
 
+    /// Où l'on est sur les plis du bénitier : 1 sur une crête, −1 dans un creux (0 sur l'huître).
+    func ribPhase(_ phi: Float) -> Float {
+        guard ribs > 0 else { return 0 }
+        var f = phi - .pi / 2
+        if f > .pi { f -= 2 * .pi }
+        let u = min(1, max(0, (f + spread) / (2 * spread)))
+        return cos(2 * .pi * (u * Float(ribs) - 0.5))
+    }
+    /// Relief des plis : de grandes ondulations arrondies qui rayonnent depuis la charnière, profondes au bord.
+    func ribRelief(_ rho: Float, _ phi: Float) -> Float { 0.11 * ribPhase(phi) * pow(rho, 1.3) }
+
     /// Creux de la valve du bas : nul à la charnière et au bord, le plus profond à mi-longueur (la perle).
     func bowl(_ rho: Float) -> Float { Self.depth * 4 * rho * (1 - rho) }
     /// Bombé du couvercle, le plus haut vers la charnière.
-    func dome(_ rho: Float) -> Float { 0.05 * pow(1 - rho * rho, 0.6) }
+    func dome(_ rho: Float) -> Float { domeHeight * pow(1 - rho * rho, 0.6) }
     /// Le bord ondule aussi en hauteur.
     func rimWave(_ rho: Float, _ phi: Float) -> Float { 0.02 * sin(frills * phi + Float(phases.2)) * pow(rho, 6) }
 
@@ -300,16 +402,18 @@ struct ValveShape {
     func footprint(_ rho: Float, _ phi: Float, scale: Float) -> SIMD2<Float> {
         var f = phi - .pi / 2
         if f > .pi { f -= 2 * .pi }
-        let frill = 1 + 0.05 * sin(frills * phi + Float(phases.2)) * pow(max(0, cos(f)), 0.3)
+        let frill = 1 + (ribs > 0 ? 0.015 : 0.05) * sin(frills * phi + Float(phases.2)) * pow(max(0, cos(f)), 0.3)
         let r = radius(f) * frill * scale * rho
         // x à rebours de f : même sens de parcours qu'avant (sinon les faces sont à l'envers et l'huître éclairée par-dessous).
-        return [-1.05 * r * sin(f), ValveShape.hinge + r * cos(f)]
+        return [-breadth * r * sin(f), ValveShape.hinge + r * cos(f)]
     }
 }
 
 /// Une valve en grille polaire (anneaux × rayons), normales calculées, texture projetée de dessus.
 enum ValveMesh {
     static let spokes = 180
+    /// Étendue (x, z) couverte par la texture projetée de dessus, en unités de valve (le bénitier est large).
+    static let uvSpan: SIMD2<Float> = [1.8, 1.3]
 
     /// `surface` donne la hauteur et, pour la coquille, ses coordonnées de texture (nil : projetée de dessus).
     static func make(_ s: ValveShape, scale: Float, up: Bool, rings: Int = 30,
@@ -330,7 +434,7 @@ enum ValveMesh {
                 positions.append(p)
                 normals.append(n.x.isNaN ? (up ? [0, 1, 0] : [0, -1, 0]) : n)
                 // L'image a la charnière en haut (v = 1) et le bord côté joueur en bas.
-                uvs.append(surface(rho, phi).1 ?? [0.5 + p.x / (1.5 * scale), 0.46 - p.z / (1.3 * scale)])
+                uvs.append(surface(rho, phi).1 ?? [0.5 + p.x / (uvSpan.x * scale), 0.46 - p.z / (uvSpan.y * scale)])
             }
         }
         var indices: [UInt32] = []
