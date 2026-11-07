@@ -17,7 +17,7 @@ struct LagoonArt {
     var focus: Focus
     /// Ombre douce du sujet sur le sable.
     var shadow = true
-    /// Essai de fonds (réglage de test `LagoonStyle` : lagon, profondeur, nuit, clair) : à trancher avec Jules.
+    /// Le lagon, ou la nuit de nacre selon l'heure (choix de Jules).
     var style = Style.current
 
     /// Les couleurs et effets qui changent d'un fond à l'autre ; les formes restent celles du lagon.
@@ -30,33 +30,29 @@ struct LagoonArt {
         var causticGain: Double
         var seaweedAlpha: Double, starfish = true
         var vignetteTint: (Double, Double, Double), vignetteAlpha: Double
-        /// Grain du sable, plancton lumineux.
-        var grain = false, glowMotes = false
+        /// Plancton lumineux.
+        var glowMotes = false
 
         static let lagoon = Style(water: ["#7fe3dc", "#2fb7bd", "#11808c", "#0b5f6c"], sand: ["#2c8f8e", "#6fb3a0", "#c9c39a", "#a8a07a"],
                                   haze: (24, 128, 138), hazeAlpha: 0.85, reef: ["#0f6c78", "#0d6170"], rayTint: (255, 255, 225), rayGain: 1,
                                   causticGain: 1, seaweedAlpha: 0.85, vignetteTint: (0, 20, 30), vignetteAlpha: 0.55)
-        /// Profondeur : horizon noyé et flou, sable grenu, algues translucides, lumière plus marquée.
-        static let depth = Style(water: ["#9ff0e6", "#3cc2c4", "#157f8c", "#0a5261"], sand: ["#1f7d84", "#5aa796", "#d9d2a8", "#b3a97f"],
-                                 haze: (30, 135, 142), hazeAlpha: 0.97, reef: ["#136e7c", "#105f6e"], blurReef: true, rayTint: (255, 250, 220), rayGain: 1.5,
-                                 causticGain: 1.6, seaweedAlpha: 0.55, vignetteTint: (0, 25, 35), vignetteAlpha: 0.7, grain: true)
         /// Nuit de nacre : eau bleu nuit, rayons de lune, plancton lumineux ; la coquille blanche ressort.
         static let night = Style(water: ["#1b5a7a", "#0e3a58", "#07233a", "#03131f"], sand: ["#0a2a3c", "#1b4254", "#4f5a5e", "#2f3c42"],
                                  haze: (12, 50, 70), hazeAlpha: 0.9, reef: ["#0a2e44", "#071f30"], blurReef: true, rayTint: (210, 235, 255), rayGain: 0.9,
                                  causticGain: 0.7, seaweedAlpha: 0.35, starfish: false, vignetteTint: (0, 5, 12), vignetteAlpha: 0.75, glowMotes: true)
-        /// Eau claire : lagon pâle presque blanc, sable crème, caustiques nettes, pas de récif.
-        static let clear = Style(water: ["#eafffb", "#9fe9e2", "#4fcfcf", "#24a8b4"], sand: ["#5fc2b8", "#a6ddc7", "#f1ead0", "#d9ceaa"],
-                                 haze: (150, 225, 220), hazeAlpha: 0.9, reef: nil, rayTint: (255, 255, 240), rayGain: 1.2,
-                                 causticGain: 1.9, seaweedAlpha: 0.45, vignetteTint: (20, 90, 100), vignetteAlpha: 0.4, grain: true)
-
-        static let current: Style = {
+        /// Le jour, le lagon ; la nuit (21 h – 6 h, heure du téléphone), la nuit de nacre. Réglage de test `LagoonStyle` = nuit | jour.
+        static var current: Style {
             switch UserDefaults.standard.string(forKey: "LagoonStyle") {
-            case "profondeur": return depth
             case "nuit": return night
-            case "clair": return clear
-            default: return lagoon
+            case "jour": return lagoon
+            default: return isNight(Date()) ? night : lagoon
             }
-        }()
+        }
+
+        static func isNight(_ date: Date) -> Bool {
+            let hour = Calendar.current.component(.hour, from: date)
+            return hour >= 21 || hour < 6
+        }
     }
 
     private static let tau = Double.pi * 2
@@ -72,17 +68,19 @@ struct LagoonArt {
         drawSeaweed(&c, w, h, horizon, time)
         drawFish(&c, w, horizon, time)
         drawParticles(&c, w, h, horizon, time)
-        if shadow {
-            // Ombre douce de l'huître sur le sable.
-            let cy = focus.y + focus.size * 0.62
-            var s = c
-            s.translateBy(x: 0, y: cy)
-            s.scaleBy(x: 1, y: 0.42)
-            s.translateBy(x: 0, y: -cy)
-            s.fill(Path(CGRect(x: focus.x - focus.size * 1.1, y: focus.y - focus.size * 0.6, width: focus.size * 2.2, height: focus.size * 2.6)),
-                   with: .radialGradient(Gradient(colors: [rgba(0, 30, 35, 0.42), rgba(0, 30, 35, 0)]),
-                                         center: CGPoint(x: focus.x, y: cy), startRadius: 0, endRadius: focus.size * 1.05))
-        }
+        if shadow { drawShadow(&c) }
+    }
+
+    /// Ombre douce de l'huître sur le sable.
+    func drawShadow(_ c: inout GraphicsContext) {
+        let cy = focus.y + focus.size * 0.62
+        var s = c
+        s.translateBy(x: 0, y: cy)
+        s.scaleBy(x: 1, y: 0.42)
+        s.translateBy(x: 0, y: -cy)
+        s.fill(Path(CGRect(x: focus.x - focus.size * 1.1, y: focus.y - focus.size * 0.6, width: focus.size * 2.2, height: focus.size * 2.6)),
+               with: .radialGradient(Gradient(colors: [rgba(0, 30, 35, 0.42), rgba(0, 30, 35, 0)]),
+                                     center: CGPoint(x: focus.x, y: cy), startRadius: 0, endRadius: focus.size * 1.05))
     }
 
     /// Par-dessus le sujet : vignette, comme vu à travers un masque de plongée.
@@ -169,20 +167,6 @@ struct LagoonArt {
                     x += 12
                 }
                 c.stroke(ripple, with: .color(color), lineWidth: 1.2)
-            }
-        }
-
-        // Grain du sable : une poussière de points clairs et sombres, plus dense vers le bas.
-        if style.grain {
-            let grain = Self.seeded(23)
-            for _ in 0..<900 {
-                let k = grain()
-                let y = horizon + (h - horizon) * k * k
-                let x = grain() * w
-                let r = 0.5 + grain() * 1.1 * (0.4 + k)
-                let light = grain() > 0.45
-                c.fill(Path(ellipseIn: CGRect(x: x - r, y: y - r * 0.7, width: r * 2, height: r * 1.4)),
-                       with: .color(light ? rgba(255, 252, 235, 0.06 + 0.18 * k) : rgba(50, 60, 50, 0.05 + 0.12 * k)))
             }
         }
 
