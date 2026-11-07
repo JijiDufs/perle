@@ -68,19 +68,17 @@ struct LagoonArt {
         drawSeaweed(&c, w, h, horizon, time)
         drawFish(&c, w, horizon, time)
         drawParticles(&c, w, h, horizon, time)
-        if shadow { drawShadow(&c) }
-    }
-
-    /// Ombre douce de l'huître sur le sable.
-    func drawShadow(_ c: inout GraphicsContext) {
-        let cy = focus.y + focus.size * 0.62
-        var s = c
-        s.translateBy(x: 0, y: cy)
-        s.scaleBy(x: 1, y: 0.42)
-        s.translateBy(x: 0, y: -cy)
-        s.fill(Path(CGRect(x: focus.x - focus.size * 1.1, y: focus.y - focus.size * 0.6, width: focus.size * 2.2, height: focus.size * 2.6)),
-               with: .radialGradient(Gradient(colors: [rgba(0, 30, 35, 0.42), rgba(0, 30, 35, 0)]),
-                                     center: CGPoint(x: focus.x, y: cy), startRadius: 0, endRadius: focus.size * 1.05))
+        if shadow {
+            // Ombre douce de l'huître sur le sable.
+            let cy = focus.y + focus.size * 0.62
+            var s = c
+            s.translateBy(x: 0, y: cy)
+            s.scaleBy(x: 1, y: 0.42)
+            s.translateBy(x: 0, y: -cy)
+            s.fill(Path(CGRect(x: focus.x - focus.size * 1.1, y: focus.y - focus.size * 0.6, width: focus.size * 2.2, height: focus.size * 2.6)),
+                   with: .radialGradient(Gradient(colors: [rgba(0, 30, 35, 0.42), rgba(0, 30, 35, 0)]),
+                                         center: CGPoint(x: focus.x, y: cy), startRadius: 0, endRadius: focus.size * 1.05))
+        }
     }
 
     /// Par-dessus le sujet : vignette, comme vu à travers un masque de plongée.
