@@ -22,9 +22,12 @@ struct FishingView: View {
                 let oyster = art(at: timeline.date)
                 let in3D = shows3D(oyster)
                 ZStack {
+                    // Essai : le lagon en vidéo en boucle à la place du dessin (réglage de test `LagoonVideo`).
+                    if LagoonVideo.isEnabled { LagoonVideo().ignoresSafeArea() }
                     Canvas { context, size in
                         let layout = OysterArt.layout(size: size, look: oyster.look, pose: oyster.pose)
-                        LagoonArt(time: reduceMotion ? 0 : oyster.time, focus: layout.focus).draw(&context, size: size)
+                        let lagoon = LagoonArt(time: reduceMotion ? 0 : oyster.time, focus: layout.focus)
+                        if LagoonVideo.isEnabled { lagoon.drawShadow(&context) } else { lagoon.draw(&context, size: size) }
                         if !in3D {
                             oyster.draw(&context, size: size)
                             drawFront(&context, size: size, oyster: oyster, date: timeline.date)
