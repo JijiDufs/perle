@@ -55,10 +55,21 @@ struct LagoonArt {
         }
     }
 
+    /// Réglage de test `LagoonStyle` = noir | blanc : fond uni, sans décor ni vignette. Deux captures (noir, blanc)
+    /// donnent l'huître 3D détourée, transparence comprise, pour les visuels App Store (`scripts/app-store-visuels`).
+    static var matte: Color? {
+        switch UserDefaults.standard.string(forKey: "LagoonStyle") {
+        case "noir": .black
+        case "blanc": .white
+        default: nil
+        }
+    }
+
     private static let tau = Double.pi * 2
 
     /// Le décor, sous le sujet.
     func draw(_ c: inout GraphicsContext, size: CGSize) {
+        if let matte = Self.matte { return c.fill(Path(CGRect(origin: .zero, size: size)), with: .color(matte)) }
         let w = Double(size.width), h = Double(size.height)
         let horizon = min(h * 0.8, max(h * 0.2, (focus.y - focus.size * 0.32).rounded()))
         drawBase(&c, w, h, horizon)
@@ -83,6 +94,7 @@ struct LagoonArt {
 
     /// Par-dessus le sujet : vignette, comme vu à travers un masque de plongée.
     func drawOverlay(_ c: inout GraphicsContext, size: CGSize) {
+        if Self.matte != nil { return }
         let w = Double(size.width), h = Double(size.height)
         c.fill(Path(CGRect(origin: .zero, size: size)), with: .radialGradient(
             Gradient(colors: [rgba(style.vignetteTint.0, style.vignetteTint.1, style.vignetteTint.2, 0),

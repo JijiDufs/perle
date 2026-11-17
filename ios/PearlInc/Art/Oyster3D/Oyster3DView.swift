@@ -80,6 +80,9 @@ struct Oyster3DView: UIViewRepresentable {
     private var pearlKey = ""
     /// Trouvaille posée : hauteur du fond de la valve sous elle et hauteur de son centre à pleine taille (nil : perle ou rien).
     private var findRest: (floor: Float, lift: Float)?
+    /// Perle posée : fond de la valve, rayon, haut du disque au-dessus du fond (en rayons), dessous du couvercle fermé
+    /// au-dessus de ce haut (par rapport à la charnière) et sa distance à la charnière (nil : trouvaille ou rien).
+    private var pearlRest: (floor: Float, radius: Float, top: Float, lidUnderside: Float, reach: Float)?
     private var seed = Int.min
     private var skin = ""
     private let camera = PerspectiveCamera()
@@ -314,13 +317,20 @@ struct Oyster3DView: UIViewRepresentable {
                 self.pearl.scale = [1, 1, 1]
                 findRest = pearl == nil ? (floor, r * 1.76) : nil
                 // Tournée vers la caméra ; vue de dessus avec le haut de l'écran en +x, l'image se couche sur le côté (−90° autour de y).
-                let tilt = simd_quatf(angle: (90 - view.elevation) * .pi / 180, axis: [1, 0, 0])
+                let lean = (90 - view.elevation) * .pi / 180
+                // Le haut du disque, incliné vers la caméra, monte de r sin(lean) et recule vers la charnière de r cos(lean).
+                let reach = 0.06 - r * cos(lean) - ValveShape.hinge
+                pearlRest = pearl == nil ? nil : shape.map { s in
+                    (floor, r, 1.2 + sin(lean), (OysterStyle.forSkin(skin).isClam ? 0 : s.dome(reach) - 0.008) + s.ribRelief(reach, .pi / 2), reach)
+                }
+                let tilt = simd_quatf(angle: lean, axis: [1, 0, 0])
                 let yaw = simd_quatf(angle: view == .fold || view == .cover ? -.pi / 2 : 0, axis: [0, 1, 0])
                 self.pearl.orientation = yaw * tilt
                 self.pearl.isEnabled = true
             } else {
                 self.pearl.isEnabled = false
                 findRest = nil
+                pearlRest = nil
             }
             if let shape { placeVeil(shape, pearlRadius: pearl != nil ? pearlRadius * 1.3 : findId != nil ? 0.19 : nil) }
         }
@@ -332,6 +342,19 @@ struct Oyster3DView: UIViewRepresentable {
             self.pearl.isEnabled = grow > 0.02
             self.pearl.scale = [grow, grow, grow]
             self.pearl.position.y = findRest.floor + findRest.lift * grow
+        }
+        // Une grosse perle est plus haute que la coquille fermée (elle traversait le couvercle, retour de Jules) : tant que
+        // le couvercle est bas, elle rapetisse pour tenir dessous, posée au fond, et reprend sa taille à mesure qu'il se lève.
+        if let pearlRest {
+            var grow: Float = 1
+            if theta < .pi / 2 {
+                // Dessous du couvercle au-dessus du haut de la perle (pivot 0,004 au-dessus de la charnière), moins une marge.
+                let ceiling = 0.004 + pearlRest.lidUnderside * cos(theta) + pearlRest.reach * sin(theta) - 0.012
+                grow = min(1, max(0, (ceiling - pearlRest.floor) / (pearlRest.top * pearlRest.radius)))
+            }
+            self.pearl.isEnabled = grow > 0.02
+            self.pearl.scale = [grow, grow, grow]
+            self.pearl.position.y = pearlRest.floor + 1.2 * pearlRest.radius * grow
         }
 
         // La lueur monte avec l'entrebâillement, puis se fond dans la lumière du jour.

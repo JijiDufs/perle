@@ -82,6 +82,20 @@ struct WideLagoon: View {
     }
 }
 
+/// Le lagon de jour en paysage pour les bannières (render-bannieres.sh), en points de scène : le décor sous l'huître
+/// (`overlay` faux) ou la vignette qui passe devant elle (`overlay` vrai, fond transparent). Foyer = l'huître posée.
+struct BannerLagoon: View {
+    var w: Double, h: Double, fx: Double, fy: Double, overlay: Bool
+    var body: some View {
+        Canvas { c, size in
+            let lagoon = LagoonArt(time: 1.7, focus: .init(x: fx, y: fy, size: phoneFocus.size), style: .lagoon)
+            if overlay { lagoon.drawOverlay(&c, size: size) } else { lagoon.draw(&c, size: size) }
+        }
+        .frame(width: w, height: h)
+    }
+}
+/// Le foyer du lagon sur l'écran de l'iPhone (402 × 874 points) : là où la capture de l'huître est posée.
+let phoneFocus = OysterArt.layout(size: CGSize(width: 402, height: 874), look: SkinLook(skinId: "lagon")).focus
 /// Une perle seule, sur fond transparent, avec son halo.
 struct Solo: View {
     var pearl: PearlLook
@@ -125,6 +139,18 @@ struct JewelSolo: View {
 }
 
 let W = 1320.0, H = 2868.0
+// `art <catalogue> <sortie> banniere <nom> <largeur> <hauteur> <foyer x> <foyer y> <échelle>` (points de scène) :
+// le lagon des bannières seulement ; `art <catalogue> <sortie> foyer` : le foyer de l'écran de l'iPhone.
+if args.count > 3 {
+    MainActor.assumeIsolated {
+        if args[3] == "foyer" { return print(phoneFocus.x, phoneFocus.y, phoneFocus.size) }
+        let n = args[5...9].map { Double($0)! }
+        for overlay in [false, true] {
+            save(BannerLagoon(w: n[0], h: n[1], fx: n[2], fy: n[3], overlay: overlay), "\(args[4])-\(overlay ? "vignette" : "lagon")", scale: n[4])
+        }
+    }
+    exit(0)
+}
 MainActor.assumeIsolated {
     let golden = look("golden", shape: "ronde", overtone: "dore")
     let pearls: [(String, PearlLook)] = [

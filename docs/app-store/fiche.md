@@ -303,6 +303,6 @@ Account deletion: Settings (gear icon on the fishing screen) > "Delete my accoun
 
 Les écrans sont de vraies captures de l'app (simulateur, partie « vitrine » : `scripts/app-store-visuels/seed.py`, passée par le vrai moteur dans `vitrine/`) ; perles, objets et bijoux autour des écrans sont dessinés par `vitrine/` avec le code et les photos de l'app. Pour les refaire : `scripts/app-store-visuels/render.sh` (mode d'emploi en tête du fichier). Les 3 premiers visuels sont ceux qu'on voit dans les résultats de recherche : ils racontent à eux seuls le geste, le suspense et la rareté ; les écrins viennent juste après.
 
-Les bannières paysage (`visuels/{fr,en}/bannieres/`) n'ont pas changé : elles montrent l'iPhone Duo et une perle, toujours vrais.
+Les bannières paysage (`visuels/{fr,en}/bannieres/`) : **en-tête** 3840 × 1646 (sans texte, la même dans les deux langues) et **résultats de recherche** 3840 × 2560, refaites le 2026-11-17 dans la nouvelle DA (lagon de l'app, huître 3D détourée, perles en photo) et placées sur la version 1.2 ; la 1.1 garde son ancienne bannière de recherche (le Duo en 2D). Pour les refaire : `scripts/app-store-visuels/render-bannieres.sh` (captures à faire avant : mode d'emploi en tête du fichier).
 
 `docs/app-store/captures/` : les anciennes captures brutes du 14 octobre (sans légende), remplacées par les visuels.

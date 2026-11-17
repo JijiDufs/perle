@@ -1,95 +1,82 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8">
-<!-- Bannières paysage de la page produit App Store (en-tête, résultats de recherche). Lancé par render-bannieres.sh.
-     ?kind=entete|recherche&lang=fr|en ; toutes les tailles en vh / vw : une seule mise en page pour 16:9, 7:3 et 3:2. -->
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800;900&display=block" rel="stylesheet">
+<!-- Bannières de la page produit App Store : en-tête (3840 × 1646) et résultats de recherche (3840 × 2560).
+     Lancé par render-bannieres.sh : ?kind=entete|recherche&lang=fr|en. Le fond (lagon dessiné par l'app + huître 3D
+     détourée + vignette) est a/<kind>-fond.png ; ici, la lumière de la perle, les perles qui flottent et le texte.
+     Zones sûres d'Apple (tout l'essentiel dedans) : en-tête 1646 × 661 en (1097, 493) ; recherche 2168 × 1030 en (836, 765). -->
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@700;800;900&display=block" rel="stylesheet">
 <style>
 :root{--gold1:#FFF1C1;--gold2:#F7CB5C;--gold3:#C98B1E}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100vw;height:100vh;overflow:hidden;background:#06303b}
+html,body{overflow:hidden;background:#0b5f6c}
 body{font-family:Figtree,system-ui,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;position:relative}
-.l{position:absolute;inset:0}
-.water{background:radial-gradient(ellipse 70% 90% at 70% 0%,#2fb7c2 0%,#0f7c8c 28%,#0a4a5a 58%,#062a36 100%)}
-.rays{inset:-20vh -30vw auto -30vw;height:120vh;
-  background:repeating-linear-gradient(105deg,transparent 0 6vw,rgba(190,255,250,.08) 6vw 9vw,transparent 9vw 15vw,rgba(190,255,250,.05) 15vw 17vw);
-  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.5) 50%,transparent 90%);filter:blur(.4vh)}
-.sand{top:auto;height:34vh;background:linear-gradient(180deg,rgba(214,196,140,0) 0%,rgba(190,172,120,.35) 45%,rgba(150,136,96,.55) 100%)}
-.vign{background:radial-gradient(ellipse 120% 100% at 60% 50%,transparent 55%,rgba(2,16,22,.55) 100%)}
-.halo{position:absolute;border-radius:50%;filter:blur(6vh)}
-.wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:3vw;padding:0 5vw}
-.copy{flex:0 1 auto;max-width:44vw;position:relative;z-index:5}
-.eyebrow{display:inline-flex;align-items:center;gap:1.2vh;font-weight:800;font-size:min(2.7vh,1.5vw);letter-spacing:.18em;text-transform:uppercase;
-  color:var(--gold2);padding:1.1vh 2.4vh;border-radius:999px;background:rgba(255,215,120,.12);border:.2vh solid rgba(255,215,120,.4);margin-bottom:3vh;white-space:nowrap}
-.eyebrow svg{height:1.15em;width:auto}
-h1{font-weight:900;font-size:min(8.5vh,3.4vw);white-space:nowrap;line-height:1;letter-spacing:-.025em;text-shadow:0 .8vh 4vh rgba(0,0,0,.35)}
-h1 span{display:block}
-h1 .g{background:linear-gradient(180deg,var(--gold1) 0%,var(--gold2) 45%,var(--gold3) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 .6vh 2.4vh rgba(0,0,0,.35))}
-.sub{margin-top:3vh;font-size:min(3.4vh,1.8vw);font-weight:600;line-height:1.3;color:rgba(255,255,255,.88);max-width:40vw}
-.chips{display:flex;flex-wrap:wrap;gap:1.4vh;margin-top:3.6vh}
-.chip{display:flex;align-items:center;gap:1vh;padding:1.3vh 2.4vh;border-radius:999px;font-weight:800;font-size:min(2.6vh,1.4vw);white-space:nowrap;
-  background:rgba(255,255,255,.14);border:.2vh solid rgba(255,255,255,.35);box-shadow:0 1.4vh 3.4vh rgba(0,0,0,.3)}
-.chip.gold{background:linear-gradient(180deg,#FFE8A3,#E9B44C);color:#3a2604;border-color:rgba(255,255,255,.6)}
-.stage{position:relative;flex:0 0 auto;z-index:4}
-.duo{display:block;height:min(76vh,48vw);width:auto;filter:drop-shadow(0 4vh 6vh rgba(0,0,0,.55)) drop-shadow(0 1vh 2vh rgba(0,0,0,.35))}
-.shadow{position:absolute;left:8%;right:8%;bottom:-3%;height:9%;border-radius:50%;background:rgba(0,10,14,.55);filter:blur(2.4vh);z-index:-1}
-.pearl{position:absolute;z-index:6}
-.spark{position:absolute;width:var(--s);height:var(--s);transform:translate(-50%,-50%);z-index:7;
-  background:radial-gradient(circle,#fff 0 7%,rgba(255,255,255,0) 8%);filter:drop-shadow(0 0 1.2vh var(--c,#ffe39a)) drop-shadow(0 0 2.6vh var(--c,#ffe39a))}
+.abs{position:absolute}
+.fond{left:0;top:0}
+.halo{border-radius:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(255,196,70,.5) 0%,rgba(255,190,70,.2) 40%,rgba(255,190,70,0) 70%)}
+.pearl{transform:translate(-50%,-50%);filter:drop-shadow(0 30px 40px rgba(0,25,30,.35))}
+.spark{transform:translate(-50%,-50%);
+  background:radial-gradient(circle,#fff 0 7%,rgba(255,255,255,0) 8%);filter:drop-shadow(0 0 14px #ffe39a) drop-shadow(0 0 30px #ffe39a)}
 .spark::before,.spark::after{content:"";position:absolute;left:50%;top:50%;background:#fff;transform:translate(-50%,-50%)}
 .spark::before{width:9%;height:100%;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
 .spark::after{width:100%;height:9%;clip-path:polygon(0 50%,50% 0,100% 50%,50% 100%)}
-.bub{position:absolute;border-radius:50%;border:.25vh solid rgba(220,255,255,.35);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.35),rgba(255,255,255,0) 60%)}
-/* L'en-tête : plus de place à l'appareil, moins de texte */
-.entete .duo{height:min(82vh,52vw)}
-.entete .sub,.entete .chips{display:none}
+.bub{border-radius:50%;border:5px solid rgba(220,255,255,.35);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.35),rgba(255,255,255,0) 60%)}
+/* Texte (recherche) : sur le sable clair, une ombre douce à gauche le rend lisible */
+.shade{left:0;top:0;width:3840px;height:2560px;background:radial-gradient(ellipse 1150px 680px at 1480px 1275px,rgba(2,38,48,.74) 0%,rgba(2,38,48,.46) 45%,rgba(2,38,48,0) 85%)}
+.copy{left:900px;top:1280px;transform:translateY(-50%);width:1280px}
+.eyebrow{display:inline-flex;align-items:center;gap:22px;font-weight:800;font-size:40px;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;
+  color:var(--gold2);padding:18px 38px;border-radius:999px;background:rgba(10,40,48,.55);border:3px solid rgba(255,215,120,.5);margin-bottom:44px}
+.eyebrow svg{height:1.15em;width:auto}
+h1{font-weight:900;line-height:1.02;letter-spacing:-.025em;white-space:nowrap;text-shadow:0 10px 50px rgba(0,20,26,.55)}
+h1 span{display:block}
+h1 .g{background:linear-gradient(180deg,var(--gold1) 0%,var(--gold2) 45%,var(--gold3) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 8px 30px rgba(0,20,26,.5))}
+.chip{display:inline-flex;margin-top:52px;padding:22px 42px;border-radius:999px;font-weight:800;font-size:44px;white-space:nowrap;
+  background:linear-gradient(180deg,#FFE8A3,#E9B44C);color:#3a2604;box-shadow:0 18px 44px rgba(0,20,26,.4)}
 </style></head>
 <body>
-<div class="l water"></div>
-<div class="l rays"></div>
-<div class="l sand"></div>
-<div class="bub" style="left:6vw;top:14vh;width:2.2vh;height:2.2vh"></div>
-<div class="bub" style="left:9vw;top:22vh;width:1.3vh;height:1.3vh"></div>
-<div class="bub" style="left:44vw;top:8vh;width:1.8vh;height:1.8vh"></div>
-<div class="bub" style="left:93vw;top:30vh;width:2.6vh;height:2.6vh"></div>
-<div class="bub" style="left:90vw;top:40vh;width:1.4vh;height:1.4vh"></div>
-<div class="l vign"></div>
-
-<div class="wrap">
-  <div class="copy">
-    <div class="eyebrow"><svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 14 2 4h9z"/><path d="M12 14 22 2h-9z"/></svg><span data-t="eyebrow"></span></div>
-    <h1 data-t="h"></h1>
-    <p class="sub" data-t="sub"></p>
-    <div class="chips"><div class="chip gold" data-t="c1"></div><div class="chip" data-t="c2"></div></div>
-  </div>
-  <div class="stage">
-    <!-- Lumière dorée de la perle, qui déborde de l'écran -->
-    <div class="halo" style="left:48%;top:22%;width:46%;height:56%;background:rgba(255,205,90,.55);z-index:-1"></div>
-    <div class="shadow"></div>
-    <img class="duo" src="a/duo.png">
-    <i class="spark" style="left:69%;top:30%;--s:7vh"></i>
-    <i class="spark" style="left:83%;top:52%;--s:4.5vh"></i>
-    <i class="spark" style="left:58%;top:66%;--s:3.6vh"></i>
-    <img class="pearl" src="a/pearl-cursed.png" style="right:-7%;top:-6%;height:24%">
-    <img class="pearl" src="a/pearl-black.png" style="left:-9%;top:58%;height:20%">
-    <img class="pearl" src="a/pearl-rose.png" style="right:-5%;bottom:-2%;height:17%">
-  </div>
+<img class="abs fond" id="fond">
+<div id="deco"></div>
+<div class="abs shade" id="shade"></div>
+<div class="abs copy" id="copy">
+  <div class="eyebrow"><svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 14 2 4h9z"/><path d="M12 14 22 2h-9z"/></svg><span data-t="eyebrow"></span></div>
+  <h1 data-t="h"></h1>
+  <div class="chip" data-t="chip"></div>
 </div>
-
 <script>
 const T = {
-fr:{eyebrow:"Conçu pour iPhone Duo",
-  h:'<span>Ouvre ton iPhone.</span><span class="g">Ouvre l’huître.</span>',
-  sub:"La charnière devient la coquille. Déplie doucement… et trouve la perle rare.",
-  c1:"✦ 7 perles · 25 trouvailles", c2:"Jouable aussi sur tous les iPhone"},
-en:{eyebrow:"Designed for iPhone Duo",
-  h:'<span>Open your iPhone.</span><span class="g">Open the oyster.</span>',
-  sub:"The hinge becomes the shell. Unfold it slowly… and find the rare pearl.",
-  c1:"✦ 7 pearls · 25 finds", c2:"Also plays on every iPhone"}};
-const q = new URLSearchParams(location.search);
-const lang = q.get('lang') || 'fr';
+  fr: {eyebrow: "Conçu pour iPhone Duo", h: '<span>Ouvre l’huître.</span><span class="g">Trouve la perle rare.</span>', chip: "✦ 7 perles · 25 trouvailles"},
+  en: {eyebrow: "Designed for iPhone Duo", h: '<span>Open the oyster.</span><span class="g">Find the rare pearl.</span>', chip: "✦ 7 pearls · 25 finds"}};
+// Où tombe la perle dorée dans le fond (px), et les décors : [photo, x, y, taille, flou].
+const K = {
+  entete: {w: 3840, h: 1646, pearl: [1910, 916], halo: 640,
+    sparks: [[2200, 520, 120], [1640, 600, 76], [2215, 1010, 64], [1990, 830, 48]],
+    pearls: [["pearl-rose-ronde-rose", 1390, 760, 190, 0], ["pearl-black-ronde-vert-paon", 2470, 650, 200, 0],
+             ["pearl-giant-ronde-arc-en-ciel", 3420, 1080, 300, 3], ["pearl-white-ronde-creme", 420, 1150, 170, 4],
+             ["pearl-golden-ronde-dore", 1250, 330, 120, 6]],
+    bubbles: [[600, 280, 40], [660, 380, 24], [2560, 260, 34], [3300, 380, 22], [1500, 200, 26]]},
+  recherche: {w: 3840, h: 2560, pearl: [2584, 1440], halo: 1000,
+    sparks: [[3000, 800, 160], [2190, 920, 96], [3010, 1520, 84], [2690, 1290, 64]],
+    pearls: [["pearl-black-ronde-vert-paon", 3330, 760, 300, 0], ["pearl-rose-ronde-rose", 3480, 1900, 250, 2],
+             ["pearl-giant-ronde-arc-en-ciel", 480, 2230, 340, 5], ["pearl-white-ronde-creme", 3050, 2330, 190, 4],
+             ["pearl-golden-ronde-dore", 2000, 420, 150, 6]],
+    bubbles: [[3500, 420, 46], [3580, 540, 26], [600, 520, 40], [700, 640, 22], [1800, 300, 30]]}};
+const q = new URLSearchParams(location.search), kind = q.get('kind') || 'recherche', lang = q.get('lang') || 'fr', k = K[kind];
 document.documentElement.lang = lang;
-document.body.classList.add(q.get('kind') || 'recherche');
-document.querySelectorAll('[data-t]').forEach(el => el.innerHTML = T[lang][el.dataset.t]);
+document.body.style.width = k.w + 'px'; document.body.style.height = k.h + 'px';
+const fond = document.getElementById('fond'); fond.src = `a/${kind}-fond.png`; fond.style.width = k.w + 'px';
+const deco = document.getElementById('deco');
+const add = (cls, css) => { const e = document.createElement(cls[0] === 'img' ? 'img' : 'i'); e.className = 'abs ' + cls[1]; Object.assign(e.style, css); deco.appendChild(e); return e; };
+add(['i', 'halo'], {left: k.pearl[0] + 'px', top: k.pearl[1] + 'px', width: k.halo + 'px', height: k.halo + 'px'});
+for (const [src, x, y, s, blur] of k.pearls) add(['img', 'pearl'], {left: x + 'px', top: y + 'px', width: s + 'px', filter: `blur(${blur}px) drop-shadow(0 30px 40px rgba(0,25,30,.35))`}).src = `a/${src}.png`;
+for (const [x, y, s] of k.sparks) add(['i', 'spark'], {left: x + 'px', top: y + 'px', width: s + 'px', height: s + 'px'});
+for (const [x, y, s] of k.bubbles) add(['i', 'bub'], {left: x + 'px', top: y + 'px', width: s + 'px', height: s + 'px'});
+if (kind === 'entete') { document.getElementById('copy').remove(); document.getElementById('shade').remove(); }
+else {
+  document.querySelectorAll('[data-t]').forEach(el => el.innerHTML = T[lang][el.dataset.t]);
+  // Le titre prend la plus grande taille qui tient dans la zone sûre, à gauche de l'huître.
+  const h1 = document.querySelector('h1');
+  document.fonts.ready.then(() => { let s = 150; do { h1.style.fontSize = s + 'px'; s -= 2; } while (h1.scrollWidth > 1280 && s > 60); document.body.dataset.ready = 1; });
+}
 </script>
 </body></html>
