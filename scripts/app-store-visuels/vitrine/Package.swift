@@ -1,8 +1,8 @@
 // swift-tools-version:5.9
 // Outils des visuels App Store : `vitrine` (partie de démonstration cohérente, pour seed.py) et `art`
-// (dessin haute définition avec le code de l'app, pour render.sh), `scenes` (ouvertures image par image pour la vidéo de lancement).
+// (dessin haute définition avec le code de l'app, pour render.sh), `scenes` (ouvertures image par image pour la vidéo de lancement), `huitre3d` (l'huître et l'écrin 3D, pour le site).
 import PackageDescription
-let package = Package(name: "vitrine", platforms: [.macOS(.v14)],
+let package = Package(name: "vitrine", platforms: [.macOS("15.0")],
   dependencies: [.package(path: "../../../ios/PearlCore")],
   targets: [
     .executableTarget(name: "vitrine", dependencies: [.product(name: "PearlCore", package: "PearlCore")]),
@@ -13,4 +13,9 @@ let package = Package(name: "vitrine", platforms: [.macOS(.v14)],
     // Ouvertures (huîtres, écrins ; iPhone et iPhone Duo) image par image, pour la vidéo de lancement (scripts/video-lancement).
     .executableTarget(name: "scenes", dependencies: [.product(name: "PearlCore", package: "PearlCore")],
                       exclude: ["Art/LagoonBackground.swift", "Art/CardStyle.swift"]),
+    // L'huître 3D de l'app (RealityKit) rendue sur le Mac, sans simulateur, pour les images du site (scripts/site/rendus-3d.sh).
+    // *.generated.swift : copies des scènes 3D de l'app (huître, écrin) sans leur vue UIKit, refaites par le script.
+    .executableTarget(name: "huitre3d", dependencies: [.product(name: "PearlCore", package: "PearlCore")],
+                      exclude: ["Art/LagoonBackground.swift", "Art/CardStyle.swift", "Art/Oyster3D", "Art/Ecrin3D",
+                                "Art/PearlPhotos", "Art/JewelPhotos", "Art/FindPhotos", "Art/thief-fish.png"]),
   ])

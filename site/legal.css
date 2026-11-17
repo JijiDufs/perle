@@ -1,21 +1,23 @@
-/* Pages légales et support de pearl-inc.app : même style que la page d'accueil (clair, Inter). */
-:root{--bg:#fff;--bg-soft:#f5f5f7;--ink:#1d1d1f;--soft:#6e6e73;--faint:#86868b;--line:rgba(0,0,0,.08);--accent:#0071e3}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#fff;--ink:#1d1d1f;--soft:#6e6e73}}
-:root[data-theme="dark"]{--bg:#fff;--ink:#1d1d1f;--soft:#6e6e73}
+/* Pages légales et support de pearl-inc.app : les couleurs du lagon de la page d'accueil, au clair pour la lecture
+   (Young Serif pour les titres, Figtree pour le texte). */
+:root{--bg:#eef8f6;--bg-soft:#dcf1ec;--ink:#06343c;--soft:#2c5a60;--faint:#5b7f83;--line:rgba(6,52,60,.12);--accent:#0b6b70}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#eef8f6;--ink:#06343c;--soft:#2c5a60}}
+:root[data-theme="dark"]{--bg:#eef8f6;--ink:#06343c;--soft:#2c5a60}
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:"Inter",-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6;padding-bottom:env(safe-area-inset-bottom,0px)}
+body{background:var(--bg);color:var(--ink);font-family:"Figtree",-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6;padding-bottom:env(safe-area-inset-bottom,0px)}
 a{color:var(--accent)}
-.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.nav{position:sticky;top:0;z-index:5;background:rgba(238,248,246,.86);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
 .nav-in{max-width:760px;margin:0 auto;padding:0 20px;height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-weight:600;font-size:15px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+.brand{font-family:"Young Serif",Georgia,serif;font-size:18px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
 .brand img{width:22px;height:22px}
-.lang{font-size:13px;font-weight:600;text-decoration:none;background:rgba(0,0,0,.06);border-radius:999px;padding:4px 11px;color:var(--soft)}
+.lang{font-size:13px;font-weight:600;text-decoration:none;background:rgba(6,52,60,.08);border-radius:999px;padding:4px 11px;color:var(--soft)}
 main{max-width:760px;margin:0 auto;padding:40px 20px 24px}
-h1{font-size:clamp(30px,6vw,40px);letter-spacing:-0.03em;line-height:1.1;margin:0 0 8px}
+h1,h2,h3{font-family:"Young Serif",Georgia,serif;font-weight:400}
+h1{font-size:clamp(32px,6vw,44px);letter-spacing:-0.01em;line-height:1.1;margin:0 0 8px}
 .updated{color:var(--faint);font-size:14px;margin:0 0 28px}
-h2{font-size:21px;letter-spacing:-0.015em;margin:36px 0 10px}
-h3{font-size:17px;margin:22px 0 6px}
+h2{font-size:23px;margin:36px 0 10px}
+h3{font-size:18px;margin:22px 0 6px}
 p,li{font-size:16px}
 ul{padding-left:22px}
 li{margin:4px 0}

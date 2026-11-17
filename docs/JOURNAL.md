@@ -3,6 +3,35 @@
 Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
+## 2026-11-17 (pearl-inc.app refait) · Jules · Claude Code · branche `jules/site-refonte`
+
+**Fait**
+- **Nouvelle page d'accueil** (`site/index.html`, FR ; `site/en/index.html` régénéré) : une seule plongée dans le lagon. **Le prototype three.js (5 huîtres sur un Duo en 3D) est retiré** ; tout repose sur les objets 3D de l'app.
+  1. **Ouverture** : titre géant, l'huître 3D de l'app posée sur le sable ; elle s'ouvre au fil du défilement (quatre temps du geste, jauge d'angle avec la zone fragile, halo, gerbe d'étincelles, carte de la perle dorée qui s'incline sous le pointeur).
+  2. **À toi d'ouvrir** : la même huître, ouverte au pouce (ou à la souris, ou à la flèche du clavier) avec **les règles du jeu** recopiées de `src/tuning.ts` et `src/core/opening.ts` (résistance, pop, zone fragile à 380 °/s, lustre S à C, ouverture automatique à 115°) ; perle fêlée si on va trop vite, « Rejouer ».
+  3. **Tirages** : un rang de 100 perles (ce que donnent cent huîtres en moyenne, arrondi ; la maudite à part, 1 sur 333), les neuf issues avec les probabilités du jeu, la garantie, deux frises de variantes.
+  4. **Trouvailles** qui flottent, **poisson voleur** qui traverse et qu'on peut toucher (« Rattrapée au vol ! + 2 ✦ »).
+  5. **Écrins** : l'écrin 3D de l'app (bleu nuit, diadème de légende) s'ouvre au défilement ; s'arrêter 0,9 s sur l'angle d'éclat (fixé à 82°, tolérance 6°) déclenche l'éclat parfait.
+  6. **iPhone Duo** : l'écran intérieur se déplie, angle de charnière affiché ; tableau charnière / pouce.
+  7. **Progression** (rangs, captures, missions, succès, coquilles, sauvegarde), puis **retour à la surface** : badge App Store et, sur ordinateur, QR code vers la fiche.
+- **L'eau** : un calque WebGL fixe (`#water`) par-dessus les fonds des sections et sous le contenu : caustiques, rayons, poussières en suspension (dorées dans le salon des écrins), sol de sable en perspective sous l'huître. L'ambiance glisse d'une section à l'autre. Sans WebGL : les fonds CSS seuls. « Réduire les animations » : eau figée, pas de parallaxe ni d'étincelles.
+- **`huitre3d`** (`scripts/app-store-visuels/vitrine`) : les scènes 3D de l'app (Oyster3DScene, Ecrin3DScene ; RealityKit) rendues **sur le Mac, sans simulateur** (fenêtre hors écran, fond noir puis blanc pour la transparence). Le paquet d'outils passe à macOS 15 minimum (`generateCylinder`). Le simulateur iOS 27.3 ne démarrait plus.
+- Images dans `site/img/` (WebP, 3,4 Mo ; seules l'huître de l'ouverture et quelques photos se chargent d'emblée, le reste à la demande) : `scripts/site/rendus-3d.sh` (huître 21 images, perle fêlée 18, écrin 21), `scripts/site/images.sh` (photos de l'app, captures de `build/captures-app-store/`), `scripts/site/qr.swift` (QR code, relu par Vision avant d'être écrit).
+- Pages d'aide et légales (`legal.css` + police des 10 pages) aux couleurs du lagon.
+- Mesure inchangée : Vercel Analytics, événement « App Store » (`bouton` : menu, haut-de-page, essai, bas-de-page), bannière cookies et pixel X (`consent.js`), bannière Safari.
+
+**Reste à faire**
+- **Mettre en ligne** : la page montre la DA de la 1.2 (huître 3D, photos), encore en revue chez Apple. Pousser `main` = déploiement Vercel immédiat : attendre la 1.2 en ligne, ou l'assumer.
+- **Essayer sur un vrai iPhone** (Safari iOS : geste du pouce dans « À toi d'ouvrir », fluidité de l'eau, barre d'adresse qui change la hauteur) et avec « Réduire les animations ». Vu seulement dans le navigateur de l'ordinateur, en largeurs 1024 et 375.
+- `og.jpg` (aperçu des liens) est l'ancien : à refaire dans la nouvelle DA si besoin (`scripts/make-og.sh`).
+- Les autres outils du paquet `vitrine` (`art`, `scenes`, `vitrine`) n'ont pas été recompilés depuis le passage à macOS 15.
+
+**Fragile**
+- Les chiffres de la page (probabilités, rang de 100 perles, 41 succès, 1 écrin toutes les 12 huîtres, rangs) et **les réglages du geste** (`TUN` et `GLINT` dans le script de la page) sont recopiés à la main : à reprendre si `src/tuning.ts` ou l'équilibrage changent.
+- `huitre3d` compile des copies de `Oyster3DView.swift` et `Ecrin3DView.swift` (générées par le script) : si une scène change de forme, `rendus-3d.sh` peut casser à l'étape 1.
+- Calques : une section ne doit pas créer de pile (ni `z-index` ni `transform` sur elle), sinon l'eau passe devant son contenu.
+
+---
 ## 2026-11-17 (parcours Duo essayé au simulateur) · Jules · Claude Code · branche `jules/essai-assets-bijoux`
 
 **Fait**

@@ -8,3 +8,4 @@ dist/
 .build/
 .swiftpm/
 graphify-out/
+scripts/app-store-visuels/vitrine/Sources/huitre3d/*.generated.swift
