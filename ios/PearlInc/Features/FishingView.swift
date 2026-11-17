@@ -34,13 +34,19 @@ struct FishingView: View {
                     if in3D {
                         GeometryReader { proxy in
                             let layout = OysterArt.layout(size: proxy.size, look: oyster.look, pose: oyster.pose)
-                            Oyster3DView(angle: oyster.angle,
-                                         pearl: oyster.pearl?.glow == nil || oyster.pearlTaken ? nil : oyster.pearl, cracked: oyster.cracked,
+                            let onFold = oyster.pose.isFold
+                            // Sur le pli du Duo, le couvercle est à plat (c'est le téléphone qui le soulève) et la perle
+                            // n'apparaît qu'à la révélation, comme le dessin 2D (retour d'un testeur, 2026-11-06).
+                            Oyster3DView(angle: onFold ? 180 : oyster.angle,
+                                         pearl: oyster.pearl?.glow == nil || oyster.pearlTaken || (onFold && !oyster.revealed) ? nil : oyster.pearl,
+                                         findId: oyster.pearlTaken || (onFold && !oyster.revealed) ? nil : oyster.findId,
+                                         cracked: oyster.cracked,
                                          pearlRadius: oyster.pearlRadius(1), glowHex: oyster.glowColor, seed: oyster.shapeSeed,
-                                         skin: game.player.equippedSkin)
-                                // Plus haute que large : couché à 180°, le couvercle s'étend loin derrière la charnière (il était coupé net).
-                                .frame(width: layout.L * 3, height: layout.L * 5.6)
-                                .position(x: layout.hx, y: layout.hy - layout.L * 0.54)
+                                         skin: game.player.equippedSkin, viewpoint: Self.viewpoint(oyster.pose))
+                                // Au pouce, plus haute que large : couché à 180°, le couvercle s'étend loin derrière la charnière.
+                                // Vue de dessus (Duo) : un carré de 3 L centré sur la charnière.
+                                .frame(width: layout.L * 3, height: layout.L * (oyster.pose == .thumb ? 5.6 : 3))
+                                .position(x: layout.hx, y: layout.hy - (oyster.pose == .thumb ? layout.L * 0.54 : 0))
                                 .allowsHitTesting(false)
                         }
                         Canvas { context, size in drawFront(&context, size: size, oyster: oyster, date: timeline.date) }
@@ -82,6 +88,7 @@ struct FishingView: View {
                 ResourceBar(showMissions: $showMissions, showSettings: $showSettings, showProgress: $showProgress)
                     .padding(.horizontal)
                     .padding(.top, 8)
+                    .opacity(Self.storeShot ? 0 : 1)
                 VStack(spacing: 14) {
                     if let coach = coachText {
                         CoachBubble(text: coach)
@@ -90,12 +97,25 @@ struct FishingView: View {
                     Spacer()
                     if showsFoldHint { FoldHint(horizontal: game.foldY != nil).transition(.opacity) }
                     StatusPill(text: statusText, warning: game.tooFast)
+                        .opacity(Self.storeShot ? 0 : 1)
                     ObjectiveLines(mission: objectiveMission, guaranteeIn: showsObjective ? game.player.guaranteeIn(tuning: game.tuning) : nil)
                         .padding(.horizontal, 24)
                         .padding(.bottom, 16)
+                        .opacity(Self.storeShot || duoPrompt ? 0 : 1)
                 }
                 .besideFold(game.foldX)
                 .allowsHitTesting(false)
+            }
+
+            if duoPrompt {
+                VStack {
+                    Spacer()
+                    DuoPlayChoice(tip: game.showsDuoTip)
+                        .padding(.horizontal, game.foldX == nil ? 24 : 6)
+                        .padding(.bottom, 20)
+                }
+                .besideFold(game.foldX)
+                .transition(.opacity)
             }
 
             TimelineView(.periodic(from: .now, by: 1)) { timeline in
@@ -198,7 +218,7 @@ struct FishingView: View {
         .animation(.easeInOut(duration: 0.3), value: showsGhostHand)
         .animation(.easeInOut(duration: 0.3), value: showsFoldHint)
         // Pendant le tutoriel, rien que l'huître : les onglets arrivent avec la première huître libre.
-        .toolbar(game.inTutorial ? .hidden : .visible, for: .tabBar)
+        .toolbar(game.inTutorial || Self.storeShot ? .hidden : .visible, for: .tabBar)
         .animation(.easeInOut(duration: 0.4), value: game.inTutorial)
         // La bulle sur le stock ne commence à s'effacer qu'une fois la fête de niveau (et la fenêtre des succès) refermée.
         .task(id: "\(game.step)-\(game.levelUpToShow == nil)-\(game.achievementCatchUpToShow == nil)") {
@@ -225,13 +245,21 @@ struct FishingView: View {
         guard game.stage == .playing, !game.cracked, !game.isTideOut(at: Date()), game.levelUpToShow == nil,
               game.achievementCatchUpToShow == nil, game.ecrinCatchUpToShow == nil else { return nil }
         if stockTipExpired && game.step == game.catalog.tutorialPearls.count { return nil }
+        // iPhone Duo lancé téléphone ouvert : la première bulle présente le choix (les boutons sont sous l'huître).
+        if game.showsDuoChoice && game.step == 0 {
+            return String(localized: "Ton iPhone Duo peut ouvrir l’huître avec sa charnière. Comment veux-tu jouer ?")
+        }
         return Coach.duringGesture(step: game.step, phase: game.phase, hinge: game.hasHinge, hingeArmed: game.hingeArmed, tuning: game.tuning)
     }
 
     /// iPhone Duo, charnière pas encore armée : le petit téléphone qui montre qu'il faut le refermer.
     private var showsFoldHint: Bool {
         game.hasHinge && !game.hingeArmed && game.stage == .playing && game.phase == .closed && game.angle == 0 && !game.isTideOut(at: Date())
+            && !duoPrompt
     }
+
+    /// iPhone Duo : les boutons « charnière ou pouce » (premier lancement ouvert) ou la relance d'après le tutoriel.
+    private var duoPrompt: Bool { game.showsDuoChoice || game.showsDuoTip }
 
     private var showsGhostHand: Bool {
         game.step == 0 && game.stage == .playing && game.phase == .closed && game.angle == 0 && !game.hasHinge
@@ -240,6 +268,7 @@ struct FishingView: View {
     /// Le message sous l'huître ; nil = rien à dire.
     private var statusText: String? {
         if game.stage != .playing { return nil }
+        if duoPrompt { return nil }
         if game.cracked { return String(localized: "Fêlée…") }
         if game.tooFast { return String(localized: "Trop vite !") }
         if game.inFragileZone { return String(localized: "Zone fragile : doucement") }
@@ -265,8 +294,20 @@ struct FishingView: View {
         showsObjective ? game.player.missions?.nearest : nil
     }
 
-    /// Essai 3D : au pouce seulement (huître et bénitier).
-    private func shows3D(_ oyster: OysterArt) -> Bool { Oyster3DView.isEnabled && oyster.pose == .thumb }
+    /// `-StoreShot` au lancement : rien que le lagon et l'huître (visuel plein cadre de la fiche App Store).
+    private static let storeShot = ProcessInfo.processInfo.arguments.contains("-StoreShot")
+
+    /// Essai 3D : au pouce et sur l'iPhone Duo (huître et bénitier).
+    private func shows3D(_ oyster: OysterArt) -> Bool { Oyster3DView.isEnabled }
+
+    private static func viewpoint(_ pose: OysterArt.Pose) -> Oyster3DView.Viewpoint {
+        switch pose {
+        case .thumb: .thumb
+        case .cover: .cover
+        case .fold: .fold
+        case .foldAcross: .foldAcross
+        }
+    }
 
     /// Ce qui passe devant la coquille : reflets du lagon, halo de la révélation, poisson voleur.
     private func drawFront(_ context: inout GraphicsContext, size: CGSize, oyster: OysterArt, date: Date) {
@@ -326,9 +367,12 @@ struct FishingView: View {
     /// Au pouce, l'huître est vue de dessus, charnière en haut. Sur l'iPhone Duo, elle est couchée comme
     /// sur pearl-inc.app : charnière au bord gauche de l'écran extérieur, puis sur le pli de l'écran intérieur.
     private var pose: OysterArt.Pose {
-        guard game.hasHinge || game.foldX != nil || game.foldY != nil else { return .thumb }
-        if let x = game.foldX { return .fold(x: x) }
-        if let y = game.foldY { return .foldAcross(y: y) }
+        // Sur le pli, l'huître est à plat (c'est le téléphone qui la soulève) : ouverte au pouce, rien ne bougerait sous le
+        // doigt. Elle prend alors la vue de l'iPhone classique, le temps de cette huître.
+        let onFold = game.poseFoldX != nil || game.poseFoldY != nil
+        guard game.hasHinge || onFold, !(onFold && game.openingByThumb) else { return .thumb }
+        if let x = game.poseFoldX { return .fold(x: x) }
+        if let y = game.poseFoldY { return .foldAcross(y: y) }
         return .cover
     }
 }

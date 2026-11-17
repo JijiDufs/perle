@@ -114,9 +114,10 @@ private struct HingeObserver: UIViewRepresentable {
 
 #if DEBUG
 /// Curseur de charnière simulée (Debug, `-SimulatedHinge`) : 0° = fermé, 180° = à plat.
+/// `-SimulatedHingeStart 180` : lancer l'app « téléphone déjà ouvert ».
 struct SimulatedHingeSlider: View {
     let onChange: (Double?) -> Void
-    @State private var degrees = 0.0
+    @State private var degrees = UserDefaults.standard.double(forKey: "SimulatedHingeStart")
 
     static var isEnabled: Bool { HingeInput.simulated }
 

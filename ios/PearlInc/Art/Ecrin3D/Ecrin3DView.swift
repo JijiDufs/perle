@@ -5,7 +5,7 @@ import RealityKit
 /// Étui plat de joaillier construit par code : base et couvercle en cuir (grain calculé), filet d'or sur la tranche,
 /// fermoir, dorures sur le dessus, plateau de velours, satin et écusson « Pearl Inc. » sous le couvercle. Le bijou
 /// (sa photo, ou son dessin) est rendu en image et couché sur le plateau. Il reçoit le même angle que le dessin 2D :
-/// aucune règle de jeu ici. `-Ecrin2D` au lancement remet le dessin 2D ; le Duo garde le dessin vu de dessus.
+/// aucune règle de jeu ici. `-Ecrin2D` au lancement remet le dessin 2D. Sur l'iPhone Duo, vu de dessus (`Viewpoint`).
 struct Ecrin3DView: UIViewRepresentable {
     /// Le geste, en degrés (0…180) ; le couvercle s'ouvre de `lidRatio` fois cet angle, comme le dessin 2D.
     var angle: Double
@@ -19,6 +19,18 @@ struct Ecrin3DView: UIViewRepresentable {
     /// Où la vue est posée dans l'écran (pour rendre les points du bijou et du couvercle dans le repère de l'écran).
     var origin: CGPoint
     let probe: Ecrin3DProbe
+    /// D'où l'on regarde : de trois quarts au pouce ; de dessus sur l'iPhone Duo (même modèle, autre caméra).
+    var viewpoint = Viewpoint.thumb
+
+    enum Viewpoint {
+        case thumb
+        /// Écran intérieur, pli vertical : charnière sur le pli, couvercle à plat à gauche, plateau à droite.
+        case fold
+        /// Écran intérieur en paysage, pli horizontal : couvercle en haut, plateau en bas.
+        case foldAcross
+        /// Écran extérieur : fermé, charnière à gauche.
+        case cover
+    }
 
     static let jewelPixels = 512.0
     static let jewelUnits = 0.8
@@ -39,7 +51,7 @@ struct Ecrin3DView: UIViewRepresentable {
 
     func updateUIView(_ view: ARView, context: Context) {
         let scene = context.coordinator
-        scene.update(angle: angle, leatherHex: leatherHex, dim: dim, jewelKey: jewelKey, drawJewel: drawJewel)
+        scene.update(angle: angle, leatherHex: leatherHex, dim: dim, jewelKey: jewelKey, drawJewel: drawJewel, view: viewpoint)
         probe.anchors = scene.anchors(in: view, origin: origin)
     }
 }
@@ -65,6 +77,9 @@ final class Ecrin3DProbe {
     private var jewelKey = ""
     private var jewelTexture: TextureResource?
     private var dimKey = -1.0
+    private let camera = PerspectiveCamera()
+    private var viewpoint: Ecrin3DView.Viewpoint?
+    private static let distance: Float = 5 // plus loin que le dessin 2D (3,4) : moins de déformation quand le couvercle monte
 
     func install(in view: ARView) {
         let W = Self.W, D = Self.D, H = Self.H, T = Self.T, R = Self.R
@@ -121,20 +136,42 @@ final class Ecrin3DProbe {
         fill.look(at: .zero, from: [1.4, 0.8, 1.6], relativeTo: nil)
         root.addChild(fill)
 
-        // Caméra de trois quarts (46° au-dessus de l'horizon), comme le dessin 2D ; l'écrin prend 1 / viewSpan de la vue.
-        let camera = PerspectiveCamera()
-        let distance: Float = 5 // plus loin que le dessin 2D (3,4) : moins de déformation quand le couvercle monte
-        camera.camera.fieldOfViewInDegrees = Float(2 * atan(Ecrin3DView.viewSpan / 2 / Double(distance)) * 180 / .pi)
-        let target: SIMD3<Float> = [0, H * 0.5, 0]
-        let elevation: Float = 46 * .pi / 180
-        camera.look(at: target, from: target + [0, distance * sin(elevation), distance * cos(elevation)], relativeTo: nil)
+        // L'écrin prend 1 / viewSpan de la vue.
+        camera.camera.fieldOfViewInDegrees = Float(2 * atan(Ecrin3DView.viewSpan / 2 / Double(Self.distance)) * 180 / .pi)
         root.addChild(camera)
+        aim(.thumb)
 
         view.scene.addAnchor(root)
     }
 
-    func update(angle: Double, leatherHex: String, dim: Double, jewelKey key: String, drawJewel: @escaping (Canvas2D) -> Void) {
-        let alpha = Float(min(180, max(0, angle)) * Self.lidRatio * .pi / 180)
+    /// Place la caméra selon le point de vue.
+    private func aim(_ viewpoint: Ecrin3DView.Viewpoint) {
+        self.viewpoint = viewpoint
+        let H = Self.H, D = Self.D, distance = Self.distance
+        switch viewpoint {
+        case .thumb:
+            // De trois quarts (46° au-dessus de l'horizon), comme le dessin 2D.
+            let target: SIMD3<Float> = [0, H * 0.5, 0]
+            let elevation: Float = 46 * .pi / 180
+            camera.look(at: target, from: target + [0, distance * sin(elevation), distance * cos(elevation)], relativeTo: nil)
+        case .fold, .foldAcross, .cover:
+            // À la verticale : au-dessus de la charnière (sur le pli), ou du milieu de l'étui fermé (écran extérieur).
+            // Le haut de l'écran : +x pour un pli vertical (le plateau part vers la droite), −z pour un pli horizontal.
+            let target: SIMD3<Float> = viewpoint == .cover ? [0, H * 0.5, 0] : [0, H, -D / 2]
+            let up: SIMD3<Float> = viewpoint == .foldAcross ? [0, 0, -1] : [1, 0, 0]
+            camera.look(at: target, from: target + [0, distance, 0], upVector: up, relativeTo: nil)
+        }
+    }
+
+    func update(angle: Double, leatherHex: String, dim: Double, jewelKey key: String, drawJewel: @escaping (Canvas2D) -> Void,
+                view: Ecrin3DView.Viewpoint) {
+        if view != viewpoint {
+            aim(view)
+            dimKey = -1  // le bijou se tourne vers la nouvelle caméra
+        }
+        // Sur le pli du Duo, le couvercle est à plat de l'autre côté : c'est le téléphone qui le soulève.
+        let onFold = view == .fold || view == .foldAcross
+        let alpha = onFold ? Float.pi : Float(min(180, max(0, angle)) * Self.lidRatio * .pi / 180)
         lidPivot.orientation = simd_quatf(angle: -alpha, axis: [1, 0, 0])
 
         if leatherHex != leatherKey {
@@ -158,6 +195,8 @@ final class Ecrin3DProbe {
             material.opacityThreshold = 0.02
             let size = Float(Ecrin3DView.jewelUnits)
             jewel.model = ModelComponent(mesh: .generatePlane(width: size, depth: size), materials: [material])
+            // Vue de dessus avec le haut de l'écran en +x : l'image se couche sur le côté (−90° autour de y).
+            jewel.orientation = simd_quatf(angle: view == .fold || view == .cover ? -.pi / 2 : 0, axis: [0, 1, 0])
         }
     }
 

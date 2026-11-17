@@ -18,6 +18,16 @@ struct SettingsView: View {
     @State private var confirmDelete = false
     @State private var copied = false
 
+    /// iPhone Duo : ouvrir les huîtres avec la charnière, ou au pouce seulement (hors du corps de la liste, trop
+    /// long pour le compilateur sinon).
+    @ViewBuilder private var hingeToggle: some View {
+        if game.hingeDevice {
+            Toggle(isOn: Binding(get: { game.hingePlay }, set: { game.chooseDuoPlay(hinge: $0) })) {
+                Label("Jouer avec la charnière", systemImage: "book.closed")
+            }
+        }
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -29,6 +39,8 @@ struct SettingsView: View {
                     Toggle(isOn: $sounds) { Label("Sons", systemImage: "speaker.wave.2") }
                         .tint(Palette.gold)
                     Toggle(isOn: $haptics) { Label("Vibrations", systemImage: "iphone.radiowaves.left.and.right") }
+                        .tint(Palette.gold)
+                    hingeToggle
                         .tint(Palette.gold)
                     Toggle(isOn: Binding(get: { notify }, set: { on in
                         if on {
@@ -95,6 +107,7 @@ struct SettingsView: View {
                 .listRowBackground(Color.white.opacity(0.08))
 
                 Section("Aide") {
+                    Link(destination: SiteLinks.review) { Label("Noter Pearl Inc.", systemImage: "star") }
                     Link(destination: SiteLinks.support) { Label("Aide et contact", systemImage: "questionmark.circle") }
                     Link(destination: SiteLinks.mail(accountId: auth.shortAccountId)) { Label("Écrire au support", systemImage: "envelope") }
                 }
@@ -223,6 +236,8 @@ enum SiteLinks {
     static var terms: URL { page("/conditions/", "/en/terms/") }
     static var legal: URL { page("/mentions-legales/", "/en/legal-notice/") }
     static let supportEmail = "laplateformemjh@gmail.com"
+    /// La page d'avis de Pearl Inc. sur l'App Store (identifiant de l'app : 6822782842).
+    static let review = URL(string: "https://apps.apple.com/app/id6822782842?action=write-review")!
 
     /// E-mail au support, avec l'identifiant du compte dans l'objet pour retrouver le joueur.
     static func mail(accountId: String?) -> URL {

@@ -3,17 +3,115 @@
 Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
+## 2026-11-17 (parcours Duo essayé au simulateur) · Jules · Claude Code · branche `jules/essai-assets-bijoux`
+
+**Fait**
+- **Parcours « charnière ou pouce » essayé à l'écran**, sur l'iPhone 17 simulé avec la charnière simulée (`-SimulatedHinge -SimulatedFold -SimulatedHingeStart 180` : ce dernier, nouveau, lance l'app « téléphone déjà ouvert »), partie d'après-tutoriel. Vu : les deux boutons au lancement ouvert ; « Jouer avec la charnière » → consigne « Referme le téléphone, puis ouvre-le », armement, ouverture et carte « Referme le téléphone pour l'huître suivante » ; « Rester ouvert, jouer au pouce » → huître classique, carte « Touche la carte », refermer la charnière ne fait plus rien ; le premier geste au pouce vaut choix ; la relance d'après-tutoriel et son « Non merci » ; la ligne « Jouer avec la charnière » dans les Réglages.
+- **Défauts trouvés par l'essai, corrigés** :
+  - Sur l'écran intérieur, l'huître restait dessinée à plat même en mode pouce (rien ne bougeait sous le doigt) : en mode pouce, l'huître et l'écrin reprennent la vue de l'iPhone classique (`GameModel.poseFoldX / poseFoldY`) ; et sur le pli, une huître ouverte au pouce passe en vue classique le temps de cette huître (`openingByThumb`).
+  - Hors tutoriel, choisir le pouce affichait aussitôt la relance « Essayer la charnière » : elle ne sert plus qu'à qui a choisi le pouce pendant le tutoriel.
+  - Boutons du choix tronqués à côté du pli (« Rester o… ») : leur texte passe à la ligne.
+  - Le pictogramme « referme le téléphone » dépassait derrière le panneau de choix : masqué tant que le panneau est là.
+  - L'interrupteur « Vibrations » avait perdu sa couleur dorée (le nouveau réglage s'était glissé avant son `.tint`).
+- `npm test` (176), `npm run build`, `swift test` (95) passent.
+
+**Reste à faire**
+- **Pas essayé** : la bulle du tutoriel qui pose la question sur la toute première huître (il faut une partie neuve, donc un nouveau compte invité) ; l'interrupteur des Réglages au toucher (le simulateur ne bascule aucun interrupteur, « Sons » compris : on l'a vu affiché, il appelle la même fonction que les boutons) ; l'écrin en mode pouce ; le paysage ; un vrai iPhone Duo.
+- Demande d'avis App Store : pas vue à l'écran (30 huîtres et 3 jours ; `Reviews.noteDay` compte bien les jours, 2 au simulateur).
+- Visuels App Store : pas encore téléversés dans App Store Connect.
+
+**Fragile**
+- Le simulateur iPhone Duo n'allume que son écran extérieur, et l'outil de toucher de Claude n'y agit pas : pour essayer le parcours, prendre un iPhone classique simulé avec la charnière simulée. Sa moitié d'écran « à côté du pli » (201 pt) est plus étroite que celle d'un vrai Duo : les panneaux y paraissent serrés.
+- Le curseur de charnière simulée recouvre le premier bouton du panneau de choix (outil de test seulement).
+- Commité le 2026-11-17 sur `jules/essai-assets-bijoux`, pas poussé. Les quatre vidéos `docs/lancement/*.mp4` (231 Mo) restent hors du dépôt.
+
+---
+## 2026-11-16 (trouvaille dans la valve, visuels en cours) · Jules · Claude Code · branche `jules/essai-assets-bijoux`
+
+**Fait**
+- **Trouvaille dans la valve de l'huître 3D** (`Oyster3DView` reçoit `findId`, `FishingView` le lui passe) : la photo de la trouvaille est posée sur un carré tourné vers la caméra, comme la perle (carré d'une demi-valve, posé plus haut qu'une perle, ombre sur le voile) ; cachée comme la perle sur le pli du Duo avant la révélation. L'app compile pour le simulateur. **Pas vue à l'écran** : le simulateur ne démarre pas (voir Fragile).
+- Découpe des trouvailles : liseré noir du bord rogné (`@f` dans `scripts/decoupe-planche.py`), les 25 photos refaites.
+- Vu dans l'app le 2026-11-10 (iPhone 18 Pro, avant la valve) : carte de révélation, volet Trouvailles de la collection et carte agrandie affichent les photos.
+- **Visuels App Store, nouvelle série commencée** (`scripts/app-store-visuels/index.html`, `render.sh`, cible `art`) : les trois premiers écrans se suivent (lagon du jeu rendu sur trois écrans de large, « Ouvre l'huître » → « Trouve la perle rare » → « Complète ta collection », fil de perles de la plus commune à la maudite avec leurs chances) ; écrans 4 à 10 sur une teinte continue, avec un objet à cheval sur chaque bord ; les trouvailles flottantes sont les photos (la cible `art` rend les 25). Ordre : ouvre, perle rare, collection, geste, perle maudite, écrins, bijoux, trouvailles, coquilles, progression.
+
+- **Vue au simulateur (iPhone 17)** : la trouvaille dans la valve, agrandie (carré de 0,6 valve). Défaut trouvé et corrigé : huître fermée, l'objet traversait le couvercle ; il grandit maintenant avec l'ouverture (pleine taille à 55°). Ouverture au pouce jusqu'à la carte : pas de défaut.
+- **iPhone Duo : charnière ou pouce** (AGENTS.md §6, 2026-11-16) : `GameModel` (`hingeDevice`, `hingePlay`, `chooseDuoPlay`, `showsDuoChoice`, `showsDuoTip`), `Features/DuoPlayChoice.swift`, bulle du tutoriel, réglage « Jouer avec la charnière ». `hasHinge` veut maintenant dire « la charnière joue » (Duo et réglage allumé) : les vues n'ont pas changé.
+- **Demande d'avis App Store** (§6, 2026-11-16) : `APP_REVIEW`, `ReviewPrompt.shouldAsk` (3 tests), `Platform/Reviews.swift`, appel dans `nextOyster()`, ligne « Noter Pearl Inc. » dans les Réglages (identifiant de l'app 6822782842). 8 textes ajoutés à `Localizable.xcstrings` avec leur anglais. `npm run ios:export` relancé.
+- `npm test` (176) et `swift test` (95) passent.
+
+- **Visuels App Store refaits, 10 en français et 10 en anglais** (2026-11-17, `docs/app-store/visuels/{fr,en}`, 1320 × 2868, JPEG RVB ; aperçus bord à bord dans `apercu-fr.jpg` et `apercu-en.jpg`). Ordre : ouvre, perle rare, collection, geste, perle maudite, écrins, bijoux, trouvailles, coquilles, progression. Les trois premiers se suivent (lagon continu, fil de perles avec leurs chances) ; les suivants sont reliés par une teinte continue et un objet à cheval. En-têtes réécrits (« Trop vite ? Elle se fêle. », « Et parfois… un canard. » / « Sometimes… a duck. »). L'écran 8 montre l'huître ouverte sur un canard.
+- **Captures de l'app** (iPhone 17 au simulateur, sans panneau) dans `build/captures-app-store/` (hors du dépôt, mais durable) : `hero-golden-34` (huître à 70°, `-StoreShot`), `raw_golden_open`, `raw_cursed_card`, `raw_collection` (6 / 7, case « ? »), `raw_progress`, `raw_ecrin_glint` (variante Aurore, trouvée en montant par paliers de 10°), `raw_jewel_card`, `raw_find_valve`, `raw_benitier_glow`, `raw_or_glow`, et leurs versions `_en` (`-AppleLanguages "(en)"`). Pour refaire les visuels : `sh scripts/app-store-visuels/render.sh build/captures-app-store`.
+
+**Reste à faire**
+- Visuels : la carte de la perle maudite affiche un **lustre C** (au simulateur, le geste simulé est toujours jugé irrégulier) ; à reprendre sur un vrai iPhone si on veut une meilleure note. Pas encore téléversés dans App Store Connect.
+- Parcours Duo : essayé le 2026-11-17 (entrée ci-dessus). Demande d'avis : toujours pas vue à l'écran.
+
+**Fragile**
+- Simulateur : fenêtres « identityservicesd a quitté de manière imprévue » au démarrage. Ce n'est pas l'app (service d'Apple de l'environnement iOS 27.3 bêta, sans effet sur le jeu). Le simulateur tombait pour de bon quand le Mac (8 Go) avait son swap presque plein (Chrome, Teams, Word, Outlook, Acrobat ouverts) et que le panneau de simulateur de Claude était attaché : fermer ces applis, piloter sans panneau (`xcrun simctl boot / install / launch`, `xcrun simctl io <udid> screenshot`).
+- **Construire pour le simulateur avec la signature normale** (ne pas passer `CODE_SIGNING_ALLOWED=NO`) : sans signature, l'app n'a pas accès au trousseau, la session Supabase n'est pas gardée et l'écran de connexion revient à chaque lancement (chaque « Jouer sans compte » crée alors un compte invité de plus).
+- Réglage de test `OysterTestAngle` (couvercle figé) : le retirer après usage (`xcrun simctl spawn <udid> defaults delete app.pearlinc.PearlInc OysterTestAngle`), sinon l'huître paraît déjà ouverte, tutoriel compris.
+
+---
+## 2026-11-10 (trouvailles en photo) · Jules · Claude Code · branche `jules/essai-assets-bijoux`
+
+**Demande de Jules** : les 25 trouvailles dans la nouvelle DA (photo), comme les perles et les bijoux, toutes à la même taille à l'œil.
+
+**Fait**
+- **25 trouvailles en photo** (`ios/PearlInc/Art/FindPhotos/find-<id>.png`, 512 px, fond transparent, 3,9 Mo en tout) : 3 planches Kling 3.0 Omni générées par Jules sur kling.ai (12 crédits ; le compte relié à Claude Code était à 0 crédit) d'après les planches des dessins actuels (`scripts/trouvailles-planches/ref-N.png`). Kling a rendu des planches 3:4 sans grille : la case de chaque objet est repérée à la main (`cases-N.json`).
+- `scripts/trouvailles-planches/decoupe.sh` refait tout depuis les planches : retouches (accent du ticket « MANÉGE » → « MANÈGE », bouton noir effacé sous le champignon, sangle de l'aileron éclaircie, bout du manche de la fourchette arrondi, verre teinté posé dans les lunettes que Kling avait faites sans verre, rubans de la bouteille raccourcis), découpe, écriture dans `FindPhotos`. Une seule tong gardée sur les deux ; dentier de la planche 3, nain de la planche 1 ; une tête de requin en trop ignorée. `LISEZMOI.md` : consignes Kling et mode d'emploi ; `apercu.png` : les 25 à la taille de la carte.
+- `scripts/decoupe-planche.py` : `@p` (objet plein : ses parties sombres restent opaques), `@t` (plein sauf ses vrais trous : anneau, anse, clé), `@e` (taille équilibrée : un objet compact, ballon ou pièce, occupe 72 % du carré au lieu de 88 %, pour ne pas paraître plus gros qu'un objet allongé).
+- `FindArt.draw` : prend `find-<id>.png` s'il est dans le bundle, sinon le dessin par code ; `-FindDrawn` force le dessin. Visuels App Store : `FindPhotos` exclu de la cible `art` et copié par `render.sh`.
+- Vérifié : l'app compile pour le simulateur et son bundle contient les 25 photos ; les 25 rendues par `FindArt` (code de l'app, sur Mac) à la taille de la carte ; `npm test` et `npm run build` passent. Essayé puis retiré : les trouvailles modélisées en 3D par code (SceneKit), trop « jouet ».
+
+**Reste à faire**
+- **Pas vu dans l'app** : au simulateur, l'app s'arrête à l'écran de connexion (« Jouer sans compte » crée un compte invité sur Supabase, pas fait par Claude). À regarder : carte de révélation, collection, huître 2D ; la partie de démonstration posée cache un cadenas (`seed.py find:cadenas`).
+- Huître 3D : une trouvaille n'apparaît pas dans la valve (`Oyster3DView` ne reçoit que la perle), seulement sur la carte.
+- Visuel App Store 08 à refaire avec les photos (`render.sh`).
+- Les planches sont les copies 1507 × 2000 passées par la conversation : avec les originaux 4K de Kling, les photos seraient plus nettes sur la carte agrandie (cases et retouches à remettre à l'échelle).
+
+**Fragile**
+- Écarts avec les textes : la bouteille a son message attaché dehors (la carte dit « dedans ») ; la fourchette a trois dents et un manche court ; le jeton reste sur « 9 » (le compte à rebours du dessin ne tourne plus) ; l'anneau n'a plus son inscription qui apparaît et s'efface.
+- Clins d'œil : en photo, le cube, le champignon et le ballon ressemblent davantage aux objets réels qu'en dessin. Toujours aucun nom d'œuvre ni de marque, mais à regarder avant l'envoi en revue.
+- Pas d'ombre de contact sous les photos. `@t` prend pour un trou toute zone fermée de noir pur d'au moins 9 px.
+
+---
+## 2026-11-07 (fiche 1.2) · Jules · Claude Code · branche `jules/essai-assets-bijoux`
+
+**Décidé** : la nouvelle DA (photos + 3D) part dans la 1.2 (AGENTS.md §6). À montrer à Mathys avant l'envoi en revue.
+
+**Fait**
+- Boutique : les aperçus des coquilles sont en 3D (`Oyster3DView` fermée, même cadrage qu'à la Pêche) ; `-Oyster2D` remet le dessin. Vu au simulateur : les 4 coquilles en 3D.
+- `docs/app-store/fiche.md` §1 bis : texte promotionnel, nouveautés 1.2 FR / EN, paragraphe des notes de revue. Pas encore dans App Store Connect (la version 1.2 n'y est pas créée).
+- Visuels : la cible `art` de `vitrine/` recompile sur Mac (dossiers 3D et photos exclus, `UIImage` → `NSImage`) ; `render.sh` copie les photos à côté de l'exécutable : perles et bijoux des visuels sortent en photo.
+
+- **Captures de la fiche refaites dans la nouvelle DA**, FR et EN (iPhone 18 Pro au simulateur, partie vitrine de `seed.py`), dont le héros du visuel 1 (capture 3D, que `render.sh` prend à la place du dessin de `art` si `hero-golden-34.png` est dans le dossier des captures). Deux options de lancement pour ça : `-NoSound` (pas d'audio : au simulateur, `AVAudioEngine` plantait au lancement quand le Mac était chargé) et `-StoreShot` (cache barre du haut, onglets et objectif, pour les plans sans interface). Les 20 visuels sont dans `docs/app-store/visuels/{fr,en}` ; captures brutes gardées hors du dépôt.
+
+**Reste à faire**
+- Montrer les visuels et la boutique à Mathys ; créer la version 1.2 dans App Store Connect, y coller §1 bis et téléverser les visuels (pas fait : attend le feu vert).
+- Fusion du travail 3D du Duo (session « Assets et optimisation iPhone Duo », pas commité) : la ligne Duo des nouveautés en dépend.
+
+**Fragile**
+- `vitrine/Package.swift`, `FishingView.swift` et les fichiers 3D sont aussi modifiés par la session Duo : commiter ensemble.
+- Au simulateur chargé, le pouce simulé trop rapide fêle la perle (vitesse gonflée) : glisser en 7 s, ou figer l'angle avec `OysterTestAngle`.
+
+---
+## 2026-11-07 · Jules · Claude Code · branche `jules/essai-assets-bijoux`
+
+**Fait**
+- **Clé d'API App Store Connect** (équipe, rôle Admin, nom « Jul », Key ID `2BH29LC72C`), créée depuis le compte de Mathys. Le fichier `.p8` est dans `~/.appstoreconnect/private_keys/` sur le Mac de Jules, hors du dépôt ; il ne se retélécharge pas.
+- `scripts/asc.mjs` : jeton signé (ES256, crypto de Node, sans dépendance) et `asc(path, init)` pour appeler l'API ; en ligne de commande, affiche la réponse.
+- `scripts/testflight.sh` : numéro de build = le plus haut déjà envoyé + 1 (lu par l'API, le projet Xcode n'est pas modifié), archive Release, export signé par la clé (signature automatique, certificat de distribution géré par Apple), envoi. Les groupes MJH et Amis sont internes et reçoivent tous les builds : rien à affecter. `--local` s'arrête au `.ipa` dans `build/testflight/`. `VERSION=1.2` choisit une autre version que celle du projet ; le script s'arrête avant de compiler si la version est déjà validée par Apple (la 1.1 l'est : premier envoi refusé, « train 1.1 fermé »).
+
+**Fragile**
+- Le script envoie ce qu'il y a sur le disque, branche et modifications non commitées comprises (il prévient). Envoyer depuis `main` sauf essai voulu.
+- Le numéro de build du projet (`CURRENT_PROJECT_VERSION`) reste à 8 : c'est l'API qui fait foi.
+
+---
 ## 2026-11-06 (essai assets bijoux) · Jules · Claude Code · branche `jules/essai-assets-bijoux`
 
 **Essai, pas une décision** : des photos générées à la place du dessin par code vont contre le §6 (« tout en code », « pas d'assets graphiques »). À montrer à Mathys avant toute fusion.
 
 **Fait**
-- **Fond vidéo stylisé retiré aussi** (Jules : « on garde le fond en code pour l'instant ») : plus de lecteur ni de mp4 dans l'app. Reste : le lagon dessiné, et la nuit de nacre de 21 h à 6 h. Les deux boucles vidéo (Kling réaliste, Wan stylisée) sont gardées hors du dépôt si on veut y revenir
-- **Deuxième essai de fond vidéo, stylisé et en boucle sans couture** (demande de Jules : « une image et met-la en keyframe seamless loop ») : image du lagon générée par Higgsfield (`z_image`, 0,15 crédit, 2 variantes, la B retenue : plus de caustiques, récif au loin), puis vidéo image → image avec Wan 3.0 (la même image en première et dernière image, 5 s, 720×1280, 30 i/s, 8,75 crédits ; solde Higgsfield ≈ 8), ré-encodée sans son (`Art/lagoon-loop.mp4`, 0,8 Mo). Lecteur `LagoonVideo.swift` remis, réglage de test `LagoonVideo` (actif sur le simulateur). Le lagon dessiné reste le fond par défaut. Kling à 0 crédit
-- **Fond vidéo réaliste retiré** (Jules : « trop de décalage entre le design de l'huître et la vidéo trop réaliste ») : `LagoonVideo.swift` et `lagoon-loop.mp4` supprimés, la Pêche redessine le lagon. La nuit de nacre selon l'heure reste. Prochain essai demandé par Jules : une image stylisée du lagon, puis une vidéo image → image (même image en première et dernière image) pour une boucle sans couture
-- **Fonds : choix de Jules = le lagon actuel**, et la **nuit de nacre selon l'heure** (21 h – 6 h, heure du téléphone, `LagoonArt.Style.isNight`) ; profondeur et clair retirés. Réglage de test `LagoonStyle` = `nuit` | `jour` pour forcer. **Essai de fond vidéo en boucle** (demande de Jules) : une vidéo Kling 2.5 (5 s, 720×1280, 15 crédits : le solde Kling est à 0) montée en aller-retour par ffmpeg (`Art/lagoon-loop.mp4`, 10 s, 2,3 Mo, H.264 sans son), jouée par `Art/LagoonVideo.swift` (AVPlayerLooper, muet) derrière la Pêche à la place du dessin, avec l'ombre de l'huître et la vignette du code par-dessus. Réglage de test `defaults write app.pearlinc.PearlInc LagoonVideo -bool true`. Si on garde la vidéo : prévoir la version nuit, la Collection / Boutique, et vérifier la batterie et « Réduire les animations »
-- **Essai de fonds animés** (demande de Jules : des fonds plus cohérents avec la DA photo / 3D, en code seulement, plusieurs choix) : `LagoonArt.Style` dans `Art/LagoonArt.swift`, réglage de test `LagoonStyle` (`defaults write app.pearlinc.PearlInc LagoonStyle -string profondeur|nuit|clair`, rien = lagon actuel). Mêmes formes, seuls couleurs et effets changent : **profondeur** (horizon noyé et récif flouté, grain de sable, algues translucides, caustiques et rayons plus marqués), **nuit de nacre** (eau bleu nuit, rayons de lune, plancton lumineux, pas d'étoiles de mer), **clair** (lagon pâle, sable crème, caustiques nettes, pas de récif). Le même fond sert à la Collection, la Boutique et la connexion (voile `dim`). Jules choisit ; à retirer ensuite les styles non retenus
-- **Bénitier : le manteau suit le contour de la valve** (réduit à 86 %, comme `ClamArt`), collé à la charnière : plus de bande de porcelaine blanche le long de la charnière sous le couvercle (retour de Jules, entourée en noir). Rayures et yeux découpés par le manteau. Vérifié figé à 95° et 130° au simulateur.
 - **15 bijoux au saphir en photo** (`ios/PearlInc/Art/JewelPhotos/jewel-saphir-<type>-<style>.png`, 512 px, fond transparent) : planche de référence n° 11 de Jules refaite dans Kling (modèle Nano Banana Pro, 35 crédits : trop cher, Kling 3.0 Omni à 4 crédits pour la suite), découpée en grille et détourée par la luminosité (fond noir pur → transparent ; Vision perdait les brins de chaîne trop fins).
 - `JewelArt.draw` affiche la photo `jewel-<rareté>-<type>-<style>` si elle existe et si le bijou est dans le métal par défaut de sa rareté (or blanc pour le saphir), sinon le dessin habituel. `-JewelDrawn` force le dessin. `Canvas2D.drawImage` ajouté.
 - **14 bijoux à l’émeraude en or jaune** : la planche saphir donnée comme modèle à Kling 3.0 Omni (4 crédits, consigne « change seulement la pierre et le métal ») ; même mise en page, découpe propre. L’étoile de mer est restée en or blanc : écartée (dessinée). Les chaînes des pendentifs sont restées argentées. Découpe : `scripts/decoupe-planche.py` (luminosité + ouverture morphologique contre les points clairs isolés du fond).
@@ -88,6 +186,27 @@ Premier retour d'un joueur sur un vrai iPhone Duo : « on ne peut jouer que dans
 - Rien n'a été essayé sur un Duo ni au simulateur (choix de Jules : le simulateur du Duo sature le Mac). Seulement `npm test`, `npm run build`, `swift test` et la compilation de l'app.
 - Paysage : on suppose que le portrait de l'écran intérieur = pli vertical (ce que lisait déjà `HingeSource`). Les fenêtres (carte, fête de niveau, panneaux) prennent toute la largeur en paysage et passent sur le pli ; le message sous l'huître peut toucher le bas de la valve. À regarder avec des testeurs équipés.
 - Les deux nouveaux sons n'ont pas été écoutés.
+
+---
+
+## 2026-10-28 (lancement) · Jules · Claude Code · branche `jules/app-1.1-testflight`
+
+La 1.1 est sur l'App Store. Communication de lancement : posts et vidéo.
+
+**Fait**
+- `docs/lancement/posts.md` : tweets FR / EN, post LinkedIn (FR + EN dessous, lien App Store en commentaire), idée de second post « rêve de gosse ». Lien App Store : `https://apps.apple.com/app/pearl-inc/id6822782842`.
+- `docs/lancement/pearl-inc-lancement-{fr,en}.mp4` (et une version carrée 1080 × 1080, `-carre-`, même montage, `?format=carre`) : 35 s, 1080 × 1920, **60 i/s**, H.264 + AAC (X et LinkedIn). Accroche perle dorée (lente), trois cartes, perle maudite, huître sur iPhone Duo, écrin au pouce (éclat parfait, variante Aurore), **écrin sur iPhone Duo**, collection, fin App Store.
+- Deuxième version, après le retour de Jules (« saccadé ») : les prises du simulateur tournaient à ≈ 20 i/s pour l'écrin et avaient des trous de 0,3 à 0,5 s au pop. Les ouvertures sont maintenant **dessinées image par image par le code de l'app** (`vitrine/`, cible `scenes`, avec `OpeningEngine` et `GlintEngine` : l'éclat parfait et la variante sont déclenchés par le vrai moteur), l'interface de l'app est **détourée des prises** (`frames ui` : les pixels immobiles d'une image à l'autre), et seules les cartes viennent des prises.
+- `scripts/video-lancement/` : `make.sh` (tout enchaîne), `index.html` (montage), `render.mjs` (Chrome sans fenêtre), `frames.swift` (vidéo ↔ images, détourage, AVFoundation, pas de ffmpeg), `music.swift` (musique et sons générés par code, sans licence).
+- iPhone Duo : le Duo 3D de pearl-inc.app, écrans intérieur et extérieur dessinés par l'app (poses `.fold` et `.cover`), l'angle de l'huître ou de l'écrin = l'angle du téléphone. Demandes de Jules : l'écran extérieur garde la coquille (ou l'écrin) **fermée et immobile pendant toute l'ouverture** (c'est le téléphone qui soulève le couvercle, jamais d'écran noir), l'intérieur s'allume en s'ouvrant ; l'écrin est agrandi sur les écrans du Duo (plus grand que dans l'app, qui lui garde de la place pour l'en-tête et les messages).
+- **Dans l'app (lu dans le code, pas vérifié sur un vrai Duo)** : sur l'écran extérieur, la pose `.cover` dessine le couvercle qui se replie avec l'angle de la charnière (`OysterArt`, `lift = cos θ` ; `EcrinView`, `angle` quand il n'y a pas de pli), tant qu'iOS garde l'app sur cet écran. Un seul écran est allumé à la fois ; à décider : figer le couvercle fermé sur l'écran extérieur.
+
+**Fragile / à savoir**
+- Le simulateur du Duo + Device Hub saturent le Mac (8 Go) : le Duo a redémarré au dépliage. Choix de Jules : maquette 3D du site. Sur le Duo de la vidéo, pas de barre du haut ni d'onglets (seulement le dessin du jeu).
+- Version anglaise : l'interface et les cartes de l'app sont en français (prises filmées en français). À refilmer en anglais pour une version 100 % anglaise.
+- La musique n'a pas été écoutée par Claude (générée et mesurée seulement) : à écouter avant de poster.
+- Les fenêtres des prises (interface, cartes) sont relevées à la main dans `make.sh` et `index.html` : à refaire si on refilme.
+- Disque du Mac presque plein pendant le travail : le rendu écrit des JPEG et efface les images après l'encodage.
 
 ---
 

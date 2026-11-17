@@ -7,7 +7,7 @@
 #    mais il mange les chaînes très fines)
 import json
 import sys
-from PIL import Image, ImageChops, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageOps
 src, out, names = sys.argv[1], sys.argv[4], sys.argv[5].split(',')
 speck = int(sys.argv[6]) if len(sys.argv) > 6 else 3
 im = Image.open(src).convert('RGB')
@@ -20,6 +20,8 @@ else:
 for i, name in enumerate(names):
     if name == '-': continue
     # « nom@b » coupe le bas de la case (ce qui dépasse de la rangée suivante), « @l » / « @r » son bord gauche / droit, « @c » ses coins.
+    # « @p » : objet plein, tout l'intérieur de sa silhouette est opaque (parties sombres d'un objet, que la luminosité trouerait) ;
+    # « @t » : plein aussi, mais ses vrais trous (noir pur, comme le fond : anneau, anse, monture vide) restent transparents.
     name, _, flags = name.partition('@')
     x0, y0, x1, y1 = boxes[i]
     left, right = ((x1 - x0) // 16 if f in flags else 0 for f in 'lr')
@@ -37,10 +39,22 @@ for i, name in enumerate(names):
         for cx, cy in ((0, 0), (w - w // 10, 0), (0, h - h // 10), (w - w // 10, h - h // 10)):
             solid.paste(0, (cx, cy, cx + w // 10, cy + h // 10))
     alpha = ImageChops.darker(alpha, solid)
+    if 'p' in flags or 't' in flags:
+        outside = ImageOps.expand(solid, 1, 0)
+        ImageDraw.floodfill(outside, (0, 0), 128)   # le fond : tout ce qui touche le bord de la case
+        inside = outside.crop((1, 1, w + 1, h + 1)).point(lambda v: 0 if v == 128 else 255)
+        if 't' in flags:
+            hole = light.point(lambda v: 255 if v < floor - 6 else 0).filter(ImageFilter.MinFilter(9)).filter(ImageFilter.MaxFilter(9))
+            inside = ImageChops.subtract(inside, hole)
+        alpha = ImageChops.lighter(alpha, inside.filter(ImageFilter.MinFilter(7)))
+    # « @f » : rogne d'un pixel le fin liseré sombre du bord (pixels à cheval sur le fond noir, visibles sur une carte claire), puis l'adoucit.
+    if 'f' in flags: alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.6))
     box = solid.getbbox()
     assert box, name
     piece = Image.merge('RGBA', (red, green, blue, alpha)).crop(box)
     s = 512 * 0.88 / max(piece.size)
+    # « @e » : taille équilibrée, un objet compact (ballon, pièce) est réduit pour ne pas paraître plus gros qu'un objet allongé (clé, ticket).
+    if 'e' in flags: s = min(s, 512 * 0.72 / (piece.width * piece.height) ** 0.5)
     piece = piece.resize((max(1, round(piece.width * s)), max(1, round(piece.height * s))), Image.LANCZOS)
     canvas = Image.new('RGBA', (512, 512), (0, 0, 0, 0))
     canvas.paste(piece, ((512 - piece.width) // 2, (512 - piece.height) // 2))

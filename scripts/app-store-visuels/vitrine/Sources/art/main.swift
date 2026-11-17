@@ -3,10 +3,14 @@
 import AppKit
 import PearlCore
 import SwiftUI
+// Le dessin de l'app charge ses photos en UIImage (iOS) : même nom sur Mac. render.sh copie les photos à côté de l'exécutable (Bundle.main).
+typealias UIImage = NSImage
+extension Image { init(uiImage: NSImage) { self.init(nsImage: uiImage) } }
 
 struct PearlEntry: Decodable { let id: String; let color: String; let glow: String? }
 struct Overtone: Decodable { let color: String? }
-struct Cat: Decodable { let pearls: [PearlEntry]; let overtones: [String: Overtone] }
+struct FindEntry: Decodable { let id: String; let glow: String }
+struct Cat: Decodable { let pearls: [PearlEntry]; let overtones: [String: Overtone]; let finds: [FindEntry] }
 
 let args = CommandLine.arguments
 let cat = try! JSONDecoder().decode(Cat.self, from: Data(contentsOf: URL(fileURLWithPath: args[1])))
@@ -60,6 +64,21 @@ struct Scene: View {
             art.drawRevealEffects(&cc, size: size)
         }
         .frame(width: w, height: h)
+    }
+}
+
+/// Le lagon seul, sur plusieurs écrans de large : le fond continu des visuels qui se suivent (même hauteur et même
+/// foyer de lumière que la capture du héros, qui recouvre le premier écran).
+struct WideLagoon: View {
+    var screens: Double
+    var body: some View {
+        Canvas { c, size in
+            let layout = OysterArt.layout(size: CGSize(width: 402, height: 874), look: SkinLook(skinId: "lagon"))
+            let lagoon = LagoonArt(time: 1.7, focus: layout.focus)
+            lagoon.draw(&c, size: size)
+            lagoon.drawOverlay(&c, size: size)
+        }
+        .frame(width: 402 * screens, height: 874)
     }
 }
 
@@ -120,9 +139,8 @@ MainActor.assumeIsolated {
     for (name, l) in pearls { save(Solo(pearl: l), "pearl-\(name)") }
     // Le héros : l'huître du lagon entrouverte, lumière dorée, comme dans l'app (points × 3).
     save(Scene(w: 440, h: 956, angle: 34, pearl: golden, length: 318, cy: 520, time: 1.7), "hero-golden-34", scale: 3)
-    for (id, glow) in [("canard", "#ffe066"), ("cartouche", "#9ad1ff"), ("piece-or", "#ffd76a"), ("champignon", "#ff7a7a"), ("bouteille", "#9ff0d0"), ("dentier", "#ffffff")] {
-        save(FindSolo(id: id, glow: glow), "find-\(id)")
-    }
+    save(WideLagoon(screens: 3), "lagoon-wide", scale: 1320.0 / 402)
+    for find in cat.finds { save(FindSolo(id: find.id, glow: find.glow), "find-\(find.id)") }
     // Bijoux : le premier de chaque rareté tiré par le moteur (comme la partie vitrine), un diadème pour le rubis.
     let catalog = Catalog.shared
     let rng = seededRng(2026)

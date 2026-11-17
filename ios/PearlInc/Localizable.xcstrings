@@ -6186,6 +6186,134 @@
           }
         }
       }
+    },
+    "Ton iPhone Duo peut ouvrir l’huître avec sa charnière. Comment veux-tu jouer ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your iPhone Duo can open the oyster with its hinge. How do you want to play?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton iPhone Duo peut ouvrir l’huître avec sa charnière. Comment veux-tu jouer ?"
+          }
+        }
+      }
+    },
+    "Ton iPhone Duo peut ouvrir l’huître avec sa charnière." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your iPhone Duo can open the oyster with its hinge."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton iPhone Duo peut ouvrir l’huître avec sa charnière."
+          }
+        }
+      }
+    },
+    "Comment veux-tu jouer ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How do you want to play?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comment veux-tu jouer ?"
+          }
+        }
+      }
+    },
+    "Jouer avec la charnière" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play with the hinge"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jouer avec la charnière"
+          }
+        }
+      }
+    },
+    "Rester ouvert, jouer au pouce" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stay open, play with my thumb"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rester ouvert, jouer au pouce"
+          }
+        }
+      }
+    },
+    "Essayer la charnière" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try the hinge"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essayer la charnière"
+          }
+        }
+      }
+    },
+    "Non merci" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No thanks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non merci"
+          }
+        }
+      }
+    },
+    "Noter Pearl Inc." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate Pearl Inc."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noter Pearl Inc."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -17,21 +17,21 @@ struct EcrinView: View {
         ZStack {
             TimelineView(.animation(paused: reduceMotion && game.ecrinPhase == .closed)) { timeline in
                 let in3D = Ecrin3DView.isEnabled && game.shownEcrin != nil
-                    && !(game.hasHinge || game.foldX != nil || game.foldY != nil)
                 GeometryReader { geo in
                     ZStack {
                         Canvas { context, size in draw(context, size: size, date: timeline.date, layer: in3D ? .back : .all) }
                         if in3D, let pending = game.shownEcrin {
-                            let box = Self.classicBox(geo.size)
+                            let box = box3D(geo.size)
                             let side = box.bw * Ecrin3DView.viewSpan
                             let variant = game.variantRevealed ? game.pendingVariant : nil
                             let look = JewelArt.Look(pending.jewel, variant: variant?.id, catalog: game.catalog)
                             Ecrin3DView(angle: game.ecrinAngle, leatherHex: EcrinArt.leathers[game.leather],
-                                        // La scène 3D a déjà son ombre : le bijou ne reste dans la pénombre qu'à peine entrouvert.
-                                        dim: 1 - smoothstep(2, 45, game.ecrinAngle),
+                                        // Au pouce, la scène 3D a déjà son ombre : le bijou ne reste dans la pénombre qu'à peine
+                                        // entrouvert. Sur le Duo (couvercle à plat), la pénombre du dessin 2D : ouvrir le téléphone éclaire.
+                                        dim: box.view == .thumb ? 1 - smoothstep(2, 45, game.ecrinAngle) : 1 - smoothstep(4, 140, game.ecrinAngle),
                                         jewelKey: "\(pending.jewel)|\(variant?.id ?? "")",
                                         drawJewel: { c in EcrinArt.drawJewel(c, pending.jewel, look) },
-                                        origin: CGPoint(x: box.cx - side / 2, y: box.cy - side / 2), probe: probe)
+                                        origin: CGPoint(x: box.cx - side / 2, y: box.cy - side / 2), probe: probe, viewpoint: box.view)
                                 .frame(width: side, height: side)
                                 .position(x: box.cx, y: box.cy)
                                 .allowsHitTesting(false)
@@ -195,6 +195,25 @@ struct EcrinView: View {
     // MARK: - Dessin
 
     /// Place de l'écrin sur iPhone classique (trois quarts).
+    /// Où poser la vue 3D (centre, largeur de l'écrin, point de vue), avec les mêmes cadrages que le dessin 2D (`draw`).
+    /// Sur le pli du Duo, la vue est centrée sur la charnière (le pli) ; sur l'écran extérieur, sur l'étui fermé.
+    private func box3D(_ size: CGSize) -> (cx: Double, cy: Double, bw: Double, view: Ecrin3DView.Viewpoint) {
+        let w = Double(size.width), h = Double(size.height), visible = h - 190
+        if let x = game.poseFoldX {
+            let half = min(x, w - x)
+            return (x, 100 + visible * 0.5, min(half * 1.2, visible * 0.68), .fold)
+        }
+        if let y = game.poseFoldY {
+            let half = min(y, (h - y) * 0.8)
+            return (w / 2, y, min(half * 1.2, w * 0.68), .foldAcross)
+        }
+        if game.hasHinge {
+            return (w / 2, 100 + visible * 0.5, min(w * 0.9, visible * 0.68), .cover)
+        }
+        let box = Self.classicBox(size)
+        return (box.cx, box.cy, box.bw, .thumb)
+    }
+
     private static func classicBox(_ size: CGSize) -> (cx: Double, cy: Double, bw: Double) {
         let w = Double(size.width), visible = Double(size.height) - 190
         return (w / 2, 100 + visible * 0.62, min(w * 0.86, visible * 0.68))
@@ -209,14 +228,14 @@ struct EcrinView: View {
         // Sur l'iPhone Duo, l'écrin est vu de dessus comme l'huître. Écran intérieur : sa charnière sur le pli, le
         // plateau à droite, le couvercle ouvert à plat à gauche (c'est le téléphone qui le soulève) ; ouvrir le
         // téléphone éclaire l'intérieur. Écran extérieur : fermé, charnière à gauche. iPhone classique : trois quarts.
-        let onFold = game.foldX != nil || game.foldY != nil
+        let onFold = game.poseFoldX != nil || game.poseFoldY != nil
         let top = game.hasHinge || onFold
         // Écran intérieur tenu en paysage (pli horizontal) : l'écrin se pose comme sur un pli vertical, dans un repère
         // tourné d'un quart de tour (couvercle en haut, plateau en bas). `fw` : la longueur perpendiculaire au pli.
-        let across = game.foldX == nil ? game.foldY : nil
+        let across = game.poseFoldX == nil ? game.poseFoldY : nil
         let fw = across == nil ? w : h
         let cx, cy, bw: Double
-        if let fold = game.foldX ?? across {
+        if let fold = game.poseFoldX ?? across {
             // Chaque moitié de l'écrin (plateau, couvercle) tient dans sa moitié d'écran (en paysage, de la place
             // reste sous le plateau pour le message).
             let half = across == nil ? min(fold, fw - fold) : min(fold, (fw - fold) * 0.8)

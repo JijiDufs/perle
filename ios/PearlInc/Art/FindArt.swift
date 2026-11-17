@@ -9,6 +9,11 @@ enum FindArt {
 
     /// Dessine une trouvaille centrée en (x, y) ; `size` = demi-largeur de l'objet.
     static func draw(_ context: GraphicsContext, _ x: Double, _ y: Double, _ size: Double, id: String, t: Double = 0) {
+        if let photo = photo(id) {
+            // Nouvelle DA : photo générée (Kling), détourée ; l'objet y occupe 88 % du carré (scripts/decoupe-planche.py).
+            context.draw(photo, in: CGRect(x: x - size * 1.1, y: y - size * 1.1, width: size * 2.2, height: size * 2.2))
+            return
+        }
         let c = Canvas2D(context)
         c.save()
         c.translate(x, y)
@@ -42,6 +47,17 @@ enum FindArt {
         default: unknown(c, t)
         }
         c.restore()
+    }
+
+    /// Photo `find-<id>` (FindPhotos) si elle existe, sinon le dessin par code. `-FindDrawn` force le dessin.
+    nonisolated(unsafe) private static var photos: [String: Image?] = [:]  // lu et écrit seulement en dessinant (fil principal)
+    private static func photo(_ id: String) -> Image? {
+        guard !ProcessInfo.processInfo.arguments.contains("-FindDrawn") else { return nil }
+        if photos[id] == nil {
+            photos[id] = Bundle.main.url(forResource: "find-\(id)", withExtension: "png")
+                .flatMap { UIImage(contentsOfFile: $0.path) }.map { Image(uiImage: $0) }
+        }
+        return photos[id] ?? nil
     }
 
     // MARK: - Outils de matière

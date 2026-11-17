@@ -30,7 +30,7 @@ body{font-family:Figtree,system-ui,sans-serif;color:var(--ink);-webkit-font-smoo
 .copy{position:absolute;left:0;right:0;top:150px;text-align:center;padding:0 80px;z-index:20}
 .eyebrow{display:inline-flex;align-items:center;gap:18px;font-weight:800;font-size:40px;letter-spacing:.2em;text-transform:uppercase;
   color:var(--gold2);padding:16px 34px;border-radius:999px;background:rgba(255,215,120,.10);border:2px solid rgba(255,215,120,.35);margin-bottom:40px}
-h1{font-weight:900;font-size:142px;line-height:.98;letter-spacing:-.025em;text-shadow:0 8px 40px rgba(0,0,0,.35)}
+h1{font-weight:900;font-size:152px;line-height:.98;letter-spacing:-.025em;text-shadow:0 8px 40px rgba(0,0,0,.35)}
 h1 .g{background:linear-gradient(180deg,var(--gold1) 0%,var(--gold2) 45%,var(--gold3) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 6px 24px rgba(0,0,0,.35))}
 h1 .s{display:block}
@@ -64,7 +64,7 @@ h1 .s{display:block}
 .swipe .arrow{position:absolute;left:50%;transform:translateX(-50%);width:0;height:0;border-left:44px solid transparent;border-right:44px solid transparent;border-bottom:56px solid #fff;
   filter:drop-shadow(0 0 20px rgba(255,240,200,.9))}
 
-.traits{position:absolute;left:30px;top:1080px;width:440px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:12}
+.traits{position:absolute;left:30px;top:1250px;width:440px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:12}
 .traits div{display:flex;flex-direction:column;align-items:center;margin-bottom:22px}
 .traits img{width:340px;height:340px;margin:-40px 0 -70px}
 .traits span{font-size:42px;font-weight:800;text-align:center;line-height:1.1;padding:14px 26px;border-radius:999px;background:rgba(6,25,35,.6);border:2px solid rgba(255,255,255,.22)}
@@ -79,19 +79,40 @@ h1 .s{display:block}
 .row.top .p{color:#ff8fb0}
 .row.gold{background:linear-gradient(90deg,rgba(247,203,92,.22),rgba(247,203,92,.05));border-color:rgba(247,203,92,.45)}
 .row.gold .p{color:var(--gold2)}
-.note{position:absolute;left:0;right:0;bottom:150px;text-align:center;font-size:46px;font-weight:700;color:rgba(255,255,255,.75);z-index:10}
+.note{position:absolute;left:0;right:0;bottom:90px;text-align:center;font-size:46px;font-weight:700;color:rgba(255,255,255,.75);z-index:10}
 .note b{color:var(--gold2)}
+/* ---------- Visuels qui se suivent ---------- */
+/* Le lagon du jeu, large de trois écrans : chaque écran en montre sa part. */
+.wide{position:absolute;top:0;width:3960px;height:2868px;max-width:none}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,28,38,.82) 0%,rgba(3,28,38,.42) 24%,rgba(3,28,38,.08) 40%,rgba(3,28,38,.12) 100%)}
+/* Écrans 4 à 10 : une seule teinte qui glisse d'un écran au suivant (les bords se raccordent). */
+.world{position:absolute;top:0;width:9240px;height:2868px;
+  background:linear-gradient(180deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,0) 38%,rgba(0,0,0,.38) 100%),
+    linear-gradient(90deg,#0b4b5b 0%,#0b4b5b 5%,#3a0a22 21.4%,#35101f 35.7%,#2a0f26 50%,#12305c 64.3%,#0b4756 78.6%,#0b4b5b 100%)}
+/* Traînée de perles : un fil de petites perles qui serpente de la plus commune à la plus rare. */
+.thread{position:absolute;z-index:8;filter:drop-shadow(0 0 14px rgba(255,236,170,.9))}
+.pearl{position:absolute;z-index:12;transform:translate(-50%,-50%);filter:drop-shadow(0 26px 34px rgba(0,0,0,.35))}
+.tag{position:absolute;z-index:30;transform:translateY(-50%);display:flex;align-items:center;gap:26px;padding:20px 40px;border-radius:999px;white-space:nowrap;
+  font-weight:800;font-size:50px;background:rgba(6,25,35,.74);border:2px solid rgba(255,255,255,.28);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.tag small{font-size:36px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.06em}
+.tag b{font-size:62px;font-weight:900;font-variant-numeric:tabular-nums}
+.tag.gold{border-color:rgba(247,203,92,.6)} .tag.gold b{color:var(--gold2)}
+.tag.top{background:linear-gradient(90deg,rgba(120,10,45,.92),rgba(60,8,28,.88));border-color:rgba(255,120,160,.7);box-shadow:0 0 80px rgba(255,47,114,.45)} .tag.top b{color:#ff8fb0}
+.bub{position:absolute;z-index:6;border-radius:50%;border:4px solid rgba(220,255,255,.38);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.4),rgba(255,255,255,0) 60%)}
 </style></head>
 <body>
 
 <!-- 1 · HÉROS -->
 <section class="panel" id="p1">
-  <img class="bg" src="a/hero-golden-34.png" style="width:1320px;height:2868px">
+  <img class="wide" src="a/lagoon-wide.png" style="left:0">
+  <img class="bg" src="a/hero-golden-34.png" style="width:1320px;height:2868px;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 80%,transparent 100%)">
+  <!-- Le héros est une capture de l'app : la surface de l'eau recouvre sa barre d'état et la Dynamic Island. -->
+  <div class="bg" style="background:linear-gradient(180deg,rgb(72,158,160) 0,rgb(34,137,146) 230px,rgba(30,132,141,0) 330px)"></div>
   <div class="bg" style="background:linear-gradient(180deg,rgba(3,28,38,.78) 0%,rgba(3,28,38,.35) 26%,rgba(3,28,38,0) 42%)"></div>
   <div class="bg" style="background:radial-gradient(ellipse 620px 380px at 660px 2290px,rgba(255,214,100,.85),rgba(255,190,60,.35) 45%,rgba(255,190,60,0) 75%);mix-blend-mode:screen"></div>
   <div class="bg" style="background:conic-gradient(from 180deg at 660px 2250px,transparent 0 60deg,rgba(255,230,150,.22) 70deg,transparent 80deg,rgba(255,230,150,.16) 95deg,transparent 105deg,rgba(255,230,150,.22) 120deg,transparent 130deg,rgba(255,230,150,.14) 150deg,transparent 160deg,rgba(255,230,150,.2) 175deg,transparent 185deg,rgba(255,230,150,.14) 200deg,transparent 210deg,rgba(255,230,150,.22) 228deg,transparent 240deg,rgba(255,230,150,.16) 258deg,transparent 268deg,rgba(255,230,150,.22) 285deg,transparent 295deg,transparent 360deg);
      -webkit-mask-image:radial-gradient(circle 1100px at 660px 2250px,#000 20%,transparent 80%);mix-blend-mode:screen;filter:blur(4px)"></div>
-  <div class="copy" style="top:190px"><style>#p1 h1{font-size:128px}</style>
+  <div class="copy" style="top:190px"><style>#p1 h1{font-size:168px}</style>
     <div class="eyebrow" data-t="hero_eyebrow"></div>
     <h1 data-t="hero_h"></h1>
     <p class="sub" data-t="hero_sub"></p>
@@ -108,9 +129,40 @@ h1 .s{display:block}
   <i class="spark" style="left:760px;top:2560px;--s:54px"></i>
 </section>
 
-<!-- 2 · LE GESTE -->
+<!-- 2 · LA PERLE RARE : la traînée de perles, de la plus commune à la maudite (perles, fil et étiquettes posés par le script) -->
 <section class="panel" id="p2">
-  <div class="bg" style="background:linear-gradient(180deg,#0f6a7a 0%,#0a4352 40%,#062430 100%)"></div>
+  <img class="wide" src="a/lagoon-wide.png" style="left:-1320px">
+  <div class="shade"></div>
+  <div class="copy">
+    <div class="eyebrow" data-t="l_eyebrow"></div>
+    <h1 data-t="l_h"></h1>
+    <p class="sub" data-t="l_sub"></p>
+  </div>
+  <div class="note" data-t="l_note" style="color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.55)"></div>
+</section>
+
+<!-- 3 · COLLECTION -->
+<section class="panel" id="p3">
+  <img class="wide" src="a/lagoon-wide.png" style="left:-2640px">
+  <div class="shade" style="background:linear-gradient(180deg,rgba(3,28,38,.84) 0%,rgba(3,28,38,.5) 26%,rgba(3,28,38,.3) 100%)"></div>
+  <div class="copy">
+    <div class="eyebrow" data-t="u_eyebrow"></div>
+    <h1 data-t="u_h"></h1>
+    <p class="sub" data-t="u_sub"></p>
+  </div>
+  <div class="halo" style="left:500px;top:1500px;width:800px;height:800px;background:rgba(120,230,240,.25)"></div>
+  <div class="phone" style="--w:800px;left:470px;top:1010px"><div class="scr"><img src="a/raw_collection.png"></div></div>
+  <div class="traits">
+    <div><img src="a/pearl-black.png"><span data-t="u_t1"></span></div>
+    <div><img src="a/pearl-baroque.png"><span data-t="u_t2"></span></div>
+    <div><img src="a/pearl-giant.png"><span data-t="u_t3"></span></div>
+    <div><img src="a/pearl-golden.png"><span data-t="u_t4"></span></div>
+  </div>
+</section>
+
+<!-- 4 · LE GESTE -->
+<section class="panel" id="p4">
+  <div class="world" style="left:-0px"></div>
   <div class="rays"></div>
   <div class="halo" style="left:210px;top:1500px;width:900px;height:900px;background:rgba(255,205,90,.45)"></div>
   <div class="copy">
@@ -123,9 +175,9 @@ h1 .s{display:block}
   <div class="chip gold" style="right:60px;top:2520px" data-t="g_chip2"></div>
 </section>
 
-<!-- 3 · LA PERLE MAUDITE -->
-<section class="panel" id="p3">
-  <div class="bg" style="background:radial-gradient(circle 1400px at 660px 1500px,#6b0f35 0%,#2a0718 45%,#0d0409 100%)"></div>
+<!-- 5 · LA PERLE MAUDITE -->
+<section class="panel" id="p5">
+  <div class="world" style="left:-1320px"></div>
   <div class="halo" style="left:160px;top:1200px;width:1000px;height:1000px;background:rgba(255,47,114,.35)"></div>
   <div class="copy">
     <div class="eyebrow" style="color:#ff8fb0;background:rgba(255,47,114,.12);border-color:rgba(255,120,160,.45)" data-t="c_eyebrow"></div>
@@ -140,9 +192,9 @@ h1 .s{display:block}
   <div class="chip red" style="left:70px;top:2640px" data-t="c_chip"></div>
 </section>
 
-<!-- 4 · L'ÉCRIN -->
-<section class="panel" id="p4">
-  <div class="bg" style="background:radial-gradient(circle 1400px at 660px 1700px,#5a1a2e 0%,#2b0b17 50%,#12040a 100%)"></div>
+<!-- 6 · L'ÉCRIN -->
+<section class="panel" id="p6">
+  <div class="world" style="left:-2640px"></div>
   <div class="rays" style="opacity:.35"></div>
   <div class="halo" style="left:210px;top:1500px;width:900px;height:900px;background:rgba(255,170,210,.35)"></div>
   <div class="copy">
@@ -159,9 +211,9 @@ h1 .s{display:block}
   <div class="chip dark" style="right:50px;top:1730px" data-t="e_chip3"></div>
 </section>
 
-<!-- 5 · LES BIJOUX -->
-<section class="panel" id="p5">
-  <div class="bg" style="background:radial-gradient(circle 1400px at 660px 1600px,#3d1730 0%,#1c0a18 50%,#0a040a 100%)"></div>
+<!-- 7 · LES BIJOUX -->
+<section class="panel" id="p7">
+  <div class="world" style="left:-3960px"></div>
   <div class="rays" style="opacity:.4"></div>
   <div class="halo" style="left:260px;top:1350px;width:800px;height:800px;background:rgba(255,200,230,.3)"></div>
   <div class="copy">
@@ -174,44 +226,12 @@ h1 .s{display:block}
   <img class="float" src="a/jewel-saphir.png" style="left:930px;top:960px;width:470px;transform:rotate(8deg)">
   <img class="float" src="a/jewel-emeraude.png" style="left:-110px;top:1750px;width:460px;transform:rotate(9deg)">
   <img class="float" src="a/jewel-perles.png" style="left:930px;top:1700px;width:480px;transform:rotate(-12deg)">
-  <img class="float" src="a/jewel-rubis.png" style="left:-60px;top:2330px;width:520px;transform:rotate(-6deg)">
   <div class="chip gold" style="right:50px;top:2600px" data-t="j_chip"></div>
-</section>
-
-<!-- 6 · ÉCHELLE DES RARETÉS -->
-<section class="panel" id="p6">
-  <div class="bg" style="background:radial-gradient(circle 1200px at 660px 700px,#173a55 0%,#0b1b2b 55%,#060d16 100%)"></div>
-  <div class="rays" style="opacity:.5"></div>
-  <div class="copy">
-    <div class="eyebrow" data-t="l_eyebrow"></div>
-    <h1 data-t="l_h"></h1>
-  </div>
-  <div class="ladder" id="ladder"></div>
-  <div class="note" data-t="l_note"></div>
-</section>
-
-<!-- 7 · COLLECTION -->
-<section class="panel" id="p7">
-  <div class="bg" style="background:linear-gradient(180deg,#0e5a69 0%,#0a3442 45%,#071c27 100%)"></div>
-  <div class="rays"></div>
-  <div class="copy">
-    <div class="eyebrow" data-t="u_eyebrow"></div>
-    <h1 data-t="u_h"></h1>
-    <p class="sub" data-t="u_sub"></p>
-  </div>
-  <div class="halo" style="left:500px;top:1500px;width:800px;height:800px;background:rgba(120,230,240,.25)"></div>
-  <div class="phone" style="--w:800px;left:470px;top:1010px"><div class="scr"><img src="a/raw_collection.png"></div></div>
-  <div class="traits">
-    <div><img src="a/pearl-black.png"><span data-t="u_t1"></span></div>
-    <div><img src="a/pearl-baroque.png"><span data-t="u_t2"></span></div>
-    <div><img src="a/pearl-giant.png"><span data-t="u_t3"></span></div>
-    <div><img src="a/pearl-golden.png"><span data-t="u_t4"></span></div>
-  </div>
 </section>
 
 <!-- 8 · TROUVAILLES -->
 <section class="panel" id="p8">
-  <div class="bg" style="background:radial-gradient(circle 1400px at 660px 1600px,#1d4f86 0%,#0f2547 50%,#070f22 100%)"></div>
+  <div class="world" style="left:-5280px"></div>
   <div class="rays" style="opacity:.6"></div>
   <div class="halo" style="left:260px;top:1350px;width:800px;height:800px;background:rgba(95,184,255,.35)"></div>
   <div class="copy">
@@ -219,18 +239,18 @@ h1 .s{display:block}
     <h1 data-t="f_h"></h1>
     <p class="sub" data-t="f_sub"></p>
   </div>
-  <div class="phone" style="left:164px;top:1020px"><div class="scr"><img src="a/raw_find_card.png"></div></div>
-  <img class="float" src="a/find-canard.png" style="left:-90px;top:1080px;width:470px;transform:rotate(-12deg)">
-  <img class="float" src="a/find-champignon.png" style="left:960px;top:1000px;width:440px;transform:rotate(10deg)">
-  <img class="float" src="a/find-cartouche.png" style="left:-110px;top:1830px;width:480px;transform:rotate(-8deg)">
-  <img class="float" src="a/find-piece-or.png" style="left:990px;top:1720px;width:400px;transform:rotate(14deg)">
-  <img class="float" src="a/find-dentier.png" style="left:-60px;top:2420px;width:420px;transform:rotate(8deg)">
-  <img class="float" src="a/find-bouteille.png" style="left:930px;top:2400px;width:480px;transform:rotate(-16deg)">
+  <div class="phone" style="left:164px;top:1020px"><div class="scr"><img src="a/raw_find_valve.png"></div></div>
+  <img class="float" src="a/find-canard.png" style="left:-150px;top:1020px;width:600px;transform:rotate(-12deg)">
+  <img class="float" src="a/find-champignon.png" style="left:900px;top:1180px;width:560px;transform:rotate(10deg)">
+  <img class="float" src="a/find-cartouche.png" style="left:-170px;top:1560px;width:600px;transform:rotate(-8deg)">
+  <img class="float" src="a/find-piece-or.png" style="left:930px;top:1760px;width:520px;transform:rotate(14deg)">
+  <img class="float" src="a/find-dentier.png" style="left:-120px;top:2440px;width:560px;transform:rotate(8deg)">
+  <img class="float" src="a/find-nain.png" style="left:900px;top:2300px;width:600px;transform:rotate(-10deg)">
 </section>
 
 <!-- 9 · COQUILLES -->
 <section class="panel" id="p9">
-  <div class="bg" style="background:linear-gradient(180deg,#0d6476 0%,#0a3c4a 45%,#06202b 100%)"></div>
+  <div class="world" style="left:-6600px"></div>
   <div class="rays"></div>
   <div class="halo" style="left:40px;top:1500px;width:700px;height:700px;background:rgba(150,240,255,.35)"></div>
   <div class="halo" style="left:640px;top:1600px;width:700px;height:700px;background:rgba(255,205,90,.4)"></div>
@@ -247,7 +267,7 @@ h1 .s{display:block}
 
 <!-- 10 · PROGRESSION ET CHAQUE JOUR -->
 <section class="panel" id="p10">
-  <div class="bg" style="background:linear-gradient(180deg,#0f6a7a 0%,#0a4352 40%,#062430 100%)"></div>
+  <div class="world" style="left:-7920px"></div>
   <div class="rays"></div>
   <div class="halo" style="left:260px;top:1700px;width:800px;height:800px;background:rgba(255,205,90,.3)"></div>
   <div class="copy">
@@ -260,34 +280,60 @@ h1 .s{display:block}
   <div class="chip dark" style="left:40px;top:2450px" data-t="d_chip3"></div>
 </section>
 
+
+<!-- Ce qui passe d'un écran à l'autre : `data-x` compté depuis le bord gauche de l'écran 1, `data-w` la largeur.
+     Le script en pose une copie dans chaque écran traversé. -->
+<template id="strip">
+  <!-- 1 → 2 : deux petites perles s'échappent de l'huître -->
+  <img class="pearl" src="a/pearl-white.png" data-x="930" data-w="230" style="top:2470px;transform:none">
+  <img class="pearl" src="a/pearl-white.png" data-x="1180" data-w="280" style="top:2560px;transform:none">
+  <!-- 2 → 3 : la perle maudite, la plus rare, à cheval -->
+  <div class="halo" data-x="2260" data-w="760" style="top:600px;height:760px;background:rgba(255,47,114,.5)"></div>
+  <img class="pearl" src="a/pearl-cursed.png" data-x="2230" data-w="820" style="top:570px;transform:none">
+  <!-- bulles sur les bords -->
+  <i class="bub" data-x="3890" data-w="130" style="top:1900px;height:130px"></i>
+  <i class="bub" data-x="3930" data-w="60" style="top:1760px;height:60px"></i>
+  <i class="bub" data-x="5210" data-w="150" style="top:2500px;height:150px"></i>
+  <i class="bub" data-x="6560" data-w="90" style="top:880px;height:90px"></i>
+  <i class="bub" data-x="11830" data-w="140" style="top:2250px;height:140px"></i>
+  <i class="bub" data-x="11900" data-w="70" style="top:2110px;height:70px"></i>
+  <!-- 6 → 7 : le diadème sort de l'écrin -->
+  <img class="float" src="a/jewel-rubis.png" data-x="7640" data-w="560" style="top:2300px;transform:rotate(-6deg)">
+  <!-- 7 → 8 : un bijou parmi les trouvailles -->
+  <img class="float" src="a/find-anneau.png" data-x="8980" data-w="520" style="top:2060px;transform:rotate(8deg)">
+  <!-- 8 → 9 -->
+  <img class="float" src="a/find-cube.png" data-x="10310" data-w="500" style="top:760px;transform:rotate(-9deg)">
+</template>
+
 <script>
 const T = {
 fr:{
   hero_eyebrow:"Pearl Inc.",
-  hero_h:'Ouvre l’huître.<span class="s g">Trouve la perle rare.</span>',
-  hero_sub:"Du bout du pouce, tout doucement…",
+  hero_h:'Ouvre<span class="s g">l’huître.</span>',
+  hero_sub:"Du bout du pouce. Tout doucement.",
   g_eyebrow:"Un geste, pas un bouton",
-  g_h:'Elle résiste…<span class="s g">puis elle cède.</span>',
-  g_sub:"Glisse le pouce et regarde la lumière filtrer.",
-  g_chip1:"Trop vite ? Elle se fêle !",
+  g_h:'Trop vite ?<span class="s g">Elle se fêle.</span>',
+  g_sub:"Elle résiste, puis elle cède. À toi de doser le geste.",
+  g_chip1:"Zone fragile",
   g_chip2:"Geste parfait · Lustre S",
   c_eyebrow:"3 chances sur 1 000",
   c_h:'La perle<span class="s" style="background:linear-gradient(180deg,#ffd0de,#ff4f86 55%,#b3123f);-webkit-background-clip:text;background-clip:text;color:transparent">maudite</span>',
   c_sub:"Elle était là avant l’huître.",
   c_chip:"★★ La plus rare du lagon",
   l_eyebrow:"Chaque huître est un tirage",
-  l_h:'7 perles.<span class="s g">Une obsession.</span>',
+  l_h:'Trouve<span class="s g">la perle rare.</span>',
+  l_sub:"7 perles. La plus rare : 3 chances sur 1 000.",
   l_note:"Perle dorée ou mieux <b>garantie</b> avant la 26<sup>e</sup> huître",
   u_eyebrow:"Ta collection",
-  u_h:'Chaque perle<span class="s g">est unique.</span>',
-  u_sub:"Forme, reflet, taille, marque rare : jamais deux pareilles.",
+  u_h:'Complète<span class="s g">ta collection.</span>',
+  u_sub:"Forme, reflet, marque rare : jamais deux pareilles.",
   u_t1:"Reflet vert paon",u_t2:"Forme baroque",u_t3:"Reflet arc-en-ciel",u_t4:"♥ Marque rare",d_chip3:"3 missions du jour",
   u_chip1:"Reflet vert paon",
   u_chip2:"♥ Marque en cœur",
   u_chip3:"Revends tes doublons ✦",
   f_eyebrow:"25 trouvailles insolites",
-  f_h:'Et parfois…<span class="s g">tout autre chose.</span>',
-  f_sub:"Une huître sur vingt cache une surprise.",
+  f_h:'Et parfois…<span class="s g">un canard.</span>',
+  f_sub:"Une huître sur vingt cache tout autre chose.",
   s_eyebrow:"Coquilles de légende",
   s_h:'Choisis<span class="s g">ta coquille.</span>',
   s_sub:"Bénitier géant, huître d’or… à toi de briller.",
@@ -312,30 +358,31 @@ fr:{
 },
 en:{
   hero_eyebrow:"Pearl Inc.",
-  hero_h:'Open the oyster.<span class="s g">Find the rare pearl.</span>',
-  hero_sub:"With your thumb, nice and slow…",
+  hero_h:'Open<span class="s g">the oyster.</span>',
+  hero_sub:"With your thumb. Nice and slow.",
   g_eyebrow:"A gesture, not a button",
-  g_h:'It resists…<span class="s g">then it gives.</span>',
-  g_sub:"Swipe up and watch the light seep out.",
-  g_chip1:"Too fast? It cracks!",
+  g_h:'Too fast?<span class="s g">It cracks.</span>',
+  g_sub:"It resists, then it gives. Find the right touch.",
+  g_chip1:"Fragile zone",
   g_chip2:"Perfect swipe · S lustre",
   c_eyebrow:"3 in 1,000",
   c_h:'The cursed<span class="s" style="background:linear-gradient(180deg,#ffd0de,#ff4f86 55%,#b3123f);-webkit-background-clip:text;background-clip:text;color:transparent">pearl</span>',
   c_sub:"It was there before the oyster.",
   c_chip:"★★ Rarest in the lagoon",
   l_eyebrow:"Every oyster is a draw",
-  l_h:'7 pearls.<span class="s g">One obsession.</span>',
+  l_h:'Find<span class="s g">the rare pearl.</span>',
+  l_sub:"7 pearls. The rarest: 3 chances in 1,000.",
   l_note:"Golden pearl or better <b>guaranteed</b> by your 26th oyster",
   u_eyebrow:"Your collection",
-  u_h:'Every pearl<span class="s g">is one of a kind.</span>',
-  u_sub:"Shape, overtone, size, rare marks: never two alike.",
+  u_h:'Complete<span class="s g">your collection.</span>',
+  u_sub:"Shape, overtone, rare marks: no two alike.",
   u_t1:"Peacock overtone",u_t2:"Baroque shape",u_t3:"Rainbow overtone",u_t4:"♥ Rare mark",d_chip3:"3 daily missions",
   u_chip1:"Peacock overtone",
   u_chip2:"♥ Heart mark",
   u_chip3:"Sell your duplicates ✦",
   f_eyebrow:"25 quirky finds",
-  f_h:'And sometimes…<span class="s g">something else.</span>',
-  f_sub:"One oyster in twenty hides a surprise.",
+  f_h:'Sometimes…<span class="s g">a duck.</span>',
+  f_sub:"One oyster in twenty hides something else entirely.",
   s_eyebrow:"Legendary shells",
   s_h:'Pick<span class="s g">your shell.</span>',
   s_sub:"Giant clam, golden oyster… time to shine.",
@@ -362,9 +409,38 @@ const q = new URLSearchParams(location.search);
 const lang = q.get('lang') || 'fr', p = q.get('p') || '1', sfx = q.get('sfx') || '';
 const t = T[lang];
 document.documentElement.lang = lang;
+// Écran 2 : les perles montent en zigzag, de la plus commune (en bas) à la maudite (à cheval sur l'écran 3, dans la bande commune).
+// [x, y du centre, largeur de l'image (la perle en occupe la moitié), côté de l'étiquette]
+const TRAIL = {white:[300,2560,300,'r'], rose:[980,2330,350,'l'], baroque:[330,2075,410,'r'], black:[970,1815,470,'l'],
+               golden:[350,1545,550,'r'], giant:[950,1265,630,'l'], cursed:[1320,980,820,'l']};
+const p2 = document.getElementById('p2');
+t.ladder.forEach(([id,n,r,pr,c]) => {
+  const [x,y,w,side] = TRAIL[id], gap = w * .24 + 40;
+  if (id !== 'cursed') p2.insertAdjacentHTML('beforeend', `<img class="pearl" src="a/pearl-${id}.png" style="left:${x}px;top:${y}px;width:${w}px">`);
+  p2.insertAdjacentHTML('beforeend', `<div class="tag ${c}" style="top:${y}px;${side === 'r' ? `left:${x + gap}px` : `right:${1320 - x + gap}px`}">${n}<small>${r}</small><b>${pr}</b></div>`);
+});
+// Le fil : part de l'huître de l'écran 1, passe par chaque perle (courbe lisse de Catmull-Rom).
+const pts = [[640,2330],[1045,2585],[1320,2700]].concat(Object.values(TRAIL).map(([x,y]) => [x + 1320, y]));
+let d = `M${pts[0]}`;
+for (let i = 0; i < pts.length - 1; i++) {
+  const a = pts[Math.max(i - 1, 0)], b = pts[i], c = pts[i + 1], e = pts[Math.min(i + 2, pts.length - 1)];
+  d += ` C${b[0] + (c[0] - a[0]) / 6},${b[1] + (c[1] - a[1]) / 6} ${c[0] - (e[0] - b[0]) / 6},${c[1] - (e[1] - b[1]) / 6} ${c}`;
+}
+document.getElementById('strip').content.prepend(Object.assign(document.createElement('div'), {className: 'thread',
+  innerHTML: `<svg width="2640" height="2868" viewBox="0 0 2640 2868"><path d="${d}" fill="none" stroke="#fff6d8" stroke-width="16" stroke-linecap="round" stroke-dasharray="0.1 40"/></svg>`}));
+const thread = document.getElementById('strip').content.firstElementChild;
+thread.dataset.x = 0; thread.dataset.w = 2640; thread.style.top = '0';
+// Bande commune : une copie dans chaque écran traversé.
+[...document.getElementById('strip').content.children].forEach(el => {
+  const x = +el.dataset.x, w = +el.dataset.w;
+  for (let i = Math.floor(x / 1320); i <= Math.floor((x + w - 1) / 1320); i++) {
+    const panel = document.getElementById('p' + (i + 1)), copy = el.cloneNode(true);
+    copy.style.left = (x - i * 1320) + 'px';
+    copy.style.width = w + 'px';
+    panel.appendChild(copy);
+  }
+});
 document.querySelectorAll('[data-t]').forEach(el => el.innerHTML = t[el.dataset.t]);
-document.getElementById('ladder').innerHTML = t.ladder.map(([id,n,r,pr,c]) =>
-  `<div class="row ${c}"><img src="a/pearl-${id}.png"><div class="n">${n}<small>${r}</small></div><div class="p">${pr}</div></div>`).join('');
 if (sfx) document.querySelectorAll('img[src^="a/raw_"]').forEach(im => im.src = im.src.replace('.png', sfx + '.png'));
 document.getElementById('p' + p).classList.add('on');
 </script>

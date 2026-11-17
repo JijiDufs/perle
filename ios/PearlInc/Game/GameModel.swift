@@ -121,8 +121,20 @@ final class GameModel {
     /// iPhone Duo : la charnière, et si c'est elle qui ouvre l'huître posée (le pouce attend alors son tour).
     @ObservationIgnored private var hinge: HingeTracker
     @ObservationIgnored private var hingeDriving = false
-    /// L'iPhone a une charnière (Duo) : messages « ouvre / referme le téléphone ».
-    private(set) var hasHinge = false
+    /// L'iPhone a une charnière (Duo), que le joueur s'en serve ou non.
+    private(set) var hingeDevice = false
+    /// La charnière ouvre les huîtres et les écrins : messages « ouvre / referme le téléphone ». Faux sur un Duo
+    /// quand le joueur a choisi le pouce (la charnière ne pilote alors plus rien : pas de perle fêlée en rouvrant
+    /// son téléphone).
+    var hasHinge: Bool { hingeDevice && hingePlay }
+    /// Réglage « Jouer avec la charnière » (iPhone Duo), choisi au premier lancement téléphone ouvert.
+    private(set) var hingePlay = UserDefaults.standard.object(forKey: GameModel.hingePlayKey) as? Bool ?? true
+    /// Le joueur a choisi (boutons, réglage, ou son premier geste) ; la relance de l'après-tutoriel est passée.
+    private(set) var duoChoiceMade = UserDefaults.standard.bool(forKey: GameModel.duoChoiceKey)
+    private(set) var duoTipDone = UserDefaults.standard.bool(forKey: GameModel.duoTipKey)
+    /// Le téléphone est ouvert (écran intérieur).
+    private(set) var hingeOpen = false
+    private static let hingePlayKey = "pearlinc.duo.hingePlay", duoChoiceKey = "pearlinc.duo.choiceMade", duoTipKey = "pearlinc.duo.tipDone"
     /// La charnière peut ouvrir l'huître (téléphone refermé depuis son arrivée).
     private(set) var hingeArmed = false
     /// iPhone Duo, écran intérieur tenu en portrait : abscisse du pli (points, dans la fenêtre) ; nil sinon.
@@ -291,6 +303,7 @@ final class GameModel {
 
     /// Recharge le stock et renouvelle les missions (au lancement, au retour dans l'app, chaque minute).
     func refresh() {
+        Reviews.noteDay(Clock.dayKey())
         player.refresh(now: Clock.nowMs, day: Clock.dayKey(), tuning: tuning)
         save()
     }
@@ -321,10 +334,13 @@ final class GameModel {
     /// iPhone Duo : nouvel angle de la charnière en degrés (nil = pas de charnière).
     /// Ouvrir le téléphone ouvre l'huître ; le refermer passe à la suivante (docs/duo-gadget.md §7).
     func hingeChanged(degrees: Double?) {
-        guard let degrees else { hasHinge = false; return }
-        hasHinge = true
+        guard let degrees else { hingeDevice = false; return }
+        hingeDevice = true
         let action = hinge.update(degrees: degrees)
         hingeArmed = hinge.armed
+        hingeOpen = !hinge.isClosed
+        // Le joueur a choisi le pouce : la charnière ne pilote plus rien.
+        guard hingePlay else { return }
         if tab == .ecrins { return ecrinHingeChanged(action) }
         switch action {
         case .none:
@@ -348,6 +364,8 @@ final class GameModel {
                 haptics.prepare()
             }
             hingeDriving = true
+            // Premier lancement : il a refermé puis rouvert son téléphone sans toucher aux boutons, ce geste vaut choix.
+            if !duoChoiceMade { chooseDuoPlay(hinge: true) }
             // Tics de résistance espacés comme au pouce : l'angle est ramené à la course équivalente.
             let distance = angle / tuning.popAngle * tuning.resistanceDistance
             handle(OpeningSample(angle: angle, time: ThumbSource.now), distance: distance)
@@ -359,6 +377,43 @@ final class GameModel {
         foldX = x
         foldY = y
     }
+
+    /// Le pli où poser l'huître et l'écrin : aucun quand le joueur d'un Duo a choisi le pouce (il retrouve la vue de
+    /// l'iPhone classique, le couvercle se lève sous son pouce). Textes et fenêtres gardent `foldX` pour rester à côté du pli.
+    var poseFoldX: Double? { hingeDevice && !hingePlay ? nil : foldX }
+    var poseFoldY: Double? { hingeDevice && !hingePlay ? nil : foldY }
+    /// iPhone Duo : l'huître posée s'ouvre (ou s'est ouverte) au pouce, pas à la charnière.
+    var openingByThumb: Bool { hingeDevice && angle > 0 && !hingeDriving }
+
+    // MARK: - iPhone Duo : charnière ou pouce
+
+    /// Le joueur choisit comment ouvrir ses huîtres : boutons du premier lancement ouvert, réglage, ou son premier geste.
+    func chooseDuoPlay(hinge: Bool) {
+        hingePlay = hinge
+        duoChoiceMade = true
+        hingeDriving = false
+        ecrinHingeDriving = false
+        UserDefaults.standard.set(hinge, forKey: Self.hingePlayKey)
+        UserDefaults.standard.set(true, forKey: Self.duoChoiceKey)
+        // La relance ne sert qu'à qui a choisi le pouce pendant le tutoriel : ailleurs, on ne repose pas la question.
+        if hinge || !inTutorial { endDuoTip() }
+    }
+
+    /// La relance « ton Duo peut ouvrir l'huître avec sa charnière » ne se montre qu'une fois.
+    func endDuoTip() {
+        duoTipDone = true
+        UserDefaults.standard.set(true, forKey: Self.duoTipKey)
+    }
+
+    /// Huître posée, téléphone ouvert, rien d'autre à l'écran : le moment de parler de la charnière.
+    private var duoPromptMoment: Bool {
+        hingeDevice && hingeOpen && tab == .fishing && stage == .playing && phase == .closed && angle == 0
+            && !isTideOut(at: Date()) && levelUpToShow == nil && achievementCatchUpToShow == nil && ecrinCatchUpToShow == nil
+    }
+    /// Premier lancement téléphone ouvert : proposer la charnière ou le pouce (sans bloquer : les deux gestes marchent).
+    var showsDuoChoice: Bool { duoPromptMoment && !duoChoiceMade && !hingeArmed }
+    /// Une seule relance, après le tutoriel, pour qui joue au pouce.
+    var showsDuoTip: Bool { duoPromptMoment && duoChoiceMade && !hingePlay && !duoTipDone && !inTutorial }
 
     /// VoiceOver : ouverture lente et régulière, sans fêlure.
     func openForAccessibility() {
@@ -384,6 +439,16 @@ final class GameModel {
     /// Toucher la carte (sur le Duo : refermer le téléphone) : huître suivante.
     func nextOyster() {
         guard stage.showsResult else { return }
+        // Demande d'avis : seulement après une belle prise (perle ★ ou mieux, ou une sorte nouvelle), hors tutoriel,
+        // sans fêlure ni vol (une perle perdue n'a pas de carte).
+        var happyCatch = false
+        if case .card(let reveal) = stage, !inTutorial, !cracked {
+            switch reveal {
+            case .pearl(let card): happyCatch = revealIsNew || catalog.tier(of: card.pearlId) >= catalog.economy.review.minPearlTier
+            case .find: happyCatch = revealIsNew
+            case .empty: break
+            }
+        }
         step = player.oystersOpened
         engine = OpeningEngine(tuning: tuning, crackProtected: catalog.isCrackProtected(oystersOpened: step))
         thumb.reset()
@@ -405,6 +470,9 @@ final class GameModel {
         revealIsNew = false
         revealEarnedEcrin = false
         stage = .playing
+        // … et au calme : pas à marée basse, ni par-dessus une fête de niveau ou une fenêtre de rattrapage.
+        let calm = !isTideOut(at: Date()) && levelUpToShow == nil && achievementCatchUpToShow == nil && ecrinCatchUpToShow == nil
+        Reviews.cardClosed(happy: happyCatch && calm, oystersOpened: player.oystersOpened, rules: catalog.economy.review, now: Clock.nowMs)
     }
 
     /// Avancée du suspense (0 → 1) et angle du couvercle, qui finit de s'ouvrir en douceur après la révélation.
@@ -904,6 +972,11 @@ final class GameModel {
     }
 
     private func startReveal(lustre: Lustre, cracked: Bool) {
+        // iPhone Duo, huître ouverte au pouce : au premier lancement ce geste vaut choix ; ensuite, la relance de
+        // l'après-tutoriel n'aura été montrée que le temps d'une huître.
+        if hingeDevice, !hingeDriving {
+            if !duoChoiceMade { chooseDuoPlay(hinge: false) } else if !hingePlay, !inTutorial, !duoTipDone { endDuoTip() }
+        }
         stage = .suspense
         let tier = revealTier
         revealStartedAt = Date()

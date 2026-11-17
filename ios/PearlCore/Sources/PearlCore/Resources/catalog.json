@@ -1307,6 +1307,12 @@
       "hitRadius": 0.2,
       "assistedFleeFactor": 2
     },
+    "review": {
+      "minOysters": 30,
+      "minDays": 3,
+      "minDaysBetween": 60,
+      "minPearlTier": 4
+    },
     "levels": {
       "fastStart": {
         "levels": 10,

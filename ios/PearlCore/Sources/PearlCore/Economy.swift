@@ -69,6 +69,22 @@ public struct EcrinEconomy: Codable, Sendable, Equatable {
     public let dustPrice: Int
 }
 
+/// Demande d'avis App Store (`APP_REVIEW`) : à partir de quand, et à quel rythme, on la propose.
+public struct ReviewPrompt: Codable, Sendable, Equatable {
+    public let minOysters: Int
+    public let minDays: Int
+    public let minDaysBetween: Int
+    /// Une belle prise : perle de ce niveau de rareté ou mieux, ou une sorte nouvelle.
+    public let minPearlTier: Int
+
+    /// Faut-il proposer l'avis maintenant ? `happy` : la carte d'une belle prise vient d'être refermée, au calme.
+    /// `daysSinceLastAsk` : nil si on ne l'a jamais demandé.
+    public func shouldAsk(happy: Bool, oystersOpened: Int, daysPlayed: Int, daysSinceLastAsk: Int?, askedThisVersion: Bool) -> Bool {
+        happy && !askedThisVersion && oystersOpened >= minOysters && daysPlayed >= minDays
+            && (daysSinceLastAsk.map { $0 >= minDaysBetween } ?? true)
+    }
+}
+
 public struct Economy: Codable, Sendable {
     public let oysterDustPrice: Int
     public let goldCoinDust: Int
@@ -85,6 +101,7 @@ public struct Economy: Codable, Sendable {
     public let rareMissionTier: Int
     public let missions: [MissionTemplate]
     public let fishThief: FishThief
+    public let review: ReviewPrompt
     /// Niveaux : courbe accélérée au début, récompenses, réputation des missions et du calendrier.
     public let levels: LevelEconomy
     /// Succès de l'app et leurs récompenses.

@@ -53,6 +53,8 @@ final class Audio {
 
     /// Le jeu s'affiche ou l'app revient au premier plan.
     func start() {
+        // `-NoSound` (captures de la fiche App Store) : pas de son ; l’audio du simulateur bloque quand le Mac est chargé.
+        guard !ProcessInfo.processInfo.arguments.contains("-NoSound") else { return }
         active = true
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.ambient)

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>Pearl Inc. — vidéo de lancement</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800;900&display=block" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--gold1:#FFF1C1;--gold2:#F7CB5C;--gold3:#C98B1E}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#04161f}
+body{font-family:Figtree,system-ui,sans-serif;color:#fff;-webkit-font-smoothing:antialiased}
+.layer{position:absolute;inset:0}
+#bg{background:radial-gradient(120% 70% at 50% 0%,#1d6f7c 0%,#0b3b4a 38%,#05202b 70%,#030f15 100%)}
+#tint{mix-blend-mode:soft-light;opacity:0}
+#rays{inset:-300px -400px auto -400px;height:2300px;
+  background:repeating-linear-gradient(100deg,rgba(255,255,255,0) 0 90px,rgba(190,255,250,.07) 90px 150px,rgba(255,255,255,0) 150px 260px,rgba(190,255,250,.045) 260px 300px);
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.55) 45%,transparent 85%);filter:blur(5px)}
+#motes i{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(220,255,250,.9),rgba(220,255,250,0) 70%)}
+#spot{background:radial-gradient(50% 35% at 50% 58%,rgba(255,255,255,.16),rgba(255,255,255,0) 70%)}
+#vignette{background:radial-gradient(80% 60% at 50% 55%,rgba(0,0,0,0) 40%,rgba(0,0,0,.55) 100%)}
+/* Téléphone (iPhone classique) */
+.phone{position:absolute;left:50%;top:50%;--w:700px;width:calc(var(--w) + 44px);padding:22px;border-radius:calc(var(--w)*.137 + 22px);
+  background:linear-gradient(145deg,#5b6068 0%,#1d1f23 18%,#0b0c0e 50%,#2a2d33 82%,#6b7078 100%);
+  box-shadow:0 0 0 3px rgba(255,255,255,.12) inset,0 60px 140px rgba(0,0,0,.6),0 20px 40px rgba(0,0,0,.4);transform-origin:50% 50%;will-change:transform}
+.phone .scr{position:relative;width:var(--w);aspect-ratio:1206/2622;border-radius:calc(var(--w)*.137);overflow:hidden;background:#000}
+.phone .scr img{width:100%;height:100%;display:block}
+.phone .scr img.ui{position:absolute;inset:0}
+.phone .glare{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.0) 35%,rgba(255,255,255,.10) 45%,rgba(255,255,255,0) 55%);pointer-events:none}
+.touch{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:5px solid rgba(255,255,255,.95);
+  background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,.12) 60%,rgba(255,255,255,0) 72%);box-shadow:0 0 40px rgba(255,255,255,.6);opacity:0}
+.trail{position:absolute;width:34px;margin-left:-17px;border-radius:20px;background:linear-gradient(0deg,rgba(255,255,255,0),rgba(255,255,255,.75));opacity:0}
+#duo{position:absolute;inset:0;width:1080px;height:1920px}
+/* Textes */
+.copy{position:absolute;left:0;right:0;text-align:center;padding:0 70px;z-index:20}
+.eyebrow{display:inline-flex;align-items:center;gap:16px;font-weight:800;font-size:38px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold2);padding:14px 34px;border-radius:999px;background:rgba(255,215,120,.10);border:2px solid rgba(255,215,120,.38);backdrop-filter:blur(10px)}
+.t{font-weight:900;font-size:104px;line-height:1.0;letter-spacing:-.025em;text-shadow:0 10px 50px rgba(0,0,0,.45)}
+.t .w{display:inline-block;will-change:transform,opacity,filter}
+.g{background:linear-gradient(180deg,var(--gold1) 0%,var(--gold2) 45%,var(--gold3) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 24px rgba(0,0,0,.35))}
+.r{background:linear-gradient(180deg,#ffd0de 0%,#ff4f86 50%,#b3123f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 30px rgba(255,40,100,.45))}
+.sub{margin-top:26px;font-size:50px;font-weight:700;line-height:1.2;color:rgba(255,255,255,.9);text-shadow:0 4px 24px rgba(0,0,0,.5)}
+.chip{position:absolute;left:50%;z-index:30;display:flex;align-items:center;gap:18px;padding:22px 42px;border-radius:999px;font-weight:900;font-size:50px;white-space:nowrap;
+  background:rgba(6,25,35,.72);border:2px solid rgba(255,255,255,.35);backdrop-filter:blur(18px);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.chip.gold{background:linear-gradient(180deg,#FFE8A3,#E9B44C);color:#3a2604;border-color:rgba(255,255,255,.6)}
+.chip.red{background:linear-gradient(180deg,#ff6b8f,#c81d4f);border-color:rgba(255,255,255,.5)}
+.chip.blue{background:linear-gradient(180deg,#9aa6ff,#4e5ad6);border-color:rgba(255,255,255,.5)}
+.chip.sky{background:linear-gradient(180deg,#d8fbff,#79d6e6);color:#06323a;border-color:rgba(255,255,255,.7)}
+.chip.duck{background:linear-gradient(180deg,#fff2a8,#f4c531);color:#3a2b02;border-color:rgba(255,255,255,.7)}
+#flash{background:#fff;opacity:0;z-index:50}
+#end{z-index:40;opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#end img{width:330px;height:330px;border-radius:74px;box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 120px rgba(120,230,240,.35)}
+#end .name{margin-top:56px;font-weight:900;font-size:150px;letter-spacing:-.03em;line-height:1}
+#end .store{margin-top:44px;display:inline-flex;align-items:center;gap:20px;padding:26px 52px;border-radius:999px;background:#fff;color:#05202b;font-weight:900;font-size:54px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+#end .free{margin-top:34px;font-size:44px;font-weight:700;color:rgba(255,255,255,.85)}
+#end .url{position:absolute;bottom:150px;font-size:40px;font-weight:800;letter-spacing:.08em;color:var(--gold2)}
+/* Format carré (1080 × 1080, ?format=carre) : même montage, mise en page resserrée. */
+html.sq,html.sq body{height:1080px}
+html.sq #duo{height:1080px}
+html.sq .t{font-size:72px}
+html.sq .sub{margin-top:14px;font-size:36px}
+html.sq .eyebrow{font-size:28px;padding:10px 26px}
+html.sq .copy{padding:0 50px}
+html.sq .chip{font-size:38px;padding:16px 32px}
+html.sq .touch{width:84px;height:84px;margin:-42px 0 0 -42px;border-width:4px}
+html.sq #end img{width:230px;height:230px;border-radius:52px}
+html.sq #end .name{margin-top:34px;font-size:104px}
+html.sq #end .store{margin-top:30px;font-size:40px;padding:18px 40px}
+html.sq #end .free{margin-top:22px;font-size:32px}
+html.sq #end .url{bottom:60px;font-size:30px}
+</style></head>
+<body>
+<div class="layer" id="bg"></div>
+<div class="layer" id="rays"></div>
+<div class="layer" id="motes"></div>
+<div class="layer" id="spot"></div>
+<canvas id="duo" width="1080" height="1920"></canvas>
+<div class="phone" id="p1"><div class="scr"><img id="s1"><img id="u1" class="ui"><div class="glare"></div><div class="trail" id="tr1"></div><div class="touch" id="to1"></div></div></div>
+<div class="phone" id="p2"><div class="scr"><img id="s2"><img id="u2" class="ui"><div class="glare"></div></div></div>
+<div class="layer" id="vignette"></div>
+<div class="layer" id="tint"></div>
+<div class="copy" id="top"><div id="eb" class="eyebrow">Pearl Inc.</div><div class="t" id="t1"></div><div class="t" id="t2"></div><div class="sub" id="sub"></div></div>
+<div class="chip" id="chip"></div>
+<div class="layer" id="end">
+  <img id="icon" alt="">
+  <div class="name">Pearl Inc.</div>
+  <div class="store" id="store"></div>
+  <div class="free" id="free"></div>
+  <div class="url">pearl-inc.app</div>
+</div>
+<div class="layer" id="flash"></div>
+<script>
+"use strict";
+const Q=new URLSearchParams(location.search), LANG=Q.get('lang')||'fr', A=Q.get('a')||'a';
+// Format carré : on garde les positions du vertical et on les ramène dans 1080 × 1080.
+const SQ=Q.get('format')==='carre', H=SQ?1080:1920;window.H=H;if(SQ)document.documentElement.classList.add('sq');
+const topAt=px=>{$('top').style.top=(SQ?px*0.3:px)+'px';};
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), lerp=(a,b,k)=>a+(b-a)*k;
+const sm=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+const outBack=x=>{x=clamp(x,0,1);const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2);};
+const outExpo=x=>x>=1?1:1-Math.pow(2,-10*clamp(x,0,1));
+
+/* ---------- Textes FR / EN ---------- */
+const TX={
+ fr:{hook1:'Ouvre l’huître.',hook2:'Trouve la perle rare.',which:'Laquelle sera la tienne\u00a0?',
+   black:'◆◆◆  Perle noire',duck:'Trouvaille · Canard de bain',giant:'★  Perle géante',
+   cursed1:'La perle maudite.',cursed2:'0,3\u00a0% de chance. Bonne pêche.',cursedChip:'★★  Perle maudite',
+   duoEb:'iPhone Duo',duoChip:'★  Perle dorée',duo1:'Ouvre ton téléphone.',duo2:'L’huître s’ouvre avec lui.',
+   ecrin1:'Des écrins.',ecrin2:'Des bijoux.',ecrinSub:'Arrête-toi pile sur l’éclat.',ecrinChip:'Variante rare · Aurore',
+   duoEcrin1:'Et les écrins',duoEcrin2:'aussi.',duoEcrinSub:'Tiens le téléphone pile sur l’éclat.',
+   col1:'Collectionne',col2:'tout.',colSub:'Perles, bijoux, trouvailles, coquilles',
+   store:' Disponible sur l’App Store',free:'Gratuit · iPhone et iPhone Duo'},
+ en:{hook1:'Open the oyster.',hook2:'Find the rare pearl.',which:'Which one will you get?',
+   black:'◆◆◆  Black pearl',duck:'Find · Rubber duck',giant:'★  Giant pearl',
+   cursed1:'The cursed pearl.',cursed2:'0.3% chance. Good luck.',cursedChip:'★★  Cursed pearl',
+   duoEb:'iPhone Duo',duoChip:'★  Golden pearl',duo1:'Open your phone.',duo2:'The oyster opens with it.',
+   ecrin1:'Jewel cases.',ecrin2:'Jewels.',ecrinSub:'Stop right on the sparkle.',ecrinChip:'Rare variant · Aurora',
+   duoEcrin1:'Jewel cases',duoEcrin2:'too.',duoEcrinSub:'Hold your phone right on the sparkle.',
+   col1:'Collect',col2:'them all.',colSub:'Pearls, jewels, finds, shells',
+   store:' Now on the App Store',free:'Free · iPhone and iPhone Duo'}}[LANG];
+
+/* ---------- Prises ---------- */
+// s/<prise>/ : ouvertures dessinées par le code de l'app (60 i/s) et leur JSON (angle, phase, doigt, instants) ;
+// ui/ : l'interface de l'app détourée des captures ; c/<prise>/ : les cartes filmées au simulateur (60 i/s).
+const SHOTS={};
+const pending=[];
+function setImg(img,src){if(img.dataset.src===src)return;img.dataset.src=src;if(!src){img.removeAttribute('src');img.style.display='none';return;}
+  img.style.display='block';img.src=src;pending.push(img.decode().catch(()=>{}));}
+const f5=n=>String(n).padStart(5,'0');
+// Pendant la résistance et après la zone fragile, l'app n'affiche ni message ni missions : barre du haut et onglets seulement.
+// Pendant la résistance et après la zone fragile, l'app n'affiche ni message ni missions : barre du haut et onglets seulement.
+const UI_PHASE={closed:'oyster-closed',fragile:'oyster-fragile',opening:'oyster-resist',open:'oyster-open'};
+const UI_ECRIN={closed:'ecrin-closed',resist:'ecrin-resist',search:'ecrin-search',more:'ecrin-search',near:'ecrin-near',variant:'ecrin-variant',suspense:'ecrin-suspense'};
+// Une ouverture dessinée à l'instant rt (s) de la prise, avec son interface et le doigt.
+function opening(i,name,rt,w,{finger=true}={}){const sh=SHOTS[name],n=clamp(Math.round(rt*60),0,sh.frames.length-1),fr=sh.frames[n];
+  setImg($('s'+i),`${A}/s/${name}/${f5(n)}.jpg`);
+  setImg($('u'+i),`${A}/ui/${name==='ecrin'?UI_ECRIN[fr.phase]:UI_PHASE[fr.phase]}.png`);
+  if(i===1){if(finger&&fr.finger!=null){const yy=fr.finger,o=sm(0,0.15,rt-(sh.frames.findIndex(f=>f.finger!=null)/60));touch(w,201,yy,o,Math.max(0,(name==='ecrin'?600:700)-yy)*0.8);}}
+  return sh;}
+// Une carte filmée (t : secondes depuis le début de l'extrait).
+const CARDS={golden:140,black:88,find:86,giant:88,cursed:111,ecrin:111,orskin:90,bijoux:216};
+function card(i,take,t){setImg($('s'+i),`${A}/c/${take}/${f5(clamp(Math.round(t*60),0,CARDS[take]-1))}.jpg`);setImg($('u'+i),null);}
+
+/* ---------- Décor ---------- */
+const motes=[];{const m=$('motes');let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;
+  for(let i=0;i<46;i++){const e=document.createElement('i');const d=6+r()*22;e.style.width=e.style.height=d+'px';m.appendChild(e);motes.push({e,x:r()*1080,y:r()*H,v:20+r()*60,ph:r()*6,d});}}
+function decor(t,mood){
+  for(const o of motes){const y=((o.y-o.v*t)%2000+2000)%2000-40;o.e.style.transform=`translate(${o.x+Math.sin(t*0.8+o.ph)*24}px,${y}px)`;o.e.style.opacity=(0.25+0.35*Math.sin(t*1.3+o.ph)**2)*mood.motes;}
+  $('rays').style.transform=`translateX(${Math.sin(t*0.25)*60}px) skewX(-6deg)`;$('rays').style.opacity=mood.rays;
+  $('bg').style.filter=mood.bgFilter||'none';
+  $('tint').style.background=mood.tint||'transparent';$('tint').style.opacity=mood.tintA||0;
+  $('vignette').style.opacity=mood.vig??1;$('spot').style.opacity=mood.spot??0.6;
+}
+
+/* ---------- Texte animé (mot par mot) ---------- */
+const cache={};
+function words(el,text,cls){const k=el.id;if(cache[k]!==text+cls){cache[k]=text+cls;el.innerHTML=text?text.split(' ').map(w=>`<span class="w ${cls||''}">${w}</span>`).join(' '):'';}
+  return [...el.querySelectorAll('.w')];}
+function animWords(el,text,cls,t0,t1,t,{stagger=0.07,big=1}={}){
+  const ws=words(el,text,cls);
+  ws.forEach((w,i)=>{const a=t-t0-i*stagger,k=outBack(a/0.32),o=sm(0,0.12,a)*(1-sm(t1-0.18,t1,t));
+    w.style.opacity=o;w.style.transform=`translateY(${(1-k)*70}px) scale(${lerp(1.35*big,1,clamp(k,0,1.2))})`;w.style.filter=`blur(${(1-sm(0,0.22,a))*14}px)`;});
+  el.style.display=ws.length?'block':'none';
+}
+function hideText(){for(const id of ['t1','t2']){$(id).innerHTML='';cache[id]='';}$('sub').style.opacity=0;$('eb').style.opacity=0;}
+function sub(text,t0,t1,t){const e=$('sub');e.textContent=text;const a=t-t0;e.style.opacity=sm(0,0.25,a)*(1-sm(t1-0.2,t1,t));e.style.transform=`translateY(${(1-outExpo(a/0.4))*30}px)`;}
+function eyebrow(text,t0,t1,t){const e=$('eb');e.textContent=text;const a=t-t0;e.style.opacity=sm(0,0.2,a)*(1-sm(t1-0.2,t1,t));e.style.transform=`scale(${lerp(0.8,1,outBack(a/0.35))})`;}
+function chip(text,cls,t0,t1,t,top){const e=$('chip');e.className='chip '+(cls||'');e.textContent=text;const a=t-t0;const k=outBack(a/0.3);
+  e.style.top=(SQ?top*0.55:top)+'px';e.style.opacity=sm(0,0.08,a)*(1-sm(t1-0.12,t1,t));e.style.transform=`translateX(-50%) scale(${lerp(0.5,1,k)}) rotate(${(1-clamp(k,0,1))*-8}deg)`;}
+
+/* ---------- Téléphone ---------- */
+function phone(id,{x=540,y=1080,w=700,s=1,rx=0,ry=0,rz=0,show=true}={}){const p=$(id);p.style.display=show?'block':'none';if(!show)return;
+  if(SQ){w*=0.6;y=y*0.55+400;}  // centre du téléphone vers 720 px (sous les titres), comme en vertical
+  p.style.setProperty('--w',w+'px');p.style.transform=`translate(-50%,-50%) translate(${x-540}px,${y-960}px) perspective(2200px) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${s})`;}
+// Le doigt sur l'écran : (x, y) en points de l'iPhone, visibilité o.
+function touch(w,x,y,o,trail){if(SQ)w*=0.6;const k=w/402;const to=$('to1'),tr=$('tr1');to.style.left=x*k+'px';to.style.top=y*k+'px';to.style.opacity=o;to.style.transform=`scale(${lerp(1.4,1,o)})`;
+  tr.style.left=x*k+'px';tr.style.top=y*k+'px';tr.style.height=Math.max(0,trail*k)+'px';tr.style.opacity=o*0.8;}
+
+/* ---------- iPhone Duo en 3D (modèle de pearl-inc.app) ---------- */
+const dc=$('duo');
+const renderer=new THREE.WebGLRenderer({canvas:dc,antialias:true,alpha:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(1);renderer.setSize(1080,H,false);renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;renderer.setClearColor(0x000000,0);
+const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(20,1080/H,0.5,600);
+{const env=new THREE.Scene();const sg=new THREE.SphereGeometry(80,48,24),col=[],p=sg.attributes.position,cl=new THREE.Color();
+  for(let i=0;i<p.count;i++){const y=p.getY(i)/80;const v=0.72+0.28*Math.max(0,y);cl.setRGB(v,v,v*1.01);col.push(cl.r,cl.g,cl.b);}
+  sg.setAttribute('color',new THREE.Float32BufferAttribute(col,3));env.add(new THREE.Mesh(sg,new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.BackSide})));
+  const panel=(w,h,x,y,z,k)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:new THREE.Color(k,k,k),side:THREE.DoubleSide}));m.position.set(x,y,z);m.lookAt(0,0,0);env.add(m);};
+  panel(60,18,0,60,20,4);panel(16,70,-62,0,10,3);panel(16,70,62,0,-10,2.4);panel(70,12,0,-30,60,1.6);
+  panel(8,90,-30,0,-60,0.02);panel(8,90,34,0,55,0.03);panel(90,6,0,-55,-20,0.02);
+  const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(env,0.015).texture;}
+scene.add(new THREE.HemisphereLight(0xffffff,0xdedede,0.55));
+const keyL=new THREE.DirectionalLight(0xffffff,0.75);keyL.position.set(-12,20,24);scene.add(keyL);
+const HALF_W=8.23,PH=11.78,T=0.52,HY=PH/2,B=0.11;
+function rrShape(x0,y0,x1,y1,r){const s=new THREE.Shape();s.moveTo(x0+r[0],y0);s.lineTo(x1-r[1],y0);s.quadraticCurveTo(x1,y0,x1,y0+r[1]);s.lineTo(x1,y1-r[2]);
+  s.quadraticCurveTo(x1,y1,x1-r[2],y1);s.lineTo(x0+r[3],y1);s.quadraticCurveTo(x0,y1,x0,y1-r[3]);s.lineTo(x0,y0+r[0]);s.quadraticCurveTo(x0,y0,x0+r[0],y0);return s;}
+function setUV(g,fu,fv){const p=g.attributes.position,uv=g.attributes.uv;for(let i=0;i<p.count;i++)uv.setXY(i,fu(p.getX(i)),fv(p.getY(i)));uv.needsUpdate=true;}
+const frameMat=new THREE.MeshStandardMaterial({metalness:1,roughness:0.1,color:0xdcdad4});
+const backMat=new THREE.MeshPhysicalMaterial({metalness:0.1,roughness:0.42,clearcoat:0.6,clearcoatRoughness:0.35,color:0xefede8});
+const hingeMat=new THREE.MeshStandardMaterial({metalness:1,roughness:0.14,color:0xcfccc5});
+const glass=new THREE.MeshPhysicalMaterial({color:0x050506,metalness:0.2,roughness:0.06,clearcoat:1,clearcoatRoughness:0.04});
+const lensMat=new THREE.MeshPhysicalMaterial({color:0x08090c,metalness:0.6,roughness:0.04,clearcoat:1});
+const ringMat=new THREE.MeshStandardMaterial({color:0xb9bcc2,metalness:1,roughness:0.15});
+const phone3=new THREE.Group();scene.add(phone3);
+const rightHalf=new THREE.Group();phone3.add(rightHalf);const pivot=new THREE.Group();phone3.add(pivot);const leftHalf=new THREE.Group();pivot.add(leftHalf);
+function bodyGeo(x0,x1,roundRight){const R=1.12,r0=0.24;const sh=rrShape(x0+B,-HY+B,x1-B,HY-B,roundRight?[r0-0.1,R-B,R-B,r0-0.1]:[R-B,r0-0.1,r0-0.1,R-B]);
+  const g=new THREE.ExtrudeGeometry(sh,{depth:T-2*B,bevelEnabled:true,bevelThickness:B,bevelSize:B,bevelSegments:8,curveSegments:40});g.translate(0,0,-T+B);return g;}
+rightHalf.add(new THREE.Mesh(bodyGeo(0,HALF_W,true),frameMat));leftHalf.add(new THREE.Mesh(bodyGeo(-HALF_W,0,false),frameMat));
+const innerTex=new THREE.Texture();innerTex.encoding=THREE.sRGBEncoding;innerTex.anisotropy=8;
+const coverTex=new THREE.Texture();coverTex.encoding=THREE.sRGBEncoding;coverTex.anisotropy=8;
+const innerMat=new THREE.MeshBasicMaterial({map:innerTex,toneMapped:false});const coverMat=new THREE.MeshBasicMaterial({map:coverTex,toneMapped:false});
+const SW=HALF_W-0.13,SH=PH-0.26,ER=1.0;
+{const gR=new THREE.ShapeGeometry(rrShape(0,-HY+0.05,HALF_W-0.05,HY-0.05,[0,1.07,1.07,0]),24);gR.translate(0,0,0.003);rightHalf.add(new THREE.Mesh(gR,glass));
+  const gL=new THREE.ShapeGeometry(rrShape(-HALF_W+0.05,-HY+0.05,0,HY-0.05,[1.07,0,0,1.07]),24);gL.translate(0,0,0.003);leftHalf.add(new THREE.Mesh(gL,glass));
+  const fu=x=>(x+SW)/(2*SW),fv=y=>(y+SH/2)/SH;
+  const sR=new THREE.ShapeGeometry(rrShape(0,-SH/2,SW,SH/2,[0,ER,ER,0]),32);setUV(sR,fu,fv);sR.translate(0,0,0.006);rightHalf.add(new THREE.Mesh(sR,innerMat));
+  const sL=new THREE.ShapeGeometry(rrShape(-SW,-SH/2,0,SH/2,[ER,0,0,ER]),32);setUV(sL,fu,fv);sL.translate(0,0,0.006);leftHalf.add(new THREE.Mesh(sL,innerMat));
+  const bR=new THREE.ShapeGeometry(rrShape(-HALF_W+0.05,-HY+0.05,-0.05,HY-0.05,[1.07,0.18,0.18,1.07]),24);bR.rotateY(Math.PI);bR.translate(0,0,-T-0.003);rightHalf.add(new THREE.Mesh(bR,backMat));
+  const bL=new THREE.ShapeGeometry(rrShape(0.05,-HY+0.05,HALF_W-0.05,HY-0.05,[0.18,1.07,1.07,0.18]),24);bL.rotateY(Math.PI);bL.translate(0,0,-T-0.003);leftHalf.add(new THREE.Mesh(bL,glass));
+  const CWd=HALF_W-0.26,cg=new THREE.ShapeGeometry(rrShape(0,-SH/2,CWd,SH/2,[0.25,ER,ER,0.25]),32);
+  setUV(cg,x=>x/CWd,fv);cg.rotateY(Math.PI);cg.translate(-0.13,0,-T-0.006);leftHalf.add(new THREE.Mesh(cg,coverMat));
+  const pl=new THREE.ExtrudeGeometry(rrShape(-7.75,3.05,-2.2,5.45,[1.05,1.05,1.05,1.05]),{depth:0.05,bevelEnabled:true,bevelThickness:0.04,bevelSize:0.04,bevelSegments:4,curveSegments:24});
+  pl.rotateY(Math.PI);pl.translate(0,0,-T-0.01);rightHalf.add(new THREE.Mesh(pl,backMat));
+  const lens=(x,y,r)=>{const ring=new THREE.Mesh(new THREE.CylinderGeometry(r*1.14,r*1.14,0.1,48),ringMat);ring.rotation.x=Math.PI/2;ring.position.set(x,y,-T-0.13);rightHalf.add(ring);
+    const g=new THREE.Mesh(new THREE.CylinderGeometry(r,r,0.12,48),lensMat);g.rotation.x=Math.PI/2;g.position.set(x,y,-T-0.15);rightHalf.add(g);};
+  lens(6.4,4.25,0.64);lens(4.6,4.25,0.64);
+  const fl=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,0.08,24),new THREE.MeshStandardMaterial({color:0xf4efdc,roughness:0.35}));fl.rotation.x=Math.PI/2;fl.position.set(3.1,4.25,-T-0.11);rightHalf.add(fl);
+  const btn=(w,h,d,x,y,mat)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat||frameMat);m.position.set(x,y,-T/2);rightHalf.add(m);};
+  btn(1.1,0.1,0.24,2.4,HY+0.03);btn(1.1,0.1,0.24,3.75,HY+0.03);btn(0.1,1.5,0.26,HALF_W+0.03,2.0);btn(0.08,0.9,0.24,HALF_W+0.03,-1.6,glass);}
+const spine=new THREE.Mesh(new THREE.CylinderGeometry(1,1,PH-0.55,48),hingeMat);phone3.add(spine);
+const innerImg=new Image(),coverImg=new Image();
+// Duo : la prise (duo-golden, duo-ecrin), son instant rt, et le cadrage (lacet, tangage, distance relative, décalage vertical).
+function duo(show,{name='duo-golden',rt=0,yaw=0,pitch=0.04,zoom=1,dy=0,roll=0}={}){
+  dc.style.display=show?'block':'none';if(!show)return;
+  const sh=SHOTS[name],n=clamp(Math.round(rt*60),0,sh.frames.length-1),h=sh.frames[n].angle;
+  const src=`${A}/s/${name}/${f5(n)}.jpg`;
+  if(innerImg.dataset.src!==src){innerImg.dataset.src=src;innerImg.src=src;pending.push(innerImg.decode().then(()=>{innerTex.image=innerImg;innerTex.needsUpdate=true;}).catch(()=>{}));}
+  // L'écran extérieur garde la coquille (ou l'écrin) fermée tout au long de l'ouverture : c'est le dessus du couvercle,
+  // et c'est le téléphone qui le soulève ; l'intérieur s'allume en s'ouvrant (choix de Jules : jamais d'écran noir).
+  innerMat.color.setScalar(sm(4,16,h));
+  {const c=`${A}/s/${name}/cover/${f5(n)}.jpg`;if(coverImg.dataset.src!==c){coverImg.dataset.src=c;coverImg.src=c;
+    pending.push(coverImg.decode().then(()=>{coverTex.image=coverImg;coverTex.needsUpdate=true;}).catch(()=>{}));}}
+  pivot.rotation.y=Math.PI-THREE.MathUtils.degToRad(h);
+  const k=sm(0,90,h),spx=lerp(0.3,0.26,k),spz=lerp(0.5,0.26,k);spine.scale.set(spx,1,spz);spine.position.set(0,0,-spz*sm(0,35,h));
+  const hr=THREE.MathUtils.degToRad(h),cx=4.115*(1+Math.cos(hr))/2,cz=4.115*Math.sin(hr)/2;
+  const tgt=new THREE.Vector3(cx,0.15-(SQ?dy*0.5:dy),cz*0.6);
+  const v=THREE.MathUtils.degToRad(camera.fov)/2,hf=Math.atan(Math.tan(v)*camera.aspect);
+  const fit=(hw,hh)=>Math.max(hh/Math.tan(v),hw/Math.tan(hf))*1.04;
+  const radius=lerp(fit(5.2,10.4),fit(9.2,10.4),sm(0,150,h))*zoom;
+  camera.position.set(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch)).multiplyScalar(radius).add(tgt);
+  camera.up.set(Math.sin(roll),Math.cos(roll),0);camera.lookAt(tgt);
+  return h;
+}
+
+/* ---------- Montage (60 i/s) ---------- */
+window.FPS=60;
+const S=[[0,6.4],[6.4,10],[10,13.6],[13.6,19.6],[19.6,24.2],[24.2,29],[29,31],[31,35]];
+window.DURATION=35;
+// Interpolation par morceaux [[instant de la scène, instant de la prise]…] (rampes de vitesse).
+function ramp(keys,lt){for(let i=1;i<keys.length;i++)if(lt<=keys[i][0]||i===keys.length-1){const p=keys[i-1],q=keys[i];return lerp(p[1],q[1],clamp((lt-p[0])/(q[0]-p[0]),0,1));}}
+// Éclair blanc qui retombe : à l'instant `at`, d'intensité `amt`, en `dur` secondes.
+const blink=(t,at,amt,dur=0.25)=>t>=at?Math.max(0,1-(t-at)/dur)*amt:0;
+const MOOD={motes:1,rays:1,vig:1,spot:0.6};
+function renderScene(t){
+  hideText();$('chip').style.opacity=0;$('end').style.opacity=0;$('flash').style.opacity=0;
+  phone('p1',{show:false});phone('p2',{show:false});duo(false);$('to1').style.opacity=0;$('tr1').style.opacity=0;
+  let mood={...MOOD},flash=0;
+  // 1. L'accroche : l'huître dorée, ouverte lentement au pouce ; la carte reste à l'écran.
+  if(t<S[0][1]){const lt=t,ev=SHOTS.golden.events,cardT=ev.card-0.2,rt=lt+0.2;
+    if(lt<cardT)opening(1,'golden',rt,660);else card(1,'golden',0.12+(lt-cardT));
+    const shake=rt>ev.pop&&rt<ev.pop+0.2?Math.sin(rt*95)*5*(1-(rt-ev.pop)/0.2):0;
+    phone('p1',{y:1350+shake,w:660,s:lerp(1.0,1.1,sm(0,cardT,lt))+0.025*outBack((lt-cardT)/0.4)*(lt>cardT?1:0),rx:lerp(8,0,sm(0,1.4,lt)),ry:lerp(-10,0,sm(0,1.8,lt))});
+    animWords($('t1'),TX.hook1,'',-0.4,6.4,t);animWords($('t2'),TX.hook2,'g',ev.reveal-0.2-0.2,6.4,t);topAt(130);
+    flash=blink(lt,cardT,0.85);
+    mood.tint='radial-gradient(60% 40% at 50% 62%,#ffc845,transparent)';mood.tintA=sm(ev.pop,ev.reveal+1.2,rt)*0.75;
+  }
+  // 2. Laquelle ? Trois ouvertures, trois cartes.
+  else if(t<S[1][1]){const lt=t-S[1][0];
+    const cuts=[['black','black',0.10,TX.black,'blue',-9],['canard','find',0.13,TX.duck,'duck',9],['giant-benitier','giant',0.13,TX.giant,'sky',-9]];
+    const i=Math.min(2,Math.floor(lt/1.2)),ct=lt-i*1.2,[name,take,off,label,cls,ry]=cuts[i],ev=SHOTS[name].events;
+    if(ct<0.6)opening(1,name,ramp([[0,ev.pop-0.05],[0.6,ev.reveal+0.15]],ct),620,{finger:false});else card(1,take,off+(ct-0.6));
+    const whip=1-outExpo(ct/0.35);
+    phone('p1',{y:1330,w:620,x:540+whip*(i%2?-500:500),ry:ry*(1-sm(0,1.2,ct))+whip*(i%2?25:-25),rz:whip*(i%2?4:-4),s:lerp(0.96,1.04,ct/1.2)+0.03*outBack((ct-0.6)/0.3)*(ct>0.6?1:0)});
+    chip(label,cls,i*1.2+0.6,i*1.2+1.2,lt,1700);
+    animWords($('t1'),TX.which,'',0.05,3.6,lt);topAt(150);
+    flash=blink(ct,0,0.45,0.12)+blink(ct,0.6,0.6,0.2);
+    mood.tint=['radial-gradient(60% 40% at 50% 60%,#7f8cff,transparent)','radial-gradient(60% 40% at 50% 60%,#ffe066,transparent)','radial-gradient(60% 40% at 50% 60%,#aef4ff,transparent)'][i];mood.tintA=0.55;
+  }
+  // 3. La perle maudite.
+  else if(t<S[2][1]){const lt=t-S[2][0],ev=SHOTS.cursed.events;
+    if(lt<3.0)opening(1,'cursed',ramp([[0,0.2],[2.6,2.8],[3.0,ev.card]],lt),640);else card(1,'cursed',0.15+(lt-3.0));
+    phone('p1',{y:1340,w:640,s:lerp(1.0,1.12,sm(0,3.6,lt)),rx:lerp(-6,0,sm(0,2,lt)),ry:lerp(8,0,sm(0,2,lt)),x:540+(lt>3&&lt<3.3?Math.sin(lt*120)*10:0)});
+    animWords($('t1'),TX.cursed1,'r',0.15,3.6,lt);sub(TX.cursed2,0.9,3.6,lt);topAt(140);
+    chip(TX.cursedChip,'red',3.0,3.6,lt,1760);
+    const dark=sm(0,1.5,lt);mood.bgFilter=`hue-rotate(${-70*dark}deg) saturate(${lerp(1,1.4,dark)}) brightness(${lerp(1,0.55,dark)})`;
+    mood.tint='radial-gradient(70% 45% at 50% 62%,#ff2f72,transparent)';mood.tintA=sm(ev.pop-0.2,ev.reveal,lt+0.2)*0.9;mood.rays=lerp(1,0.25,dark);
+    flash=blink(lt,0,0.45,0.12)+blink(lt,3.0,0.7,0.3);
+  }
+  // 4. L'iPhone Duo : on ouvre le téléphone, l'huître s'ouvre avec lui.
+  else if(t<S[3][1]){const lt=t-S[3][0],ev=SHOTS['duo-golden'].events;
+    duo(true,{name:'duo-golden',rt:lt,yaw:lerp(-0.75,0,sm(0.2,2.4,lt))+Math.sin(lt*0.6)*0.04,pitch:lerp(0.22,0.06,sm(0,3,lt)),zoom:lerp(1.0,0.8,sm(1.6,4.8,lt)),dy:lerp(-2.6,-3.3,sm(2,5,lt)),roll:lerp(-0.08,0,sm(0,2,lt))});
+    eyebrow(TX.duoEb,0.1,6,lt);animWords($('t1'),TX.duo1,'',0.35,6,lt);animWords($('t2'),TX.duo2,'g',ev.reveal-0.9,6,lt);topAt(170);
+    chip(TX.duoChip,'gold',ev.card+0.05,6,lt,1640);
+    flash=blink(lt,0,0.45,0.12)+blink(lt,ev.card,0.4,0.4);
+    mood.spot=1;mood.tint='radial-gradient(60% 40% at 50% 55%,#ffc845,transparent)';mood.tintA=sm(ev.pop,ev.reveal+0.8,lt)*0.6;
+  }
+  // 5. Écrins et bijoux, au pouce.
+  else if(t<S[4][1]){const lt=t-S[4][0],ev=SHOTS.ecrin.events;
+    if(lt<3.8)opening(1,'ecrin',ramp([[0,0.3],[3.3,3.6],[3.8,ev.card]],lt),640);else card(1,'ecrin',0.15+(lt-3.8));
+    phone('p1',{y:1350,w:640,s:lerp(1.0,1.08,sm(0,4.6,lt))+0.03*outBack((lt-3.8)/0.3)*(lt>3.8?1:0),ry:lerp(10,-4,sm(0,4.6,lt)),rx:3});
+    animWords($('t1'),TX.ecrin1,'',0.1,4.6,lt);animWords($('t2'),TX.ecrin2,'g',0.55,4.6,lt);sub(TX.ecrinSub,1.0,3.3,lt);topAt(130);
+    chip(TX.ecrinChip,'gold',ev.perfect-0.3,3.8,lt,1720);
+    mood.bgFilter=`hue-rotate(${lerp(0,140,sm(0,0.5,lt))}deg) saturate(.9) brightness(.75)`;mood.rays=0.4;
+    mood.tint='radial-gradient(60% 40% at 50% 60%,#ff9bd2,transparent)';mood.tintA=sm(ev.pop,ev.perfect,lt+0.3)*0.6;
+    flash=blink(lt,0,0.45,0.12)+blink(lt,ev.perfect-0.3,0.45,0.3)+blink(lt,3.8,0.7,0.25);
+  }
+  // 6. L'écrin sur l'iPhone Duo.
+  else if(t<S[5][1]){const lt=t-S[5][0],ev=SHOTS['duo-ecrin'].events;
+    const rt=ramp([[0,0.6],[4.1,4.7],[4.8,7.0]],lt);
+    duo(true,{name:'duo-ecrin',rt,yaw:lerp(0.15,0.62,sm(0.6,3.0,lt))-lerp(0,0.62,sm(4.1,4.8,lt))+Math.sin(lt*0.7)*0.03,pitch:lerp(0.25,0.12,sm(0,3,lt)),zoom:lerp(1.0,0.9,sm(1.4,4.0,lt)),dy:lerp(-2.6,-3.0,sm(1,4,lt)),roll:lerp(0.06,0,sm(0,2,lt))});
+    eyebrow(TX.duoEb,0.1,4.8,lt);animWords($('t1'),TX.duoEcrin1,'',0.2,4.8,lt);animWords($('t2'),TX.duoEcrin2,'g',0.45,4.8,lt);sub(TX.duoEcrinSub,1.1,4.8,lt);topAt(150);
+    const pt=ev.perfect-0.6;chip(TX.ecrinChip,'gold',pt,4.8,lt,1640);
+    mood.bgFilter=`hue-rotate(${lerp(140,150,sm(0,1,lt))}deg) saturate(.9) brightness(.7)`;mood.rays=0.3;mood.spot=1;
+    mood.tint='radial-gradient(60% 40% at 50% 55%,#ff9bd2,transparent)';mood.tintA=sm(pt-1,pt,lt)*0.6;
+    flash=blink(lt,0,0.45,0.12)+blink(lt,pt,0.45,0.3)+blink(lt,4.75,0.5,0.25);
+  }
+  // 7. Collectionner : deux téléphones.
+  else if(t<S[6][1]){const lt=t-S[6][0],ev=SHOTS['rose-or'].events;
+    card(1,'bijoux',lerp(1.5,3.5,lt/2));
+    if(lt<1.0)opening(2,'rose-or',ramp([[0,ev.pop-0.15],[1.0,ev.card]],lt),440,{finger:false});else card(2,'orskin',0.1+(lt-1.0));
+    const k=outExpo(lt/0.5);
+    phone('p1',{x:lerp(-200,300,k),y:1290,w:440,ry:16,rz:-3});phone('p2',{x:lerp(1280,780,k),y:1230,w:440,ry:-16,rz:3,s:1+0.03*outBack((lt-1)/0.3)*(lt>1?1:0)});
+    animWords($('t1'),TX.col1,'',0.05,2,lt);animWords($('t2'),TX.col2,'g',0.3,2,lt);sub(TX.colSub,0.6,2,lt);topAt(150);
+    flash=blink(lt,0,0.45,0.12)+blink(lt,1.0,0.35,0.2);
+  }
+  // 8. Fin : l'icône et l'App Store.
+  else{const lt=t-S[7][0];
+    const e=$('end');e.style.opacity=sm(0,0.2,lt);
+    $('icon').style.transform=`scale(${lerp(0.3,1,outBack(lt/0.55))}) rotate(${(1-sm(0,0.55,lt))*-12}deg)`;
+    [...e.children].slice(1).forEach((c,i)=>{const a=lt-0.35-i*0.15;c.style.opacity=sm(0,0.25,a);c.style.transform=`translateY(${(1-outExpo(a/0.5))*50}px)`;});
+    mood.spot=1;flash=blink(lt,0,0.7,0.15);
+  }
+  decor(t,mood);$('flash').style.opacity=clamp(flash,0,1);
+}
+
+window.renderAt=async t=>{pending.length=0;renderScene(t);await Promise.all(pending);renderer.render(scene,camera);await new Promise(r=>requestAnimationFrame(()=>r()));};
+
+(async()=>{
+  $('icon').src=`${A}/icon.png`;$('store').textContent=TX.store;$('free').textContent=TX.free;
+  document.documentElement.lang=LANG;
+  for(const n of ['golden','black','canard','giant-benitier','cursed','rose-or','ecrin','duo-golden','duo-ecrin'])SHOTS[n]=await (await fetch(`${A}/s/${n}.json`)).json();
+  await document.fonts.ready;await $('icon').decode().catch(()=>{});
+  window.ready=true;
+})();
+</script>
+</body></html>

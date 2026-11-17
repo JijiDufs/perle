@@ -7,7 +7,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ACHIEVEMENTS } from '../src/core/achievements';
-import { APP_ACHIEVEMENT_REWARDS, APP_ACHIEVEMENTS, APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_ECRINS, APP_FISH_THIEF, APP_LEVELS, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
+import { APP_ACHIEVEMENT_REWARDS, APP_ACHIEVEMENTS, APP_CALENDAR, APP_CONSUMABLES, APP_ECONOMY, APP_ECRINS, APP_FISH_THIEF, APP_REVIEW, APP_LEVELS, APP_MISSIONS, APP_RARE_MISSION_TIER, APP_SELL_DUST_BY_TIER, APP_SKINS } from '../src/core/appEconomy';
 import { FIND_PROBABILITY, PEARLS } from '../src/core/catalog';
 import { INITIAL_LOGIN, streakIfClaimed, type LoginState } from '../src/core/daily';
 import { CATALOG_ENGLISH } from '../src/core/catalogEnglish';
@@ -70,6 +70,7 @@ function catalog() {
       consumables: APP_CONSUMABLES,
       calendar: APP_CALENDAR,
       fishThief: APP_FISH_THIEF,
+      review: APP_REVIEW,
       levels: APP_LEVELS,
       achievements: APP_ACHIEVEMENTS,
       achievementRewards: APP_ACHIEVEMENT_REWARDS,

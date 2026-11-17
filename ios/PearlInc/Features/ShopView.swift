@@ -169,9 +169,23 @@ private struct SkinCard: View {
                     let layout = OysterArt.layout(size: size, look: look, length: length)
                     let lagoon = LagoonArt(time: t, focus: .init(x: layout.hx, y: layout.hy, size: layout.L))
                     lagoon.draw(&context, size: size)
+                    guard !Oyster3DView.isEnabled else { return }
                     OysterArt(angle: 0, pearl: nil, glowColor: nil, sizeMm: 0, cracked: false, trembles: false, revealed: false,
                               time: t, look: look, length: length).draw(&context, size: size)
                     lagoon.drawOverlay(&context, size: size)
+                }
+            }
+            .overlay {
+                // La coquille en 3D, comme à la Pêche (même cadrage : 3 L × 5,6 L autour de la charnière).
+                if Oyster3DView.isEnabled {
+                    GeometryReader { proxy in
+                        let look = SkinLook(skinId: skin.id)
+                        let length = min(Double(proxy.size.width) * 0.42, Double(proxy.size.height) * 0.62)
+                        let layout = OysterArt.layout(size: proxy.size, look: look, length: length)
+                        Oyster3DView(angle: 0, pearl: nil, cracked: false, pearlRadius: 0, glowHex: nil, seed: 1, skin: skin.id)
+                            .frame(width: layout.L * 3, height: layout.L * 5.6)
+                            .position(x: layout.hx, y: layout.hy - layout.L * 0.54)
+                    }
                 }
             }
             .frame(height: 124)

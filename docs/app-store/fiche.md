@@ -1,4 +1,4 @@
-# Fiche App Store de Pearl Inc. (1.1, français et anglais)
+# Fiche App Store de Pearl Inc. (1.1 en ligne, 1.2 en préparation ; français et anglais)
 
 > Rédigée le 2026-10-19 pour la 1.0, **mise à jour le 2026-10-28 pour la 1.1** (écrins et bijoux, niveaux, succès, collection enrichie, sauvegarde sur le compte), d'après ce que contient **vraiment** l'app (vérifié dans le code et au simulateur). À coller dans App Store Connect.
 > Le nombre entre parenthèses est le nombre de caractères ; la limite d'Apple est indiquée à côté. App Store Connect refuse l'étoile « ★ » dans la description (« caractères non valides ») et compte double les lettres accentuées dans les mots-clés.
@@ -18,6 +18,55 @@
 | URL de confidentialité | `https://pearl-inc.app/confidentialite/` | `https://pearl-inc.app/en/privacy/` | |
 
 Le sous-titre se change avec une nouvelle version (pas entre deux). « Bijoux » dans le sous-titre rendrait les écrins visibles dès les résultats de recherche ; Jules garde pour l'instant « Trouve la perle rare ».
+
+## 1 bis. Version 1.2 — nouveautés (français et anglais)
+
+> Rédigé le 2026-11-07, **pas encore dans App Store Connect** (la version 1.2 n'y est pas créée). Description, mots-clés et sous-titre de la 1.1 restent valables : rien n'y décrit le rendu. La partie iPhone Duo en 3D suppose que le travail de la session « Assets et optimisation iPhone Duo » est fusionné avant l'envoi ; sinon, retirer la ligne « en 3D aussi sur iPhone Duo ».
+
+**Texte promotionnel** (FR 138 / 170 · EN 124 / 170)
+
+```
+Nouveau look : des huîtres en relief, toutes différentes, des perles et des bijoux plus vrais que nature. Le lagon n’a jamais été si beau.
+```
+```
+A whole new look: 3D oysters, each one different, and pearls and jewels that look real. The lagoon has never looked so good.
+```
+
+**Nouveautés de cette version** (FR 793 / 4 000)
+
+```
+Le lagon fait peau neuve !
+
+• Les huîtres passent en 3D : chaque coquille est unique, avec ses lamelles, ses volants et sa nacre.
+• Le bénitier, l’huître d’or et Première marée sont refaits en relief.
+• Les écrins aussi : cuir, dorures et velours, et le couvercle qui se soulève sous ton pouce.
+• Perles et bijoux plus vrais que nature, dans toutes leurs formes, leurs reflets et leurs métaux.
+• Le poisson voleur a changé de tête… mais pas d’appétit.
+• De 21 h à 6 h, le lagon passe en mode nuit.
+• iPhone Duo : la perle reste cachée jusqu’à la révélation, la charnière vibre en douceur, l’écran intérieur marche aussi à l’horizontale, et un petit téléphone te rappelle de refermer pour l’huître suivante. En 3D aussi sur iPhone Duo.
+• Les chances ne changent pas : seul le rendu est nouveau.
+```
+
+**What's New in This Version** (EN 728 / 4,000)
+
+```
+The lagoon gets a makeover!
+
+• Oysters are now 3D: every shell is unique, with its own ridges, frills and mother-of-pearl.
+• The giant clam, the golden oyster and First Tide are rebuilt in 3D.
+• Jewel cases too: leather, gilding and velvet, with a lid that lifts under your thumb.
+• Pearls and jewels that look real, in every shape, overtone and metal.
+• The thief fish has a new face… but the same appetite.
+• From 9 pm to 6 am, the lagoon switches to night mode.
+• iPhone Duo: the pearl stays hidden until the reveal, the hinge gives gentler feedback, the inner screen also works sideways, and a little phone reminds you to fold shut for the next oyster. In 3D on iPhone Duo too.
+• The odds don’t change: only the look is new.
+```
+
+**Notes pour la revue** : dans §4, remplacer le paragraphe « What's new in 1.1 » par :
+
+```
+What's new in 1.2: a new look only, no new feature and no change to the odds or purchases. Oysters, shells and jewel cases are now rendered in 3D (RealityKit), pearls and jewels use pre-rendered images. On iPhone Duo, the inner screen also works in landscape.
+```
 
 ## 2. Version 1.1 — français
 
@@ -242,7 +291,9 @@ Account deletion: Settings (gear icon on the fishing screen) > "Delete my accoun
 9. **Choisis ta coquille.** — bénitier et huître d'or
 10. **Grimpe les rangs.** — « Ma progression » (niveau 14, Artisan, titre porté) ; « 41 succès et titres », « 3 missions du jour »
 
-Les écrans sont de vraies captures de l'app 1.1 (simulateur, partie « vitrine » : `scripts/app-store-visuels/seed.py`, passée par le vrai moteur dans `vitrine/`) ; perles, objets, bijoux et décor du 1er visuel sont dessinés par le code de l'app. Pour les refaire : `scripts/app-store-visuels/render.sh` (mode d'emploi en tête du fichier). Les 3 premiers visuels sont ceux qu'on voit dans les résultats de recherche : ils racontent à eux seuls le geste, le suspense et la rareté ; les écrins viennent juste après.
+**1.2 (nouvelle DA)** : mêmes 10 visuels, mêmes légendes, refaits le 2026-11-07 avec l'huître, le bénitier et l'écrin en 3D et les perles et bijoux en photo. Écrans capturés au simulateur (iPhone 18 Pro) avec `-NoSound` (l'audio du simulateur bloque le lancement quand le Mac est chargé) et, pour les plans sans interface (visuels 1, 2, 9), `-StoreShot` (cache la barre du haut, les onglets et l'objectif) ; l'angle du couvercle est figé par le réglage de test `OysterTestAngle`, le lagon de jour par `LagoonStyle jour`. Le héros du 1er visuel est une capture (`hero-golden-34.png` dans le dossier des captures), plus le dessin 2D de `vitrine/`. 
+
+Les écrans sont de vraies captures de l'app (simulateur, partie « vitrine » : `scripts/app-store-visuels/seed.py`, passée par le vrai moteur dans `vitrine/`) ; perles, objets et bijoux autour des écrans sont dessinés par `vitrine/` avec le code et les photos de l'app. Pour les refaire : `scripts/app-store-visuels/render.sh` (mode d'emploi en tête du fichier). Les 3 premiers visuels sont ceux qu'on voit dans les résultats de recherche : ils racontent à eux seuls le geste, le suspense et la rareté ; les écrins viennent juste après.
 
 Les bannières paysage (`visuels/{fr,en}/bannieres/`) n'ont pas changé : elles montrent l'iPhone Duo et une perle, toujours vrais.
 

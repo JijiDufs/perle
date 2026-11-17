@@ -11,8 +11,10 @@ import CoreImage.CIFilterBuiltins
 struct Oyster3DView: UIViewRepresentable {
     /// Ouverture du couvercle, en degrés (0 : fermée, 180 : à plat).
     var angle: Double
-    /// La perle, telle que la carte la montre (forme, reflet, marque) ; nil : rien dans la valve (huître vide, trouvaille, perle volée).
+    /// La perle, telle que la carte la montre (forme, reflet, marque) ; nil : pas de perle dans la valve (huître vide, trouvaille, perle volée).
     var pearl: PearlLook?
+    /// La trouvaille cachée à la place de la perle (sa photo dans la valve) ; nil : aucune.
+    var findId: String?
     var cracked: Bool
     /// Rayon de la perle, pour une valve de longueur 1.
     var pearlRadius: Double
@@ -22,6 +24,22 @@ struct Oyster3DView: UIViewRepresentable {
     var seed: Int
     /// Le skin porté (`APP_SKINS`) : couleurs, vernis, nacre, et la forme du bénitier.
     var skin: String
+    /// D'où l'on regarde : de trois quarts au pouce ; de dessus sur l'iPhone Duo, la charnière sur le pli
+    /// (ou au bord gauche de l'écran extérieur), comme le dessin 2D.
+    var viewpoint = Viewpoint.thumb
+
+    enum Viewpoint {
+        case thumb
+        /// Écran intérieur, pli vertical : couvercle à plat à gauche, valve à droite.
+        case fold
+        /// Écran intérieur en paysage, pli horizontal : couvercle en haut, valve en bas.
+        case foldAcross
+        /// Écran extérieur : fermée, charnière à gauche, la coquille part vers la droite.
+        case cover
+
+        /// Hauteur de la caméra au-dessus de l'horizon, en degrés (90 : à la verticale).
+        var elevation: Float { self == .thumb ? Oyster3DScene.cameraElevation : 90 }
+    }
 
     static var isEnabled: Bool { !ProcessInfo.processInfo.arguments.contains("-Oyster2D") }
 
@@ -39,15 +57,15 @@ struct Oyster3DView: UIViewRepresentable {
     func updateUIView(_ view: ARView, context: Context) {
         // Réglage de test (`defaults write app.pearlinc.PearlInc OysterTestAngle 120`) : couvercle figé à cet angle, pour regarder la 3D posément.
         let testAngle = UserDefaults.standard.double(forKey: "OysterTestAngle")
-        context.coordinator.update(angle: testAngle > 0 ? testAngle : angle, pearl: pearl, cracked: cracked, pearlRadius: pearlRadius,
-                                   glowHex: glowHex, seed: seed, skin: skin)
+        context.coordinator.update(angle: testAngle > 0 ? testAngle : angle, pearl: pearl, findId: findId, cracked: cracked,
+                                   pearlRadius: pearlRadius, glowHex: glowHex, seed: seed, skin: skin, view: viewpoint)
     }
 }
 
 /// La scène : la valve du bas posée à plat, le couvercle sur sa charnière, la perle, les lumières.
 /// La charnière est à z = −0,5 ; une valve mesure 1 de la charnière au bord côté joueur ; la vue SwiftUI fait 3 L × 5,6 L.
 @MainActor final class Oyster3DScene {
-    static let cameraElevation: Float = 58
+    nonisolated static let cameraElevation: Float = 58
     /// La nacre du skin porté (l'image générée, blanchie : elle était trop rose, retour de Jules).
     private var nacre = PhysicallyBasedMaterial()
     private let root = AnchorEntity(world: .zero)
@@ -60,8 +78,12 @@ struct Oyster3DView: UIViewRepresentable {
     private var shape: ValveShape?
     private var glow = PointLight()
     private var pearlKey = ""
+    /// Trouvaille posée : hauteur du fond de la valve sous elle et hauteur de son centre à pleine taille (nil : perle ou rien).
+    private var findRest: (floor: Float, lift: Float)?
     private var seed = Int.min
     private var skin = ""
+    private let camera = PerspectiveCamera()
+    private var viewpoint: Oyster3DView.Viewpoint?
 
     func install(in view: ARView) {
         lidPivot.position = [0, 0.004, ValveShape.hinge]
@@ -86,17 +108,32 @@ struct Oyster3DView: UIViewRepresentable {
         glow.position = [0, -ValveShape.depth * 0.3, 0.05]
         root.addChild(glow)
 
-        // Caméra de trois quarts, au-dessus et devant : la charnière en haut de l'écran, comme au pouce.
-        let camera = PerspectiveCamera()
-        // Champ vertical élargi avec la vue (30° pour 4,4 L) : même taille à l'écran, même perspective, plus de place derrière
-        // la charnière ; la visée remonte d'autant pour que la charnière reste à sa place.
         camera.camera.fieldOfViewInDegrees = 37.6
-        let target: SIMD3<Float> = [0, 0.37, -0.98]
-        let elevation: Float = Self.cameraElevation * .pi / 180, distance: Float = 8.6
-        camera.look(at: target, from: target + [0, distance * sin(elevation), distance * cos(elevation)], relativeTo: nil)
         root.addChild(camera)
+        aim(.thumb)
 
         view.scene.addAnchor(root)
+    }
+
+    /// Place la caméra selon le point de vue.
+    private func aim(_ viewpoint: Oyster3DView.Viewpoint) {
+        self.viewpoint = viewpoint
+        switch viewpoint {
+        case .thumb:
+            // De trois quarts, au-dessus et devant : la charnière en haut de l'écran, comme au pouce.
+            // Champ vertical élargi avec la vue (30° pour 4,4 L) : même taille à l'écran, même perspective, plus de place derrière
+            // la charnière ; la visée remonte d'autant pour que la charnière reste à sa place.
+            let target: SIMD3<Float> = [0, 0.37, -0.98]
+            let elevation: Float = Self.cameraElevation * .pi / 180, distance: Float = 8.6
+            camera.look(at: target, from: target + [0, distance * sin(elevation), distance * cos(elevation)], relativeTo: nil)
+        case .fold, .foldAcross, .cover:
+            // À la verticale au-dessus de la charnière, dans une vue carrée de 3 L : 1 L à l'écran = 1 dans la scène
+            // (3 / (2 tan 18,8°) = 4,41). Le haut de l'écran : +x pour un pli vertical (la valve part vers la droite),
+            // −z pour un pli horizontal (la valve part vers le bas, comme au pouce).
+            let hinge: SIMD3<Float> = [0, 0, ValveShape.hinge]
+            let up: SIMD3<Float> = viewpoint == .foldAcross ? [0, 0, -1] : [1, 0, 0]
+            camera.look(at: hinge, from: hinge + [0, 4.41, 0], upVector: up, relativeTo: nil)
+        }
     }
 
     /// Les deux valves, tirées de la graine : contour, volants, couleurs. Reconstruites à chaque huître.
@@ -239,7 +276,12 @@ struct Oyster3DView: UIViewRepresentable {
         return try? TextureResource.generate(from: image, options: .init(semantic: .color))
     }
 
-    func update(angle: Double, pearl: PearlLook?, cracked: Bool, pearlRadius: Double, glowHex: String?, seed: Int, skin: String) {
+    func update(angle: Double, pearl: PearlLook?, findId: String?, cracked: Bool, pearlRadius: Double, glowHex: String?, seed: Int,
+                skin: String, view: Oyster3DView.Viewpoint) {
+        if view != viewpoint {
+            aim(view)
+            pearlKey = ""  // la perle se tourne vers la nouvelle caméra
+        }
         if seed != self.seed || skin != self.skin {
             self.seed = seed
             self.skin = skin
@@ -249,27 +291,47 @@ struct Oyster3DView: UIViewRepresentable {
         let theta = Float(min(max(angle, 0), 180) * .pi / 180)
         lidPivot.orientation = simd_quatf(angle: -theta, axis: [1, 0, 0])
 
-        let key = (pearl.map { "\($0.id)/\($0.shape ?? "")/\($0.overtone ?? "")/\($0.mark ?? "")/\($0.seed)/\(cracked)" } ?? "-") + "/\(pearlRadius)"
+        let key = (pearl.map { "\($0.id)/\($0.shape ?? "")/\($0.overtone ?? "")/\($0.mark ?? "")/\($0.seed)/\(cracked)" } ?? findId ?? "-") + "/\(pearlRadius)"
         if key != pearlKey {
             pearlKey = key
-            if let pearl {
-                let r = Float(pearlRadius) * 1.3  // un peu plus grande que son rayon de jeu, pour remplir la valve (choix de Jules)
+            if pearl != nil || findId != nil {
+                // Perle : un peu plus grande que son rayon de jeu, pour remplir la valve (choix de Jules).
+                // Trouvaille : sa photo plein cadre sur un carré de 0,6 valve (le dessin 2D la montre sur 0,4 L ; plus grande ici,
+                // comme la perle, pour remplir la valve).
+                let r = pearl == nil ? Float(0.15) : Float(pearlRadius) * 1.3
                 // La perle de la carte (forme, reflet, marque, fêlure), dessinée par PearlArt et posée sur un carré
                 // tourné vers la caméra, comme le bijou dans l'écrin : on voit dans l'huître ce que la carte montrera.
                 var material = UnlitMaterial()
-                if let texture = Self.pearlTexture(pearl, cracked: cracked) { material.color = .init(texture: .init(texture)) }
+                let texture = if let pearl { Self.pearlTexture(pearl, cracked: cracked) } else { findId.flatMap(Self.findTexture) }
+                if let texture { material.color = .init(texture: .init(texture)) }
                 material.blending = .transparent(opacity: 1.0)
                 material.opacityThreshold = 0.02
                 self.pearl.model = ModelComponent(mesh: .generatePlane(width: 4 * r, depth: 4 * r), materials: [material])
                 // Posée sur le voile (ou le manteau du bénitier, qui bombe au milieu d'un pli) : le bas du carré incliné ne doit pas passer dessous.
                 let floor = shape.map { -$0.bowl(0.56) + $0.ribRelief(0.56, .pi / 2) + 0.012 } ?? -ValveShape.depth
-                self.pearl.position = [0, floor + r * 1.2, 0.06]
-                self.pearl.orientation = simd_quatf(angle: (90 - Self.cameraElevation) * .pi / 180, axis: [1, 0, 0])
+                // Une trouvaille occupe jusqu'à 88 % de la hauteur de son carré (1,76 r) : posée plus haut qu'une perle.
+                self.pearl.position = [0, floor + r * (pearl == nil ? 1.76 : 1.2), 0.06]
+                self.pearl.scale = [1, 1, 1]
+                findRest = pearl == nil ? (floor, r * 1.76) : nil
+                // Tournée vers la caméra ; vue de dessus avec le haut de l'écran en +x, l'image se couche sur le côté (−90° autour de y).
+                let tilt = simd_quatf(angle: (90 - view.elevation) * .pi / 180, axis: [1, 0, 0])
+                let yaw = simd_quatf(angle: view == .fold || view == .cover ? -.pi / 2 : 0, axis: [0, 1, 0])
+                self.pearl.orientation = yaw * tilt
                 self.pearl.isEnabled = true
             } else {
                 self.pearl.isEnabled = false
+                findRest = nil
             }
-            if let shape { placeVeil(shape, pearlRadius: pearl == nil ? nil : pearlRadius * 1.3) }
+            if let shape { placeVeil(shape, pearlRadius: pearl != nil ? pearlRadius * 1.3 : findId != nil ? 0.19 : nil) }
+        }
+
+        // Une trouvaille est plus haute que la coquille fermée : elle grandit depuis le fond de la valve à mesure que le
+        // couvercle se lève (pleine taille à 55°), pour ne jamais le traverser ni se montrer avant l'ouverture.
+        if let findRest {
+            let t = Float(min(1, max(0, (angle - 6) / 49))), grow = t * t * (3 - 2 * t)
+            self.pearl.isEnabled = grow > 0.02
+            self.pearl.scale = [grow, grow, grow]
+            self.pearl.position.y = findRest.floor + findRest.lift * grow
         }
 
         // La lueur monte avec l'entrebâillement, puis se fond dans la lumière du jour.
@@ -289,6 +351,18 @@ struct Oyster3DView: UIViewRepresentable {
             light.blendMode = .plusLighter
             light.opacity = 0.2
             PearlArt.draw(&light, px / 2, px / 2, px / 4, pearl, cracked: cracked, shadow: false)
+        }.frame(width: px, height: px))
+        renderer.scale = 1
+        renderer.isOpaque = false
+        guard let image = renderer.cgImage.flatMap(Ecrin3DScene.straightAlpha) else { return nil }
+        return try? TextureResource.generate(from: image, options: .init(semantic: .color))
+    }
+
+    /// La trouvaille comme sur la carte (`FindArt` : photo, sinon dessin), plein cadre.
+    private static func findTexture(_ id: String) -> TextureResource? {
+        let px = 384.0
+        let renderer = ImageRenderer(content: Canvas { context, _ in
+            FindArt.draw(context, px / 2, px / 2, px / 2.2, id: id)
         }.frame(width: px, height: px))
         renderer.scale = 1
         renderer.isOpaque = false

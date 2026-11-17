@@ -279,3 +279,19 @@ export const APP_ACHIEVEMENT_REWARDS = {
   or: { oysters: 0, dust: 25, reputation: 60 },
   albumOysters: 0,
 } as const;
+
+/**
+ * Demande d'avis App Store (app iOS) : la fenêtre d'Apple, proposée à un moment heureux et calme, quand la carte d'une
+ * belle prise vient d'être refermée. Jamais pendant le tutoriel, ni après une fêlure, un vol du poisson ou à marée
+ * basse. Apple limite de son côté l'affichage à 3 fois par an. **Seuils provisoires** (§6, 2026-11-16).
+ */
+export const APP_REVIEW = {
+  /** Pas avant ce nombre d'huîtres ouvertes… */
+  minOysters: 30,
+  /** … sur au moins ce nombre de jours différents. */
+  minDays: 3,
+  /** Jours au moins entre deux demandes (et jamais deux fois pour la même version). */
+  minDaysBetween: 60,
+  /** Une belle prise : une perle de ce niveau de rareté ou mieux (4 = ★), ou une sorte jamais trouvée. */
+  minPearlTier: 4,
+} as const;
