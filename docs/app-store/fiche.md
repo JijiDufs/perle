@@ -21,7 +21,7 @@ Le sous-titre se change avec une nouvelle version (pas entre deux). « Bijoux »
 
 ## 1 bis. Version 1.2 — nouveautés (français et anglais)
 
-> Rédigé le 2026-11-07, **revu le 2026-11-17** pour le build 10 (trouvailles en photo et dans l'huître, choix « charnière ou pouce » sur l'iPhone Duo, demande d'avis), **pas encore dans App Store Connect** (la version 1.2 n'y est pas créée). Description, mots-clés et sous-titre de la 1.1 restent valables : rien n'y décrit le rendu. La 3D sur l'iPhone Duo est bien dans le build 10 (huître et écrin, toutes les poses).
+> Rédigé le 2026-11-07, **revu le 2026-11-17** pour le build 10 (trouvailles en photo et dans l'huître, choix « charnière ou pouce » sur l'iPhone Duo, demande d'avis), **version 1.2 créée dans App Store Connect le 2026-11-17** (publication manuelle) : elle a repris la description, les mots-clés et les captures de la 1.1. **Collés le 2026-11-17** : texte promotionnel et nouveautés FR / EN ci-dessous, notes de revue (paragraphe « iPhone Duo » remplacé, paragraphe 1.2 ajouté, « New in 1.1 » devenu « Since 1.1 » dans les notes écrites par Jules) ; **build 10 rattaché** ; **captures remplacées** par les 10 nouveaux visuels FR / EN (emplacement « iPhone avec Dynamic Island », 1206 × 2622 : copies réduites des 1320 × 2868 de `docs/app-store/visuels/`, comme pour la 1.1). Description, mots-clés et sous-titre de la 1.1 restent valables : rien n'y décrit le rendu. La 3D sur l'iPhone Duo est bien dans le build 10 (huître et écrin, toutes les poses).
 
 **Texte promotionnel** (FR 155 / 170 · EN 131 / 170)
 
