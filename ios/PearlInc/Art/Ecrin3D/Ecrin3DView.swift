@@ -16,8 +16,9 @@ struct Ecrin3DView: UIViewRepresentable {
     var jewelKey: String
     /// Dessine le bijou dans une image de `jewelPixels` px de côté, pour `jewelUnits` de plateau.
     var drawJewel: (Canvas2D) -> Void
-    /// Où la vue est posée dans l'écran (pour rendre les points du bijou et du couvercle dans le repère de l'écran).
+    /// Où la vue est posée dans l'écran, et son côté (pour rendre les points du bijou et du couvercle dans le repère de l'écran).
     var origin: CGPoint
+    var side: Double
     let probe: Ecrin3DProbe
     /// D'où l'on regarde : de trois quarts au pouce ; de dessus sur l'iPhone Duo (même modèle, autre caméra).
     var viewpoint = Viewpoint.thumb
@@ -35,8 +36,15 @@ struct Ecrin3DView: UIViewRepresentable {
     static let jewelPixels = 512.0
     static let jewelUnits = 0.8
     static var isEnabled: Bool { !ProcessInfo.processInfo.arguments.contains("-Ecrin2D") }
-    /// Côté de la vue carrée, en largeurs d'écrin (de quoi garder le couvercle ouvert dans le cadre).
-    static let viewSpan = 3.2
+    /// Côté de la vue carrée, en largeurs d'écrin : de quoi garder le couvercle qui monte dans le cadre (trois quarts) ;
+    /// sur le Duo, juste l'écrin à plat (pli) ou fermé (écran extérieur), où il est grand : une vue plus petite à rendre.
+    static func viewSpan(_ viewpoint: Viewpoint) -> Double {
+        switch viewpoint {
+        case .thumb: 3.2
+        case .fold, .foldAcross: 1.8
+        case .cover: 1.2
+        }
+    }
 
     func makeCoordinator() -> Ecrin3DScene { Ecrin3DScene() }
 
@@ -52,7 +60,7 @@ struct Ecrin3DView: UIViewRepresentable {
     func updateUIView(_ view: ARView, context: Context) {
         let scene = context.coordinator
         scene.update(angle: angle, leatherHex: leatherHex, dim: dim, jewelKey: jewelKey, drawJewel: drawJewel, view: viewpoint)
-        probe.anchors = scene.anchors(in: view, origin: origin)
+        probe.anchors = scene.anchors(side: side, origin: origin)
     }
 }
 
@@ -136,8 +144,6 @@ final class Ecrin3DProbe {
         fill.look(at: .zero, from: [1.4, 0.8, 1.6], relativeTo: nil)
         root.addChild(fill)
 
-        // L'écrin prend 1 / viewSpan de la vue.
-        camera.camera.fieldOfViewInDegrees = Float(2 * atan(Ecrin3DView.viewSpan / 2 / Double(Self.distance)) * 180 / .pi)
         root.addChild(camera)
         aim(.thumb)
 
@@ -148,6 +154,8 @@ final class Ecrin3DProbe {
     private func aim(_ viewpoint: Ecrin3DView.Viewpoint) {
         self.viewpoint = viewpoint
         let H = Self.H, D = Self.D, distance = Self.distance
+        // L'écrin prend 1 / viewSpan de la vue.
+        camera.camera.fieldOfViewInDegrees = Float(2 * atan(Ecrin3DView.viewSpan(viewpoint) / 2 / Double(distance)) * 180 / .pi)
         switch viewpoint {
         case .thumb:
             // De trois quarts (46° au-dessus de l'horizon), comme le dessin 2D.
@@ -200,16 +208,20 @@ final class Ecrin3DProbe {
         }
     }
 
-    /// Le bijou, le bord avant du couvercle et l'échelle (pt par unité), dans le repère de l'écran.
-    func anchors(in view: ARView, origin: CGPoint) -> EcrinArt.Anchors? {
-        guard view.bounds.width > 0,
-              let jewelPoint = view.project(Self.jewelAt),
-              let side = view.project(Self.jewelAt + [0.1, 0, 0]) else { return nil }
-        let edge = lidPivot.convert(position: [0, 0, Self.D], to: nil)
-        guard let edgePoint = view.project(edge) else { return nil }
-        let unit = Double(hypot(side.x - jewelPoint.x, side.y - jewelPoint.y)) * 10
-        return EcrinArt.Anchors(jewel: (origin.x + jewelPoint.x, origin.y + jewelPoint.y), scale: unit,
-                                lidEdge: (origin.x + edgePoint.x, origin.y + edgePoint.y))
+    /// Le bijou, le bord avant du couvercle et l'échelle (pt par unité), dans le repère de l'écran. Projetés ici, avec la
+    /// caméra et le côté voulus : `ARView.project` ne suit pas tout de suite un changement de taille de la vue (Duo fermé
+    /// → ouvert), et les étincelles tombaient à côté du bijou.
+    func anchors(side: Double, origin: CGPoint) -> EcrinArt.Anchors? {
+        let f = side / 2 / tan(Double(camera.camera.fieldOfViewInDegrees) * .pi / 360)
+        func project(_ p: SIMD3<Float>) -> (Double, Double)? {
+            let q = camera.convert(position: p, from: nil)  // la caméra regarde vers −z
+            guard q.z < 0 else { return nil }
+            return (origin.x + side / 2 + f * Double(q.x / -q.z), origin.y + side / 2 - f * Double(q.y / -q.z))
+        }
+        guard let jewelPoint = project(Self.jewelAt), let next = project(Self.jewelAt + [0.1, 0, 0]),
+              let edgePoint = project(lidPivot.convert(position: [0, 0, Self.D], to: nil)) else { return nil }
+        let unit = hypot(next.0 - jewelPoint.0, next.1 - jewelPoint.1) * 10
+        return EcrinArt.Anchors(jewel: jewelPoint, scale: unit, lidEdge: edgePoint)
     }
 
     // MARK: - Matériaux et textures (dessinés par code)

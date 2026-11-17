@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<!-- Captures de l'emplacement « iPhone Duo » de la fiche App Store (2853 × 2007, paysage de l'écran intérieur).
+     Lancé par render-duo.sh : ?n=1…5&lang=fr|en&sfx=(vide)|-en. Les captures du Duo simulé sont a/<nom><sfx>.png ;
+     ici, le fond, le cadre du téléphone, les perles ou bijoux qui flottent et le texte. -->
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800;900&display=block" rel="stylesheet">
+<style>
+:root{--gold1:#FFF1C1;--gold2:#F7CB5C;--gold3:#C98B1E}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:2853px;height:2007px;overflow:hidden;background:#06202b}
+body{font-family:Figtree,system-ui,sans-serif;color:#fff;-webkit-font-smoothing:antialiased;position:relative}
+.abs{position:absolute}
+.bg{position:absolute;inset:0}
+.lagon{background:radial-gradient(ellipse 1700px 900px at 50% 0%,rgba(70,190,200,.55),rgba(70,190,200,0) 70%),linear-gradient(180deg,#0e5965 0%,#083947 42%,#041a24 100%)}
+.salon{background:radial-gradient(ellipse 1500px 850px at 50% 0%,rgba(255,170,120,.28),rgba(255,170,120,0) 70%),linear-gradient(180deg,#4a1626 0%,#2b0b16 45%,#12040a 100%)}
+.rays{position:absolute;inset:-200px -300px auto -300px;height:1700px;
+  background:repeating-linear-gradient(100deg,rgba(255,255,255,0) 0 110px,rgba(190,255,250,.06) 110px 180px,rgba(255,255,255,0) 180px 310px,rgba(190,255,250,.04) 310px 350px);
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.5) 45%,transparent 85%);filter:blur(6px);transform:skewX(-6deg)}
+.salon + .rays{background:repeating-linear-gradient(100deg,rgba(255,255,255,0) 0 110px,rgba(255,220,190,.05) 110px 180px,rgba(255,255,255,0) 180px 310px)}
+.photo{transform:translate(-50%,-50%)}
+.spark{transform:translate(-50%,-50%);
+  background:radial-gradient(circle,#fff 0 7%,rgba(255,255,255,0) 8%);filter:drop-shadow(0 0 14px #ffe39a) drop-shadow(0 0 30px #ffe39a)}
+.spark::before,.spark::after{content:"";position:absolute;left:50%;top:50%;background:#fff;transform:translate(-50%,-50%)}
+.spark::before{width:9%;height:100%;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.spark::after{width:100%;height:9%;clip-path:polygon(0 50%,50% 0,100% 50%,50% 100%)}
+.bub{border-radius:50%;border:4px solid rgba(220,255,255,.32);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.32),rgba(255,255,255,0) 60%)}
+.bokeh{border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,200,170,.22),rgba(255,200,170,0) 70%)}
+
+.copy{position:absolute;left:0;right:0;top:86px;text-align:center;z-index:20}
+.eyebrow{display:inline-flex;align-items:center;gap:20px;font-weight:800;font-size:44px;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;
+  color:var(--gold2);padding:16px 38px;border-radius:999px;background:rgba(255,215,120,.10);border:3px solid rgba(255,215,120,.38);margin-bottom:34px}
+.eyebrow svg{height:1.15em;width:auto;margin-right:22px;vertical-align:-.22em}
+h1{font-weight:900;font-size:118px;line-height:1.02;letter-spacing:-.022em;white-space:nowrap;text-shadow:0 8px 40px rgba(0,0,0,.4)}
+h1 .g{background:linear-gradient(180deg,var(--gold1) 0%,var(--gold2) 45%,var(--gold3) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 24px rgba(0,0,0,.4))}
+.sub{margin-top:26px;font-size:50px;font-weight:600;color:rgba(255,255,255,.85)}
+
+/* Le téléphone : l'écran intérieur ouvert à plat (pli au milieu) ou l'écran extérieur */
+.duo{position:absolute;padding:24px;border-radius:92px;z-index:10;
+  background:linear-gradient(145deg,#5b6068 0%,#1d1f23 18%,#0b0c0e 50%,#2a2d33 82%,#6b7078 100%);
+  box-shadow:0 0 0 3px rgba(255,255,255,.12) inset,0 60px 120px rgba(0,0,0,.55),0 20px 40px rgba(0,0,0,.4)}
+.duo .scr{position:relative;border-radius:68px;overflow:hidden;background:#000}
+.duo .scr img{display:block;width:100%;height:100%}
+.duo.open .scr::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:34px;transform:translateX(-50%);
+  background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.16) 42%,rgba(255,255,255,.08) 58%,rgba(0,0,0,0))}
+.chip{position:absolute;z-index:30;padding:24px 44px;border-radius:999px;font-weight:800;font-size:50px;white-space:nowrap;transform:translate(-50%,-50%);
+  background:linear-gradient(180deg,#FFE8A3,#E9B44C);color:#3a2604;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.arrow{position:absolute;z-index:12;transform:translate(-50%,-50%);width:120px;height:120px}
+</style></head>
+<body>
+<div class="bg" id="bg"></div><div class="rays"></div>
+<div id="deco"></div>
+<div class="copy">
+  <div class="eyebrow"><span data-t="e"></span></div>
+  <h1 data-t="h"></h1>
+  <p class="sub" data-t="s"></p>
+</div>
+<script>
+const DUO = '<svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 14 2 4h9z"/><path d="M12 14 22 2h-9z"/></svg>';
+const T = {
+  fr: [
+    {e: DUO + "Conçu pour iPhone Duo", h: 'Ouvre le téléphone,<span class="g"> l’huître s’ouvre.</span>', s: "La coquille suit la charnière, degré par degré."},
+    {e: "Chaque huître est un tirage", h: 'Referme-le :<span class="g"> huître suivante.</span>'},
+    {e: "Écrins de joaillier", h: 'Fermé, un écrin.<span class="g"> Ouvert, un bijou.</span>', s: "Arrête-toi pile là où le bijou scintille.", chips: ["Éclat parfait · valeur ×1,5", "Variante rare · ×2"]},
+    {e: "10 raretés de bijoux", h: 'Du toc…<span class="g"> au diadème.</span>', chips: ["★ garanti avant le 21ᵉ écrin"]},
+    {e: "Ta collection", h: 'Complète<span class="g"> ta collection.</span>', s: "Forme, reflet, marque rare : jamais deux pareilles."}],
+  en: [
+    {e: DUO + "Designed for iPhone Duo", h: 'Unfold the phone,<span class="g"> the oyster opens.</span>', s: "The shell follows the hinge, degree by degree."},
+    {e: "Every oyster is a draw", h: 'Fold it shut:<span class="g"> next oyster.</span>'},
+    {e: "Jeweller’s cases", h: 'Closed, a case.<span class="g"> Open, a jewel.</span>', s: "Stop right where the jewel sparkles.", chips: ["Perfect glint · value ×1.5", "Rare variant · ×2"]},
+    {e: "10 jewel rarities", h: 'From costume…<span class="g"> to tiara.</span>', chips: ["★ guaranteed by your 21st case"]},
+    {e: "Your collection", h: 'Complete<span class="g"> your collection.</span>', s: "Shape, overtone, rare marks: no two alike."}]};
+// Captures (a/<nom><sfx>.png) et décor : [photo, x, y, taille, flou].
+const PEARLS = [["pearl-rose-ronde-rose", 250, 900, 230, 0], ["pearl-black-ronde-vert-paon", 2610, 760, 250, 0],
+  ["pearl-giant-ronde-arc-en-ciel", 2640, 1640, 330, 4], ["pearl-white-ronde-creme", 190, 1650, 200, 4]];
+const JEWELS = [["jewel-rubis-bague-cocktail", 240, 960, 380, 0], ["jewel-diamant-collier-riviere", 2590, 820, 370, 2],
+  ["jewel-emeraude-bague-solitaire-poire", 2600, 1660, 320, 5], ["pearl-golden-ronde-dore", 210, 1650, 170, 4]];
+const S = [
+  {bg: "lagon", shot: "duo-int-lumiere", deco: PEARLS},
+  {bg: "lagon", shot: "duo-int-carte-doree-s", deco: PEARLS},
+  {bg: "salon", pair: ["duo-ext-ecrin-ferme", "duo-int-ecrin-aurore"], deco: []},
+  {bg: "salon", shot: "duo-int-ecrin-carte", deco: JEWELS},
+  {bg: "lagon", shot: "duo-int-collection", deco: PEARLS}];
+const q = new URLSearchParams(location.search), n = +(q.get('n') || 1) - 1, lang = q.get('lang') || 'fr', sfx = q.get('sfx') || '';
+const s = S[n], t = T[lang][n];
+document.documentElement.lang = lang;
+document.getElementById('bg').classList.add(s.bg);
+document.querySelectorAll('[data-t]').forEach(el => { if (t[el.dataset.t]) el.innerHTML = t[el.dataset.t]; else el.remove(); });
+const deco = document.getElementById('deco');
+const add = (tag, cls, css) => { const e = document.createElement(tag); e.className = 'abs ' + cls; Object.assign(e.style, css); deco.appendChild(e); return e; };
+for (const [src, x, y, w, blur] of s.deco)
+  add('img', 'photo', {left: x + 'px', top: y + 'px', width: w + 'px', filter: `blur(${blur}px) drop-shadow(0 30px 40px rgba(0,0,0,.4))`}).src = `a/${src}.png`;
+if (s.bg === 'lagon') for (const [x, y, d] of [[120, 420, 46], [180, 520, 26], [2700, 380, 40], [2760, 480, 22], [2480, 1250, 30], [380, 1300, 24]])
+  add('i', 'bub', {left: x + 'px', top: y + 'px', width: d + 'px', height: d + 'px'});
+else {
+  for (const [x, y, d] of [[300, 500, 420], [2560, 420, 380], [2700, 1300, 520], [160, 1400, 460]]) add('i', 'bokeh', {left: x + 'px', top: y + 'px', width: d + 'px', height: d + 'px'});
+  for (const [x, y, d] of [[420, 640, 90], [2440, 600, 70], [2480, 1360, 60], [330, 1340, 56]]) add('i', 'spark', {left: x + 'px', top: y + 'px', width: d + 'px', height: d + 'px'});
+}
+// Le téléphone : `kind` open (écran intérieur, 2853 × 2007) ou cover (écran extérieur, 1398 × 2034). w = largeur de l'écran.
+function phone(name, kind, w, x, y) {
+  const ratio = kind === 'open' ? 2007 / 2853 : 2034 / 1398, el = document.createElement('div');
+  el.className = 'duo ' + kind;
+  el.style.left = x + 'px'; el.style.top = y + 'px';
+  el.innerHTML = `<div class="scr" style="width:${w}px;height:${w * ratio}px"><img src="a/${name}${sfx}.png"></div>`;
+  document.body.appendChild(el);
+  return {x, y, w: w + 48, h: w * ratio + 48};
+}
+document.fonts.ready.then(() => {
+  // Le téléphone remplit la place sous le texte.
+  const top = document.querySelector('.copy').getBoundingClientRect().bottom + 70, bottom = 2007 - 80, band = bottom - top;
+  if (!s.pair) {
+    const w = Math.min((band - 48) * 2853 / 2007, 2100), p = phone(s.shot, 'open', w, (2853 - w - 48) / 2, top + (band - (w * 2007 / 2853 + 48)) / 2);
+    (t.chips || []).forEach((c, i, all) => add('div', 'chip', {left: p.x + p.w * (all.length === 1 ? .5 : .3 + .4 * i) + 'px', top: p.y + p.h - 10 + 'px'}).textContent = c);
+  } else {
+    // Fermé (écran extérieur) → ouvert (écran intérieur), côte à côte, flèche entre les deux.
+    const gap = 170, coverH = band * .8 - 48, coverW = coverH * 1398 / 2034, openW = Math.min(2853 - 240 - gap - (coverW + 48) - 48, (band - 48) * 2853 / 2007);
+    const total = coverW + 48 + gap + openW + 48, x0 = (2853 - total) / 2;
+    const a = phone(s.pair[0], 'cover', coverW, x0, top + band * .1);
+    const b = phone(s.pair[1], 'open', openW, x0 + a.w + gap, top + (band - (openW * 2007 / 2853 + 48)) / 2);
+    const arrow = add('div', 'arrow', {left: a.x + a.w + gap / 2 + 'px', top: top + band / 2 + 'px'});
+    arrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#F7CB5C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    t.chips.forEach((c, i) => add('div', 'chip', {left: b.x + b.w * (.3 + .4 * i) + 'px', top: b.y + b.h - 10 + 'px'}).textContent = c);
+  }
+  document.body.dataset.ready = 1;
+});
+</script>
+</body></html>

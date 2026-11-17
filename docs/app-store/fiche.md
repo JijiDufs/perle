@@ -305,4 +305,6 @@ Les écrans sont de vraies captures de l'app (simulateur, partie « vitrine » :
 
 Les bannières paysage (`visuels/{fr,en}/bannieres/`) : **en-tête** 3840 × 1646 (sans texte, la même dans les deux langues) et **résultats de recherche** 3840 × 2560, refaites le 2026-11-17 dans la nouvelle DA (lagon de l'app, huître 3D détourée, perles en photo) et placées sur la version 1.2 ; la 1.1 garde son ancienne bannière de recherche (le Duo en 2D). Pour les refaire : `scripts/app-store-visuels/render-bannieres.sh` (captures à faire avant : mode d'emploi en tête du fichier).
 
+Les captures **iPhone Duo** (`visuels/{fr,en}/duo/`, 5 par langue, 2853 × 2007, JPEG), placées le 2026-11-17 sur la version 1.2 (emplacement « iPhone Duo », `IPHONE_DUO_PROFILE`) : l'huître qui s'ouvre sur le pli (« Conçu pour iPhone Duo »), « Referme-le : huître suivante », l'écrin fermé sur l'écran extérieur puis ouvert sur le pli, la carte du diadème Aurore, la collection. Vraies captures du Duo simulé, en français et en anglais ; « iPhone Duo » n'apparaît que dans « Conçu pour iPhone Duo ». Pour les refaire : `scripts/app-store-visuels/render-duo.sh` (captures à faire avant : mode d'emploi en tête du fichier).
+
 `docs/app-store/captures/` : les anciennes captures brutes du 14 octobre (sans légende), remplacées par les visuels.

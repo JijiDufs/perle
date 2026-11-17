@@ -22,7 +22,7 @@ struct EcrinView: View {
                         Canvas { context, size in draw(context, size: size, date: timeline.date, layer: in3D ? .back : .all) }
                         if in3D, let pending = game.shownEcrin {
                             let box = box3D(geo.size)
-                            let side = box.bw * Ecrin3DView.viewSpan
+                            let side = box.bw * Ecrin3DView.viewSpan(box.view)
                             let variant = game.variantRevealed ? game.pendingVariant : nil
                             let look = JewelArt.Look(pending.jewel, variant: variant?.id, catalog: game.catalog)
                             Ecrin3DView(angle: game.ecrinAngle, leatherHex: EcrinArt.leathers[game.leather],
@@ -31,7 +31,7 @@ struct EcrinView: View {
                                         dim: box.view == .thumb ? 1 - smoothstep(2, 45, game.ecrinAngle) : 1 - smoothstep(4, 140, game.ecrinAngle),
                                         jewelKey: "\(pending.jewel)|\(variant?.id ?? "")",
                                         drawJewel: { c in EcrinArt.drawJewel(c, pending.jewel, look) },
-                                        origin: CGPoint(x: box.cx - side / 2, y: box.cy - side / 2), probe: probe, viewpoint: box.view)
+                                        origin: CGPoint(x: box.cx - side / 2, y: box.cy - side / 2), side: side, probe: probe, viewpoint: box.view)
                                 .frame(width: side, height: side)
                                 .position(x: box.cx, y: box.cy)
                                 .allowsHitTesting(false)
@@ -201,17 +201,24 @@ struct EcrinView: View {
         let w = Double(size.width), h = Double(size.height), visible = h - 190
         if let x = game.poseFoldX {
             let half = min(x, w - x)
-            return (x, 100 + visible * 0.5, min(half * 1.2, visible * 0.68), .fold)
+            return (x, 100 + visible * 0.5, Self.duoWidth(half: half, along: h), .fold)
         }
         if let y = game.poseFoldY {
             let half = min(y, (h - y) * 0.8)
-            return (w / 2, y, min(half * 1.2, w * 0.68), .foldAcross)
+            return (w / 2, y, Self.duoWidth(half: half, along: w), .foldAcross)
         }
         if game.hasHinge {
-            return (w / 2, 100 + visible * 0.5, min(w * 0.9, visible * 0.68), .cover)
+            return (w / 2, 100 + visible * 0.5, Self.duoWidth(half: w, along: h), .cover)
         }
         let box = Self.classicBox(size)
         return (box.cx, box.cy, box.bw, .thumb)
+    }
+
+    /// iPhone Duo : l'écrin vu de dessus a la même taille fermé (écran extérieur : presque tout l'écran) et ouvert (écran
+    /// intérieur : le plateau remplit sa moitié, le couvercle l'autre, la charnière sur le pli). `half` : la place
+    /// perpendiculaire à la charnière (une moitié d'écran, ou tout l'écran extérieur) ; `along` : le long de la charnière.
+    private static func duoWidth(half: Double, along: Double) -> Double {
+        min(half * 0.94 / Double(Ecrin3DScene.D), along * 0.86)
     }
 
     private static func classicBox(_ size: CGSize) -> (cx: Double, cy: Double, bw: Double) {
@@ -239,11 +246,11 @@ struct EcrinView: View {
             // Chaque moitié de l'écrin (plateau, couvercle) tient dans sa moitié d'écran (en paysage, de la place
             // reste sous le plateau pour le message).
             let half = across == nil ? min(fold, fw - fold) : min(fold, (fw - fold) * 0.8)
-            bw = min(half * 1.2, (across == nil ? visible : w) * 0.68)
+            bw = Self.duoWidth(half: half, along: across == nil ? h : w)
             cx = fold + bw * 0.35
             cy = across == nil ? 100 + visible * 0.5 : w / 2
         } else if top {
-            bw = min(w * 0.9, visible * 0.68)
+            bw = Self.duoWidth(half: w, along: h)
             cx = w / 2
             cy = 100 + visible * 0.5
         } else {

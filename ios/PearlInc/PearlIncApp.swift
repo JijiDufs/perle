@@ -10,11 +10,21 @@ struct PearlIncApp: App {
         Analytics.start()
     }
 
+    /// Debug, `-NoLogin` (captures App Store sur le Duo simulé, où l'on ne peut pas toucher l'écran) : le jeu sans connexion,
+    /// sur la partie locale de l'iPhone, sans compte ni sauvegarde en ligne.
+    private static var noLogin: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.arguments.contains("-NoLogin")
+        #else
+        false
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {
                 // Connexion d'abord (Apple, e-mail ou sans compte), puis le jeu.
-                if auth.session != nil {
+                if auth.session != nil || Self.noLogin {
                     RootView()
                         .environment(game)
                         .environmentObject(auth)
@@ -78,6 +88,15 @@ struct RootView: View {
         // Le calendrier de connexion s'il y a une case à récupérer aujourd'hui. Le formulaire de consentement de Google
         // attend la première pub (marée basse, boutique) : il ne coupe plus la première huître (audit P0-7).
         .task {
+            #if DEBUG
+            // Captures App Store (`-StartTab ecrins | collection | shop`) : l'app s'ouvre sur cet onglet.
+            switch UserDefaults.standard.string(forKey: "StartTab") {
+            case "ecrins": game.tab = .ecrins
+            case "collection": game.tab = .collection
+            case "shop": game.tab = .shop
+            default: break
+            }
+            #endif
             game.audio.start()
             await game.cloud.sync()
             await game.checkSignupGift()
