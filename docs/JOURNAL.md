@@ -23,7 +23,7 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 **Fragile**
 - Le simulateur iPhone Duo n'allume que son écran extérieur, et l'outil de toucher de Claude n'y agit pas : pour essayer le parcours, prendre un iPhone classique simulé avec la charnière simulée. Sa moitié d'écran « à côté du pli » (201 pt) est plus étroite que celle d'un vrai Duo : les panneaux y paraissent serrés.
 - Le curseur de charnière simulée recouvre le premier bouton du panneau de choix (outil de test seulement).
-- Commité le 2026-11-17 sur `jules/essai-assets-bijoux`, pas poussé. Les quatre vidéos `docs/lancement/*.mp4` (231 Mo) restent hors du dépôt.
+- Commité et poussé le 2026-11-17 sur `jules/essai-assets-bijoux` (pas fusionné dans `main`). Les quatre vidéos `docs/lancement/*.mp4` (231 Mo) restent hors du dépôt.
 
 ---
 ## 2026-11-16 (trouvaille dans la valve, visuels en cours) · Jules · Claude Code · branche `jules/essai-assets-bijoux`
