@@ -14,11 +14,13 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
   - Le pictogramme « referme le téléphone » dépassait derrière le panneau de choix : masqué tant que le panneau est là.
   - L'interrupteur « Vibrations » avait perdu sa couleur dorée (le nouveau réglage s'était glissé avant son `.tint`).
 - `npm test` (176), `npm run build`, `swift test` (95) passent.
+- **Build 10 (version 1.2) envoyé sur TestFlight** (`VERSION=1.2 scripts/testflight.sh`, commit `5b39e7d`) : traité par Apple à 10 h 42, en test chez les groupes internes MJH et Amis. Avertissements sans gravité à l'envoi : pas de dSYM pour les bibliothèques de Google (pubs).
+- **Fiche 1.2 revue** (`docs/app-store/fiche.md` §1 bis) : trouvailles en photo dans les nouveautés, choix « charnière ou pouce » sur le Duo, « les chances et les prix ne changent pas » ; notes de revue réécrites (le « new look only » était faux) avec le choix du Duo et la demande d'avis (rien n'est donné en échange, règle 5.6.4). Pas encore collé dans App Store Connect.
 
 **Reste à faire**
 - **Pas essayé** : la bulle du tutoriel qui pose la question sur la toute première huître (il faut une partie neuve, donc un nouveau compte invité) ; l'interrupteur des Réglages au toucher (le simulateur ne bascule aucun interrupteur, « Sons » compris : on l'a vu affiché, il appelle la même fonction que les boutons) ; l'écrin en mode pouce ; le paysage ; un vrai iPhone Duo.
 - Demande d'avis App Store : pas vue à l'écran (30 huîtres et 3 jours ; `Reviews.noteDay` compte bien les jours, 2 au simulateur).
-- Visuels App Store : pas encore téléversés dans App Store Connect.
+- Avant la revue : essayer le build 10 sur un vrai iPhone et un Duo, montrer à Mathys (nouvelle DA, trouvailles en photo, seuils de la demande d'avis), regarder les clins d'œil en photo (cube, champignon, ballon). Puis créer la version 1.2 dans App Store Connect, y coller §1 bis, téléverser les visuels, rattacher le build 10.
 
 **Fragile**
 - Le simulateur iPhone Duo n'allume que son écran extérieur, et l'outil de toucher de Claude n'y agit pas : pour essayer le parcours, prendre un iPhone classique simulé avec la charnière simulée. Sa moitié d'écran « à côté du pli » (201 pt) est plus étroite que celle d'un vrai Duo : les panneaux y paraissent serrés.

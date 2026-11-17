@@ -21,18 +21,18 @@ Le sous-titre se change avec une nouvelle version (pas entre deux). « Bijoux »
 
 ## 1 bis. Version 1.2 — nouveautés (français et anglais)
 
-> Rédigé le 2026-11-07, **pas encore dans App Store Connect** (la version 1.2 n'y est pas créée). Description, mots-clés et sous-titre de la 1.1 restent valables : rien n'y décrit le rendu. La partie iPhone Duo en 3D suppose que le travail de la session « Assets et optimisation iPhone Duo » est fusionné avant l'envoi ; sinon, retirer la ligne « en 3D aussi sur iPhone Duo ».
+> Rédigé le 2026-11-07, **revu le 2026-11-17** pour le build 10 (trouvailles en photo et dans l'huître, choix « charnière ou pouce » sur l'iPhone Duo, demande d'avis), **pas encore dans App Store Connect** (la version 1.2 n'y est pas créée). Description, mots-clés et sous-titre de la 1.1 restent valables : rien n'y décrit le rendu. La 3D sur l'iPhone Duo est bien dans le build 10 (huître et écrin, toutes les poses).
 
-**Texte promotionnel** (FR 138 / 170 · EN 124 / 170)
+**Texte promotionnel** (FR 155 / 170 · EN 131 / 170)
 
 ```
-Nouveau look : des huîtres en relief, toutes différentes, des perles et des bijoux plus vrais que nature. Le lagon n’a jamais été si beau.
+Nouveau look : des huîtres en relief, toutes différentes, des perles, des bijoux et des trouvailles plus vrais que nature. Le lagon n’a jamais été si beau.
 ```
 ```
-A whole new look: 3D oysters, each one different, and pearls and jewels that look real. The lagoon has never looked so good.
+A whole new look: 3D oysters, each one different, and pearls, jewels and finds that look real. The lagoon has never looked so good.
 ```
 
-**Nouveautés de cette version** (FR 793 / 4 000)
+**Nouveautés de cette version** (FR 977 / 4 000)
 
 ```
 Le lagon fait peau neuve !
@@ -41,13 +41,14 @@ Le lagon fait peau neuve !
 • Le bénitier, l’huître d’or et Première marée sont refaits en relief.
 • Les écrins aussi : cuir, dorures et velours, et le couvercle qui se soulève sous ton pouce.
 • Perles et bijoux plus vrais que nature, dans toutes leurs formes, leurs reflets et leurs métaux.
+• Les 25 trouvailles aussi, et tu les vois maintenant au creux de l’huître avant leur carte.
 • Le poisson voleur a changé de tête… mais pas d’appétit.
 • De 21 h à 6 h, le lagon passe en mode nuit.
-• iPhone Duo : la perle reste cachée jusqu’à la révélation, la charnière vibre en douceur, l’écran intérieur marche aussi à l’horizontale, et un petit téléphone te rappelle de refermer pour l’huître suivante. En 3D aussi sur iPhone Duo.
-• Les chances ne changent pas : seul le rendu est nouveau.
+• iPhone Duo : tout est en 3D. Si tu lances le jeu téléphone ouvert, choisis de jouer avec la charnière ou au pouce (ça se change dans les Réglages). La perle reste cachée jusqu’à la révélation, la charnière vibre en douceur, l’écran intérieur marche aussi à l’horizontale, et un petit téléphone te rappelle de refermer pour l’huître suivante.
+• Les chances et les prix ne changent pas.
 ```
 
-**What's New in This Version** (EN 728 / 4,000)
+**What's New in This Version** (EN 916 / 4,000)
 
 ```
 The lagoon gets a makeover!
@@ -56,16 +57,23 @@ The lagoon gets a makeover!
 • The giant clam, the golden oyster and First Tide are rebuilt in 3D.
 • Jewel cases too: leather, gilding and velvet, with a lid that lifts under your thumb.
 • Pearls and jewels that look real, in every shape, overtone and metal.
+• All 25 finds too, and you now see them inside the oyster before their card.
 • The thief fish has a new face… but the same appetite.
 • From 9 pm to 6 am, the lagoon switches to night mode.
-• iPhone Duo: the pearl stays hidden until the reveal, the hinge gives gentler feedback, the inner screen also works sideways, and a little phone reminds you to fold shut for the next oyster. In 3D on iPhone Duo too.
-• The odds don’t change: only the look is new.
+• iPhone Duo: everything is in 3D. If you start the game with the phone open, choose to play with the hinge or with your thumb (you can change it in Settings). The pearl stays hidden until the reveal, the hinge gives gentler feedback, the inner screen also works sideways, and a little phone reminds you to fold shut for the next oyster.
+• The odds and prices don’t change.
 ```
 
-**Notes pour la revue** : dans §4, remplacer le paragraphe « What's new in 1.1 » par :
+**Notes pour la revue** : dans §4, remplacer le paragraphe « iPhone Duo » par :
 
 ```
-What's new in 1.2: a new look only, no new feature and no change to the odds or purchases. Oysters, shells and jewel cases are now rendered in 3D (RealityKit), pearls and jewels use pre-rendered images. On iPhone Duo, the inner screen also works in landscape.
+iPhone Duo: on iPhone Duo (iOS 27.1), the hinge angle opens the oyster (and the jewel case); fold the phone shut to bring the next one. When the app is opened with the phone already unfolded, it asks "How do you want to play?": "Play with the hinge" or "Stay open, play with my thumb". In thumb mode the hinge does nothing and the oyster is opened by swiping up; the "Play with the hinge" switch in Settings changes the choice. On any other iPhone, the same game is played by swiping up.
+```
+
+et le paragraphe « What's new in 1.1 » par :
+
+```
+What's new in 1.2: a new look, no change to the odds, purchases or ads. Oysters, shells and jewel cases are now rendered in 3D (RealityKit); pearls, jewels, finds and the thief fish use pre-rendered images. On iPhone Duo, the hinge-or-thumb choice described above is new, and the inner screen also works in landscape. The system rating prompt (AppStore.requestReview) may appear after a good catch, only once the player has opened 30 oysters on 3 different days; nothing is given in return. Settings also has a "Rate Pearl Inc." link to the App Store review page.
 ```
 
 ## 2. Version 1.1 — français
