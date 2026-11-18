@@ -1003,11 +1003,12 @@ function angleAt(p){
   return 120;
 }
 // Le défilement est suivi avec un léger retard : l'huître s'ouvre sans à-coups, même à la molette.
-const ease=(cur,tgt,dt)=>reduced.matches||Math.abs(tgt-cur)<0.0004?tgt:cur+(tgt-cur)*Math.min(1,dt*9);
+// « !(… >= …) » : un NaN (fenêtre de 0 px au chargement) se rattrape à l'image suivante au lieu de rester collé.
+const ease=(cur,tgt,dt)=>reduced.matches||!(Math.abs(tgt-cur)>=0.0004)?tgt:cur+(tgt-cur)*Math.min(1,dt*9);
 let heroP=0,heroOpen=false,stageRect=stage.getBoundingClientRect();
 function updateHero(now,dt){
   const r=hero.getBoundingClientRect();stageRect=stage.getBoundingClientRect();
-  heroP=ease(heroP,clamp(-r.top/(r.height-innerHeight)),dt);
+  heroP=ease(heroP,clamp(-r.top/Math.max(1,r.height-innerHeight)),dt);
   if(!inView(r))return;
   const p=heroP,angle=angleAt(p);
   const box=fit(oc);
@@ -1173,7 +1174,7 @@ let ecAngle=0,holdFrom=0,perfect=false,ecSized=false;
 function updateEcrin(now,dt){
   const r=ecScroll.getBoundingClientRect();
   if(r.top<innerHeight*2.5&&r.bottom>-innerHeight)ECRIN.load();
-  ecAngle=ease(ecAngle,150*clamp((clamp(-r.top/(r.height-innerHeight))-0.05)/0.82),dt*0.8);
+  ecAngle=ease(ecAngle,150*clamp((clamp(-r.top/Math.max(1,r.height-innerHeight))-0.05)/0.82),dt*0.8);
   if(!inView(r))return;
   if(!ecSized&&ready(ECRIN.imgs[0])){ecSized=true;ec.style.aspectRatio=ECRIN.imgs[0].naturalWidth+'/'+ECRIN.imgs[0].naturalHeight;}
   const box=fit(ec);
