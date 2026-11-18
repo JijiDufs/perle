@@ -21,7 +21,7 @@ Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 - Mesure inchangée : Vercel Analytics, événement « App Store » (`bouton` : menu, haut-de-page, essai, bas-de-page), bannière cookies et pixel X (`consent.js`), bannière Safari.
 
 **Reste à faire**
-- **Mettre en ligne** : la page montre la DA de la 1.2 (huître 3D, photos), encore en revue chez Apple. Pousser `main` = déploiement Vercel immédiat : attendre la 1.2 en ligne, ou l'assumer.
+- ~~Mettre en ligne~~ : **fait le 2026-11-18**, la 1.2 étant en vente sur l'App Store (fusion de la PR 2 dans `main`).
 - **Essayer sur un vrai iPhone** (Safari iOS : geste du pouce dans « À toi d'ouvrir », fluidité de l'eau, barre d'adresse qui change la hauteur) et avec « Réduire les animations ». Vu seulement dans le navigateur de l'ordinateur, en largeurs 1024 et 375.
 - `og.jpg` (aperçu des liens) est l'ancien : à refaire dans la nouvelle DA si besoin (`scripts/make-og.sh`).
 - Les autres outils du paquet `vitrine` (`art`, `scenes`, `vitrine`) n'ont pas été recompilés depuis le passage à macOS 15.
