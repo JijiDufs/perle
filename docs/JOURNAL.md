@@ -3,6 +3,35 @@
 Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
+## 2026-11-17 (pearl-inc.app refait) · Jules · Claude Code · branche `jules/site-refonte`
+
+**Fait**
+- **Nouvelle page d'accueil** (`site/index.html`, FR ; `site/en/index.html` régénéré) : une seule plongée dans le lagon. **Le prototype three.js (5 huîtres sur un Duo en 3D) est retiré** ; tout repose sur les objets 3D de l'app.
+  1. **Ouverture** : titre géant, l'huître 3D de l'app posée sur le sable ; elle s'ouvre au fil du défilement (quatre temps du geste, jauge d'angle avec la zone fragile, halo, gerbe d'étincelles, carte de la perle dorée qui s'incline sous le pointeur).
+  2. **À toi d'ouvrir** : la même huître, ouverte au pouce (ou à la souris, ou à la flèche du clavier) avec **les règles du jeu** recopiées de `src/tuning.ts` et `src/core/opening.ts` (résistance, pop, zone fragile à 380 °/s, lustre S à C, ouverture automatique à 115°) ; perle fêlée si on va trop vite, « Rejouer ».
+  3. **Tirages** : un rang de 100 perles (ce que donnent cent huîtres en moyenne, arrondi ; la maudite à part, 1 sur 333), les neuf issues avec les probabilités du jeu, la garantie, deux frises de variantes.
+  4. **Trouvailles** qui flottent, **poisson voleur** qui traverse et qu'on peut toucher (« Rattrapée au vol ! + 2 ✦ »).
+  5. **Écrins** : l'écrin 3D de l'app (bleu nuit, diadème de légende) s'ouvre au défilement ; s'arrêter 0,9 s sur l'angle d'éclat (fixé à 82°, tolérance 6°) déclenche l'éclat parfait.
+  6. **iPhone Duo** : l'écran intérieur se déplie, angle de charnière affiché ; tableau charnière / pouce.
+  7. **Progression** (rangs, captures, missions, succès, coquilles, sauvegarde), puis **retour à la surface** : badge App Store et, sur ordinateur, QR code vers la fiche.
+- **L'eau** : un calque WebGL fixe (`#water`) par-dessus les fonds des sections et sous le contenu : caustiques, rayons, poussières en suspension (dorées dans le salon des écrins), sol de sable en perspective sous l'huître. L'ambiance glisse d'une section à l'autre. Sans WebGL : les fonds CSS seuls. « Réduire les animations » : eau figée, pas de parallaxe ni d'étincelles.
+- **`huitre3d`** (`scripts/app-store-visuels/vitrine`) : les scènes 3D de l'app (Oyster3DScene, Ecrin3DScene ; RealityKit) rendues **sur le Mac, sans simulateur** (fenêtre hors écran, fond noir puis blanc pour la transparence). Le paquet d'outils passe à macOS 15 minimum (`generateCylinder`). Le simulateur iOS 27.3 ne démarrait plus.
+- Images dans `site/img/` (WebP, 3,4 Mo ; seules l'huître de l'ouverture et quelques photos se chargent d'emblée, le reste à la demande) : `scripts/site/rendus-3d.sh` (huître 21 images, perle fêlée 18, écrin 21), `scripts/site/images.sh` (photos de l'app, captures de `build/captures-app-store/`), `scripts/site/qr.swift` (QR code, relu par Vision avant d'être écrit).
+- Pages d'aide et légales (`legal.css` + police des 10 pages) aux couleurs du lagon.
+- Mesure inchangée : Vercel Analytics, événement « App Store » (`bouton` : menu, haut-de-page, essai, bas-de-page), bannière cookies et pixel X (`consent.js`), bannière Safari.
+
+**Reste à faire**
+- ~~Mettre en ligne~~ : **fait le 2026-11-18**, la 1.2 étant en vente sur l'App Store (fusion de la PR 2 dans `main`).
+- **Essayer sur un vrai iPhone** (Safari iOS : geste du pouce dans « À toi d'ouvrir », fluidité de l'eau, barre d'adresse qui change la hauteur) et avec « Réduire les animations ». Vu seulement dans le navigateur de l'ordinateur, en largeurs 1024 et 375.
+- `og.jpg` (aperçu des liens) est l'ancien : à refaire dans la nouvelle DA si besoin (`scripts/make-og.sh`).
+- Les autres outils du paquet `vitrine` (`art`, `scenes`, `vitrine`) n'ont pas été recompilés depuis le passage à macOS 15.
+
+**Fragile**
+- Les chiffres de la page (probabilités, rang de 100 perles, 41 succès, 1 écrin toutes les 12 huîtres, rangs) et **les réglages du geste** (`TUN` et `GLINT` dans le script de la page) sont recopiés à la main : à reprendre si `src/tuning.ts` ou l'équilibrage changent.
+- `huitre3d` compile des copies de `Oyster3DView.swift` et `Ecrin3DView.swift` (générées par le script) : si une scène change de forme, `rendus-3d.sh` peut casser à l'étape 1.
+- Calques : une section ne doit pas créer de pile (ni `z-index` ni `transform` sur elle), sinon l'eau passe devant son contenu.
+
+---
 ## 2026-11-17 (parcours Duo essayé au simulateur) · Jules · Claude Code · branche `jules/essai-assets-bijoux`
 
 **Fait**
@@ -414,6 +443,52 @@ Lot « Confiance et équilibrage » de la 1.1 (`docs/audit-app-ios.md`, P0 et P1
 - Le poisson peut voler une perle maudite ou une perle d'une huître achetée : c'est le choix de Jules, à surveiller avec la mesure d'usage (`Fish.ended`, rareté).
 - Au plus grand texte, la barre du haut et la carte restent illisibles (P1-13, autre lot).
 - `Localizable.xcstrings` édité par script (même format qu'Xcode) : l'ouvrir dans Xcode peut réordonner le fichier.
+
+## 2026-10-27 (site, sortie de l'app) · Jules · Claude Code · branche `claude/site-lancement-dacb0f`
+
+L'app est en ligne sur l'App Store depuis le 27 octobre (identifiant Apple `6822782842`, trouvé par l'API publique de recherche d'Apple). La page pearl-inc.app passe de l'inscription au téléchargement. **Rien n'est déployé ni envoyé.** Décision en `AGENTS.md` §6.
+
+**Fait**
+- **Page** (`site/index.html`, puis `npm run site:en`) : badge officiel d'Apple « Télécharger dans l'App Store » / « Download on the App Store » (en haut, en fin d'essai, en bas), bouton « Télécharger » du menu, bannière de Safari (`apple-itunes-app`), textes « Disponible sur l'App Store · Gratuit » ; section du bas « Ta première huître t'attend » avec une phrase pour les inscrits (Première marée). Aperçu de lien (description, FR / EN) mis à jour ; l'image `og.jpg` ne change pas. Le script Tally est retiré de la page ; un clic sur l'App Store envoie un événement Vercel (`App Store`, bouton, campagne).
+- **Prototype**, d'après l'app (`Hinge.swift`, `GameModel`, `RevealCardView`, `FishingView`) : armement (carte touchée iPhone ouvert → « Referme l'iPhone, puis ouvre-le », l'huître reste sombre jusqu'à ce que l'iPhone repasse sous 8°), refermer sous 8° = huître suivante, la carte se touche, « Nouvelle ! », gerbe d'étincelles et rayons dès ◆◆◆, pulsations sonores du suspense (350 ms), vibrations sur Android, textes de l'app (« Zone fragile : doucement »), poisson voleur (arrive en 0,75 s, fuit en 2,8 s ; touché : « Rattrapée au vol ! + 2 ✦ » ; raté : la perle est perdue et ne rejoint pas la collection), probabilités de l'app (huître vide 9 %, blanche 38 %, trouvailles 5 % affichées), « Rejouer l'essai ».
+- **Mail de sortie** FR / EN (objet, texte brut, HTML) : `docs/mail-sortie.md`.
+- Vérifié au navigateur intégré (serveur `site` de `.claude/launch.json`) : FR et EN, téléphone (375 px, pas de défilement horizontal) et ordinateur ; partie complète, désarmement, poisson volé et rattrapé, fin d'essai, rejouer. `npm test` (172), `npm run build` : verts.
+
+**À faire**
+- Jules : déployer quand tout est prêt (rien n'a été mis en ligne) ; retirer la phrase « Première marée » de la page si la 1.1 n'est pas en ligne au moment du déploiement.
+- **Politique de confidentialité** (autre session) : la page charge maintenant le badge depuis `toolbox.marketingtools.apple.com` (Apple reçoit l'adresse IP, pas de cookie). Ou bien héberger les deux SVG officiels dans `site/` (à télécharger depuis Apple Marketing Tools).
+- Mail : importer les e-mails des inscrits dans `early_access_signups`, 1.1 en ligne, reconnecter Resend dans Claude (permissions manquantes), puis envoyer (voir la liste en tête de `docs/mail-sortie.md`).
+- Les événements personnalisés de Vercel Analytics demandent peut-être une offre payante : sinon, l'événement `App Store` est ignoré sans erreur.
+
+**Fragile**
+- Le moteur embarqué dans la page (`window.PerleArt`, minifié le 2026-10-08) ne connaît ni `hingeClosedAngle` ni les trouvailles : 8° et les probabilités de l'app sont écrits dans le prototype, à tenir à jour à la main.
+- Le poisson apparaît dans environ 19 essais sur 20 (s'il sort une perle ◆ entre la 3e et la 5e huître) ; dans l'app, il est bien plus rare.
+- Le badge d'Apple est chargé depuis Apple : si leur adresse change, le badge disparaît (le lien reste dans le menu).
+
+## 2026-10-22 · Jules · Claude Code · branche `jules/app-1.0-build5` (partie de `v1.0-build4`)
+
+Refus App Store de la 1.0 (build 4), règle **5.1.2(i)** : l'app ouvre des pages de pearl-inc.app qui proposent un cookie publicitaire (pixel X) sans demande ATT.
+`npm test`, `npm run build`, build de l'app : verts.
+
+**Cause réelle** (capture d'Apple, iPad) : le formulaire de consentement de Google (UMP, AdMob) au lancement, qui parle de « publicité personnalisée » sans demande ATT.
+
+**Fait**
+- **Build 4 renvoyé en vérification le 22 octobre** (réponse à Apple dans App Store Connect, notes de revue mises à jour), site déployé. Le message RGPD de Pearl Inc. est **dépublié** dans AdMob (état « Brouillon ») (Confidentialité et messages → Réglementations européennes) ; sans message publié, UMP n'affiche plus rien et les pubs se chargent (« pubs limitées » attendues dans l'EEE, moins payées). Les pages d'aide et légales n'ouvrent plus la bannière cookies d'elles-mêmes (seulement par le lien « Cookies »).
+- L'app ouvre les pages du site avec `?app=1` (`SiteLinks`) ; `site/consent.js` n'affiche alors ni bannière ni lien « Cookies » et ne charge jamais le pixel, pour toute la visite (`sessionStorage`), même en naviguant vers l'accueil.
+- Politiques de confidentialité FR / EN : « les pages ouvertes depuis l'app n'affichent pas la bannière et ne chargent jamais le pixel ».
+- **Build 5** (1.0), sans le travail de la 1.1.
+
+**Reste à faire**
+- Après l'accord d'Apple : la version est en **publication manuelle**, il faut cliquer « Publier » dans App Store Connect.
+- Vérifier sur iPhone (France) : aucune fenêtre au lancement, « Regarder une pub » marche (pubs limitées).
+- Renvoyer le build 4 avec la réponse à Apple. Le build 5 (`?app=1`) ne sert que si Apple refuse encore : il sera la base de la 1.0.1.
+- Retirer le formulaire UMP du code (build suivant) et la ligne « Confidentialité des pubs » : sans message publié, ils ne servent plus.
+- Fusionner cette branche dans `jules/app-1.0.1` (la 1.1 en a besoin aussi).
+
+**Fragile**
+- Une page du site ouverte depuis l'app dans un autre onglet perd le drapeau (`sessionStorage` est par onglet) : sans conséquence pour la revue.
+
+---
 
 ## 2026-10-21 (lot 1.3) · Jules · Claude Code · branche `claude/ios-1-3-succes-e31e8f`
 
