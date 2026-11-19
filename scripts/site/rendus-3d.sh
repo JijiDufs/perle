@@ -32,6 +32,8 @@ EOF
 swift build -c release --package-path "$PKG" --product huitre3d >/dev/null
 BIN=$(swift build -c release --package-path "$PKG" --show-bin-path)
 cp "$ART"/Oyster3D/*.jpg "$ART"/PearlPhotos/pearl-golden-*.png "$ART"/JewelPhotos/jewel-legende-diademe-classique.png "$BIN/"
+# OUTIL_SEUL=1 : s'arrêter là et donner le dossier de l'outil (vidéo « peau neuve », scripts/video-peau-neuve/make.sh).
+[ -z "$OUTIL_SEUL" ] || { echo "$BIN"; exit 0; }
 
 # 3. Les rendus.
 rm -rf "$RAW" && mkdir -p "$RAW/ouverture" "$RAW/felee" "$RAW/ecrin"

@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>Pearl Inc. fait peau neuve</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800;900&family=Young+Serif&display=block" rel="stylesheet">
+<style>
+/* Montage de la vidéo « Pearl Inc. fait peau neuve » (1080 × 1350, 60 i/s, 32 s), photographié image par image par
+   capture.mjs. Tout dépend de l'instant t (renderAt) : aucune animation ne tourne toute seule. */
+:root{--gold1:#FFF1C1;--gold2:#F7CB5C;--gold3:#C98B1E;--ink:#06343c;--nacre:#f4efe6;--mist:#a9cfcb}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1350px;overflow:hidden;background:#04161f}
+body{font-family:Figtree,system-ui,sans-serif;color:var(--nacre);-webkit-font-smoothing:antialiased}
+.layer{position:absolute;inset:0;pointer-events:none}
+#water{position:absolute;left:0;top:0;width:1080px;height:1350px}
+.scene{position:absolute;inset:0;display:none}
+.abs{position:absolute}
+img{display:block}
+/* Textes */
+.copy{position:absolute;left:0;right:0;top:92px;text-align:center;padding:0 56px;z-index:20}
+.eyebrow{display:inline-block;font-weight:800;font-size:25px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold2);padding:11px 26px 10px;border-radius:999px;
+  background:rgba(255,215,120,.10);border:2px solid rgba(255,215,120,.4);margin-bottom:22px;opacity:0}
+.light .eyebrow{color:#7a4f04;background:rgba(255,255,255,.6);border-color:rgba(168,116,15,.45)}
+.t{font-family:'Young Serif',Georgia,serif;font-size:94px;line-height:1.05;letter-spacing:-.012em;text-shadow:0 8px 44px rgba(0,0,0,.4)}
+.light .t{color:var(--ink);text-shadow:0 6px 30px rgba(255,255,255,.55)}
+.t .w{display:inline-block;will-change:transform,opacity,filter}
+.g{background:linear-gradient(180deg,var(--gold1) 0%,var(--gold2) 48%,var(--gold3) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+.light .g{background:linear-gradient(180deg,#e7b247 0%,#b47c10 62%,#875704 100%);-webkit-background-clip:text;background-clip:text}
+.r{background:linear-gradient(180deg,#ffd0de 0%,#ff4f86 52%,#b3123f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+.sub{margin-top:18px;font-size:37px;font-weight:700;line-height:1.25;color:rgba(244,239,230,.9);text-shadow:0 4px 24px rgba(0,0,0,.45);opacity:0}
+.light .sub{color:#1d4c52;text-shadow:none}
+.chip{position:absolute;z-index:30;display:flex;align-items:center;gap:14px;padding:17px 32px;border-radius:999px;font-weight:900;font-size:36px;white-space:nowrap;
+  background:rgba(6,25,35,.74);border:2px solid rgba(255,255,255,.32);box-shadow:0 18px 44px rgba(0,0,0,.35);opacity:0;transform-origin:50% 50%}
+.chip.gold{background:linear-gradient(180deg,#FFE8A3,#E9B44C);color:#3a2604;border-color:rgba(255,255,255,.65)}
+.chip.red{background:linear-gradient(180deg,#ff6b8f,#c81d4f);border-color:rgba(255,255,255,.5)}
+.chip.duck{background:linear-gradient(180deg,#fff2a8,#f4c531);color:#3a2b02;border-color:rgba(255,255,255,.7)}
+/* Téléphone */
+.phone{position:absolute;--w:520px;--b:22px;width:calc(var(--w) + 2 * var(--b));padding:var(--b);border-radius:calc(var(--w) * .137 + var(--b));
+  background:linear-gradient(145deg,#5b6068 0%,#1d1f23 18%,#0b0c0e 50%,#2a2d33 82%,#6b7078 100%);
+  box-shadow:0 0 0 3px rgba(255,255,255,.12) inset,0 60px 140px rgba(0,0,0,.55),0 20px 40px rgba(0,0,0,.35)}
+.phone .scr{position:relative;width:var(--w);border-radius:calc(var(--w) * .137);overflow:hidden;background:#000}
+.phone .scr img{position:absolute;left:0;top:0;width:100%;height:100%}
+.phone .glare{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.09) 45%,rgba(255,255,255,0) 55%)}
+#streak{position:absolute;top:50%;width:110px;height:1600px;margin:-800px 0 0 -55px;opacity:0;filter:blur(5px);
+  background:linear-gradient(90deg,rgba(255,236,170,0),rgba(255,236,170,.75) 38%,#fff 50%,rgba(255,236,170,.75) 62%,rgba(255,236,170,0))}
+.touch{position:absolute;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:50%;border:4px solid rgba(255,255,255,.95);opacity:0;
+  background:radial-gradient(circle,rgba(255,255,255,.6),rgba(255,255,255,.14) 60%,rgba(255,255,255,0) 72%);box-shadow:0 0 26px rgba(255,255,255,.7)}
+.trail{position:absolute;width:20px;margin-left:-10px;border-radius:12px;background:linear-gradient(0deg,rgba(255,255,255,0),rgba(255,255,255,.7));opacity:0}
+/* Navigateur */
+.browser{position:absolute;width:940px;border-radius:20px;overflow:hidden;background:#0c1d24;
+  box-shadow:0 50px 120px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.09) inset}
+.browser .bar{height:56px;display:flex;align-items:center;padding:0 22px;background:linear-gradient(#21343c,#16272e)}
+.browser .dots{display:flex;gap:9px;width:120px}.browser .dots i{width:15px;height:15px;border-radius:50%}
+.browser .url{flex:1;margin-right:120px;height:34px;border-radius:10px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;gap:10px;
+  font-weight:700;font-size:19px;color:rgba(244,239,230,.88);letter-spacing:.01em}
+.browser img{width:940px;height:587.5px}
+/* Effets */
+.halo{position:absolute;width:1100px;height:1100px;margin:-550px 0 0 -550px;border-radius:50%;opacity:0}
+.rays{position:absolute;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;opacity:0;
+  background:repeating-conic-gradient(from 0deg,rgba(255,226,140,0) 0deg 8deg,rgba(255,226,140,.55) 10.5deg 12.5deg,rgba(255,226,140,0) 15deg 22.5deg);
+  -webkit-mask-image:radial-gradient(circle,#000 0%,rgba(0,0,0,.45) 28%,transparent 60%)}
+.shadow{position:absolute;border-radius:50%;background:radial-gradient(ellipse,rgba(6,40,46,.45),rgba(6,40,46,0) 70%)}
+.cell{position:absolute;width:148px;height:148px;border-radius:30px;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.04));
+  border:2px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;opacity:0}
+.cell img{width:118px;height:118px}
+.cell b{font-family:'Young Serif',Georgia,serif;font-weight:400;font-size:58px;color:rgba(169,207,203,.55)}
+.row{position:absolute;left:70px;width:940px;height:100px;border-radius:26px;display:flex;align-items:center;gap:26px;padding:0 30px;opacity:0;
+  background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.05));border:2px solid rgba(255,255,255,.15);font-weight:800;font-size:33px;white-space:nowrap}
+.row svg{flex:none}
+#flash{z-index:60;opacity:0}
+#vig{z-index:55;background:radial-gradient(82% 62% at 50% 52%,rgba(0,0,0,0) 46%,rgba(0,0,0,.5) 100%)}
+#fx{position:absolute;left:0;top:0;width:1080px;height:1350px;z-index:40}
+/* Fin */
+.pill{position:absolute;left:50%;display:flex;align-items:center;gap:18px;padding:24px 46px;border-radius:999px;background:#fff;color:#05202b;font-weight:900;font-size:44px;white-space:nowrap;opacity:0}
+</style></head>
+<body>
+<div class="layer" id="bg"></div>
+<canvas id="water" width="648" height="810"></canvas>
+
+<!-- 1. L'accroche : la 1.1 devient la 1.2 -->
+<div class="scene" id="s1">
+  <div class="copy" style="top:96px"><div class="t" id="s1t1" style="font-size:124px"></div><div class="t" id="s1t2" style="font-size:92px;margin-top:4px"></div></div>
+  <div class="phone" id="ph1"><div class="scr" style="height:1130.5px"><img id="old"><img id="neu"><div id="streak"></div></div><div class="glare"></div></div>
+  <div class="chip" id="c11" style="left:612px;top:486px">Version 1.1</div>
+  <div class="chip gold" id="c12" style="left:612px;top:486px">Version 1.2</div>
+</div>
+
+<!-- 2. L'huître en 3D -->
+<div class="scene" id="s2">
+  <div id="s2cam" class="layer">
+    <div class="rays" id="s2rays"></div><div class="halo" id="s2halo"></div>
+    <div class="abs" id="s2grp" style="left:220px;top:350px;width:640px;height:961px">
+      <div class="shadow" style="left:40px;right:40px;top:890px;height:80px"></div>
+      <img class="abs" id="oyA" style="left:0;top:0;width:640px"><img class="abs" id="oyB" style="left:0;top:0;width:640px">
+      <div class="halo" id="s2gap" style="left:313px;top:668px;width:420px;height:420px;margin:-210px 0 0 -210px;mix-blend-mode:screen"></div>
+    </div>
+  </div>
+  <div class="copy light"><div class="eyebrow" id="s2eb">Nouvelle direction artistique</div><div class="t" id="s2t1"></div><div class="sub" id="s2s">Des huîtres en relief, toutes différentes.</div></div>
+  <div class="chip gold" id="s2chip" style="left:540px;top:1190px">★&nbsp; Perle dorée</div>
+</div>
+
+<!-- 3. Les perles -->
+<div class="scene" id="s3">
+  <div id="s3cam" class="layer">
+    <div class="rays" id="s3rays" style="left:540px;top:730px"></div><div class="halo" id="s3halo" style="left:540px;top:730px"></div>
+    <img class="abs" id="s3p" style="left:240px;top:430px;width:600px;height:600px">
+    <div class="abs" id="s3l" style="left:0;right:0;top:1060px;text-align:center">
+      <div class="t" id="s3n" style="font-size:66px"></div>
+      <div id="s3r" style="margin-top:12px;font-weight:800;font-size:33px;letter-spacing:.1em;color:var(--gold2)"></div>
+    </div>
+  </div>
+  <div class="copy"><div class="t" id="s3t1" style="font-size:84px"></div><div class="t" id="s3t2" style="font-size:84px"></div></div>
+</div>
+
+<!-- 4. Les écrins -->
+<div class="scene" id="s4">
+  <div class="halo" id="s4spot" style="left:540px;top:980px"></div>
+  <div id="s4cam" class="layer">
+    <div class="abs" id="s4grp" style="left:190px;top:470px;width:700px;height:813px">
+      <div class="shadow" style="left:30px;right:30px;top:735px;height:90px;background:radial-gradient(ellipse,rgba(0,0,0,.55),rgba(0,0,0,0) 70%)"></div>
+      <img class="abs" id="ecA" style="left:0;top:0;width:700px"><img class="abs" id="ecB" style="left:0;top:0;width:700px">
+    </div>
+    <div class="layer" id="s4j"></div>
+  </div>
+  <div class="copy"><div class="eyebrow" id="s4eb">Écrins de joaillier</div><div class="t" id="s4t1" style="font-size:84px"></div><div class="t" id="s4t2" style="font-size:84px"></div><div class="sub" id="s4s">Cuir, dorures, velours.</div></div>
+  <div class="chip gold" id="s4chip" style="left:540px;top:640px">✦&nbsp; Éclat parfait</div>
+</div>
+
+<!-- 5. Les trouvailles -->
+<div class="scene" id="s5">
+  <div id="s5grid" class="layer"></div>
+  <div class="halo" id="s5halo" style="left:540px;top:770px"></div>
+  <img class="abs" id="s5duck" style="width:118px;height:118px">
+  <div class="copy"><div class="t" id="s5t1"></div><div class="sub" id="s5s">cachées à la place de la perle.</div></div>
+  <div class="copy"><div class="t" id="s5t2"></div><div class="t" id="s5t3"></div></div>
+  <div class="chip duck" id="s5chip" style="left:540px;top:1092px">Trouvaille · Canard de bain</div>
+</div>
+
+<!-- 6. Le site -->
+<div class="scene" id="s6">
+  <div class="browser" id="br" style="left:70px;top:372px">
+    <div class="bar"><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+      <div class="url"><svg width="15" height="18" viewBox="0 0 15 18"><rect x="1" y="7.5" width="13" height="10" rx="2.5" fill="currentColor"/><path d="M4 7.5V5a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>pearl-inc.app</div></div>
+    <img id="sited">
+  </div>
+  <div class="phone" id="ph6" style="--w:300px;--b:13px;left:716px;top:640px">
+    <div class="scr" style="height:649px"><img id="sitem"><div class="trail" id="tr6"></div><div class="touch" id="to6"></div></div><div class="glare"></div>
+  </div>
+  <div class="copy"><div class="eyebrow" id="s6eb">Nouveau site</div><div class="t" id="s6t1"></div>
+    <div style="position:relative;height:64px"><div class="sub abs" id="s6s1" style="left:0;right:0">Le lagon de l’app, en grand.</div><div class="sub abs" id="s6s2" style="left:0;right:0">Ouvre une huître… dans ton navigateur.</div></div></div>
+</div>
+
+<!-- 7. L'iPhone Duo -->
+<div class="scene" id="s7">
+  <div class="shadow" id="s7sh" style="left:150px;width:780px;top:1150px;height:110px;background:radial-gradient(ellipse,rgba(0,0,0,.6),rgba(0,0,0,0) 70%)"></div>
+  <div class="abs" id="duo" style="left:540px;top:868px;width:0;height:0;perspective:2400px">
+    <div id="duodev" style="position:absolute;transform-style:preserve-3d">
+      <div id="duoR" style="position:absolute;left:0;top:-307px;width:432px;height:615px;padding:12px 12px 12px 0;border-radius:0 44px 44px 0;background:linear-gradient(145deg,#4b5058,#16181c 40%,#2a2d33)">
+        <div id="duoRs" style="width:420px;height:591px;border-radius:0 34px 34px 0;background-size:840px 591px;background-position:right top"></div></div>
+      <div id="duoL" style="position:absolute;left:-432px;top:-307px;width:432px;height:615px;transform-origin:100% 50%;transform-style:preserve-3d">
+        <div style="position:absolute;inset:0;padding:12px 0 12px 12px;border-radius:44px 0 0 44px;background:linear-gradient(145deg,#5b6068,#1d1f23 40%,#2a2d33);backface-visibility:hidden">
+          <div id="duoLs" style="width:420px;height:591px;border-radius:34px 0 0 34px;background-size:840px 591px;background-position:left top"></div></div>
+        <div style="position:absolute;inset:0;border-radius:44px 0 0 44px;transform:rotateY(180deg);backface-visibility:hidden;background:linear-gradient(160deg,#d9d6cf,#a7a39a 55%,#cfccc4)">
+          <div style="position:absolute;right:34px;top:34px;width:120px;height:120px;border-radius:34px;background:linear-gradient(145deg,#bdb9b0,#8f8b83);box-shadow:inset 0 2px 6px rgba(0,0,0,.25)"></div></div>
+      </div>
+      <div id="hinge" style="position:absolute;left:-6px;top:-307px;width:12px;height:615px;background:linear-gradient(90deg,#3a3d42,#9a9ea6,#3a3d42)"></div>
+    </div>
+  </div>
+  <div class="copy"><div class="eyebrow" id="s7eb">iPhone Duo</div><div class="t" id="s7t1" style="font-size:76px"></div><div class="t" id="s7t2" style="font-size:76px"></div></div>
+</div>
+
+<!-- 8. Les chiffres, les corrections -->
+<div class="scene" id="s8">
+  <div class="abs" id="s8num" style="left:0;right:0;top:250px;text-align:center">
+    <div class="t g" id="s8n" style="font-size:300px;line-height:1"></div>
+    <div id="s8l" style="margin-top:6px;font-weight:900;font-size:46px;letter-spacing:.14em;text-transform:uppercase;opacity:0">téléchargements</div>
+    <div class="t" id="s8m" style="font-size:72px;margin-top:14px"></div>
+  </div>
+  <div class="eyebrow abs" id="s8eb" style="left:0;right:0;width:fit-content;margin:0 auto;top:548px">Version 1.2</div>
+  <div id="s8rows"></div>
+</div>
+
+<!-- 9. Mets à jour -->
+<div class="scene" id="s9">
+  <div class="halo" id="s9halo" style="left:540px;top:440px"></div>
+  <div class="layer" id="orbit"></div>
+  <img class="abs" id="icon" style="left:425px;top:325px;width:230px;height:230px;border-radius:52px;box-shadow:0 40px 110px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.14)">
+  <div class="abs" style="left:0;right:0;top:588px;text-align:center"><div class="t" id="s9t" style="font-size:128px"></div></div>
+  <div class="pill" id="pill" style="top:768px"><svg width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="23" fill="#0b4652"/><path d="M25 13v18m-8-8 8 8 8-8M15 37h20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Mets à jour sur l’App Store</div>
+  <div class="abs sub" id="s9s" style="left:0;right:0;top:912px;text-align:center;margin:0;font-size:34px;color:rgba(244,239,230,.86)">Version 1.2 · Gratuit · iPhone et iPhone Duo</div>
+  <div class="abs" id="s9u" style="left:0;right:0;top:984px;text-align:center;font-weight:900;font-size:38px;letter-spacing:.12em;color:var(--gold2);opacity:0">pearl-inc.app</div>
+</div>
+
+<canvas id="fx" width="1080" height="1350"></canvas>
+<div class="layer" id="vig"></div>
+<div class="layer" id="flash"></div>
+<script>
+"use strict";
+const Q=new URLSearchParams(location.search), A=Q.get('a')||'v';
+window.FPS=60; window.DURATION=32;
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), lerp=(a,b,k)=>a+(b-a)*k;
+const sm=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+const outBack=x=>{x=clamp(x,0,1);const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2);};
+const outExpo=x=>x>=1?1:1-Math.pow(2,-10*clamp(x,0,1));
+const outCubic=x=>1-Math.pow(1-clamp(x,0,1),3);
+const inOut=x=>{x=clamp(x,0,1);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;};
+const hexA=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`;};
+const mixHex=(a,b,k)=>{const x=parseInt(a.slice(1),16),y=parseInt(b.slice(1),16);const c=s=>Math.round(lerp(x>>s&255,y>>s&255,k));return `rgb(${c(16)},${c(8)},${c(0)})`;};
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+
+/* ---------- Images ---------- */
+const pending=[];
+function setImg(img,src){if(img.dataset.src===src)return;img.dataset.src=src;img.src=src;pending.push(img.decode().catch(()=>{}));}
+const preload=[];
+const pre=src=>{const i=new Image();i.src=src;preload.push(i.decode().catch(()=>{}));return src;};
+const f2=n=>String(n).padStart(2,'0'), f5=n=>String(n).padStart(5,'0');
+for(let i=0;i<=60;i++){pre(`${A}/huitre/${f2(i)}.webp`);pre(`${A}/ecrin/${f2(i)}.webp`);}
+// Ouverture en 3D : deux images voisines fondues, pour un mouvement continu entre deux angles rendus.
+function frames(a,b,dir,idx){const i=clamp(idx,0,60),i0=Math.floor(i),i1=Math.min(60,i0+1),k=i-i0;
+  setImg(a,`${A}/${dir}/${f2(i0)}.webp`);setImg(b,`${A}/${dir}/${f2(i1)}.webp`);a.style.opacity=1;b.style.opacity=k;}
+const oysterIdx=deg=>deg<=0.5?0:clamp(deg/2,0.25,60);        // rendus : 0,5°, puis 2° … 120°
+const ecrinIdx=deg=>deg<=0.5?0:clamp(deg/2.5,0.2,60);        // rendus : 0,5°, puis 2,5° … 150°
+
+/* ---------- Texte animé mot par mot ---------- */
+const cache=new Map();
+function words(el,html){if(cache.get(el)!==html){cache.set(el,html);el.innerHTML=html;}return [...el.querySelectorAll('.w')];}
+const W=(text,cls='')=>text.split(' ').map(w=>`<span class="w ${cls}">${w}</span>`).join(' ');
+function animWords(el,html,t0,t1,t,{stagger=0.08,rise=70}={}){
+  const ws=words(el,html);
+  ws.forEach((w,i)=>{const a=t-t0-i*stagger,k=outBack(a/0.34),o=sm(0,0.12,a)*(1-sm(t1-0.16,t1,t));
+    w.style.opacity=o;w.style.transform=`translateY(${(1-k)*rise}px) scale(${lerp(1.3,1,clamp(k,0,1.2))})`;w.style.filter=`blur(${(1-sm(0,0.22,a))*14}px)`;});
+}
+function fadeIn(el,t0,t1,t,{dy=26,dur=0.4}={}){const a=t-t0;el.style.opacity=sm(0,dur*0.6,a)*(1-sm(t1-0.16,t1,t));el.style.transform=`translateY(${(1-outExpo(a/dur))*dy}px)`;}
+function eyebrow(el,t0,t1,t){const a=t-t0;el.style.opacity=sm(0,0.18,a)*(1-sm(t1-0.16,t1,t));el.style.transform=`scale(${lerp(0.8,1,outBack(a/0.35))})`;}
+function chip(el,t0,t1,t,{rot=-5,center=true}={}){const a=t-t0,k=outBack(a/0.32);el.style.opacity=sm(0,0.08,a)*(1-sm(t1-0.14,t1,t));
+  el.style.transform=`${center?'translateX(-50%) ':''}scale(${lerp(0.45,1,k)}) rotate(${(1-clamp(k,0,1))*rot*3+rot*0.3}deg)`;}
+
+/* ---------- Fond : dégradé par scène, l'eau du site par-dessus ---------- */
+// [haut, milieu, bas] ; l'eau : [caustiques, rayons, poussières, sol, couleur des poussières]
+const GOLD='#ffd480',PALE='#c7f2ef';
+const LOOK=[
+  [0,   ['#0f5560','#08303a','#031319'],[0.35,0.55,0.25,0,PALE]],
+  [3.0, ['#e2f9f3','#b5ebe2','#86d6cc'],[0.55,1,0.12,1,PALE]],
+  [7.0, ['#0f6670','#0b4652','#05202a'],[0.3,0.3,0.3,0,PALE]],
+  [10.0,['#3a1a1e','#24100f','#140808'],[0,0.15,0.85,0,GOLD]],
+  [13.0,['#0c4a56','#093a46','#05202a'],[0.16,0,0.45,0,PALE]],
+  [15.0,['#0b4652','#082f3b','#041820'],[0.22,0.35,0.22,0,PALE]],
+  [20.5,['#0a3442','#06232e','#03121a'],[0.07,0,0.35,0,PALE]],
+  [23.0,['#0f5560','#0b4652','#041820'],[0.25,0.45,0.35,0,GOLD]],
+  [27.0,['#1a7d82','#0b4652','#041820'],[0.5,1,0.25,0,PALE]],
+];
+function lookAt(t){let i=0;while(i+1<LOOK.length&&t>=LOOK[i+1][0]-0.18)i++;
+  const cur=LOOK[i],prev=LOOK[Math.max(0,i-1)],k=i===0?1:sm(cur[0]-0.18,cur[0]+0.18,t);
+  const col=[0,1,2].map(j=>mixHex(prev[1][j],cur[1][j],k));
+  const wat=[0,1,2,3].map(j=>lerp(prev[2][j],cur[2][j],k));
+  const dc=[mixHex(prev[2][4],cur[2][4],k)];
+  return {col,wat,dust:dc[0]};}
+
+const water=(()=>{
+  const c=$('water');const gl=c.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false,preserveDrawingBuffer:true});
+  if(!gl)return {draw(){}};
+  // Le shader de pearl-inc.app (site/index.html) : caustiques, rayons, poussières, sable du lagon.
+  const FS=`precision highp float;
+uniform vec2 R;uniform float T;uniform vec4 P;uniform vec3 D;uniform vec3 F;
+vec2 h2(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return fract(sin(p)*43758.5453);}
+float web(vec2 p,float t){vec2 i=floor(p),f=fract(p);float a=8.,b=8.;
+  for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){vec2 g=vec2(float(x),float(y));vec2 r=g+.5+.4*sin(t+6.2831*h2(i+g))-f;float d=dot(r,r);if(d<a){b=a;a=d;}else if(d<b){b=d;}}
+  return sqrt(b)-sqrt(a);}
+float caustic(vec2 p,float t){float l=1.-smoothstep(0.,.17,web(p,t)),m=1.-smoothstep(0.,.26,web(p*1.83+11.7,t*1.27+4.));return l*l*(.5+.5*m)+m*m*m*.3;}
+float rays(vec2 uv,float t){vec2 q=uv-vec2(.3,-.35);float a=atan(q.x,q.y);float s=(.5+.5*sin(a*17.+t*.31))*(.5+.5*sin(a*29.-t*.23+1.7));return s*s*(1.-smoothstep(.15,1.5,length(q)));}
+float dust(vec2 p,float t){vec2 i=floor(p),f=fract(p),o=h2(i);float r=.018+.04*o.x,tw=.3+.7*(.5+.5*sin(t*(.7+o.y*1.6)+o.x*50.));return (1.-smoothstep(r*.2,r,length(f-(.15+.7*o))))*tw;}
+void main(){vec2 uv=gl_FragCoord.xy/R;uv.y=1.-uv.y;float asp=R.x/R.y,a;vec3 col=vec3(0.);float al=0.;
+  float vs=(uv.y-F.x)/F.y,hz=.6;
+  if(F.z>0.&&vs>hz-.12&&vs<=1.){float k=F.z;
+    a=smoothstep(hz-.12,1.,vs)*.6*k;col=col*(1.-a)+vec3(.99,.93,.78)*a;al=al*(1.-a)+a;
+    float d=1./(max(vs-hz,0.)+.05);
+    a=caustic(vec2((uv.x-.5)*asp*d*.7,d*1.5+T*.03),T*.7)*smoothstep(hz,hz+.16,vs)*.55*k;col=col*(1.-a)+vec3(1.,.99,.93)*a;al=al*(1.-a)+a;}
+  a=caustic(vec2(uv.x*asp,uv.y+P.w)*2.4,T*.55)*P.x*.2;col=col*(1.-a)+vec3(.95,1.,.98)*a;al=al*(1.-a)+a;
+  a=rays(uv,T)*P.y*.34;col=col*(1.-a)+vec3(1.,.98,.9)*a;al=al*(1.-a)+a;
+  vec2 q=vec2(uv.x*asp,uv.y+P.w*1.6);
+  a=(dust(q*7.+vec2(0.,T*.05),T)+dust(q*13.+vec2(3.7,T*.09),T*1.3)*.6)*P.z*.6;col=col*(1.-a)+D*a;al=al*(1.-a)+a;
+  gl_FragColor=vec4(col,al);}`;
+  const sh=(ty,src)=>{const s=gl.createShader(ty);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.log(gl.getShaderInfoLog(s));return s;};
+  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));
+  gl.bindAttribLocation(pr,0,'a');gl.linkProgram(pr);gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
+  const U={};for(const n of ['R','T','P','D','F'])U[n]=gl.getUniformLocation(pr,n);
+  gl.viewport(0,0,c.width,c.height);
+  return {draw(t,L){const [r,g,b]=L.dust.match(/\d+/g).map(v=>v/255);
+    gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform2f(U.R,c.width,c.height);gl.uniform1f(U.T,t);gl.uniform4f(U.P,L.wat[0],L.wat[1],L.wat[2],t*0.018);gl.uniform3f(U.D,r,g,b);
+    gl.uniform3f(U.F,0,1,L.wat[3]);gl.drawArrays(gl.TRIANGLES,0,3);}};
+})();
+
+/* ---------- Étincelles, bulles (fonctions pures de t) ---------- */
+const fx=$('fx').getContext('2d');
+const BURSTS=[];
+// Une gerbe : n particules émises à t0 depuis (x, y), vitesse v (px/s), couleurs, durée de vie.
+function burst(t0,x,y,{n=60,v=700,colors=['#fff3c4','#f7cb5c','#ffffff'],life=1.1,g=420,size=7,star=0.45,spread=Math.PI*2,dir=-Math.PI/2,add=true,jitter=0}={}){
+  const ps=[];for(let i=0;i<n;i++){const th=dir+(rnd()-0.5)*spread;const sp=v*(0.25+0.75*Math.pow(rnd(),0.6));
+    ps.push({th,sp,life:life*(0.55+0.45*rnd()),c:colors[i%colors.length],s:size*(0.5+rnd()),star:rnd()<star,ph:rnd()*6,dx:(rnd()-.5)*jitter,dy:(rnd()-.5)*jitter,d:rnd()*0.06});}
+  BURSTS.push({t0,x,y,g,ps,add});}
+function star4(x,y,q){fx.moveTo(x,y-q);fx.quadraticCurveTo(x,y,x+q,y);fx.quadraticCurveTo(x,y,x,y+q);fx.quadraticCurveTo(x,y,x-q,y);fx.quadraticCurveTo(x,y,x,y-q);}
+function drawBursts(t){
+  for(const b of BURSTS){if(t<b.t0||t>b.t0+2.2)continue;fx.globalCompositeOperation=b.add?'lighter':'source-over';
+    for(const p of b.ps){const a=t-b.t0-p.d;if(a<0||a>p.life)continue;const k=3.2,disp=p.sp*(1-Math.exp(-k*a))/k;
+      const x=b.x+p.dx+Math.cos(p.th)*disp,y=b.y+p.dy+Math.sin(p.th)*disp+0.5*b.g*a*a*0.35;
+      const al=Math.pow(1-a/p.life,1.4)*(p.star?0.65+0.35*Math.sin(a*34+p.ph):1);const s=p.s*(1-0.5*a/p.life);
+      fx.globalAlpha=clamp(al,0,1);fx.fillStyle=p.c;fx.beginPath();if(p.star)star4(x,y,s*2.3);else fx.arc(x,y,s,0,7);fx.fill();}}
+  fx.globalAlpha=1;fx.globalCompositeOperation='source-over';}
+// Scintillements fixes (l'éclat de l'écrin, la perle du Duo) : [x, y, taille, phase]
+function twinkles(t,pts,o,color='#ffffff'){if(o<=0)return;fx.globalCompositeOperation='lighter';
+  for(const [x,y,s,ph] of pts){const k=Math.max(0,Math.sin(t*5.5+ph));fx.globalAlpha=o*k;fx.fillStyle=color;fx.beginPath();star4(x,y,s*(0.6+0.6*k));fx.fill();
+    fx.globalAlpha=o*k*0.5;fx.beginPath();fx.arc(x,y,s*0.35,0,7);fx.fill();}
+  fx.globalAlpha=1;fx.globalCompositeOperation='source-over';}
+const BUBBLES=[];for(let i=0;i<34;i++)BUBBLES.push({x:rnd()*1080,y:rnd()*1500,v:60+rnd()*120,r:3+rnd()*9,ph:rnd()*6});
+function bubbles(t,o){if(o<=0)return;for(const b of BUBBLES){const y=((b.y-b.v*t)%1500+1500)%1500-60,x=b.x+Math.sin(t*1.6+b.ph)*14;
+  fx.globalAlpha=o*0.55;fx.strokeStyle='#ffffff';fx.lineWidth=1.6;fx.beginPath();fx.arc(x,y,b.r,0,7);fx.stroke();
+  fx.globalAlpha=o*0.7;fx.fillStyle='#ffffff';fx.beginPath();fx.arc(x-b.r*0.35,y-b.r*0.35,b.r*0.28,0,7);fx.fill();}fx.globalAlpha=1;}
+
+/* ---------- Éclairs (fondus au blanc ou à la couleur) ---------- */
+const FLASHES=[[3.0,'#ffffff',1,0.14,0.42],[5.2,'#fff0c2',0.42,0.04,0.4],[9.0,'#ff2f72',0.5,0.03,0.45],[12.3,'#fff3c4',0.25,0.03,0.3],
+  [15.0,'#ffffff',0.2,0.03,0.25],[21.65,'#fff0c2',0.3,0.03,0.35],[23.0,'#ffffff',0.55,0.06,0.35],[27.0,'#ffffff',0.6,0.05,0.45]];
+function flash(t){let best=0,col='#fff';for(const [t0,c,peak,up,down] of FLASHES){const v=t<t0?peak*sm(t0-up,t0,t):peak*(1-sm(t0,t0+down,t));if(v>best){best=v;col=c;}}
+  $('flash').style.background=col;$('flash').style.opacity=best;}
+
+/* ---------- 1. L'accroche (0 – 3 s) ---------- */
+const PH1={x:258,y:430,w:520};  // le téléphone : coin en haut à gauche, largeur de l'écran
+const PEARL1=[0.497,0.5596];     // la perle dorée dans la capture (fraction de l'écran)
+function s1(t){
+  animWords($('s1t1'),W('Pearl Inc.'),-0.3,2.8,t,{stagger:0.1});
+  animWords($('s1t2'),W('fait peau neuve.','g'),1.25,2.8,t,{stagger:0.25,rise:60});  // lisible en entier dès 2,1 s, jusqu'à ce que le zoom la couvre
+  const p=$('ph1');const ox=22+PEARL1[0]*520,oy=22+PEARL1[1]*1130.5;
+  const k=sm(0,2.5,t),z=Math.pow(sm(2.42,3.0,t),2.2);
+  p.style.left=PH1.x+'px';p.style.top=PH1.y+'px';p.style.transformOrigin=`${ox}px ${oy}px`;
+  p.style.transform=`translateY(${-410*z}px) perspective(2200px) rotateX(${lerp(11,3,k)*(1-z)}deg) rotateY(${lerp(-13,7,k)*(1-z)}deg) scale(${lerp(0.95,1.04,k)*(1+4.6*z)})`;
+  p.style.filter=`blur(${z*7}px)`;
+  setImg($('old'),`${A}/old.jpg`);setImg($('neu'),`${A}/new.jpg`);
+  // Le balayage lumineux : la nouvelle version remplace l'ancienne, en diagonale.
+  const w=inOut((t-1.28)/0.52),ft=lerp(-0.35,1.35,w),fb=ft-0.3;
+  $('neu').style.clipPath=`polygon(0 0,${ft*100}% 0,${fb*100}% 100%,0 100%)`;
+  const st=$('streak');st.style.left=((ft+fb)/2*520)+'px';st.style.transform=`rotate(7.9deg)`;st.style.opacity=w>0&&w<1?Math.pow(Math.sin(Math.PI*w),0.4):0;
+  chip($('c11'),-0.3,1.42,t,{rot:-4,center:false});chip($('c12'),1.58,2.62,t,{rot:5,center:false});
+}
+
+/* ---------- 2. L'huître en 3D (3 – 7 s) ---------- */
+function oysterAngle(u){
+  if(u<0.55)return 0.5+2.5*sm(0,0.55,u);
+  if(u<0.65)return lerp(3,16,(u-0.55)/0.1);
+  if(u<2.2)return 16+104*(1-Math.pow(1-(u-0.65)/1.55,2.4));
+  return 120;}
+const PEARL2=[533,1018];   // la perle dorée de l'huître 3D, à l'écran
+function s2(t){const u=t-3.0,A2=oysterAngle(u);
+  frames($('oyA'),$('oyB'),'huitre',oysterIdx(A2));
+  const trem=u<0.6?Math.sin(u*95)*3.2*sm(0,0.15,u):0;
+  $('s2grp').style.transform=`translateX(${trem}px) rotate(${trem*0.15}deg)`;
+  const g=$('s2gap');g.style.background=`radial-gradient(circle,rgba(255,214,110,.95),rgba(255,214,110,0) 62%)`;
+  g.style.opacity=sm(2,24,A2)*(0.55+0.25*Math.sin(t*9))*(1-0.4*sm(5.2,5.8,t));g.style.transform=`scale(${lerp(0.5,1.25,sm(2,60,A2))})`;
+  const h=$('s2halo');h.style.left=PEARL2[0]+'px';h.style.top=(PEARL2[1]-60)+'px';h.style.background='radial-gradient(circle,rgba(255,206,92,.7),rgba(255,206,92,.18) 34%,rgba(255,206,92,0) 62%)';
+  h.style.opacity=sm(10,120,A2)*0.8+0.2*sm(5.2,5.35,t)*(1-sm(5.35,6.2,t));h.style.transform=`scale(${lerp(0.6,1.05,sm(10,120,A2))})`;
+  const r=$('s2rays');r.style.left=PEARL2[0]+'px';r.style.top=PEARL2[1]+'px';r.style.opacity=sm(5.15,5.35,t)*0.55;r.style.transform=`rotate(${t*9}deg) scale(${lerp(0.7,1,outExpo((t-5.15)/0.6))})`;
+  // Caméra : on arrive de l'éclair (zoom qui se pose), puis on plonge dans la perle (raccord avec la scène 3).
+  const cam=$('s2cam'),inK=outExpo(u/0.7),z=Math.pow(sm(6.5,7.0,t),2);
+  cam.style.transformOrigin=`${PEARL2[0]}px ${PEARL2[1]}px`;
+  cam.style.transform=`translate(${(540-PEARL2[0])*z}px,${(730-PEARL2[1])*z}px) scale(${lerp(1.22,1,inK)*lerp(1,1.045,sm(0.7,3.5,u))*(1+4.2*z)})`;
+  cam.style.opacity=1-sm(6.85,7.0,t);cam.style.filter=`blur(${z*5}px)`;
+  eyebrow($('s2eb'),3.2,6.5,t);animWords($('s2t1'),W('Tout passe en')+' '+W('3D.','g'),3.38,6.5,t,{stagger:0.1});fadeIn($('s2s'),4.1,6.5,t);
+  chip($('s2chip'),5.32,6.5,t);
+}
+
+/* ---------- 3. Les perles (7 – 10 s) ---------- */
+const P='pearls/pearl-';
+const PEARLS=[ // instant, photo, nom, rareté, lueur
+  [6.78,'golden-ronde-dore','Perle dorée','★ · 4,5 %','#ffc845'],
+  [7.25,'white-ronde','Perle blanche','◆ · 38 %','#fff1d6'],
+  [7.5,'rose-ronde-rose','Perle rosée','◆ · 22 %','#ffb3c6'],
+  [7.75,'baroque-baroque-lavande','Perle baroque','◆◆ · 12 %','#c9bcff'],
+  [8.0,'black-ronde-vert-paon','Perle noire','◆◆◆ · 8 %','#7f8cff'],
+  [8.25,'giant-ronde-arc-en-ciel','Perle géante','★★ · 1,2 %','#aef4ff'],
+  [8.5,'white-cerclee-rose','Perle blanche','cerclée · reflet rose','#fff1d6'],
+  [8.625,'black-ronde-aubergine','Perle noire','reflet aubergine','#7f8cff'],
+  [8.75,'golden-ronde-arc-en-ciel','Perle dorée','reflet arc-en-ciel','#ffc845'],
+  [8.875,'baroque-coeur-rose','Perle baroque','en cœur','#c9bcff'],
+  [9.0,'cursed-presque-ronde-sang','Perle maudite','★★ · 0,3 %','#ff2f72'],
+];
+for(const p of PEARLS)pre(`${A}/${P}${p[1]}.png`);
+function s3(t){let i=0;while(i+1<PEARLS.length&&t>=PEARLS[i+1][0])i++;const [ts,file,name,rar,glow]=PEARLS[i];
+  const cursed=i===PEARLS.length-1,first=i===0,a=t-ts;
+  setImg($('s3p'),`${A}/${P}${file}.png`);
+  const zc=Math.pow(sm(6.5,7.0,t),2);  // le zoom de la scène 2 (perle : 127 px × 1,045 × (1 + 4,2 z), de (533, 1018) vers (540, 730))
+  // La photo (526 px de perle à l'échelle 1) suit la perle de la scène 2 pendant le fondu, puis se pose à 1,06 à 7 s.
+  const pop=first?outExpo((t-7.0)/0.3):outBack(a/0.2);
+  const shake=cursed?Math.sin(a*70)*14*Math.exp(-a*5):0;
+  const beat=cursed?1+0.05*Math.max(0,Math.sin((t-9)*Math.PI*2)):1+0.015*Math.sin(t*3);
+  const img=$('s3p');img.style.opacity=first?sm(6.8,6.98,t):1;
+  img.style.transform=first&&t<7?`translateY(${288*(1-zc)}px) scale(${0.2523*(1+4.2*zc)*lerp(1,0.808,sm(6.86,7.0,t))})`
+    :`translateX(${shake}px) scale(${lerp(first?1.06:1.16,1,pop)*beat}) rotate(${first?0:(1-clamp(pop,0,1))*(i%2?-9:9)}deg)`;
+  const h=$('s3halo');h.style.background=`radial-gradient(circle,${hexA(glow,0.75)},${hexA(glow,0.16)} 34%,${hexA(glow,0)} 62%)`;
+  h.style.opacity=(0.7+0.3*(1-clamp(a/0.25,0,1)))*sm(6.85,7.1,t);h.style.transform=`scale(${(cursed?1.15:1)*beat})`;
+  const r=$('s3rays');r.style.opacity=(cursed?0.5:0.28)*sm(6.9,7.2,t);r.style.transform=`rotate(${-t*12}deg)`;
+  r.style.filter=cursed?'hue-rotate(-60deg) saturate(2)':'none';
+  const n=$('s3n');words(n,`<span class="w ${cursed?'r':''}">${name}</span>`);const nw=n.firstChild;
+  const lk=outBack(a/0.24);nw.style.opacity=first?sm(6.95,7.1,t):1;nw.style.transform=`translateY(${(1-lk)*24}px)`;
+  $('s3r').textContent=rar;$('s3r').style.color=cursed?'#ff7aa2':'var(--gold2)';$('s3r').style.opacity=(first?sm(6.95,7.1,t):1)*(i>=6&&i<10?0.75:1);
+  animWords($('s3t1'),W('Des perles plus'),7.05,9.78,t,{stagger:0.08});animWords($('s3t2'),W('vraies que nature.','g'),7.3,9.78,t,{stagger:0.08});
+  // Sortie : coup de fouet vers la gauche.
+  const z=Math.pow(sm(9.72,10.0,t),2);$('s3cam').style.transform=`translateX(${-1300*z}px)`;$('s3cam').style.filter=`blur(${z*10}px)`;
+}
+
+/* ---------- 4. Les écrins (10 – 13 s) ---------- */
+function ecrinAngle(u){
+  if(u<0.35)return 0.5;
+  if(u<0.55)return 0.5+3.5*sm(0.35,0.55,u);
+  if(u<0.62)return lerp(4,12,(u-0.55)/0.07);
+  if(u<1.3)return 12+70*outCubic((u-0.62)/0.68);
+  if(u<1.9)return 82+0.4*Math.sin(u*40);
+  if(u<2.3)return 82+68*inOut((u-1.9)/0.4);
+  return 150;}
+const JEWEL0=[540,1032];   // le diadème dans l'écrin, à l'écran (image 400, 640 × 0,875)
+const JEWELS=['bijoux/rubis-bague-cocktail','bijoux/emeraude-bague-solitaire-poire','bijoux/diamant-collier-riviere','bijoux/saphir-bague-solitaire-marquise','bijoux/or-broche-libellule','bijoux/perles-collier-rang'];
+const JEND=[[150,860,-16],[265,650,-8],[440,540,-3],[640,540,3],[815,650,8],[930,860,16]];
+{const box=$('s4j');JEWELS.forEach((j,i)=>{const im=document.createElement('img');im.className='abs';im.style.width=im.style.height='210px';im.style.margin='-105px 0 0 -105px';im.src=pre(`${A}/${j}.webp`);box.appendChild(im);});}
+const GLINT=[[540,1014,24,0],[470,1040,15,1.7],[618,1036,14,3.1],[420,1064,12,4.4],[662,1062,12,2.3],[503,1000,10,5.2],[582,997,11,0.8]];
+function s4(t){const u=t-10,A4=ecrinAngle(u);
+  frames($('ecA'),$('ecB'),'ecrin',ecrinIdx(A4));
+  const inK=outExpo((t-9.85)/0.5),wig=u>0.35&&u<0.6?Math.sin(u*80)*2.5:0;
+  $('s4grp').style.transform=`translateX(${(1-inK)*1150+wig}px) rotate(${(1-inK)*10}deg)`;
+  const sp=$('s4spot');sp.style.background='radial-gradient(circle,rgba(255,214,140,.55),rgba(255,214,140,.1) 40%,rgba(255,214,140,0) 64%)';sp.style.opacity=0.5+0.5*sm(0.6,1.4,u);
+  const z=Math.pow(sm(12.72,13.0,t),2);$('s4cam').style.transform=`translateY(${-1300*z}px)`;$('s4cam').style.filter=`blur(${z*10}px)`;
+  // Les bijoux jaillissent de l'écrin ouvert.
+  [...$('s4j').children].forEach((im,i)=>{const d=12.3+i*0.045,k=outBack((t-d)/0.5),e=JEND[i];
+    im.style.opacity=sm(d,d+0.06,t);im.style.left=lerp(JEWEL0[0],e[0],k)+'px';im.style.top=(lerp(JEWEL0[1],e[1],k)+Math.sin(t*2.4+i)*6*sm(d+0.5,d+0.8,t))+'px';
+    im.style.transform=`scale(${lerp(0.2,1,clamp(k,0,1.1))}) rotate(${lerp(i%2?-50:50,e[2],clamp(k,0,1))}deg)`;});
+  eyebrow($('s4eb'),10.1,12.72,t);animWords($('s4t1'),W('Des écrins'),10.22,12.72,t,{stagger:0.09});animWords($('s4t2'),W('en relief.','g'),10.45,12.72,t,{stagger:0.1});fadeIn($('s4s'),10.85,12.72,t);
+  chip($('s4chip'),11.42,12.32,t,{rot:4});
+}
+
+/* ---------- 5. Les trouvailles (13 – 15 s) ---------- */
+// Celles que pearl-inc.app montre déjà ; les autres restent des « ? », comme dans l'album de l'app.
+const FIND_CELLS=['cube','?','champignon','?','boussole','?','tong','?','bouteille','?','ballon','?','canard','?','piece-or','lunettes','?','cle-epave','?','chapeau','?','dentier','?','coeur-ocean','?'];
+const GRID={x:142,y:396,s:148,g:14};
+const cellXY=i=>[GRID.x+(i%5)*(GRID.s+GRID.g),GRID.y+Math.floor(i/5)*(GRID.s+GRID.g)];
+const ORDER=FIND_CELLS.map((_,i)=>i).sort(()=>rnd()-0.5);
+{const g=$('s5grid');FIND_CELLS.forEach((f,i)=>{const c=document.createElement('div');c.className='cell';const [x,y]=cellXY(i);c.style.left=x+'px';c.style.top=y+'px';
+  c.innerHTML=f==='?'?'<b>?</b>':(f==='canard'?'':`<img src="${pre(`${A}/trouvailles/${f}.webp`)}">`);g.appendChild(c);});}
+pre(`${A}/trouvailles/canard.webp`);
+function s5(t){const cells=[...$('s5grid').children];const zoom=outBack((t-14.0)/0.45),dim=sm(13.95,14.25,t);
+  cells.forEach((c,i)=>{const d=12.95+ORDER.indexOf(i)*0.028,k=outBack((t-d)/0.36);
+    c.style.opacity=sm(d,d+0.08,t)*(i===12?1:1-0.72*dim);c.style.transform=`translateY(${(1-clamp(k,0,1))*140}px) scale(${lerp(0.3,1,k)*(1-0.06*dim)}) rotate(${(1-clamp(k,0,1))*(i%2?-24:24)}deg)`;
+    c.style.filter=i===12?'none':`blur(${dim*3}px)`;});
+  const [cx,cy]=cellXY(12),d=$('s5duck');setImg(d,`${A}/trouvailles/canard.webp`);
+  const k12=outBack((t-12.95-ORDER.indexOf(12)*0.028)/0.36);
+  const x=lerp(cx+15,540-59,clamp(zoom,0,1.2)),y=lerp(cy+15,770-59,clamp(zoom,0,1.2))+(t<14?(1-clamp(k12,0,1))*140:0),s=lerp(1,4,zoom);
+  const out=Math.pow(sm(14.78,15.02,t),2);
+  d.style.left=x+'px';d.style.top=y+'px';d.style.opacity=sm(12.95,13.3,t)*(t<14?clamp(k12,0,1):1)*(1-out);
+  d.style.transform=`scale(${s*(t<14?clamp(k12,0.3,1):1)*(1-0.6*out)}) rotate(${Math.sin((t-14)*7)*7*sm(14.1,14.4,t)+out*200}deg)`;
+  const h=$('s5halo');h.style.background='radial-gradient(circle,rgba(255,226,90,.6),rgba(255,226,90,.12) 36%,rgba(255,226,90,0) 62%)';h.style.opacity=dim*(1-out)*0.9;
+  $('s5grid').style.transform=`translateY(${-900*out}px)`;
+  animWords($('s5t1'),W('25','g')+' '+W('trouvailles'),13.02,13.95,t,{stagger:0.09});fadeIn($('s5s'),13.32,13.95,t);
+  animWords($('s5t2'),W('Et parfois…'),14.05,14.85,t,{stagger:0.1});animWords($('s5t3'),W('un canard.','g'),14.28,14.85,t,{stagger:0.12});
+  chip($('s5chip'),14.36,14.85,t,{rot:5});
+}
+
+/* ---------- 6. Le site (15 – 20,5 s) ---------- */
+const THUMB={x:195,y:560.5,dist:267,t0:1.8,tRes:0.45,t1:3.3,res:70};  // relevé dans la prise du téléphone (site-clock.js, « pouce »)
+function s6(t){const c=t-15;
+  setImg($('sited'),`${A}/site-d/${f5(clamp(Math.round(c*60),0,395))}.jpg`);
+  setImg($('sitem'),`${A}/site-m/${f5(clamp(Math.round(c*60),0,395))}.jpg`);
+  const bk=outExpo((t-14.92)/0.6),pk=outExpo((t-15.22)/0.6),f=inOut((t-16.4)/0.5),out=Math.pow(sm(20.15,20.5,t),2);
+  $('br').style.transform=`translateY(${(1-bk)*420+out*700}px) perspective(2000px) rotateX(${(1-bk)*30+out*25}deg) scale(${lerp(1,0.965,f)})`;
+  $('br').style.filter=`brightness(${lerp(1,0.6,f)})`;$('br').style.opacity=sm(14.92,15.1,t);
+  $('ph6').style.transform=`translate(${(1-pk)*480-150*f}px,${-70*f+out*800}px) perspective(1800px) rotateY(${(1-pk)*-34-5*(1-f)}deg) scale(${lerp(1,1.34,f)})`;
+  $('ph6').style.opacity=sm(15.22,15.4,t);$('ph6').style.transformOrigin='50% 50%';
+  // Le pouce sur l'écran du téléphone, comme dans la prise (px CSS du téléphone → px de l'écran dessiné).
+  const k=300/390,a=c-THUMB.t0,pushed=a<=0?0:a<=THUMB.tRes?THUMB.res*a/THUMB.tRes:THUMB.res+(THUMB.dist-THUMB.res)*Math.min(1,(a-THUMB.tRes)/(THUMB.t1-THUMB.t0-THUMB.tRes));
+  const o=sm(THUMB.t0-0.12,THUMB.t0,c)*(1-sm(THUMB.t1,THUMB.t1+0.18,c));
+  const to=$('to6'),tr=$('tr6');to.style.left=THUMB.x*k+'px';to.style.top=(THUMB.y-pushed)*k+'px';to.style.opacity=o;to.style.transform=`scale(${lerp(1.5,1,sm(THUMB.t0-0.12,THUMB.t0+0.05,c))})`;
+  tr.style.left=THUMB.x*k+'px';tr.style.top=(THUMB.y-pushed)*k+'px';tr.style.height=Math.min(pushed,150)*k+'px';tr.style.opacity=o*0.8;
+  eyebrow($('s6eb'),15.1,20.2,t);animWords($('s6t1'),'<span class="w">pearl-inc</span><span class="w g">.app</span>',15.2,20.2,t,{stagger:0.14});
+  fadeIn($('s6s1'),15.6,16.45,t);fadeIn($('s6s2'),16.55,20.2,t);
+}
+
+/* ---------- 7. L'iPhone Duo (20,5 – 23 s) ---------- */
+pre(`${A}/duo.jpg`);
+function s7(t){const u=t-20.5;
+  $('duoLs').style.backgroundImage=$('duoRs').style.backgroundImage=`url(${A}/duo.jpg)`;
+  const rise=outExpo(u/0.5),k=inOut((u-0.25)/0.9),out=Math.pow(sm(22.72,23.0,t),2);
+  $('duoL').style.transform=`rotateY(${lerp(178,0,k)}deg)`;
+  $('duodev').style.transform=`translate(${lerp(-216,0,k)}px,${(1-rise)*360}px) rotateX(${lerp(22,7,k)}deg) rotateY(${lerp(-26,-4,k)}deg) scale(${lerp(0.92,1,k)*(1-0.4*out)})`;
+  $('duo').style.opacity=sm(20.45,20.6,t)*(1-out);$('s7sh').style.opacity=sm(20.6,21.3,t)*(1-out);$('s7sh').style.transform=`scaleX(${lerp(0.55,1,k)})`;
+  eyebrow($('s7eb'),20.62,22.72,t);animWords($('s7t1'),W('Charnière ou pouce :'),20.72,22.72,t,{stagger:0.07});animWords($('s7t2'),W('à toi de choisir.','g'),21.12,22.72,t,{stagger:0.08});
+}
+
+/* ---------- 8. Les chiffres, les corrections (23 – 27 s) ---------- */
+const ROWS=['Améliorations et corrections de bugs','Mode nuit, de 21 h à 6 h','Les perles ne traversent plus le couvercle','Chances et prix inchangés'];
+const ROW_T=[24.75,25.125,25.5,25.875];
+{const box=$('s8rows');ROWS.forEach((r,i)=>{const d=document.createElement('div');d.className='row';d.style.top=(628+i*124)+'px';
+  d.innerHTML=`<svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="url(#gg${i})"/><defs><linearGradient id="gg${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE8A3"/><stop offset="1" stop-color="#D99A2B"/></linearGradient></defs><path d="M16 29l8 8 16-17" fill="none" stroke="#3a2604" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="40" stroke-dashoffset="40"/></svg><span>${r}</span>`;box.appendChild(d);});}
+function s8(t){const u=t-23,n=Math.round(50*outCubic(u/0.9));
+  const num=$('s8n');if(num.textContent!=='+'+n)num.textContent='+'+n;
+  const up=inOut((t-24.5)/0.42),out=Math.pow(sm(26.72,27.0,t),2);
+  num.style.transform=`scale(${lerp(0.55,1,outBack(u/0.45))})`;num.style.opacity=sm(23.0,23.1,t);
+  $('s8num').style.transform=`translateY(${-205*up-700*out}px) scale(${lerp(1,0.6,up)})`;
+  fadeIn($('s8l'),23.35,99,t,{dy:20});
+  animWords($('s8m'),W('Merci !','g'),23.95,99,t,{stagger:0.12});
+  eyebrow($('s8eb'),24.62,26.75,t);
+  [...$('s8rows').children].forEach((r,i)=>{const d=ROW_T[i],k=outBack((t-d)/0.38),o=Math.pow(sm(26.7+i*0.04,26.98+i*0.04,t),2);
+    r.style.opacity=sm(d,d+0.1,t)*(1-o);r.style.transform=`translateX(${(1-clamp(k,0,1))*160-1200*o}px) scale(${lerp(0.9,1,clamp(k,0,1))})`;
+    r.querySelector('path').style.strokeDashoffset=40*(1-sm(d+0.1,d+0.35,t));});
+}
+
+/* ---------- 9. Mets à jour (27 – 32 s) ---------- */
+const ORB=['golden-ronde-dore','white-ronde','rose-ronde-rose','baroque-baroque-lavande','black-ronde-vert-paon','giant-ronde-arc-en-ciel','cursed-presque-ronde-sang'];
+{const o=$('orbit');ORB.forEach(p=>{const im=document.createElement('img');im.className='abs';im.style.width=im.style.height='96px';im.style.margin='-48px 0 0 -48px';im.src=`${A}/${P}${p}.png`;o.appendChild(im);});}
+pre(`${A}/icon.png`);
+function s9(t){const u=t-27;
+  setImg($('icon'),`${A}/icon.png`);
+  const ik=outBack(u/0.55);$('icon').style.opacity=sm(27,27.08,t);$('icon').style.transform=`translateY(${(1-clamp(ik,0,1))*-420}px) scale(${lerp(0.5,1,ik)}) rotate(${(1-clamp(ik,0,1))*-12}deg)`;
+  const h=$('s9halo');h.style.background='radial-gradient(circle,rgba(150,240,235,.42),rgba(150,240,235,.1) 36%,rgba(150,240,235,0) 62%)';h.style.opacity=sm(27.05,27.6,t)*(0.85+0.15*Math.sin(t*2*Math.PI));
+  [...$('orbit').children].forEach((im,i)=>{const a=i/ORB.length*Math.PI*2+u*0.7,s=Math.sin(a),e=outExpo((u-0.35-i*0.05)/0.7);
+    im.style.left=(540+Math.cos(a)*lerp(60,355,e))+'px';im.style.top=(440+s*lerp(10,82,e))+'px';im.style.transform=`scale(${(0.72+0.3*s)*e})`;
+    im.style.opacity=sm(27.35+i*0.05,27.6+i*0.05,t);im.style.zIndex=s>0?3:1;});
+  $('icon').style.zIndex=2;
+  animWords($('s9t'),W('Pearl Inc.'),27.3,99,t,{stagger:0.12});
+  const pk=outBack((t-27.72)/0.42),pulse=Math.max(0,Math.sin((t-28.2)*Math.PI*2));
+  const pill=$('pill');pill.style.opacity=sm(27.72,27.8,t);pill.style.transform=`translateX(-50%) scale(${lerp(0.5,1,pk)*(1+0.018*pulse*sm(28.2,28.5,t))})`;
+  pill.style.boxShadow=`0 20px 60px rgba(0,0,0,.4),0 0 ${30+40*pulse}px rgba(255,236,170,${0.25+0.35*pulse})`;
+  fadeIn($('s9s'),28.05,99,t);fadeIn($('s9u'),28.35,99,t);
+}
+
+/* ---------- Image de l'instant t ---------- */
+const SCENES=[[s1,'s1',0,3.05],[s2,'s2',3.0,7.02],[s3,'s3',6.75,10.02],[s4,'s4',9.85,13.02],[s5,'s5',12.9,15.05],[s6,'s6',14.9,20.52],[s7,'s7',20.45,23.02],[s8,'s8',22.95,27.02],[s9,'s9',26.95,32.1]];
+// Gerbes et scintillements, posés une fois (le tirage est fixe : la même vidéo à chaque rendu).
+burst(1.42,560,700,{n:26,v:380,life:0.8,spread:Math.PI*2,size:5,g:0});burst(1.6,470,980,{n:26,v:380,life:0.8,size:5,g:0});
+burst(5.2,PEARL2[0],PEARL2[1],{n:110,v:900,life:1.3,colors:['#ffd76b','#e8a420','#fff6d0','#ffffff'],add:false,size:7});
+for(const [ts,,,,glow] of PEARLS.slice(1,6))burst(ts,540,730,{n:22,v:520,life:0.6,colors:[glow,'#ffffff'],size:5,g:0});
+burst(9.0,540,730,{n:120,v:1000,life:1.3,colors:['#ff2f72','#ff8fb0','#3a0f2a','#ffffff'],size:8});
+burst(12.3,JEWEL0[0],JEWEL0[1],{n:90,v:850,life:1.1,colors:['#fff3c4','#f7cb5c','#ffffff','#bfe8ff'],size:6});
+burst(14.3,540,760,{n:80,v:800,life:1.1,colors:['#fff2a8','#f4c531','#ffffff','#ff9f43'],size:7});
+burst(19.05,724,1019,{n:70,v:620,life:1.0,colors:['#ffd76b','#fff6d0','#ffffff'],size:6});
+burst(21.65,717,870,{n:70,v:620,life:1.0,colors:['#ffd76b','#fff6d0','#ffffff'],size:6});
+burst(24.0,540,440,{n:140,v:1150,life:1.5,colors:['#f3f0ea','#f2c4cc','#e2b04a','#aef4ff','#ffffff'],size:9,star:0.3});
+burst(27.12,540,440,{n:110,v:950,life:1.3,colors:['#ffd76b','#fff6d0','#ffffff','#aef4ff'],size:7});
+
+window.renderAt=async t=>{
+  pending.length=0;
+  for(const [fn,id,a,b] of SCENES){const on=t>=a&&t<b;$(id).style.display=on?'block':'none';if(on)fn(t);}
+  const L=lookAt(t);$('bg').style.background=`linear-gradient(180deg,${L.col[0]} 0%,${L.col[1]} 52%,${L.col[2]} 100%)`;
+  water.draw(t,L);
+  fx.clearRect(0,0,1080,1350);
+  bubbles(t,sm(3,3.4,t)*(1-sm(6.6,7,t))*0.5+sm(27,28,t)*0.6);
+  drawBursts(t);
+  twinkles(t,GLINT,sm(11.3,11.45,t)*(1-sm(11.95,12.2,t)));
+  $('vig').style.opacity=t>=3&&t<7?0.25:1;
+  flash(t);
+  await Promise.all(pending);
+};
+window.ready=false;
+Promise.all([document.fonts.load('100px "Young Serif"'),document.fonts.load('800 40px Figtree'),document.fonts.load('900 40px Figtree')])
+  .then(()=>document.fonts.ready).then(()=>Promise.all(preload)).then(()=>{window.ready=true;});
+</script>
+</body></html>

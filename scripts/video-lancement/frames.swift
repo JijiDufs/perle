@@ -68,8 +68,18 @@ func encode(_ dir: String, _ out: String, _ fps: Int32, _ wav: String?) async th
     let range = CMTimeRange(start: .zero, duration: try await v.load(.duration))
     try comp.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)!
         .insertTimeRange(range, of: try await v.loadTracks(withMediaType: .video)[0], at: .zero)
+    // Un son AAC (afconvert) commence par l'amorçage de l'encodeur (2112 échantillons, étiquette iTunSMPB), que l'export
+    // recopie tel quel : sans le sauter, le son arrive 44 ms après l'image (mesuré avec ffmpeg).
+    let track = try await a.loadTracks(withMediaType: .audio)[0]
+    var priming = CMTime.zero
+    for item in try await a.load(.metadata) where item.identifier?.rawValue.hasSuffix("iTunSMPB") == true {
+        if let s = try await item.load(.stringValue), let p = s.split(separator: " ").dropFirst().first.flatMap({ Int($0, radix: 16) }) {
+            priming = CMTime(value: CMTimeValue(p), timescale: try await track.load(.naturalTimeScale))
+        }
+    }
+    let sound = CMTimeRange(start: priming, duration: CMTimeMinimum(range.duration, try await track.load(.timeRange).duration - priming))
     try comp.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)!
-        .insertTimeRange(range, of: try await a.loadTracks(withMediaType: .audio)[0], at: .zero)
+        .insertTimeRange(sound, of: track, at: .zero)
     let url = URL(fileURLWithPath: out)
     try? FileManager.default.removeItem(at: url)
     let export = AVAssetExportSession(asset: comp, presetName: AVAssetExportPresetPassthrough)!

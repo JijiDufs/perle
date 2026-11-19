@@ -3,6 +3,30 @@
 Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
+## 2026-11-19 (post et vidéo « Pearl Inc. fait peau neuve ») · Jules · Claude Code · branche `jules/site-refonte`
+
+**Fait**
+- **Post LinkedIn de la 1.2** (`docs/lancement/post-peau-neuve.md`, en français puis en anglais, avec le premier commentaire qui porte le lien App Store) : nouvelle DA en 3D, nouveau site, plus de 50 téléchargements, mode nuit, iPhone Duo (charnière ou pouce), améliorations et corrections ; il demande aux joueurs de faire la mise à jour.
+- **Vidéo de promotion** `docs/lancement/pearl-inc-peau-neuve.mp4` (1080 × 1350, le format 4:5 du fil LinkedIn ; 32 s, 60 i/s, avec musique) et sa miniature `pearl-inc-peau-neuve-couverture.jpg`, hors du dépôt comme les vidéos de lancement. Tout se refait avec `sh scripts/video-peau-neuve/make.sh` :
+  - l'huître et l'écrin en 3D : les scènes RealityKit de l'app rendues sur le Mac (`huitre3d`, via `scripts/site/rendus-3d.sh` avec `OUTIL_SEUL=1`), 61 angles chacun, détourés par `detoure.py` (fond noir et fond blanc) ;
+  - pearl-inc.app filmé image par image dans Chrome sans fenêtre (`capture.mjs` et `site-clock.js` : horloge virtuelle, défilement et pouce écrits à l'avance), sur ordinateur puis sur téléphone, où l'huître de « À toi d'ouvrir » s'ouvre au pouce (lustre S) ;
+  - le montage (`index.html`, photographié par `capture.mjs`) : la 1.1 qui devient la 1.2, l'huître 3D qui s'ouvre, les perles, l'écrin et son éclat parfait, les 25 trouvailles (et le canard), le site sur ordinateur et sur téléphone, l'iPhone Duo qui se déplie, « +50 téléchargements » et les nouveautés, puis « Mets à jour sur l'App Store ». En fond, l'eau du site (le même shader) ;
+  - la musique générée (`music.swift`, 120 BPM, calée sur les coupes), l'encodage par `scripts/video-lancement/frames.swift`.
+  - Vérifiée sur des planches d'images (toutes les 0,5 s, puis image par image aux raccords), puis dans le MP4 : H.264 High, 1 920 images, AAC 48 kHz, crête à −0,9 dB, son calé à 0 ms sur l'image.
+- **Son en retard de 44 ms corrigé** dans `scripts/video-lancement/frames.swift`, qui sert aux deux vidéos : l'export recopiait l'amorçage de l'encodeur AAC (2 112 échantillons). Il est maintenant sauté, d'après l'étiquette iTunSMPB, et mesuré à 0 ms par corrélation avec la musique d'origine. **Les vidéos de lancement déjà faites gardent ce retard**, à peine perceptible, tant qu'elles ne sont pas refaites.
+- `capture.mjs` efface son profil Chrome jetable après chaque prise (≈ 150 Mo).
+
+**Reste à faire**
+- Publier le post : identifier Mathys, et mettre le lien App Store en premier commentaire.
+- Si besoin, une version anglaise ou carrée de la vidéo (les textes sont dans `index.html`).
+
+**Fragile**
+- Le doigt dessiné sur le téléphone (`THUMB`) et la place des gerbes d'étincelles sont relevés à la main dans les prises : à reprendre si la mise en page du site change.
+- Sur le téléphone, une image du site ne finissait jamais de se charger : 4 s d'attente à chaque image, soit 26 min pour la prise. `site-clock.js` n'attend plus que les images visibles, 1,5 s au plus. **Pas relancé depuis** : la prise du téléphone de cette vidéo a été faite avec l'ancienne attente.
+- `huitre3d` a rendu une partie de l'écrin en 3000 px et le reste en 1500 px : `detoure.py` ramène tout à la plus petite taille.
+- Les rendus et les prises (`build/video-peau-neuve/`) ne sont pas dans le dépôt : `make.sh` les refait. Il faut les captures de `build/captures-app-store/` et le réseau (polices Google du montage).
+
+---
 ## 2026-11-17 (pearl-inc.app refait) · Jules · Claude Code · branche `jules/site-refonte`
 
 **Fait**
