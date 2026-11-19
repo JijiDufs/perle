@@ -21,6 +21,9 @@ struct CardTilt: ViewModifier {
     @State private var touch: CGPoint?
     @State private var cardSize = CGSize(width: 1, height: 1)
     @State private var pressedAt: Date?
+    /// Point de départ de l'appui en cours : un geste annulé (sans `onEnded`) laisse `pressedAt` en place,
+    /// et sans ce repère plus aucun toucher ne passait à la suite jusqu'au relancement de l'app.
+    @State private var pressStart: CGPoint?
     @State private var moved = false
 
     func body(content: Content) -> some View {
@@ -42,7 +45,9 @@ struct CardTilt: ViewModifier {
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
-                        if pressedAt == nil { pressedAt = Date(); moved = false }
+                        if pressedAt == nil || pressStart != value.startLocation {
+                            pressedAt = Date(); pressStart = value.startLocation; moved = false
+                        }
                         if hypot(value.translation.width, value.translation.height) > Self.tapSlop { moved = true }
                         touch = CGPoint(x: clamp(value.location.x / cardSize.width * 2 - 1), y: clamp(value.location.y / cardSize.height * 2 - 1))
                     }
@@ -50,6 +55,7 @@ struct CardTilt: ViewModifier {
                         let quick = pressedAt.map { Date().timeIntervalSince($0) < Self.tapMaxSeconds } ?? false
                         touch = nil
                         pressedAt = nil
+                        pressStart = nil
                         if !moved && quick { onTap?() }
                     }
             )

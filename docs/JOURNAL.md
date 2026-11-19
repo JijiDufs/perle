@@ -3,6 +3,17 @@
 Entrée la plus récente en haut. Format : date · qui · avec quel outil.
 
 ---
+## 2026-11-19 (écrin suivant bloqué) · Jules · Claude Code · branche `jules/ecrin-suivant`
+
+**Fait**
+- Retour d'un joueur : après un écrin, impossible d'ouvrir le suivant sans relancer l'app. **Cause trouvée en lisant le code (pas reproduite)** : la carte du bijou ne passe à la suite que par le toucher bref de `CardTilt`, qui retenait le début de l'appui (`pressedAt`) jusqu'à `onEnded`. Un geste annulé par le système (SwiftUI n'appelle pas `onEnded`) laissait cet appui en place : chaque toucher suivant semblait trop long, et la carte restait là jusqu'au relancement. À la Pêche, un `onTapGesture` de secours autour de la carte masquait le défaut.
+- `CardTilt` : chaque nouvel appui repart de zéro (repéré par `startLocation`), même si le précédent n'a pas fini. Profite aussi à la carte de la Pêche.
+- Carte du bijou : toucher la consigne sous la carte passe aussi à l'écrin suivant, comme à la Pêche.
+
+**Reste à faire**
+- **Essayer sur iPhone** (TestFlight) : ouvrir 3 écrins d'affilée, en touchant la carte puis la consigne. Build vérifié pour le simulateur, pas lancé (simulateur instable depuis le 17).
+
+---
 ## 2026-11-17 (pearl-inc.app refait) · Jules · Claude Code · branche `jules/site-refonte`
 
 **Fait**

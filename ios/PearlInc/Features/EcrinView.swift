@@ -78,6 +78,8 @@ struct EcrinView: View {
                 JewelRevealView(card: card)
                     .besideFold(game.foldX)
                     .transition(.scale(scale: 0.3).combined(with: .opacity))
+                    // Comme la carte de la Pêche : toucher la consigne sous la carte passe aussi à la suite.
+                    .onTapGesture { withAnimation(.snappy) { game.nextEcrin() } }
             }
         }
         .animation(.spring(duration: 0.45, bounce: 0.35), value: game.ecrinStage)
