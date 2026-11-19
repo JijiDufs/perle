@@ -65,6 +65,9 @@ private struct HingeObserver: UIViewRepresentable {
             Logger(subsystem: "app.pearlinc", category: "charniere")
                 .debug("charnière : \(degrees.map { String(format: "%.1f°", $0) } ?? "aucune", privacy: .public) \(String(describing: update.hinge?.status.rawValue), privacy: .public)")
             #endif
+            // Un état « inconnu » ne dit rien de la charnière (angle 0) : le prendre pour un Duo fermé couchait l'huître
+            // sur un iPhone classique (soupçonné après une pub plein écran, 2026-11-19). On garde l'état précédent.
+            if update.hinge?.status == .unknown { return }
             coordinator.onChange(degrees)
         })
         return view

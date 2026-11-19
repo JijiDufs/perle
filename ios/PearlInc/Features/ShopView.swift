@@ -186,6 +186,9 @@ private struct SkinCard: View {
                             .frame(width: layout.L * 3, height: layout.L * 5.6)
                             .position(x: layout.hx, y: layout.hy - layout.L * 0.54)
                     }
+                    // La vue 3D déborde de la vignette (rognée à l'image, pas au toucher) : elle prenait les touchers des
+                    // boutons « Équiper » voisins et du dessous (double toucher, coquilles impossibles à équiper).
+                    .allowsHitTesting(false)
                 }
             }
             .frame(height: 124)
