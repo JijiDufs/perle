@@ -6314,6 +6314,54 @@
           }
         }
       }
+    },
+    "Mise à jour disponible" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update available"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise à jour disponible"
+          }
+        }
+      }
+    },
+    "Mettre à jour" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettre à jour"
+          }
+        }
+      }
+    },
+    "La version %@ de Pearl Inc. est sur l’App Store. Mets à jour pour profiter des nouveautés et des corrections." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearl Inc. %@ is on the App Store. Update to get the latest features and fixes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La version %@ de Pearl Inc. est sur l’App Store. Mets à jour pour profiter des nouveautés et des corrections."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

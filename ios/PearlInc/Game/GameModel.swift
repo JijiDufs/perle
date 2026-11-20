@@ -238,6 +238,13 @@ final class GameModel {
     /// Moment calme : huître posée, fermée, hors du tutoriel (jamais pendant la révélation, la carte ni le calendrier).
     private var isCalm: Bool { stage == .playing && phase == .closed && angle == 0 && !inTutorial && !showingCalendar }
 
+    /// Version plus récente sur l'App Store, lue au lancement ; « Plus tard » l'oublie jusqu'au lancement suivant.
+    var availableUpdate: String?
+    /// La fenêtre « Mise à jour disponible », au moment calme, après la fête de niveau et les rattrapages.
+    var updateToShow: String? {
+        isCalm && player.levelUp == nil && player.achievementCatchUp == nil && player.ecrinCatchUp == nil ? availableUpdate : nil
+    }
+
     /// La montée de niveau à fêter, seulement à un moment calme.
     var levelUpToShow: LevelUp? {
         isCalm ? player.levelUp : nil

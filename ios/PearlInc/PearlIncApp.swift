@@ -44,6 +44,7 @@ struct PearlIncApp: App {
 struct RootView: View {
     @Environment(GameModel.self) private var game
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         @Bindable var game = game
@@ -102,6 +103,7 @@ struct RootView: View {
             await game.checkSignupGift()
             await game.ads.startIfConsentKnown()
             offerCalendar()
+            game.availableUpdate = await AppUpdate.available()
         }
         // « Tes huîtres sont revenues » : programmée en partant, retirée en revenant.
         .onChange(of: scenePhase) { _, phase in
@@ -136,6 +138,13 @@ struct RootView: View {
             Button("Reprendre l’autre") { game.swapSetAside() }
         } message: { aside in
             Text("On a gardé la plus avancée, ou la plus récente à égalité (\(aside.keptOysters) huîtres ouvertes). L’autre (\(aside.otherOysters) huîtres) est mise de côté sur cet iPhone : tu peux la reprendre maintenant.")
+        }
+        .alert("Mise à jour disponible", isPresented: Binding(get: { game.updateToShow != nil }, set: { if !$0 { game.availableUpdate = nil } }),
+               presenting: game.updateToShow) { _ in
+            Button("Mettre à jour") { openURL(AppUpdate.storePage) }
+            Button("Plus tard", role: .cancel) {}
+        } message: { version in
+            Text("La version \(version) de Pearl Inc. est sur l’App Store. Mets à jour pour profiter des nouveautés et des corrections.")
         }
         // Déconnexion : retour à l'écran de connexion, sans musique.
         .onDisappear { game.audio.stop() }
